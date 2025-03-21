@@ -1,0 +1,98 @@
+2025-03-21 03:14:35.091 [RMI TCP Connection(12)-127.0.0.1][INFO] o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested. 
+2025-03-21 03:14:35.093 [RMI TCP Connection(12)-127.0.0.1][INFO] o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
+2025-03-21 03:14:35.094 [tomcat-shutdown][INFO] o.a.c.h.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"] 
+2025-03-21 03:14:35.099 [tomcat-shutdown][INFO] o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
+2025-03-21 03:14:35.099 [RMI TCP Connection(12)-127.0.0.1][INFO] o.a.c.h.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"] 
+2025-03-21 03:14:35.102 [RMI TCP Connection(12)-127.0.0.1][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default' 
+2025-03-21 03:14:35.103 [RMI TCP Connection(12)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown initiated... 
+2025-03-21 03:14:35.104 [RMI TCP Connection(12)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown completed. 
+2025-03-21 03:14:36.566 [background-preinit][INFO] o.h.v.i.u.Version - HV000001: Hibernate Validator 8.0.2.Final 
+2025-03-21 03:14:36.596 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - Starting PacktoryDeApplication using Java 21.0.6 with PID 40304 (E:\workspace\ITwillbs\packtory_de\bin\main started by pine0 in E:\workspace\ITwillbs\packtory_de) 
+2025-03-21 03:14:36.597 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - The following 3 profiles are active: "dev1", "local", "common" 
+2025-03-21 03:14:36.746 [restartedMain][INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable 
+2025-03-21 03:14:36.746 [restartedMain][INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG' 
+2025-03-21 03:14:37.144 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-21 03:14:37.145 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JDBC repositories in DEFAULT mode. 
+2025-03-21 03:14:37.171 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.sample.repository.ItemRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
+2025-03-21 03:14:37.171 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 22 ms. Found 0 JDBC repository interfaces. 
+2025-03-21 03:14:37.179 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-21 03:14:37.180 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+2025-03-21 03:14:37.204 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 22 ms. Found 1 JPA repository interface. 
+2025-03-21 03:14:37.648 [restartedMain][INFO] o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8080 (http) 
+2025-03-21 03:14:37.657 [restartedMain][INFO] o.a.c.h.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"] 
+2025-03-21 03:14:37.658 [restartedMain][INFO] o.a.c.c.StandardService - Starting service [Tomcat] 
+2025-03-21 03:14:37.658 [restartedMain][INFO] o.a.c.c.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36] 
+2025-03-21 03:14:37.702 [restartedMain][INFO] o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext 
+2025-03-21 03:14:37.702 [restartedMain][INFO] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 956 ms 
+2025-03-21 03:14:37.744 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Starting... 
+2025-03-21 03:14:37.927 [restartedMain][INFO] c.z.h.p.HikariPool - Hikari Connection Pool - Added connection conn0: url=jdbc:h2:./data/packtory_db user=SA 
+2025-03-21 03:14:37.928 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Start completed. 
+2025-03-21 03:14:37.981 [restartedMain][INFO] o.h.j.i.u.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default] 
+2025-03-21 03:14:38.013 [restartedMain][INFO] o.h.Version - HHH000412: Hibernate ORM core version 6.6.8.Final 
+2025-03-21 03:14:38.035 [restartedMain][INFO] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled 
+2025-03-21 03:14:38.214 [restartedMain][INFO] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer 
+2025-03-21 03:14:38.271 [restartedMain][INFO] o.h.o.c.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (Hikari Connection Pool)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown 
+2025-03-21 03:14:38.752 [restartedMain][DEBUG] o.h.SQL - create global temporary table HTE_item(price integer, rn_ integer not null, stock_qty integer, item_id bigint, reg_time timestamp(6), update_time timestamp(6), item_nm varchar(50), item_detail varchar(255), item_sell_status enum ('SELL','SOLD_OUT'), primary key (rn_)) TRANSACTIONAL 
+2025-03-21 03:14:38.752 [restartedMain][DEBUG] o.h.SQL - create global temporary table HTE_item(price integer, rn_ integer not null, stock_qty integer, item_id bigint, reg_time timestamp(6), update_time timestamp(6), item_nm varchar(50), item_detail varchar(255), item_sell_status enum ('SELL','SOLD_OUT'), primary key (rn_)) TRANSACTIONAL 
+2025-03-21 03:14:38.833 [restartedMain][INFO] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
+2025-03-21 03:14:38.842 [restartedMain][DEBUG] o.h.SQL - drop table if exists item cascade  
+2025-03-21 03:14:38.842 [restartedMain][DEBUG] o.h.SQL - drop table if exists item cascade  
+2025-03-21 03:14:38.843 [restartedMain][DEBUG] o.h.SQL - drop table if exists t_demo cascade  
+2025-03-21 03:14:38.843 [restartedMain][DEBUG] o.h.SQL - drop table if exists t_demo cascade  
+2025-03-21 03:14:38.844 [restartedMain][DEBUG] o.h.SQL - drop sequence if exists item_seq 
+2025-03-21 03:14:38.844 [restartedMain][DEBUG] o.h.SQL - drop sequence if exists item_seq 
+2025-03-21 03:14:38.847 [restartedMain][DEBUG] o.h.SQL - create sequence item_seq start with 1 increment by 50 
+2025-03-21 03:14:38.847 [restartedMain][DEBUG] o.h.SQL - create sequence item_seq start with 1 increment by 50 
+2025-03-21 03:14:38.849 [restartedMain][DEBUG] o.h.SQL - create table item (price integer not null, stock_qty integer not null, item_id bigint not null, reg_time timestamp(6), update_time timestamp(6), item_nm varchar(50) not null, item_detail varchar(255) not null, item_sell_status enum ('SELL','SOLD_OUT'), primary key (item_id)) 
+2025-03-21 03:14:38.849 [restartedMain][DEBUG] o.h.SQL - create table item (price integer not null, stock_qty integer not null, item_id bigint not null, reg_time timestamp(6), update_time timestamp(6), item_nm varchar(50) not null, item_detail varchar(255) not null, item_sell_status enum ('SELL','SOLD_OUT'), primary key (item_id)) 
+2025-03-21 03:14:38.849 [restartedMain][DEBUG] o.h.SQL - create table t_demo (idx bigint generated by default as identity, mod_date timestamp(6), read_cnt bigint, reg_date timestamp(6), id varchar(255), is_deleted varchar(255), mod_id varchar(255), name varchar(255), password varchar(255), reg_id varchar(255), role varchar(255), primary key (idx)) 
+2025-03-21 03:14:38.849 [restartedMain][DEBUG] o.h.SQL - create table t_demo (idx bigint generated by default as identity, mod_date timestamp(6), read_cnt bigint, reg_date timestamp(6), id varchar(255), is_deleted varchar(255), mod_id varchar(255), name varchar(255), password varchar(255), reg_id varchar(255), role varchar(255), primary key (idx)) 
+2025-03-21 03:14:38.853 [restartedMain][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default' 
+2025-03-21 03:14:38.997 [restartedMain][INFO] o.s.d.j.r.q.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used. 
+2025-03-21 03:14:39.864 [restartedMain][INFO] o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2'. Database available at 'jdbc:h2:./data/packtory_db' 
+2025-03-21 03:14:39.901 [restartedMain][INFO] o.a.c.h.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"] 
+2025-03-21 03:14:39.914 [restartedMain][INFO] o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/' 
+2025-03-21 03:14:39.919 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - Started PacktoryDeApplication in 3.685 seconds (process running for 4.204) 
+2025-03-21 03:14:47.179 [http-nio-8080-exec-1][INFO] o.a.c.c.C.[.[.[/] - Initializing Spring DispatcherServlet 'dispatcherServlet' 
+2025-03-21 03:14:47.179 [http-nio-8080-exec-1][INFO] o.s.w.s.DispatcherServlet - Initializing Servlet 'dispatcherServlet' 
+2025-03-21 03:14:47.181 [http-nio-8080-exec-1][INFO] o.s.w.s.DispatcherServlet - Completed initialization in 2 ms 
+2025-03-21 03:14:47.203 [http-nio-8080-exec-1][INFO] k.c.i.d.s.c.SampleController - getSampleList---start 
+2025-03-21 03:14:47.207 [http-nio-8080-exec-1][INFO] k.c.i.d.s.s.SampleService - getSampleList---start 
+2025-03-21 03:14:47.794 [http-nio-8080-exec-1][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8080-exec-1][common/layouts/sample_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/sample_layout, line 7, col 11. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-21 03:14:47.803 [http-nio-8080-exec-1][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8080-exec-1][common/layouts/sample_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/sample_layout, line 8, col 11. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-21 03:14:49.040 [http-nio-8080-exec-2][INFO] k.c.i.d.s.c.SampleController - sampleRegisterForm---start 
+2025-03-21 03:14:49.058 [http-nio-8080-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8080-exec-2][common/layouts/sample_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/sample_layout, line 7, col 11. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-21 03:14:49.060 [http-nio-8080-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8080-exec-2][common/layouts/sample_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/sample_layout, line 8, col 11. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-21 03:14:54.930 [http-nio-8080-exec-3][INFO] k.c.i.d.s.c.SampleController - sampleRegister---start 
+2025-03-21 03:14:54.931 [http-nio-8080-exec-3][INFO] k.c.i.d.s.c.SampleController - requestData : SampleDTO(idx=null, id=12, password=12, name=11, isDeleted=N, role=1, regId=null, regDate=null, modId=null, modDate=null, readCnt=null) 
+2025-03-21 03:14:54.932 [http-nio-8080-exec-3][INFO] k.c.i.d.s.s.SampleService - registerSample---start 
+2025-03-21 03:14:54.955 [http-nio-8080-exec-3][INFO] k.c.i.d.s.s.SampleService - generated Idx value : 1 
+2025-03-21 03:14:54.962 [http-nio-8080-exec-4][INFO] k.c.i.d.s.c.SampleController - getSampleList---start 
+2025-03-21 03:14:54.962 [http-nio-8080-exec-4][INFO] k.c.i.d.s.s.SampleService - getSampleList---start 
+2025-03-21 03:14:54.981 [http-nio-8080-exec-4][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8080-exec-4][common/layouts/sample_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/sample_layout, line 7, col 11. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-21 03:14:54.982 [http-nio-8080-exec-4][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8080-exec-4][common/layouts/sample_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/sample_layout, line 8, col 11. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-21 03:14:56.650 [http-nio-8080-exec-5][INFO] k.c.i.d.s.c.SampleController - getSample---start 
+2025-03-21 03:14:56.650 [http-nio-8080-exec-5][INFO] k.c.i.d.c.u.CommonUtils - isLongValue---start 
+2025-03-21 03:14:56.651 [http-nio-8080-exec-5][INFO] k.c.i.d.s.s.SampleService - getSample---start 
+2025-03-21 03:14:56.653 [http-nio-8080-exec-5][INFO] k.c.i.d.s.s.SampleService - modifySample---start 
+2025-03-21 03:14:56.657 [http-nio-8080-exec-5][INFO] k.c.i.d.s.s.SampleService - affectedRow is 1 
+2025-03-21 03:14:56.670 [http-nio-8080-exec-5][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8080-exec-5][common/layouts/sample_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/sample_layout, line 7, col 11. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-21 03:14:56.671 [http-nio-8080-exec-5][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8080-exec-5][common/layouts/sample_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/sample_layout, line 8, col 11. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-21 03:14:58.745 [http-nio-8080-exec-6][INFO] k.c.i.d.s.c.SampleController - putSample---start 
+2025-03-21 03:14:58.745 [http-nio-8080-exec-6][INFO] k.c.i.d.c.u.CommonUtils - isLongValue---start 
+2025-03-21 03:14:58.745 [http-nio-8080-exec-6][INFO] k.c.i.d.s.s.SampleService - modifySample---start 
+2025-03-21 03:14:58.746 [http-nio-8080-exec-6][INFO] k.c.i.d.s.s.SampleService - affectedRow is 1 
+2025-03-21 03:14:58.749 [http-nio-8080-exec-7][INFO] k.c.i.d.s.c.SampleController - getSample---start 
+2025-03-21 03:14:58.749 [http-nio-8080-exec-7][INFO] k.c.i.d.c.u.CommonUtils - isLongValue---start 
+2025-03-21 03:14:58.749 [http-nio-8080-exec-7][INFO] k.c.i.d.s.s.SampleService - getSample---start 
+2025-03-21 03:14:58.750 [http-nio-8080-exec-7][INFO] k.c.i.d.s.s.SampleService - modifySample---start 
+2025-03-21 03:14:58.751 [http-nio-8080-exec-7][INFO] k.c.i.d.s.s.SampleService - affectedRow is 1 
+2025-03-21 03:14:58.762 [http-nio-8080-exec-7][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8080-exec-7][common/layouts/sample_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/sample_layout, line 7, col 11. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-21 03:14:58.762 [http-nio-8080-exec-7][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8080-exec-7][common/layouts/sample_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/sample_layout, line 8, col 11. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 

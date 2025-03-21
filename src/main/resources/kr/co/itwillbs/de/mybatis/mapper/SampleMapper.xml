@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.sample.mapper.SampleMapper">
+
+	<select id="templates" >
+	<![CDATA[
+	]]>
+	<if test="blabla != null"></if>
+	<set></set>
+	<where></where>
+	</select>
+	
+	<sql id="t_demo_columns_forSelect">
+		idx,
+		id,
+		password,
+		name,
+		is_deleted,
+		role,
+		reg_id,
+		reg_date,
+		mod_id,
+		mod_date,
+		read_cnt
+	</sql>
+	
+	<select id="getSampleList" resultType="kr.co.itwillbs.de.sample.dto.SampleDTO">
+		select 
+			<include refid="t_demo_columns_forSelect"></include>
+		from t_demo
+	</select>
+
+	<select id="getSample" parameterType="string"
+			resultType="kr.co.itwillbs.de.sample.dto.SampleDTO">
+		select 
+			<include refid="t_demo_columns_forSelect"></include> 
+		from t_demo
+		where idx = #{idx}
+	</select>
+	
+	<!-- useGeneratedKeys : true 일때, keyProperty : idx >> affectRow가 아닌 생성된 idx가 리턴타입에 셋 mysql은 확인됨 -->
+	<insert id="registerSample" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.sample.dto.SampleDTO">
+		insert into t_demo (
+			id,
+			<if test='password !=null and !password.equals("")'>
+			password,
+			</if>
+			<if test='name !=null and !name.equals("")'>
+			name,
+			</if>
+			<if test='isDeleted !=null and !isDeleted.equals("")'>
+			is_deleted,
+			</if>
+			<if test='role !=null and !role.equals("")'>
+			role,
+			</if>
+			reg_id,
+			reg_date,
+			<if test='modId !=null and !modId.equals("")'>
+			mod_id,
+			</if>
+			<if test='modId !=null and !modId.equals("")'>
+			mod_date,
+			</if>
+			read_cnt
+		) values (
+			#{id},
+			<if test='password !=null and !password.equals("")'>
+			#{password},
+			</if>
+			<if test='name !=null and !name.equals("")'>
+			#{name},
+			</if>
+			<if test='isDeleted !=null and !isDeleted.equals("")'>
+			#{isDeleted},
+			</if>
+			<if test='role !=null and !role.equals("")'>
+			#{role},
+			</if>
+			#{regId},
+			now(),
+			<if test='modId !=null and !modId.equals("")'>
+			#{modId},
+			</if>
+			<if test='modId !=null and !modId.equals("")'>
+			now(),
+			</if>
+			0
+			)
+	</insert>
+	
+	<select id="getSampleSearchList" parameterType="kr.co.itwillbs.de.sample.dto.SampleSearchDTO"
+					resultType="kr.co.itwillbs.de.sample.dto.SampleDTO">
+		select 
+			<include refid="t_demo_columns_forSelect"></include>
+		from t_demo
+		<where>
+			<if test="id != null">AND id = #{id} </if>
+			<if test="name != null">AND name = #{name} </if>
+			<if test="isDeleted != null">AND is_deleted = #{isDeleted} </if>
+		</where>
+	</select>
+	
+	<!-- <set>이 분명 마지막 , 를 제거해준다고 알고 있다? 맞나? -->
+	<update id="modifySample" parameterType="kr.co.itwillbs.de.sample.dto.SampleSearchDTO">
+		update t_demo
+			<set>
+				<if test="id != null">id = #{id},</if>
+				<if test="password != null">password = #{password},</if>
+				<if test="name != null">name = #{name},</if>
+				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+				<if test="role != null">role = #{role},</if>
+				<if test="modId != null">mod_id = #{modId},</if>
+				<if test="modId != null">mod_date = now(),</if>
+				<if test="idx != null">read_cnt = (select nvl(read_cnt,0)+1 from t_demo where idx = #{idx}),</if>
+			</set>
+		where idx = #{idx}
+	</update>
+	
+	<update id="removeSample" parameterType="kr.co.itwillbs.de.sample.dto.SampleSearchDTO">
+		update t_demo
+			<set>
+				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+			</set>
+		where idx = #{idx}
+	</update>
+	
+</mapper>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/sample_layout}">
+<head>
+<title>샘플 정보</title>
+<style type="text/css">
+input, select, #role {
+         width: 95%;
+         padding: 8px;
+         margin-top: 5px;
+         border: 1px solid #ddd;
+         border-radius: 5px;
+     }
+     
+     #role {
+         resize: none;
+         overflow: auto; 
+     }
+     button {
+         margin-top: 15px;
+         padding: 10px;
+         width: 100%;
+         background-color: #28a745;
+         color: white;
+         border: none;
+         border-radius: 5px;
+         cursor: pointer;
+     }
+     button:hover {
+         background-color: #218838;
+     }
+</style>
+<script type="text/javascript" layout:fragment="script">
+	let isRequesting = false;
+	$(function() {
+		$('#btnRemove').one("click", function() {
+			const idx = $(this).data("id");
+			console.log("hello btnRemove click event! >> %s", idx);
+			
+			if (isRequesting) return;  // 이미 요청 중이면 종료
+			isRequesting = true;
+			
+			if(confirm("샘플을 삭제하시겠습니까?")) {
+				// AJAX 를 사용하여 요청 방식을 DELETE 로 지정하여 삭제 요청 전송
+				$.ajax({
+					url: "/sample/" + idx,
+					contentType: "application/json; charset=utf-8",
+					type: "DELETE", // 요청 방식 DELETE 로 지정
+					success: function(response) {
+						alert("샘플 삭제 성공!");
+						console.log(response.message);  // 서버에서 반환된 메시지 사용
+						location.href="/sample"; // 상품 목록 조회 페이지 새로 요청
+					},
+					error: function(error) {
+						alert("샘플 삭제과정에서 오류 발생!");
+						console.error(error);
+					},
+					complete: function () {
+						isRequesting = false;  // 요청 완료 후 플래그 초기화
+					}
+				});
+			}// end of if(confirm)
+		});
+	
+		$('#btnList').on("click", function() {
+			location.href="/sample";
+		});
+	});
+</script>
+</head>
+<body>
+	<main layout:fragment="content">
+		<h2>샘플 정보</h2>
+		<form th:action="@{/sample/{idx}(idx=*{idx})}" method="post" th:object="${sampleDTO}">
+			<!-- application.properties 에 spring.mvc.hiddenmethod.filter.enabled=true 설정 추가 -->
+			<input type="hidden" name="_method" value="put">
+			<label for="id">아이디</label>
+			<input type="text" id="id" th:field="*{id}">
+			<div class="fieldError" th:if="${#fields.hasErrors('id')}" th:errors="*{id}" ></div>
+			<label for="price">패스워드</label>
+			<input type="text" id="password" th:field="*{password}">
+			<div class="fieldError" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" ></div>
+			<label for="name">이름</label>
+			<input type="text" id="name" th:field="*{name}">
+			<div class="fieldError" th:if="${#fields.hasErrors('name')}" th:errors="*{name}" ></div>
+			<label for="isDeleted">삭제 유무</label>
+			<select id="isDeleted" th:field="*{isDeleted}">
+				<option th:each="deleted : ${T(kr.co.itwillbs.de.sample.constant.IsDeleted).values()}"
+						th:value="${deleted}" th:text="${deleted}"></option>
+			</select>
+			<div class="fieldError" th:if="${#fields.hasErrors('isDeleted')}" th:errors="*{isDeleted}" ></div>
+			<label for="role">역할</label>
+			<textarea id="role" th:field="*{role}" rows="5"></textarea>
+			<div class="fieldError" th:if="${#fields.hasErrors('role')}" th:errors="*{role}" ></div>
+			
+			<div id="commandArea">
+				<button type="submit" id="btnModify">샘플수정</button>
+				<button type="button" id="btnRemove" th:data-id="*{idx}">샘플삭제</button>
+			</div>
+		</form>
+	</main>
+</body>
+</html>

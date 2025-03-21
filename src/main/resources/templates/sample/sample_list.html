@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/sample_layout}">
+<head>
+<title>샘플 목록</title>
+<style type="text/css">
+     /* --- 테이블 영역 --- */
+     .clickable-row:hover {
+         background-color: orange;
+     }
+     
+     table {
+         width: 100%;
+     }
+     /* --- 검색 영역 --- */
+     #commandForm {
+         text-align: right;
+     }
+     
+     #priceSearch {
+         display: inline-block;
+         /* visibility : hidden; */
+     }
+     
+     #priceSearch input {
+         width: 80px;
+     }
+</style>
+</head>
+<body>
+	<main layout:fragment="content">
+		<h2>샘플 목록</h2>
+		<div id="commandForm">
+			<form th:action="@{/sample/search}" method="get" th:object="${sampleSearchDTO}">
+				<select id="searchType" name="type" th:field="*{type}">
+					<option value="id">id</option>
+					<option value="name">이름</option>
+					<option value="isDeleted">삭제유무</option>
+				</select>
+				
+				<input type="text" id="name" th:field="*{id}" placeholder="아이디를 입력하세요.">
+				
+				<input type="text" th:field="*{name}" placeholder="이름을 입력하세요.">
+				
+				<select id="isDeleted" th:field="*{isDeleted}">
+					<option th:each="deleted : ${T(kr.co.itwillbs.de.sample.constant.IsDeleted).values()}"
+					 th:value="${deleted}" th:text="${deleted}"></option>
+				</select>
+				
+				<button type="submit" id="btnSearch">검색</button>
+			</form>
+		</div>
+		<section>
+			<table border="1">
+				<tr>
+					<th>번호</th>
+					<th>아이디</th>
+					<th>패스워드</th>
+					<th>이름</th>
+					<th>삭제 유무</th>
+					<th>역할</th>
+					<th>최초 등록자</th>
+					<th>최초 등록일자</th>
+					<th>최종 수정일자</th>
+					<th>조회 수</th>
+				</tr>
+				<tr th:each="sample, status : ${sampleDTOlist}" th:data-id="${sample.idx}" class="clickable-row">
+					<td th:text="${status.count}"></td>
+					<td th:text="${sample.id}"></td>
+					<td th:text="${sample.password}"></td>
+					<td th:text="${sample.name}"></td>
+					<td th:text="${sample.isDeleted}"></td>
+					<td th:text="${sample.role}"></td>
+					<td th:text="${sample.regId}"></td>
+					<td th:text="${#temporals.format(sample.regDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
+					<td th:text="${#temporals.format(sample.modDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
+					<td th:text="${#numbers.formatInteger(sample.readCnt,1,'COMMA')}"></td>
+				</tr>
+			</table>
+		</section>
+		<script type="text/javascript">
+			$(function() {
+				// 문서 로딩 시 상품 가격 요소 숨김 처리
+	/* 			$('#priceSearch').hide();
+				$('#minPrice, #maxPrice').prop("disabled", false); */
+				
+				$('.clickable-row').on("click", function() {
+					// th:data-id 에 지정한 값 가져오기
+					//const itemId = $(this).attr("data-id");
+					const idx = $(this).data("id");
+					console.log("click id is %s", idx);
+					//location.href="/items/" + itemId;
+					location.href=`/sample/${idx}`;
+				});
+				$('#btnNew').on("click", function() {
+					location.href="/sample/new";
+				});
+				
+				$('#searchType').change(function() {
+					console.log($(this).val());
+					if($(this).val() === "itemNm") {
+						// 상품명 입력 요소 보이기, 상품 가격 입력 요소 숨기기
+						$('#itemNm').show();
+						$('#priceSearch').hide();
+						
+						// 상품명 입력 요소 활성화, 상품 가격 입력 요소 비활성화
+						$('#itemNm').prop("disabled", false);
+						$('#minPrice, #maxPrice').prop("disabled", true);
+					} else if($(this).val() === "price") {
+						$('#itemNm').hide();
+						$('#priceSearch').show();
+						
+						$('#itemNm').prop("disabled", true);
+						$('#minPrice, #maxPrice').prop("disabled", false);
+					}
+				}); //end of $('#searchType').change(function() {
+					
+				// 페이지 로딩 시 change 이벤트 트리거 발생 시 초기 상태 적용시키기
+				$('#searchType').trigger("change");
+			});
+		</script>
+	</main>
+</body>
+</html>

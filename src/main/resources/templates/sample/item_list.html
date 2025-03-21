@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/item_layout}">
+<head>
+<title>상품 목록</title>
+<style type="text/css">
+     /* --- 테이블 영역 --- */
+     .clickable-row:hover {
+         background-color: orange;
+     }
+     
+     table {
+         width: 100%;
+     }
+     /* --- 검색 영역 --- */
+     #commandForm {
+         text-align: right;
+     }
+     
+     #priceSearch {
+         display: inline-block;
+         /* visibility : hidden; */
+     }
+     
+     #priceSearch input {
+         width: 80px;
+     }
+</style>
+</head>
+<body>
+	<main layout:fragment="content">
+		<h2>상품 목록</h2>
+		<div id="commandForm">
+			<form th:action="@{/items/search}" method="get" th:object="${itemSearchDto}">
+				<select id="searchType" name="type" th:field="*{type}">
+					<option value="itemNm">상품명</option>
+					<option value="price">가격</option>
+				</select>
+				
+				<input type="text" id="itemNm" th:field="*{itemNm}" placeholder="상품명 입력">
+				
+				<div id="priceSearch">
+					<input type="number" th:field="*{minPrice}" placeholder="최소금액"> ~
+					<input type="number" th:field="*{maxPrice}" placeholder="최대금액">
+				</div>
+				
+				<button type="submit" id="btnSearch">검색</button>
+				<button type="button" id="btnNew">상품 등록</button>
+			</form>
+		</div>
+		<section>
+			<table border="1">
+				<tr>
+					<th>번호</th>
+					<th>상품명</th>
+					<th>상품상세설명</th>
+					<th>가격</th>
+					<th>재고 수량</th>
+					<th>판매 상태</th>
+					<th>최초 등록일자</th>
+					<th>최종 수정일자</th>
+				</tr>
+				<tr th:each="item, status : ${itemDtoList}" th:data-id="${item.id}" class="clickable-row">
+					<!-- <th:block th:object="${item}"> -->
+					<td th:text="${status.count}"></td>
+					<td th:text="${item.itemNm}"></td>
+					<td th:text="${item.itemDetail}"></td>
+					<!-- <td th:text="${item.price}"></td> -->
+					<td th:text="${#numbers.formatInteger(item.price,1,'COMMA')}"></td>
+					<!-- <td th:text="${item.stockQty}"></td> -->
+					<td th:text="${#numbers.formatInteger(item.stockQty,1,'COMMA')}"></td>
+					<td th:text="${item.itemSellStatus}"></td>
+					<td th:text="${#temporals.format(item.regTime, 'yyyy-MM-dd hh:mm:ss')}"></td>
+					<td th:text="${#temporals.format(item.updateTime, 'yyyy-MM-dd hh:mm:ss')}"></td>
+				</tr>
+			</table>
+		</section>
+		<script type="text/javascript">
+			$(function() {
+				// 문서 로딩 시 상품 가격 요소 숨김 처리
+	/* 			$('#priceSearch').hide();
+				$('#minPrice, #maxPrice').prop("disabled", false); */
+				
+				$('.clickable-row').on("click", function() {
+					// th:data-id 에 지정한 값 가져오기
+					//const itemId = $(this).attr("data-id");
+					const itemId = $(this).data("id");
+					console.log("click id is %s", itemId);
+					//location.href="/items/" + itemId;
+					location.href=`/items/${itemId}`;
+				});
+				$('#btnNew').on("click", function() {
+					location.href="/items/new";
+				});
+				
+				$('#searchType').change(function() {
+					console.log($(this).val());
+					if($(this).val() === "itemNm") {
+						// 상품명 입력 요소 보이기, 상품 가격 입력 요소 숨기기
+						$('#itemNm').show();
+						$('#priceSearch').hide();
+						
+						// 상품명 입력 요소 활성화, 상품 가격 입력 요소 비활성화
+						$('#itemNm').prop("disabled", false);
+						$('#minPrice, #maxPrice').prop("disabled", true);
+					} else if($(this).val() === "price") {
+						$('#itemNm').hide();
+						$('#priceSearch').show();
+						
+						$('#itemNm').prop("disabled", true);
+						$('#minPrice, #maxPrice').prop("disabled", false);
+					}
+				}); //end of $('#searchType').change(function() {
+					
+				// 페이지 로딩 시 change 이벤트 트리거 발생 시 초기 상태 적용시키기
+				$('#searchType').trigger("change");
+			});
+		</script>
+	</main>
+</body>
+</html>

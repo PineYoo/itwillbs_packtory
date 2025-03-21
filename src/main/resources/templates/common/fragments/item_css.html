@@ -1,0 +1,58 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/item_layout}"
+      th:fragment="css">
+<!--/* 공통 CSS */-->
+<style type="text/css">
+    .navbar {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+    }
+
+    .nav_menu {
+		  list-style: none;
+		  margin: 0;
+		  padding: 0;
+		  display: flex;
+    }
+    .nav_menu > li {
+	  display: block;
+	  text-align: center;
+	  margin: .25rem;
+	  padding: .5rem 1rem;
+	  text-decoration: none;
+	  font-weight: bold;
+	  color: white;
+	  background: teal;
+    }
+    
+    body {
+         font-family: Arial, sans-serif;
+         max-width: 600px;
+         margin: 50px auto;
+         padding: 20px;
+         border: 1px solid #ddd;
+         border-radius: 10px;
+         box-shadow: 0px 0px 10px #ccc;
+     }
+     label {
+         font-weight: bold;
+         margin-top: 10px;
+         display: block;
+     }
+/*      input, select, #itemDetail {
+         width: 95%;
+         padding: 8px;
+         margin-top: 5px;
+         border: 1px solid #ddd;
+         border-radius: 5px;
+     }
+     
+     #itemDetail {
+         resize: none;
+         overflow: auto; 
+     } */
+</style>
+</html>

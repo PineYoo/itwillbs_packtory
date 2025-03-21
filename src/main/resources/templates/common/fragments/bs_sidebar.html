@@ -1,0 +1,154 @@
+<div th:fragment="sidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/bs/main">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-laugh-wink"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">PackTory</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+            <a class="nav-link" href="index.html" onclick="alert('test'); return false;">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            ERP
+        </div>
+
+        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ERP1" aria-expanded="true" aria-controls="collapseOne">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>그룹웨어</span>
+            </a>
+            <div id="ERP1" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">여기는 생각해보고 쓰기:</h6>
+                    <a class="collapse-item" href="table">공지사항</a>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">전자결재</a>
+                </div>
+            </div>
+        </li>
+		
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ERP2" aria-expanded="true" aria-controls="collapseTwo">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>인사관리</span>
+            </a>
+            <div id="ERP2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">여기는 생각해보고 쓰기:</h6>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">인사카드관리</a>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">인사발령현황</a>
+                </div>
+            </div>
+        </li>
+		
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ERP3" aria-expanded="true" aria-controls="collapseTwo">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>근태관리</span>
+            </a>
+            <div id="ERP3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">여기는 생각해보고 쓰기:</h6>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">출/퇴근 관리</a>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">근태현황</a>
+                </div>
+            </div>
+        </li>
+		
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ERP4" aria-expanded="true" aria-controls="collapseTwo">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>수/발주 관리</span>
+            </a>
+            <div id="ERP4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">여기는 생각해보고 쓰기:</h6>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">거래처관리</a>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">수주관리</a>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">발주관리</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            MES
+        </div>
+
+        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#MES1"
+                aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Pages</span>
+            </a>
+            <div id="MES1" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">여기는 생각해보고 쓰기:</h6>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">Login</a>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">Register</a>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">Forgot Password</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">여기는 생각해보고 쓰기:</h6>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">404 Page</a>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">Blank Page</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+		
+		<!-- Nav Item - Utilities Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Utilities" aria-expanded="true" aria-controls="collapseUtilities">
+                <i class="fas fa-fw fa-wrench"></i>
+                <span>시스템관리</span>
+            </a>
+            <div id="Utilities" class="collapse" aria-labelledby="headingUtilities"
+                data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">여기는 생각해보고 쓰기:</h6>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">공통코드관리</a>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">시스템권한관리</a>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">메뉴권한관리</a>
+                    <a class="collapse-item" href="#" onclick="alert('test'); return false;">시스템사용로그</a>
+                </div>
+            </div>
+        </li>
+        
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+        
+		
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+
+        <!-- Sidebar Message -->
+<!--         <div class="sidebar-card d-none d-lg-flex"> -->
+<!--             <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="..."> -->
+<!--             <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components, and more!</p> -->
+<!--             <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to Pro!</a> -->
+<!--         </div> -->
+    </ul>
+</div>

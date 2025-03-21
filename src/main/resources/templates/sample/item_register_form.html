@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/item_layout}">
+<head>
+<meta charset="UTF-8">
+<title>상품 등록</title>
+<style type="text/css">
+input, select, #itemDetail {
+         width: 95%;
+         padding: 8px;
+         margin-top: 5px;
+         border: 1px solid #ddd;
+         border-radius: 5px;
+     }
+     
+     #itemDetail {
+         resize: none;
+         overflow: auto; 
+     }
+     button {
+         margin-top: 15px;
+         padding: 10px;
+         width: 100%;
+         background-color: #28a745;
+         color: white;
+         border: none;
+         border-radius: 5px;
+         cursor: pointer;
+     }
+     button:hover {
+         background-color: #218838;
+     }
+</style>
+</head>
+<body>
+	<main layout:fragment="content">
+		<h2>상품 등록</h2>
+		<!-- 상품 등록 요청을 수행할 경우 요청 주소는 items, 요청 메서드는 POST 방식을 사용! -->
+		<form th:action="@{/items}" method="post" th:object="${itemDto}"><!-- th:object 속성으로 ItemDTO 객체 선택 -->
+			<label for="itemNm">상품명</label>
+			<input type="text" id="itemNm" th:field="*{itemNm}"><!-- 현재 텍스트박스에 itemNm 필드를 바인딩(name 속성 불필요) -->
+			<!-- Validation 체크 실패하여 다시 뷰페이지로 돌아왔을 때 실패한 항목에 대한 메시지 표시 설정 -->
+			<!-- th:if 로 에러가 발생할 수 있는 항목을 체크 수행하고, th:errors 로 에러 발생 시 표시할 에러 메시지를 갖는 필드명을 쓴다? -->
+			<!-- 기본 문법 : th:if="${#fields.hasErrors('필드명')}" th:errors="필드명" -->
+			<div class="fieldError" th:if="${#fields.hasErrors('itemNm')}" th:errors="*{itemNm}" ></div>
+			<label for="price">가격</label>
+			<input type="number" id="price" th:field="*{price}">
+			<div class="fieldError" th:if="${#fields.hasErrors('price')}" th:errors="*{price}" ></div>
+			<label for="stockQty">재고 수량</label>
+			<input type="number" id="stockQty" th:field="*{stockQty}">
+			<div class="fieldError" th:if="${#fields.hasErrors('stockQty')}" th:errors="*{stockQty}" ></div>
+			<label for="itemSellStatus">판매 상태</label>
+			<select id="" th:field="*{itemSellStatus}">
+				<!-- 셀렉트박스 OPTION 태그 값을 ItemSellStatus enum 타입에서 가져와서 반복문을 통해 표시 -->
+				<!-- ${T(패키지명.enum타입명).values()} 활용하여 enum 의 모든 값을 차례대로 복사 -->
+				<!-- th:each="이름" 으로 지정한 이름을 th:value(전송할 값) 와 th:text(보여질 텍스트) 속성에서 ${이름} 형태로 접근 -->
+				<option th:each="sellStatus : ${T(kr.co.itwillbs.de.sample.constant.ItemSellStatus).values()}"
+						th:value="${sellStatus}" th:text="${sellStatus}"></option>
+			</select>
+			<div class="fieldError" th:if="${#fields.hasErrors('itemSellStatus')}" th:errors="*{itemSellStatus}" ></div>
+			<label for="itemDetail">상세 설명</label>
+			<textarea id="itemDetail" th:field="*{itemDetail}" rows="5"></textarea>
+			<div class="fieldError" th:if="${#fields.hasErrors('itemDetail')}" th:errors="*{itemDetail}" ></div>
+			
+			<button type="submit">상품등록</button>
+			<button type="button" id="btnList">돌아가기</button>
+		</form>
+		<script type="text/javascript">
+			$(function() {
+				$('#btnList').on("click", function() {
+					location.href="/items";
+				});
+			});
+		</script>
+	</main>
+</body>
+</html>
