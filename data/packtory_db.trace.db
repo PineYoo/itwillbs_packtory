@@ -1112,3 +1112,140 @@ Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: The connection wa
 2025-03-20 15:14:34.804743+09:00 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM" not found; SQL statement:
 select i1_0.item_id,i1_0.item_detail,i1_0.item_nm,i1_0.item_sell_status,i1_0.price,i1_0.reg_time,i1_0.stock_qty,i1_0.update_time from item i1_0 [42102-232]
+2025-03-21 16:08:56.518165+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]DESC T_ORDER"; expected "DELETE, DROP"; SQL statement:
+DESC T_ORDER [42001-232]
+2025-03-21 16:08:58.132497+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]DESC T_ORDER"; expected "DELETE, DROP"; SQL statement:
+DESC T_ORDER [42001-232]
+2025-03-21 16:09:07.358175+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]DESC T_ORDER"; expected "DELETE, DROP"; SQL statement:
+DESC T_ORDER [42001-232]
+2025-03-21 18:15:29.084881+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO t_client(\000d\000acode,\000d\000acompany_name,\000d\000aowner_name,\000d\000acompany_category,\000d\000acompany_subject,\000d\000aphone_number,\000d\000ae_mail,\000d\000afax_number,\000d\000aaddress1,\000d\000aaddress2,\000d\000acredit_limit,\000d\000ais_deleted,\000d\000amemo,\000d\000astatus,\000d\000astatus_message,\000d\000areg_id,\000d\000areg_date,\000d\000amod_id,\000d\000amod_date,\000d\000a[*])\000d\000aVALUES (\000d\000a'코드1',\000d\000a'회사이름1',\000d\000a'대표자1',\000d\000a'업태1',\000d\000a'주제1',\000d\000a'폰번호1',\000d\000a'폰번호1',\000d\000a'폰번호1',\000d\000a\000d\000a)"; expected "identifier"; SQL statement:
+INSERT INTO t_client(
+code,
+company_name,
+owner_name,
+company_category,
+company_subject,
+phone_number,
+e_mail,
+fax_number,
+address1,
+address2,
+credit_limit,
+is_deleted,
+memo,
+status,
+status_message,
+reg_id,
+reg_date,
+mod_id,
+mod_date,
+)
+VALUES (
+'코드1',
+'회사이름1',
+'대표자1',
+'업태1',
+'주제1',
+'폰번호1',
+'폰번호1',
+'폰번호1',
+
+) [42001-232]
+2025-03-21 18:17:30.597536+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO t_client(\000d\000acode,\000d\000acompany_name,\000d\000aowner_name,\000d\000acompany_category,\000d\000acompany_subject,\000d\000aphone_number,\000d\000ae_mail,\000d\000afax_number,\000d\000aaddress1,\000d\000aaddress2,\000d\000acredit_limit,\000d\000ais_deleted,\000d\000amemo,\000d\000astatus,\000d\000astatus_message,\000d\000areg_id,\000d\000areg_date,\000d\000amod_id,\000d\000amod_date,\000d\000a[*])\000d\000aVALUES (\000d\000a'코드1',\000d\000a'회사이름1',\000d\000a'대표자1',\000d\000a'업태1',\000d\000a'주제1',\000d\000a'폰번호1',\000d\000a'이메일1',\000d\000a'팩스번호1',\000d\000a'주소1',\000d\000a'주소2',\000d\000a'여신한도1',\000d\000a'삭제유무1',\000d\000a'메모1',\000d\000a'상태1',\000d\000a'상태메세지1',\000d\000a'등록자1',\000d\000aNOW(),\000d\000anull,\000d\000anull\000d\000a)"; expected "identifier"; SQL statement:
+INSERT INTO t_client(
+code,
+company_name,
+owner_name,
+company_category,
+company_subject,
+phone_number,
+e_mail,
+fax_number,
+address1,
+address2,
+credit_limit,
+is_deleted,
+memo,
+status,
+status_message,
+reg_id,
+reg_date,
+mod_id,
+mod_date,
+)
+VALUES (
+'코드1',
+'회사이름1',
+'대표자1',
+'업태1',
+'주제1',
+'폰번호1',
+'이메일1',
+'팩스번호1',
+'주소1',
+'주소2',
+'여신한도1',
+'삭제유무1',
+'메모1',
+'상태1',
+'상태메세지1',
+'등록자1',
+NOW(),
+null,
+null
+) [42001-232]
+2025-03-21 18:37:50.616780+09:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT\000a\0009\0009\0009 \000a\0009\0009code,\000a\0009\0009company_name,\000a\0009\0009owner_name,\000a\0009\0009company_category,\000a\0009\0009company_subject,\000a\0009\0009phone_number,\000a\0009\0009e_mail,\000a\0009\0009fax_number,\000a\0009\0009address1,\000a\0009\0009address2,\000a\0009\0009credit_limit,\000a\0009\0009is_deleted,\000a\0009\0009memo,\000a\0009\0009status,\000a\0009\0009status_message,\000a\0009\0009reg_id,\000a\0009\0009reg_date,\000a\0009\0009mod_id,\000a\0009\0009mod_date,\000a\0009 \000a\0009\0009  [*]FROM t_client"; expected "*, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+SELECT
+			 
+		code,
+		company_name,
+		owner_name,
+		company_category,
+		company_subject,
+		phone_number,
+		e_mail,
+		fax_number,
+		address1,
+		address2,
+		credit_limit,
+		is_deleted,
+		memo,
+		status,
+		status_message,
+		reg_id,
+		reg_date,
+		mod_id,
+		mod_date,
+	 
+		  FROM t_client [42001-232]
+2025-03-21 18:37:58.373847+09:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT\000a\0009\0009\0009 \000a\0009\0009code,\000a\0009\0009company_name,\000a\0009\0009owner_name,\000a\0009\0009company_category,\000a\0009\0009company_subject,\000a\0009\0009phone_number,\000a\0009\0009e_mail,\000a\0009\0009fax_number,\000a\0009\0009address1,\000a\0009\0009address2,\000a\0009\0009credit_limit,\000a\0009\0009is_deleted,\000a\0009\0009memo,\000a\0009\0009status,\000a\0009\0009status_message,\000a\0009\0009reg_id,\000a\0009\0009reg_date,\000a\0009\0009mod_id,\000a\0009\0009mod_date,\000a\0009 \000a\0009\0009  [*]FROM t_client"; expected "*, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+SELECT
+			 
+		code,
+		company_name,
+		owner_name,
+		company_category,
+		company_subject,
+		phone_number,
+		e_mail,
+		fax_number,
+		address1,
+		address2,
+		credit_limit,
+		is_deleted,
+		memo,
+		status,
+		status_message,
+		reg_id,
+		reg_date,
+		mod_id,
+		mod_date,
+	 
+		  FROM t_client [42001-232]

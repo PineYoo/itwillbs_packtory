@@ -31,6 +31,7 @@
 	
 	
 </style>
+	
 </head>
 <body id="page-top">
 	<div layout:fragment="contents">
@@ -56,143 +57,82 @@
 			        </button>
 			      </div>
 			      <div class="modal-body">
-			      	<table class="correspondent-table">
-			      		<tr>
-			      			<th>거래처코드</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>상호</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>대표자명</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>업태</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>종목</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>전화</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>E-mail</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>팩스</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>주소1</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>주소2</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>여신한도</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>삭제유무</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>메모</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>상태</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>상태_상세내용</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>작성자</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>작성일자</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>최종 작성자</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      		<tr>
-			      			<th>최종작성일자</th>
-			      			<td>
-								<input type="text">
-			      			</td>
-			      		</tr>
-			      	</table>
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-			        <button type="button" class="btn btn-primary">Save changes</button>
+			      	<form th:action="@{/orders/client}" method="post" th:object="${clientDTO}" id="registerClientForm">
+						<label for="code">코드</label>
+						<input type="text" id="code" th:field="*{code}">
+						<label for="companyName">회사명</label>
+						<input type="text" id="companyName" th:field="*{companyName}">
+						<label for="ownerName">대표자명</label>
+						<input type="text" id="ownerName" th:field="*{ownerName}">
+						<label for="companyCategory">업태</label>
+						<input type="text" id="companyCategory" th:field="*{companyCategory}">
+						<label for="companySubject">종목</label>
+						<input type="text" id="companySubject" th:field="*{companySubject}">
+						<label for="phoneNumber">전화</label>
+						<input type="text" id="phoneNumber" th:field="*{phoneNumber}">
+						<label for="eMail">이메일</label>
+						<input type="text" id="eMail" th:field="*{eMail}">
+						<label for="faxNumber">팩스번호</label>
+						<input type="text" id="faxNumber" th:field="*{faxNumber}">
+						<label for="address1">주소1</label>
+						<input type="text" id="address1" th:field="*{address1}">
+						<label for="address2">주소2</label>
+						<input type="text" id="address2" th:field="*{address2}">
+						<label for="creditLimit">여신한도</label>
+						<input type="text" id="creditLimit" th:field="*{creditLimit}">
+						<label for="isDeleted">삭제유무</label>
+						<input type="text" id="isDeleted" th:field="*{isDeleted}">
+						<label for="memo">메모</label>
+						<input type="text" id="memo" th:field="*{memo}">
+						<label for="status">상태</label>
+						<input type="text" id="status" th:field="*{status}">
+						<label for="statusMessage">상태(상세내용)</label>
+						<input type="text" id="statusMessage" th:field="*{statusMessage}">
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+							<button type="button" id="register_client" class="btn btn-primary">등록</button>
+						</div>
+					</form>
 			      </div>
 			    </div>
 			  </div>
 			</div>
+			
+			<script type="text/javascript">
+				$('#register_client').off("click").on("click", function() {
+					console.log("hello register_client");
+					let form_date = $('#registerClientForm').serialize();
+					console.log("form_date : " + form_date);
+		
+					$.ajax({
+						url: "/orders/client",
+						type: "POST",
+						data : form_date,
+						success: function(response) {
+							if(response === "success") {
+								console.log(response);
+							} else {
+								console.log(response);
+							}
+						},
+						error: function(error) {
+							console.error(error);
+						}
+					});
+				});
+			</script>
 			
 			
 			
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" th:object="${clientDTOList}">
 							<thead>
 								<tr>
 									<th>거래처 코드</th>
 									<th>상호명</th>
 									<th>대표이름</th>
-									<th>담당자 직책</th>
 									<th>담당자 이름</th>
 									<th>업태</th>
 									<th>종목</th>
@@ -200,25 +140,21 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>P10000001</td>
-									<td>AA 물류</td>
-									<td>A 대표</td>
-									<td>부장</td>
-									<td>유승훈</td>
-									<td>업태 AA</td>
-									<td>종목 AA</td>
-									<td>-</td>
-								</tr>
-								<tr>
-									<td>P10000002</td>
-									<td>BB 물류</td>
-									<td>B 대표</td>
-									<td>대리</td>
-									<td>방세현</td>
-									<td>업태 BB</td>
-									<td>종목 BB</td>
-									<td>-</td>
+								<tr th:each="item, status : ${clientDTOList}" th:data-id="${item.idx}">
+									<td th:text="${item.code}"></td>
+									<td th:text="${item.companyName}"></td>
+									<td th:text="${item.ownerName}"></td>
+									<td th:text="${item.regId}"></td>
+									<td th:text="${item.companyCategory}"></td>
+									<td th:text="${item.companySubject}"></td>
+									<td th:text="${item.creditLimit}"></td>
+<!-- 									<td>P10000001</td> -->
+<!-- 									<td>AA 물류</td> -->
+<!-- 									<td>A 대표</td> -->
+<!-- 									<td>유승훈</td> -->
+<!-- 									<td>업태 AA</td> -->
+<!-- 									<td>종목 AA</td> -->
+<!-- 									<td>-</td> -->
 								</tr>
 							</tbody>
 						</table>
@@ -226,7 +162,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 	</div>
 	<th:block layout:fragment="script">
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -234,7 +170,9 @@
 		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
 		<script src="/js/demo/datatables-demo.js"></script>
 	</th:block>
-
+	
+	
+	
 </body>
 
 </html>
