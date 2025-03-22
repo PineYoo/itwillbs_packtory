@@ -6,8 +6,8 @@
 
 	<!-- href: https://mybatis.org/mybatis-3/ko/dynamic-sql.html -->
 	<select id="templates" >
-		<![CDATA[]]><!-- Character DATA(CDATA) 는 <![CDATA[문자열]]> 파싱되지 않고 그대로 출력을 위함, 쿼리에서 (>, <, =) 표현을 작성할 때 썼음 -->
-		
+		<![CDATA[]]><!-- Character DATA(CDATA) 는 <![CDATA[문자열]]> 파싱되지 않고 그대로 출력을 위함, 쿼리에서 이스케이프 문자를 사용하지 않기 위해 썼음 -->
+		<!-- 예시) 컬럼명 &gt;(&lt;) #{필드명} -> 컬럼명<![CDATA[>(<)]]> #{필드명} -->
 		<if test="blabla != null"></if><!-- mybatis가 동적쿼리가 되는 시작 점. -->
 		
 		<choose><!-- mybatis switch 문 -->
