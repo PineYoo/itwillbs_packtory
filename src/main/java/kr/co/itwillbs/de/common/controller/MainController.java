@@ -27,6 +27,7 @@ public class MainController {
 	 * 검색로봇에게 사이트 및 웹페이지를 수집할 수 있도록 허용하거나 제한하는 국제 권고안
 	 * <br>robots.txt 에 대해서 (href: https://searchadvisor.naver.com/guide/seo-basic-robots)
 	 * <br>(href: https://jihyunhillcs.tistory.com/39#Spring_Boot_%EC%97%90%EC%84%9C_%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)
+	 * <br> TODO 25.03.23 이 방식은 SpringMVC에서 쓰던 방법인데 Boot용으로 설정이 편리하다면 바꿀 예정
 	 * @return
 	 */
 	@GetMapping(value={"/robots.txt", "/robot.txt"})
@@ -34,7 +35,7 @@ public class MainController {
 	public String robots() {
 		return "User-agent: *\n" +
 				"Allow: /\n" +
-				"Disallow: /files/*\n" +
-				"Disallow: /admin/*\n";
+				"Disallow: /files/*\n" + //업로드한 파일 수집X
+				"Disallow: /admin/*\n"; //어드민 수집X
 	}
 }
