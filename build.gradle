@@ -44,6 +44,7 @@ Validation
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
+	implementation 'mysql:mysql-connector-java:8.0.29'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
@@ -57,6 +58,10 @@ Validation
 	
 	// 타임리프 페이지 레이아웃 의존성 라이브러리 추가!
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	
+	//Encryption support for property sources
+	// https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot
+	implementation("com.github.ulisesbocchio:jasypt-spring-boot:3.0.5")
 }
 
 tasks.named('test') {
