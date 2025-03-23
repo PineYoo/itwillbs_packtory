@@ -22,15 +22,47 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class CommonUtils {
 
+	/**
+	 * 파일을 필수로 받아야하는 컨트롤러에서 사용해야할 valid 
+	 * @param MultipartFile mfile
+	 * @return false : 파일 없음, true : 파일 1개 이상 존재함
+	 */
+	public boolean isValidateForRequiredFile(MultipartFile mfile) {
+		
+		log.info("getOriginalFilename is {}, getSize is {}, getName is {}", mfile.getOriginalFilename(), mfile.getSize(), mfile.getName());
+		if(mfile.getSize() == 0) return false;
+		
+		return true;
+	}
+	
+	/**
+	 * 파일을 필수로 받아야하는 컨트롤러에서 사용해야할 valid 
+	 * @param MultipartFile[] files
+	 * @return false : 파일 없음, true : 파일 1개 이상 존재함
+	 */
+	public boolean isValidateForRequiredFile(MultipartFile[] mfiles) {
+		
+		if(mfiles.length == 0) return false;
+		
+		for(MultipartFile mfile: mfiles) {
+			log.info("getOriginalFilename is {}, getSize is {}, getName is {}", mfile.getOriginalFilename(), mfile.getSize(), mfile.getName());
+			if(mfile.getSize() == 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// 이 클래스 밖으로 알리고 싶지 않은 변수이기에 private 선언 -> 다른 common.util 패키지내에서 써야 할 경우 private 지우거나 package 선언
 	@Value("${spring.servlet.multipart.location}")
 	private String uploadDir;
 	
 	/**
 	 * 멀티파트 파일 받아서 처리하기
-	 * (위에 선언된)uploadDir(separator)yyyy(separator)mm(separator)dd(separator)UUID.fileExtension
-	 * 에 저장을 하고 저장된 경로(filePath), 파일명(fileName) 를 리턴함
-	 * 임시로 map에 담아서 전달
-	 * TODO 25.03.18 객체가 결정 될 시 변동 있음
+	 * <br>(위에 선언된)uploadDir(separator)yyyy(separator)mm(separator)dd(separator)UUID.fileExtension
+	 * <br>에 저장을 하고 저장된 경로(filePath), 파일명(fileName) 를 리턴함
+	 * <br>임시로 map에 담아서 전달
+	 * <br>TODO 25.03.18 객체가 결정 될 시 변동 있음
 	 * @param mfile
 	 * @throws Exception
 	 */
