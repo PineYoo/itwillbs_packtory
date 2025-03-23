@@ -2,6 +2,7 @@ package kr.co.itwillbs.de.common.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,5 +21,20 @@ public class MainController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		return "/index";
+	}
+	
+	/**
+	 * 검색로봇에게 사이트 및 웹페이지를 수집할 수 있도록 허용하거나 제한하는 국제 권고안
+	 * <br>robots.txt 에 대해서 (href: https://searchadvisor.naver.com/guide/seo-basic-robots)
+	 * <br>(href: https://jihyunhillcs.tistory.com/39#Spring_Boot_%EC%97%90%EC%84%9C_%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)
+	 * @return
+	 */
+	@GetMapping(value={"/robots.txt", "/robot.txt"})
+	@ResponseBody
+	public String robots() {
+		return "User-agent: *\n" +
+				"Allow: /\n" +
+				"Disallow: /files/*\n" +
+				"Disallow: /admin/*\n";
 	}
 }
