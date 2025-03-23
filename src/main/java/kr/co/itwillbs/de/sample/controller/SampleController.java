@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.itwillbs.de.common.util.CommonUtils;
 import kr.co.itwillbs.de.sample.dto.SampleDTO;
@@ -54,6 +56,8 @@ public class SampleController {
 
 	/**
 	 * 샘플 등록(INSERT)을 하는 "/sample" 연결 POST!
+	 * <br>http.header.Content-Type: 'application/x-www-form-urlencoded (이게 기본 값임)
+	 * <br>이 경우 @ModelAttribute 어노테이션으로 받으면 매핑되는 DTO의 필드와 이름이 같고 setter가 존재하면 DTO에 필드 값이 채워 짐
 	 * @return
 	 */
 	@PostMapping(value={"","/"})
@@ -94,7 +98,7 @@ public class SampleController {
 	public String sampleGetList(@ModelAttribute SampleSearchDTO sampleSearchDTO, Model model) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		log.info("requestData : " + sampleSearchDTO.toString());
+		log.info("requestData : {} ", sampleSearchDTO.toString());
 		
 		// 조회 결과 값 뷰에 전달
 		model.addAttribute("sampleDTOList", sampleService.getSampleSearchList(sampleSearchDTO));
@@ -113,6 +117,8 @@ public class SampleController {
 	@GetMapping("/{idx}")
 	public String getSample(@PathVariable(name = "idx") String idx, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info("requestData : {} ", idx);
 		
 		if(comUtil.isLongValue(idx)) {
 			// 정수일 경우 조회 가능
@@ -147,6 +153,8 @@ public class SampleController {
 	public String putSample(@PathVariable(name = "idx") String idx, @ModelAttribute("sampleDTO") SampleDTO sampleDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		log.info("requestData : param = {}, dto = {} ", idx, sampleDTO);
+		
 		try {
 			if(comUtil.isLongValue(idx)) {
 				//정수일 경우 업데이트 가능
@@ -168,12 +176,17 @@ public class SampleController {
 	/**
 	 * 샘플 삭제 -> 샘플 테이블의 isDeleted = Y 로 변경
 	 * <br> Ajax 로 호출하는데 두번씩 호출 되어서 이상한 꼼수로 막은것 같다... 정답을 찾아보자
+	 * <br> href(https://api.jquery.com/jQuery.ajax/)
+	 * <br> "application/json" || 'application/x-www-form-urlencoded; charset=UTF-8'
 	 * @param idx 샘플 테이블 PK
 	 * @return
 	 */
 	@DeleteMapping("/{idx}")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> removeSample(@PathVariable(name = "idx") String idx) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info("requestData : {} ", idx);
 		
 		Map<String, Object> response = new HashMap<>();
 		try {
@@ -196,6 +209,67 @@ public class SampleController {
 	
 	/*
 	TODO 멀티파트 작업 완료 후 공유 필!
+	form 일땐 enctype="multipart/form-data"
+	"Content-Type": "application/json"'application/x-www-form-urlencoded' -> @ModelAttribute SampleDTO sampleDTO
 	*/
+	/**
+	 * 폼데이터 http.header.Content-Type: 'multipart/form-data' 일 경우 샘플
+	 * <br>이 경우 @ModelAttribute 어노테이션으로 받으면 매핑되는 DTO의 필드와 이름이 같고 setter가 존재하면 DTO에 필드 값이 채워 짐
+	 * <br>DTO는 table에서 온 데이터와 유사히(동일하게) 만들기로 팀내에서 정하였고, 파일은 공통 테이블을 이용해야함
+	 * <br>따라서 MultipartFile 타입 변수가 있는 DTO로 어노테이션을 이용해서 받거나
+	 * <br>파일만 단독으로 @RequestParam MultipartFile[] mfils 으로 파일을 받으면 됨 
+	 * @param sampleDTO
+	 * @return
+	 */
+	@PostMapping("blabla1")
+	public String setMultipartSample1(@ModelAttribute SampleDTO sampleDTO, @RequestParam MultipartFile[] mfils) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info("requestData : {} ", sampleDTO);
+		
+		// 멀티파트 파일 필수 일 경우
+		if(!comUtil.isValidateForRequiredFile(mfils)) {
+			// 필수 파일 없기에 다시 입력 페이지로 리다이렉트 시켜야 함
+		}
+		// 기타 인풋 데이터 벨리데이트 (중략)
+		
+		// 벨리데이트 끝낸 후 서비스 작성 로직 넘김
+		
+		// DB에 데이터 정상적으로 입력 >> 리턴 타입 int 로 메서드 작성해서 affectedRow 전달 받는 것으로 판별하기
+		
+		// 데이터 입력이 기대값으로 진행되지 않았을 때 if 분기를 줘서 입력 페이지로
+		// 기대값처럼 진행되었을 때 예정된 페이지로 이동
+		
+		return "";
+	}
+	
+	/**
+	 * Ajax 인이나, 파일 업로드 때문에 http.header.Content-Type: 'multipart/form-data' 일 때
+	 * <br>이 경우 @ModelAttribute 어노테이션으로 받으면 매핑되는 DTO의 필드와 이름이 같고 setter가 존재하면 DTO에 필드 값이 채워 짐
+	 * @param sampleDTO
+	 * @return
+	 */
+	@PostMapping("blabla2")
+	@ResponseBody
+	public String setMultipartSample2(SampleDTO sampleDTO, @RequestParam MultipartFile[] mfils) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info("requestData : {} ", sampleDTO);
+		
+		// 멀티파트 파일 필수 일 경우
+		if(!comUtil.isValidateForRequiredFile(mfils)) {
+			// 필수 파일 없기에 다시 입력 페이지로 리다이렉트 시켜야 함
+		}
+		// 기타 인풋 데이터 벨리데이트 (중략)
+		
+		// 벨리데이트 끝낸 후 서비스 작성 로직 넘김
+		
+		// DB에 데이터 정상적으로 입력 >> 리턴 타입 int 로 메서드 작성해서 affectedRow 전달 받는 것으로 판별하기
+		
+		// 데이터 입력이 기대값으로 진행되지 않았을 때 if 분기를 줘서 입력 페이지로
+		// 기대값처럼 진행되었을 때 예정된 페이지로 이동
+		
+		return "";
+	}
 	
 }
