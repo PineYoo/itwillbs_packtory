@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.service.OrderService;
@@ -36,19 +37,20 @@ public class OrderController {
 	}
 	
 	@PostMapping("/client")
+	@ResponseBody
 	public String insertClient(@ModelAttribute ClientDTO clientDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("input params : {}",clientDTO.toString());
+//		orderService.insertClient(clientDTO);
+		
 		
 		if(orderService.insertClient(clientDTO) > 0) {
-			return "redirect:/orders/client";
+			return "success";
 		} else {
 			//	TODO 에러페이지 생성 시 수정 필요
-			return "redirect:/orders/client";
+			return "fail";
 		} 
-		
-		
 		
 	}
 	

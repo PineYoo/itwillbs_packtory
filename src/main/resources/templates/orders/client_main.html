@@ -29,7 +29,6 @@
 		padding-right: 20px;
 	}
 	
-	
 </style>
 	
 </head>
@@ -111,6 +110,8 @@
 						success: function(response) {
 							if(response === "success") {
 								console.log(response);
+								alert(response);
+								window.location.reload();
 							} else {
 								console.log(response);
 							}
@@ -121,8 +122,6 @@
 					});
 				});
 			</script>
-			
-			
 			
 			<div class="card shadow mb-4">
 				<div class="card-body">
@@ -148,13 +147,6 @@
 									<td th:text="${item.companyCategory}"></td>
 									<td th:text="${item.companySubject}"></td>
 									<td th:text="${item.creditLimit}"></td>
-<!-- 									<td>P10000001</td> -->
-<!-- 									<td>AA 물류</td> -->
-<!-- 									<td>A 대표</td> -->
-<!-- 									<td>유승훈</td> -->
-<!-- 									<td>업태 AA</td> -->
-<!-- 									<td>종목 AA</td> -->
-<!-- 									<td>-</td> -->
 								</tr>
 							</tbody>
 						</table>

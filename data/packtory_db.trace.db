@@ -1249,3 +1249,6 @@ SELECT
 		mod_date,
 	 
 		  FROM t_client [42001-232]
+2025-03-24 10:07:51.707255+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_TABLE" not found; SQL statement:
+SELECT * FROM T_TABLE [42102-232]
