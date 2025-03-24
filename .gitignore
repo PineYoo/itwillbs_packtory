@@ -17,6 +17,12 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+
+packtory_db.mv.db
+packtory_db.trace.db
+
+
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
