@@ -68,7 +68,7 @@ public class CommonUtils {
 	 * @param mfile
 	 * @throws Exception
 	 */
-	public Map setFile(MultipartFile mfile) throws Exception {
+	public Map<String, String> setFile(MultipartFile mfile) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("uploadDir {}, separator {}, pathSeparator {}", uploadDir, File.separator, File.pathSeparator);
 		
