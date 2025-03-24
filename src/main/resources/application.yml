@@ -3,7 +3,7 @@ spring:
     name: packtory_de
 
   profiles:
-    active: dev1
+    active: ${profile-active}
 
     group:
       dev1 : local,common
