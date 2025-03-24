@@ -12,7 +12,7 @@ spring:
 ---
 # 개인작업 설정 시작(H2 사용)
 server:
-  port: 8080
+  port: 8090
 spring:
   config:
     activate:

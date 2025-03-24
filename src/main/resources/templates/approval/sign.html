@@ -1,40 +1,54 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/bs_layout}">
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) - ERP/MES System</title>
-<th:block layout:fragment="css">
-	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<title>팩토리(PackTory) - 전자결재</title>
+<!-- 부트스트랩 icons 가져오기 -->
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </th:block>
+
+<th:block layout:fragment="css">
+	<!-- dataTables 가져오기 -->
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<link href="/css/datatables/datatables.min.css" rel="stylesheet">
+	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
+	
+	<!-- 폰트어썸 가져오기 -->
+	<link href="/css/fontawesome/all.min.css" rel="stylesheet">
+	<script src="/css/fontawesome/all.min.js"></script>
+	
+	<!-- CSS for Page -->
+<!-- 	<link rel="preconnect" href="https://fonts.googleapis.com"> -->
+<!-- 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
+<!-- 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet"> -->
+<!-- 	<link href="/css/sb-admin-2.css" rel="stylesheet"> -->
+<!-- 	<link href="/css/adm.css" rel="stylesheet"> -->
+<!-- 	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css"> -->
+</th:block>
+
 </head>
 <body id="page-top">
 <div layout:fragment="contents">
- 		
-<!-- Begin Page Content -->
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="card shadow mb-4">
- 			
- 				<!-- 타이틀 -->
- 				<div class="card-header py-3">
-					<h5 class="m-0 font-weight-bold text-primary">전자결재</h5>
-				</div>
+		<!-- Page Heading -->
+		<h1 class="h3 mb-4 text-gray-800">전자결재</h1>
+		<!-- 이후 작성 -->
 		
- 				<!-- 본문 컨테이너 -->
- 				<div class="card-body">
- 				
-  				<!-- 검색바 -->
-   				<div class="search-wrap border">
-   					<section class="d-flex search-inner">
-   						<!-- 상태별 검색 -->
-   						<div class="col pl-4 search-box">
-   							<div class="search-ttl">상태별</div>
-	   						<div class="category-filter input-group">
-	   							<div class="form-check">
-	   								<input class="form-check-input" id="reset" type="radio" name="sign_status"  value="0" checked>
-	   								<label class="form-check-label" for="reset">전체</label>
+		<!-- 본문 컨테이너 -->
+		<div class="card-body">
+		
+			<!-- 검색바 -->
+			<div class="search-wrap border">
+				<section class="d-flex search-inner">
+					<!-- 상태별 검색 -->
+					<div class="col pl-4 search-box">
+						<div class="search-ttl">상태별</div>
+							<div class="category-filter input-group">
+								<div class="form-check">
+									<input class="form-check-input" id="reset" type="radio" name="sign_status"  value="0" checked>
+									<label class="form-check-label" for="reset">전체</label>
 								</div>
 								<div class="form-check ml-3">
 									<input class="form-check-input" id="signStatus1" type="radio" name="sign_status" value="1">
@@ -53,52 +67,46 @@
 								    <label class="form-check-label" for="signStatus4">결재완료</label>
 								</div>
 							</div>
-					    </div>
-                        <!-- 날짜조회 -->
-                        <div class="col-4 px-4 search-box">
-                              	<div class="search-ttl">기간별</div>
-							<div class="input-group align-items-center justify-content-center schDate-wrap">
-								<input type="text" class="form-control rounded-sm mr-2" placeholder="날짜 선택" value="" name="schDate" id="schDate"  autocomplete="off"/>
-								<button class="btn btn-primary" id="searchDateBtn" type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
-								<button class="btn btn-success ml-2" id="initDateBtn" type="button"><i class="fa-solid fa-rotate"></i></button>
-							</div>
-					    </div>
-					    <!-- 키워드검색 -->
-					    <div class="col-5 search-box">
-	                        <div class="input-group">
-	                            <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="제목, 사용자 검색" aria-label="Search" aria-describedby="basic-addon2">
-	                            <div class="input-group-append">
-	                                <button class="btn btn-primary" id="searchBtn" type="button">검색</button>
-	                            </div>
-	                        </div>
-                        </div>
-			   		</section>
-				</div>
- 				<!-- 검색바 끝 -->
- 					
-				<!-- 그리드(테이블) -->
-				<div class="table-responsive">
-					<table class="table table-bordered compact" id="memberList" width="100%" cellspacing="0">
-						<thead></thead>
-						<tbody></tbody>
-					</table>
-				</div>
-				
-				
- 				 </div>
- 				 <!-- 본문 컨테이너 끝 -->
- 					</div>
- 				</div>
- 			</div>
- 		</div>
-   </div>
-   <!-- End of Page Wrapper -->
-
-	<!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
+		    		</div>
+		    		<!-- 날짜조회 -->
+		    		<div class="col-4 px-4 search-box">
+		    			<div class="search-ttl">기간별</div>
+		    			<div class="input-group align-items-center justify-content-center schDate-wrap">
+		    				<input type="text" class="form-control rounded-sm mr-2" placeholder="날짜 선택" value="" name="schDate" id="schDate"  autocomplete="off"/>
+							<button class="btn btn-primary" id="searchDateBtn" type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
+							<button class="btn btn-success ml-2" id="initDateBtn" type="button"><i class="fa-solid fa-rotate"></i></button>
+						</div>
+		    		</div>
+		    		<!-- 키워드검색 -->
+		    		<div class="col-5 search-box">
+	                     <div class="input-group">
+	                         <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="제목, 사용자 검색" aria-label="Search" aria-describedby="basic-addon2">
+	                         <div class="input-group-append">
+	                             <button class="btn btn-primary" id="searchBtn" type="button">검색</button>
+	                         </div>
+	                     </div>
+	                </div>
+	  			</section>
+			</div>
+			<!-- 검색바 끝 -->
+			
+			<!-- 그리드(테이블) -->
+			<div class="table-responsive">
+				<table class="table table-bordered compact" id="approvalList" width="100%" cellspacing="0">
+					<thead></thead>
+					<tbody></tbody>
+				</table>
+			</div>
 	
+	
+		 </div>
+		
+		<!-- 본문 컨테이너 끝 -->
+		<!-- Scroll to Top Button-->
+	    <a class="scroll-to-top rounded" href="#page-top">
+	    	<i class="fas fa-angle-up"></i>
+	    </a>
+	    
 <!--     Logout Modal -->
 <!--     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" -->
 <!--         aria-hidden="true"> -->
@@ -118,14 +126,41 @@
 <!--             </div> -->
 <!--         </div> -->
 <!--     </div> -->
+		
+		
+</div>
+<!-- /.container-fluid -->
 	
-    <!-- Bootstrap core JavaScript-->
     <th:block layout:fragment="script">
+    	<!-- Bootstrap core JavaScript-->
+		<script src="/js/jquery/jquery.min.js"></script>
+		<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+	    <!-- Core plugin JavaScript-->
+	    <script src="/js/jquery-easing/jquery.easing.min.js"></script>
+
+	    <!-- Custom scripts for all pages-->
+	    <script src="/js/sb-admin-2.min.js"></script>
+    
+    	<!-- Page level plugins -->
 		<script src="/js/datatables/jquery.dataTables.min.js"></script>
 		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
 		<script src="/js/demo/datatables-demo.js"></script>
-	</th:block>
-    
-</body>
+<!-- 	<script src="/js/datatables/datatables.min.js"></script> --> <!-- 반응형 -->
+    	<script src="/js/datepicker/moment.min.js"></script>
+    	<script src="/js/datepicker/daterangepicker.js"></script>
+    	<script src="/js/datatables/dataTables.buttons.min.js"></script>
+		<script src="/js/datatables/buttons.html5.min.js"></script>
+		<script src="/js/datatables/jszip.min.js"></script>
+		<script src="/js/datatables/buttons.print.min.js"></script>
 
+		<!-- Page level custom scripts -->
+    	<script src="/js/sign.js"></script>
+	</th:block>
+	
+</body>
 </html>
+
+
+	
+    
