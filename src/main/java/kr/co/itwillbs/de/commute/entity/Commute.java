@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import kr.co.itwillbs.de.commute.constant.WorkStatusCode;
 import kr.co.itwillbs.de.commute.dto.CommuteDTO;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +23,7 @@ import lombok.ToString;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "commute")
+@Table(name = "t_commute")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -39,6 +40,9 @@ public class Commute {
 	//	이 때, 하이버네이트 기본 네이밍 전략인 스네이크 표기법에 의해 단어 사이의 구분으로 '_' 사용하고 모두 소문자로 표기됨
 	//	ex) itemNm => item_nm
 	
+	
+	// !!!!!! enum 으로 지정하니 테이블 새로 생성 시 tinyint 로 바뀌길래 일단 String 으로 처리 !!!!!!
+//	private WorkStatusCode workStatusCode; // 근무상태코드
 	private String workStatusCode; // 근무상태코드
 	
 	// Spring Data JPA - auditing
@@ -49,6 +53,11 @@ public class Commute {
 	// 빌더 패턴(Builder Pattern)으로 객체 생성하기 위한 파라미터 생성자 정의(생성자에 @Builder 어노테이션 추가)
 	// => @Id 필드를 제외한 나머지 필드에 대한 정의
 	@Builder
+//	public Commute(String employeeId, WorkStatusCode workStatusCode, LocalDateTime regDate) {
+//		this.employeeId = employeeId;
+//		this.workStatusCode = workStatusCode;
+//		this.regDate = regDate;
+//	}
 	public Commute(String employeeId, String workStatusCode, LocalDateTime regDate) {
 		this.employeeId = employeeId;
 		this.workStatusCode = workStatusCode;
