@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/bs_layout}">
+<head>
+<title>PackTory: 출퇴근관리</title>
+<th:block layout:fragment="css">
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+</th:block>
+</head>
+<body id="page-top">
+	<div layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">출/퇴근 관리</h1>
+
+			<!-- DataTales Example -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+<!-- 									<th>날짜</th> -->
+									<th>사원번호</th>
+<!-- 									<th>부서</th> -->
+<!-- 									<th>직책</th> -->
+<!-- 									<th>이름</th> -->
+									<th>출근시간</th>
+<!-- 									<th>퇴근시간</th> -->
+									<th>근무상태</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="commute, status : ${commuteDTOList}" th:data-id="${commute.idx}" class="clickable-row">
+									<td th:text="${commute.employeeId}"></td>
+<!-- 									<td></td> -->
+									<td th:text="${commute.regDate != null ? #temporals.format(commute.regDate, 'yyyy-MM-dd HH:mm:ss') : 'No Date'}"></td>
+									<td th:text="${commute.workStatusCode}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="script">
+		<script src="/js/datatables/jquery.dataTables.min.js"></script>
+		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+		<script src="/js/demo/datatables-demo.js"></script>
+	</th:block>
+
+</body>
+
+</html>
