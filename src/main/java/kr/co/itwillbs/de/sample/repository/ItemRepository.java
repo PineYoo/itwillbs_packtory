@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import kr.co.itwillbs.de.sample.entity.Item;
-
+ 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long>{
 
