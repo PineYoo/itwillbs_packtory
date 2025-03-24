@@ -21,12 +21,12 @@
 	<script src="/css/fontawesome/all.min.js"></script>
 	
 	<!-- CSS for Page -->
-<!-- 	<link rel="preconnect" href="https://fonts.googleapis.com"> -->
-<!-- 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
-<!-- 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet"> -->
-<!-- 	<link href="/css/sb-admin-2.css" rel="stylesheet"> -->
-<!-- 	<link href="/css/adm.css" rel="stylesheet"> -->
-<!-- 	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css"> -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link href="/css/adm.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
 </th:block>
 
 </head>
@@ -42,31 +42,49 @@
 			<!-- 검색바 -->
 			<div class="search-wrap border">
 				<section class="d-flex search-inner">
-					<!-- 상태별 검색 -->
+					<!-- 요청구분별 검색-->
 					<div class="col pl-4 search-box">
-						<div class="search-ttl">상태별</div>
-							<div class="category-filter input-group">
-								<div class="form-check">
-									<input class="form-check-input" id="reset" type="radio" name="sign_status"  value="0" checked>
-									<label class="form-check-label" for="reset">전체</label>
-								</div>
-								<div class="form-check ml-3">
-									<input class="form-check-input" id="signStatus1" type="radio" name="sign_status" value="1">
-									<label class="form-check-label" for="signStatus1">진행중</label>
-								</div>
-								<div class="form-check ml-3">
-									<input class="form-check-input" id="signStatus2" type="radio" name="sign_status" value="2">
-									<label class="form-check-label" for="signStatus2">반려</label>
-								</div>
-								<div class="form-check ml-3">
-									<input class="form-check-input" id="signStatus3" type="radio" name="sign_status" value="3">
-									<label class="form-check-label" for="signStatus3">결재요청</label>
-								</div>
-								<div class="form-check ml-3">
-								    <input class="form-check-input" id="signStatus4" type="radio" name="sign_status" value="4">
-								    <label class="form-check-label" for="signStatus4">결재완료</label>
-								</div>
+						<div class="search-ttl">요청구분별</div>
+						<div class="category-filter input-group">
+							<div class="form-check">
+								<input class="form-check-input" id="reset" type="radio" name="request_type"  value="0" checked>
+								<label class="form-check-label" for="reset">전체</label>
 							</div>
+							<div class="form-check ml-3">
+								<input class="form-check-input" id="sending" type="radio" name="request_type" value="1">
+								<label class="form-check-label" for="sending">보낸요청</label>
+							</div>
+							<div class="form-check ml-3">
+								<input class="form-check-input" id="Receiving" type="radio" name="request_type" value="2">
+								<label class="form-check-label" for="Receiving">받은요청</label>
+							</div>
+						</div>
+		    		</div>
+					<!-- 진행상태별 검색 -->
+					<div class="col pl-4 search-box">
+						<div class="search-ttl">진행상태별</div>
+						<div class="category-filter input-group">
+							<div class="form-check">
+								<input class="form-check-input" id="reset" type="radio" name="sign_status"  value="0" checked>
+								<label class="form-check-label" for="reset">전체</label>
+							</div>
+							<div class="form-check ml-3">
+								<input class="form-check-input" id="signStatus1" type="radio" name="sign_status" value="1">
+								<label class="form-check-label" for="signStatus1">진행중</label>
+							</div>
+							<div class="form-check ml-3">
+								<input class="form-check-input" id="signStatus2" type="radio" name="sign_status" value="2">
+								<label class="form-check-label" for="signStatus2">반려</label>
+							</div>
+							<div class="form-check ml-3">
+								<input class="form-check-input" id="signStatus3" type="radio" name="sign_status" value="3">
+								<label class="form-check-label" for="signStatus3">결재요청</label>
+							</div>
+							<div class="form-check ml-3">
+							    <input class="form-check-input" id="signStatus4" type="radio" name="sign_status" value="4">
+							    <label class="form-check-label" for="signStatus4">결재완료</label>
+							</div>
+						</div>
 		    		</div>
 		    		<!-- 날짜조회 -->
 		    		<div class="col-4 px-4 search-box">
@@ -93,8 +111,19 @@
 			<!-- 그리드(테이블) -->
 			<div class="table-responsive">
 				<table class="table table-bordered compact" id="approvalList" width="100%" cellspacing="0">
-					<thead></thead>
-					<tbody></tbody>
+					<thead>
+					</thead>
+					<tbody>
+<!-- 						<tr th:each="item, status : ${clientDTOList}" th:data-id="${item.idx}"> -->
+<!-- 							<td th:text="${item.code}"></td> -->
+<!-- 							<td th:text="${item.companyName}"></td> -->
+<!-- 							<td th:text="${item.ownerName}"></td> -->
+<!-- 							<td th:text="${item.regId}"></td> -->
+<!-- 							<td th:text="${item.companyCategory}"></td> -->
+<!-- 							<td th:text="${item.companySubject}"></td> -->
+<!-- 							<td th:text="${item.creditLimit}"></td> -->
+<!-- 						</tr> -->
+					</tbody>
 				</table>
 			</div>
 	
@@ -155,7 +184,7 @@
 		<script src="/js/datatables/buttons.print.min.js"></script>
 
 		<!-- Page level custom scripts -->
-    	<script src="/js/sign.js"></script>
+    	<script src="/js/approval/approval.js"></script>
 	</th:block>
 	
 </body>

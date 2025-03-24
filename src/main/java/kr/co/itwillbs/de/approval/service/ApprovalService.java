@@ -3,12 +3,12 @@ package kr.co.itwillbs.de.approval.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kr.co.itwillbs.de.approval.mapper.SignMapper;
+import kr.co.itwillbs.de.approval.mapper.ApprovalMapper;
 
 @Service
-public class SignService {
+public class ApprovalService {
 	@Autowired
-	private SignMapper signMapper;
+	private ApprovalMapper approvalMapper;
 	
 	
 }
