@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>로그 리스트</title>
+</head>
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">로그 리스트</h1>
+			<!-- 리스트 출력 -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
+						<div class="row">
+							<div class="col-sm-12 col-md-3">
+								<label>AccessID:
+									<input type="search" class="form-control form-control-sm" placeholder="">
+								</label>
+							</div>
+							<div class="col-sm-12 col-md-3">
+								<label>Search:
+								<input type="search" class="form-control form-control-sm" placeholder="">
+								</label>
+							</div>
+							<div class="col-sm-12 col-md-3">
+								<label>Search2:
+								<input type="search" class="form-control form-control-sm" placeholder="">
+								</label>
+							</div>
+							<div class="col-sm-12 col-md-3">
+								<label>Search3:
+								<input type="search" class="form-control form-control-sm" placeholder="">
+								</label>
+							</div>
+						</div>
+						<div class="row">
+						</div>
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>번호</th>
+									<th>아이디</th>
+									<th>접근타입</th>
+									<th>접근장치</th>
+									<th>IP</th>
+									<th>URL</th>
+									<th>접근일자</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item, status : ${logDTOList}" th:data-id="${item.idx}" class="clickable-row">
+									<!-- <th:block th:object="${item}"> -->
+									<td th:text="${status.count}"></td>
+									<td th:text="${item.accessId}"></td>
+									<td th:text="${item.accessType}"></td>
+									<td th:text="${item.accessDevice}"></td>
+									<td th:text="${item.ip}"></td>
+									<td th:text="${item.url}"></td>
+									<td th:text="${#temporals.format(item.accessDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Modal 시작-->
+			<!-- <div class="modal fade" id="registerLogModal" tabindex="-1" aria-labelledby="registerLogModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-scrollable">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h3 class="modal-title fs-5" id="registerLogModalLabel">로그 등록</h3>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+									<i class="bi bi-x"></i>
+								</button>
+						</div>
+						
+						<div class="modal-body">
+							<form th:action="@{/orders/client}" method="post" th:object="${clientDTO}" id="registerLogForm">
+								<label for="code">코드</label>
+								<input type="text" id="code" th:field="*{code}">
+								<label for="companyName">회사명</label>
+								<input type="text" id="companyName" th:field="*{companyName}">
+								<label for="ownerName">대표자명</label>
+								<input type="text" id="ownerName" th:field="*{ownerName}">
+								<label for="companyCategory">업태</label>
+								<input type="text" id="companyCategory" th:field="*{companyCategory}">
+								<label for="companySubject">종목</label>
+								<input type="text" id="companySubject" th:field="*{companySubject}">
+								<label for="phoneNumber">전화</label>
+								<input type="text" id="phoneNumber" th:field="*{phoneNumber}">
+								<label for="eMail">이메일</label>
+								<input type="text" id="eMail" th:field="*{eMail}">
+								<label for="faxNumber">팩스번호</label>
+								<input type="text" id="faxNumber" th:field="*{faxNumber}">
+								<label for="address1">주소1</label>
+								<input type="text" id="address1" th:field="*{address1}">
+								<label for="address2">주소2</label>
+								<input type="text" id="address2" th:field="*{address2}">
+								<label for="creditLimit">여신한도</label>
+								<input type="text" id="creditLimit" th:field="*{creditLimit}">
+								<label for="isDeleted">삭제유무</label>
+								<input type="text" id="isDeleted" th:field="*{isDeleted}">
+								<label for="memo">메모</label>
+								<input type="text" id="memo" th:field="*{memo}">
+								<label for="status">상태</label>
+								<input type="text" id="status" th:field="*{status}">
+								<label for="statusMessage">상태(상세내용)</label>
+								<input type="text" id="statusMessage" th:field="*{statusMessage}">
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+									<button type="button" id="register_client" class="btn btn-primary">등록</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div> -->
+			<!-- Modal 끝-->
+			<script type="text/javascript">
+				$('#register_client').off("click").on("click", function() {
+					console.log("hello register_client");
+					let form_date = $('#registerClientForm').serialize();
+					console.log("form_date : " + form_date);
+		
+					$.ajax({
+						url: "/orders/client",
+						type: "POST",
+						data : form_date,
+						success: function(response) {
+							if(response === "success") {
+								console.log(response);
+							} else {
+								console.log(response);
+							}
+						},
+						error: function(error) {
+							console.error(error);
+						}
+					});
+				});
+			</script>
+		</div>
+	</th:block>
+</body>
+</html>
