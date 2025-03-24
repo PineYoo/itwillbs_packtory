@@ -6,17 +6,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import kr.co.itwillbs.de.approval.service.SignService;
+import kr.co.itwillbs.de.approval.service.ApprovalService;
 import lombok.extern.slf4j.Slf4j;
 
 /* 전자결재 */
 @Slf4j
 @RequestMapping(value={"/approval"})
 @Controller
-public class SignController {
+public class ApprovalController {
 	
 	@Autowired
-	private SignService signService;
+	private ApprovalService approvalService;
 	
 //	@Autowired
 //	private CommonUtils comUtil;
@@ -60,13 +60,14 @@ public class SignController {
 	public String getSampleList(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		System.out.println("여기까지 왔나요?");
 //		List<SampleDTO> sampleDTOlist = sampleService.getSampleList();
 //		model.addAttribute("sampleDTOlist", sampleDTOlist);
 //		
 //		SampleSearchDTO sampleSearchDTO = new SampleSearchDTO();
 //		model.addAttribute("sampleSearchDTO", sampleSearchDTO);
 		
-		return "approval/sign.html";
+		return "approval/approval.html";
 	}
 //	
 //	/**
