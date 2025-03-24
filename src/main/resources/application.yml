@@ -3,7 +3,7 @@ spring:
     name: packtory_de
 
   profiles:
-    active: ${profile-active}
+    active: dev1
 
     group:
       dev1 : local,common
@@ -12,7 +12,7 @@ spring:
 ---
 # 개인작업 설정 시작(H2 사용)
 server:
-  port: ${dev1-server-port}
+  port: 8080
 spring:
   config:
     activate:
@@ -20,20 +20,20 @@ spring:
 
   devtools:
     livereload:
-      enabled: ${dev1-tools-enable}
+      enabled: false
     restart:
-      enabled: ${dev1-tools-enable}
+      enabled: false
 
   servlet:
     multipart:
-      location: ${dev1-multipart_location}
+      location: ./uploads/
 
   datasource:
     hikari:
-      driver-class-name: ${dev1-db-driver}
-      jdbc-url: ${dev1-db-url}
-      username: ${dev1-db-user}
-      password: ${dev1-db-password}
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:./data/packtory_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      username: sa
+      password:
 
   h2:
     console:
@@ -50,7 +50,7 @@ spring:
 ---
 # 수업시간 설정 시작(개인컴퓨터 MySQL사용)
 server:
-  port: ${dev2-server-port}
+  port: 8090
 spring:
   config:
     activate:
@@ -58,9 +58,9 @@ spring:
 
   devtools:
     livereload:
-      enabled: ${dev2-tools-enable}
+      enabled: false
     restart:
-      enabled: ${dev2-tools-enable}
+      enabled: false
 
   servlet:
     multipart:
@@ -68,14 +68,14 @@ spring:
 
   datasource:
     hikari:
-      driver-class-name: ${dev2-db-driver}
-      jdbc-url: ${dev2-db-url}
-      username: ${dev2-db-user}
-      password: ${dev2-db-password}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/testdb
+      username: root
+      password: 1234
 
   jpa:
     show_sql: true
-    database-platform: ${dev2-db-jpa-platform}
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: none
     properties:
@@ -94,6 +94,7 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 20MB
+#      location: ./uploads/
 
   datasource:
     hikari:
