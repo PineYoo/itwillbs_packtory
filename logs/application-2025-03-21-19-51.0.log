@@ -1,8 +1,0 @@
-2025-03-21 19:51:13.952 [RMI TCP Connection(11)-127.0.0.1][INFO] o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested. 
-2025-03-21 19:51:13.954 [RMI TCP Connection(11)-127.0.0.1][INFO] o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
-2025-03-21 19:51:13.954 [tomcat-shutdown][INFO] o.a.c.h.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"] 
-2025-03-21 19:51:13.957 [tomcat-shutdown][INFO] o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
-2025-03-21 19:51:13.958 [RMI TCP Connection(11)-127.0.0.1][INFO] o.a.c.h.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"] 
-2025-03-21 19:51:13.960 [RMI TCP Connection(11)-127.0.0.1][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default' 
-2025-03-21 19:51:13.961 [RMI TCP Connection(11)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown initiated... 
-2025-03-21 19:51:13.962 [RMI TCP Connection(11)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown completed. 
