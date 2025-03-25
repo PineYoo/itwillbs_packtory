@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function(){
-//	const modifyForm = document.querySelector("#modifyForm");
 	const productReport = $('#approvalList').DataTable({
 		lengthChange : true, 	// 건수
 		searching : true, 		// 검색
@@ -35,22 +34,23 @@ document.addEventListener("DOMContentLoaded", function(){
 			},
 		},
 		dom: '<"top"<"left-length"l><"right-buttons"fB>>rt<"bottom"ip>',
-        buttons: [
-//			{
-//                extend: 'regist',
-//                text: '기안서 작성',
-//            },
+        buttons: [ 
 			{
                 extend: 'copy',
                 text: '복사',
             },
             {
                 extend: 'excel',
-                text: '엑셀 저장',
+                text: '엑셀',
                 exportOptions: {
 		            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
 		        },
             },
+            {
+                extend: 'print',
+                text: '프린트',
+            },
+			
 		],
 		order: [[3, 'desc']], // 최초 조회시 해당번호 컬럼 최신순으로 기본 설정
 		columnDefs: [
@@ -192,8 +192,13 @@ document.addEventListener("DOMContentLoaded", function(){
 	
 	// 기안서 작성 버튼 클릭 이벤트(새창 열기)
 	$("#registerBtn").on('click', function() {
-	
-	
+		//로그인한 사용자 id 가져오기
+//		let userId = $("#userId").val();
+//		let userId = hong; //일단 하드코딩
+//		let url = `/approval/register?userId=` + encodeURIComponent(userId);
+		let url = `/approval/register`;
+		
+		window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
 	
 	});
 	
@@ -209,12 +214,13 @@ document.addEventListener("DOMContentLoaded", function(){
     // 검색 버튼 클릭 시 테이블 다시 로드
     $('#searchBtn').on('click', () => productReport.draw());
     
-    // 엔터키 입력으로 검색
+    // 엔터키 입력으로 검색 실행
     $('#searchKeyword').on('keypress', (e) => {
         if (e.which == 13)  productReport.draw();
     });
     
-	// 기간별 검색 필터링 제이쿼리
+	//------------------------------------------------------	
+	// 기간별 검색 필터링 제이쿼리 (datepicker)
     $('#searchDate').daterangepicker({
 //        startDate: moment().subtract(29, 'days'),
 //        startDate: false,
@@ -263,6 +269,7 @@ document.addEventListener("DOMContentLoaded", function(){
     $("#searchDateBtn").on('click', function() {
 		productReport.draw();
 	});
+	//------------------------------------------------------	
 	
 	
 //-----------------------------------------------------------------------------------------------

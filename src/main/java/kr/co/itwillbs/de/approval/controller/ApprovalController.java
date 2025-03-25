@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -26,10 +27,12 @@ public class ApprovalController {
 	//------------------------------------------------------------------------------------------------
 	// 전자결재 리스트 목록 조회
 	@GetMapping(value={"","/"})
-	public String getSampleList(Model model, HttpSession session) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+	public String getSampleList(HttpSession session, Model model) {
+//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		System.out.println("여기 왔나요?");
 		
-//		String id = (String) session.getAttribute("id");
+//		String userId = (String) session.getAttribute("id");
+		
 //		List<SampleDTO> sampleDTOlist = sampleService.getSampleList();
 //		model.addAttribute("sampleDTOlist", sampleDTOlist);
 //		
@@ -43,8 +46,10 @@ public class ApprovalController {
 	//------------------------------------------------------------------------------------------------
 	// 기안서 작성 화면 조회
 	@GetMapping(value={"/register"})
-	public String apporvalRegisterForm(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
+//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		System.out.println("작성자:" + userId);
+		
 		
 		model.addAttribute("draftDTO", new DraftDTO());
 		return "approval/approval_reg_form";
@@ -54,7 +59,7 @@ public class ApprovalController {
 	// 기안서 등록 비즈니스 로직 처리
 	@PostMapping(value={"/register"})
 	public String approvalRegister(@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		// 유효성 체크
 		if(bindingResult.hasErrors()) {
 			return "approval/approval_reg_form";
