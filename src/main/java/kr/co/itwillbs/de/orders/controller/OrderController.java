@@ -3,6 +3,7 @@ package kr.co.itwillbs.de.orders.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,8 @@ public class OrderController {
 		
 		List<ClientDTO> clientDTOList = orderService.getClientList();
 		
+		log.info("확인용 : " + clientDTOList);
+		
 		model.addAttribute("clientDTOList", clientDTOList);
 		model.addAttribute("clientDTO", new ClientDTO());
 		
@@ -52,6 +55,20 @@ public class OrderController {
 			return "fail";
 		} 
 		
+	}
+	
+	@GetMapping("/clientDetail")
+	public String clientDetail(@RequestParam(value = "idx") String idx, Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+//		System.out.println(">>>>>" + idx);
+		
+		ClientDTO clientDTO = orderService.getClient(idx);
+		
+		model.addAttribute("clientDTO", clientDTO);
+		
+		
+		return "orders/client_detail.html";
 	}
 	
 	
