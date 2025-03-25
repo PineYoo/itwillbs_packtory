@@ -38,7 +38,7 @@
 			<h1 class="h3 mb-4 text-gray-800">기안서 작성</h1>
 			<!-- 본문 컨테이너 -->
 			<div class="card-body">
-				<form action="/approval/register" id="approvalForm" role="form" method="post" th:object="${approvalDTO}">
+				<form action="/approval/register" id="approvalForm" role="form" method="post" th:object="${draftDTO}">
 			        <div class="form-group">
 			            <label th:for="document_code">사원번호</label>
 			            <input type="text" th:field="*{drafter_id}" class="form-control" readonly>
@@ -53,22 +53,44 @@
 			        </div>
 			        
 			        <div class="form-group">
-			            <label th:for="document_code">결재유형</label>
-			            <input type="text" th:field="*{document_code}" class="form-control" placeholder="양식을 선택해주세요." readonly>
+			            <label th:for="approval_type">결재유형</label>
+			            <input type="text" th:field="*{approval_type}" class="form-control" readonly>
+			        </div>
+			        
+			        <div class="form-group">
+			            <label th:for="doc_code">문서양식</label>
+			            <input type="text" th:field="*{doc_code}" class="form-control" placeholder="양식을 선택해주세요." readonly>
 			        	<button class="btn btn-primary" id="searchDocumentBtn" type="button" value="검색"><i class="fa-solid fa-magnifying-glass"></i></button>
 			        </div>
+			        
 			        <div class="form-group">
-			            <label th:for="document_code">결재라인</label>
-			            <input type="text" th:field="*{approver_id}" class="form-control" placeholder="결재라인을 선택해주세요" readonly>
-			        	<button class="btn btn-primary" id="searchApproverBtn" type="button" value="검색"><i class="fa-solid fa-magnifying-glass"></i></button>
+			            <label th:for="approver_id">결재라인</label>
+			            <input type="text" th:field="*{approver1}" class="form-control" readonly>
+			            <input type="text" th:field="*{approver2}" class="form-control" readonly>
+			            <input type="text" th:field="*{approver3}" class="form-control" readonly>
+			        	<button type="button" class="btn btn-primary" id="searchApproverBtn" value="검색"><i class="fa-solid fa-magnifying-glass"></i></button>
 			        </div>
 				
 					
 				
+			        <div class="form-group">
+			            <label th:for="title">제목</label>
+			            <input type="text" th:field="*{title}" class="form-control">
+			        </div>
+			        
+			        <div class="form-group">
+			            <label th:for="content">내용</label>
+			            <input type="text" th:field="*{content}" class="form-control">
+			            <!-- Editor 라이브러리 일단 나중에......... -->
+			        </div>
 				
+					<!-- 첨부파일도 일단 나중에! -->
+<!-- 			        <div class="form-group"> -->
+<!-- 			            <label th:for="file">첨부파일</label> -->
+<!-- 			            <input type="text" th:field="*{file}" class="form-control"> -->
+<!-- 			        </div> -->
 				
-				
-				
+					<button type="submit" class="btn btn-primary" id="submitBtn" value="기안하기"></button>
 				
 										
 				</form>

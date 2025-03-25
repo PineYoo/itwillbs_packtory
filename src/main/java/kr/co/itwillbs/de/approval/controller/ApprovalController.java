@@ -3,10 +3,15 @@ package kr.co.itwillbs.de.approval.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import kr.co.itwillbs.de.approval.dto.DraftDTO;
 import kr.co.itwillbs.de.approval.service.ApprovalService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,11 +24,10 @@ public class ApprovalController {
 	private ApprovalService approvalService;
 	
 	//------------------------------------------------------------------------------------------------
-	// 전자결재 리스트 목록 조회 화면
+	// 전자결재 리스트 목록 조회
 	@GetMapping(value={"","/"})
 	public String getSampleList(Model model, HttpSession session) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		System.out.println("여기까지 왔나요?");
 		
 //		String id = (String) session.getAttribute("id");
 //		List<SampleDTO> sampleDTOlist = sampleService.getSampleList();
@@ -32,8 +36,48 @@ public class ApprovalController {
 //		SampleSearchDTO sampleSearchDTO = new SampleSearchDTO();
 //		model.addAttribute("sampleSearchDTO", sampleSearchDTO);
 		
-		return "approval/approval.html";
+		return "approval/approval_list";
 	}
+	
+	
+	//------------------------------------------------------------------------------------------------
+	// 기안서 작성 화면 조회
+	@GetMapping(value={"/register"})
+	public String apporvalRegisterForm(Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		model.addAttribute("draftDTO", new DraftDTO());
+		return "approval/approval_reg_form";
+	}
+	
+	
+	// 기안서 등록 비즈니스 로직 처리
+	@PostMapping(value={"/register"})
+	public String approvalRegister(@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		// 유효성 체크
+		if(bindingResult.hasErrors()) {
+			return "approval/approval_reg_form";
+		}
+		
+//		approvalService.registerApproval(draftDTO);
+		
+		return "redirect:/"; // 전자결재 리스트 화면으로!
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 //	/**
