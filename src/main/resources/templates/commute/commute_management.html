@@ -3,7 +3,7 @@
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate="~{common/layouts/bs_layout}">
 <head>
-<title>PackTory: 출퇴근관리</title>
+<title>팩토리(PackTory) - 출퇴근관리</title>
 <th:block layout:fragment="css">
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 </th:block>
@@ -17,12 +17,9 @@
 
 			<!-- DataTales Example -->
 			<div class="card shadow mb-4">
-				<div class="card-header py-3">
-					<h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-				</div>
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+						<table class="table table-bordered" id="commuteManagement" width="100%" cellspacing="0">
 							<thead>
 								<tr>
 <!-- 									<th>날짜</th> -->
@@ -38,7 +35,6 @@
 							<tbody>
 								<tr th:each="commute, status : ${commuteDTOList}" th:data-id="${commute.idx}" class="clickable-row">
 									<td th:text="${commute.employeeId}"></td>
-<!-- 									<td></td> -->
 									<td th:text="${commute.regDate != null ? #temporals.format(commute.regDate, 'yyyy-MM-dd HH:mm:ss') : 'No Date'}"></td>
 									<td th:text="${commute.workStatusCode}"></td>
 								</tr>

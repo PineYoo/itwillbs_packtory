@@ -1,4 +1,6 @@
-package kr.co.itwillbs.de.admin.dto;
+	package kr.co.itwillbs.de.admin.dto;
+
+import java.time.LocalDateTime;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -27,11 +29,11 @@ public class LogDTO {
 	// HttpServletRequest.getRequestURI?L?
 	private String url;
 	// DB마다 now(), sysdate 값
-	private String accessDate;
+	private LocalDateTime accessDate;
 	
 	@Builder
 	public LogDTO(String accessId, String accessType, String accessDevice, String ip, String parameters, String url,
-			String accessDate) {
+			LocalDateTime accessDate) {
 		this.accessId = accessId;
 		this.accessType = accessType;
 		this.accessDevice = accessDevice;

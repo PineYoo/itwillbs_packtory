@@ -21,7 +21,8 @@ bin/
 packtory_db.mv.db
 packtory_db.trace.db
 
-
+*.yml
+*.log
 
 ### IntelliJ IDEA ###
 .idea
@@ -42,3 +43,5 @@ out/
 ### VS Code ###
 .vscode/
 /FILE_NAME_IS_UNDEFINED
+/data/
+/logs/

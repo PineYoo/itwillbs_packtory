@@ -4,6 +4,7 @@
   
 <mapper namespace="kr.co.itwillbs.de.orders.mapper.ClientMapper">
 	<sql id="t_client_columns_forSelect">
+		idx,
 		code,
 		company_name,
 		owner_name,
@@ -67,6 +68,12 @@
 		     , #{statusMessage})
 	</insert>
 	
+	<select id="getClient" resultType="kr.co.itwillbs.de.orders.dto.ClientDTO">
+		SELECT
+			<include refid="t_client_columns_forSelect"></include>
+		  FROM t_client
+		 WHERE idx = #{idx}
+	</select>
 	
 	
 </mapper>

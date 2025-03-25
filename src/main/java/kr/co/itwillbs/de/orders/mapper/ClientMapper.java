@@ -18,5 +18,7 @@ public interface ClientMapper {
 	List<ClientDTO> getClientList();
 
 	int insertClient(ClientDTO clientDTO);
+
+	ClientDTO getClient(String idx);
 	
 }

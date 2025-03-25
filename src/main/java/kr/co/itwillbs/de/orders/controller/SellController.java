@@ -1,83 +1,45 @@
-package kr.co.itwillbs.de.approval.controller;
+package kr.co.itwillbs.de.orders.controller;
+
+import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
-import kr.co.itwillbs.de.approval.dto.DraftDTO;
-import kr.co.itwillbs.de.approval.service.ApprovalService;
+import kr.co.itwillbs.de.orders.dto.ClientDTO;
+import kr.co.itwillbs.de.orders.dto.OrderDTO;
+import kr.co.itwillbs.de.orders.service.SellService;
 import lombok.extern.slf4j.Slf4j;
 
-/* 전자결재 */
+/* 수주관리 */
 @Slf4j
-@RequestMapping(value={"/approval"})
+@RequestMapping("/orders") // 반복되는 경로를 미리 매핑(클래스 내부에서는 추가되는 경로만 매핑)
 @Controller
-public class ApprovalController {
+public class SellController {
 	@Autowired
-	private ApprovalService approvalService;
+	private SellService sellService;
 	
-	//------------------------------------------------------------------------------------------------
-	// 전자결재 리스트 목록 조회
-	@GetMapping(value={"","/"})
-	public String getSampleList(Model model, HttpSession session) {
+	// 수주 관리 목록 조회(SELECT)을 요청하는 "/sell" 주소 매핑(GET)
+	@GetMapping(value={"/sell","/sell/"})	// "/orders/sell"
+	public String getSellList(Model model, HttpSession session) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-//		String id = (String) session.getAttribute("id");
-//		List<SampleDTO> sampleDTOlist = sampleService.getSampleList();
-//		model.addAttribute("sampleDTOlist", sampleDTOlist);
+//		List<OrderDTO> sellDTOList = sellService.getSellList();
+		List<HashMap<String, Object>> sellDTOList = sellService.getSellList();
+		log.info(">>>>> sellDTOList : " + sellDTOList);
+		model.addAttribute("sellDTOList", sellDTOList);
+		
 //		
 //		SampleSearchDTO sampleSearchDTO = new SampleSearchDTO();
 //		model.addAttribute("sampleSearchDTO", sampleSearchDTO);
 		
-		return "approval/approval_list";
+		return "orders/sell_management";
 	}
-	
-	
 	//------------------------------------------------------------------------------------------------
-	// 기안서 작성 화면 조회
-	@GetMapping(value={"/register"})
-	public String apporvalRegisterForm(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		model.addAttribute("draftDTO", new DraftDTO());
-		return "approval/approval_reg_form";
-	}
-	
-	
-	// 기안서 등록 비즈니스 로직 처리
-	@PostMapping(value={"/register"})
-	public String approvalRegister(@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		// 유효성 체크
-		if(bindingResult.hasErrors()) {
-			return "approval/approval_reg_form";
-		}
-		
-//		approvalService.registerApproval(draftDTO);
-		
-		return "redirect:/"; // 전자결재 리스트 화면으로!
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 //	/**
