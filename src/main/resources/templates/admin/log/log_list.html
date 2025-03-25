@@ -32,9 +32,7 @@
 								</label>
 							</div>
 							<div class="col-sm-12 col-md-3">
-								<label>Search3:
-								<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
+								<button type="button" id="newBtn">로그작성(개발테스트용)</button>
 							</div>
 						</div>
 						<div class="row">
@@ -122,6 +120,16 @@
 			</div> -->
 			<!-- Modal 끝-->
 			<script type="text/javascript">
+				$('#newBtn').on("click", function() {
+					location.href="/admin/log/new";
+				});
+				
+				$('.clickable-row').on("click", function() {
+					const id = $(this).data("id");
+					console.log("click id is %s", id);
+					location.href=`/admin/log/${id}`;
+				});
+				
 				$('#register_client').off("click").on("click", function() {
 					console.log("hello register_client");
 					let form_date = $('#registerClientForm').serialize();

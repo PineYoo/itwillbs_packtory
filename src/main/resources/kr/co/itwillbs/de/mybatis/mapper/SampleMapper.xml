@@ -65,6 +65,7 @@
 	<!-- useGeneratedKeys : true 일때, keyProperty : idx >> affectRow가 아닌 생성된 idx가 리턴타입에 셋 mysql은 확인됨 -->
 	<insert id="registerSample" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.sample.dto.SampleDTO">
 		insert into t_demo (
+			<trim suffixOverrides=",">
 			id,
 			<if test='password !=null and !password.equals("")'>
 			password,
@@ -87,7 +88,9 @@
 			mod_date,
 			</if>
 			read_cnt
+			</trim>
 		) values (
+			<trim suffixOverrides=",">
 			#{id},
 			<if test='password !=null and !password.equals("")'>
 			#{password},
@@ -110,6 +113,7 @@
 			now(),
 			</if>
 			0
+			</trim>
 			)
 	</insert>
 	

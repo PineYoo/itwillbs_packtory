@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<meta charset="UTF-8">
+<title>메뉴 등록</title>
+</head>
+<body>
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<h1 class="h3 mb-4 text-gray-800">로그 등록</h1>
+			<form th:action="@{/admin/menu}" method="post" th:object="${menuDTO}">
+				<label for="menuType">메뉴 타입</label>
+				<input type="text" id="menuType" th:field="*{menuType}">
+				<label for="menuId">메뉴 ID? Group?</label>
+				<input type="text" id="menuId" th:field="*{menuId}">
+				<label for="rank">순서</label>
+				<input type="text" id="rank" th:field="*{rank}">
+				<label for="url">URL</label>
+				<input type="text" id="url" th:field="*{url}">
+				<label for="description">설명</label>
+				<textarea id="description" th:field="*{description}" rows="5"></textarea>
+				<label for="isDeleted">삭제여부</label>
+				<input type="text" id="isDeleted" th:field="*{isDeleted}">
+				
+				<div id="commandArea">
+					<button type="submit">메뉴 등록</button>
+					<button type="button" id="btnList">메뉴 목록</button>
+				</div>
+				
+			</form>
+			<script type="text/javascript">
+				$(function() {
+					$('#btnList').on("click", function() {
+						location.href="/admin/log";
+					});
+				});
+			</script>
+		</div>
+	</th:block>
+</body>
+</html>

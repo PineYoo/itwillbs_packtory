@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>메뉴 관리</title>
+</head>
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">메뉴 관리</h1>
+			<!-- 리스트 출력 -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
+						<div class="row">
+							<div class="col-sm-12 col-md-3">
+								<label>AccessID:
+									<input type="search" class="form-control form-control-sm" placeholder="">
+								</label>
+							</div>
+							<div class="col-sm-12 col-md-3">
+								<label>Search:
+								<input type="search" class="form-control form-control-sm" placeholder="">
+								</label>
+							</div>
+							<div class="col-sm-12 col-md-3">
+								<label>Search2:
+								<input type="search" class="form-control form-control-sm" placeholder="">
+								</label>
+							</div>
+							<div class="col-sm-12 col-md-3">
+								<button type="button" id="newBtn">메뉴 작성</button>
+							</div>
+						</div>
+						<div class="row">
+						</div>
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>번호</th>
+									<th>메뉴타입</th>
+									<th>메뉴아이디</th>
+									<th>메뉴순서</th>
+									<th>주소</th>
+									<th>삭제여부</th>
+									<th>작성자</th>
+									<th>접근일자</th>
+									<th>액션</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item, status : ${menuDTOList}" th:data-id="${item.idx}" class="clickable-row">
+									<!-- <th:block th:object="${item}"> -->
+									<td th:text="${status.count}"></td>
+									<td th:text="${item.menuType}"></td>
+									<td th:text="${item.menuId}"></td>
+									<td th:text="${item.rank}"></td>
+									<td th:text="${item.url}"></td>
+									<td th:text="${item.isDeleted}"></td>
+									<td th:text="${item.regId}"></td>
+									<td th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
+									<td><button type="button" id="modfiyBtn" th:text="${item.isDeleted =='Y'? '보이기':'숨기기'}"></button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			
+			<script type="text/javascript">
+				$('#newBtn').on("click", function() {
+					location.href="/admin/menu/new";
+				});
+				
+				$('.clickable-row').on("click", function() {
+					const id = $(this).data("id");
+					console.log("click id is %s", id);
+					location.href=`/admin/menu/${id}`;
+				});
+			</script>
+		</div>
+	</th:block>
+</body>
+</html>
