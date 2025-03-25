@@ -21,8 +21,6 @@ bin/
 packtory_db.mv.db
 packtory_db.trace.db
 
-/logs/**
-/data/**
 *.yml
 *.log
 
