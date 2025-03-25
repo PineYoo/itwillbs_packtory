@@ -14,6 +14,7 @@ import kr.co.itwillbs.de.sample.dto.ItemDTO;
 import kr.co.itwillbs.de.sample.dto.ItemSearchDTO;
 import lombok.extern.slf4j.Slf4j;
 
+/* 근태 관리 */
 @Slf4j
 @Controller
 @RequestMapping("/commute") // 반복되는 경로를 미리 매핑(클래스 내부에서는 추가되는 경로만 매핑)
@@ -29,7 +30,7 @@ public class CommuteController {
 	 * 출퇴근 목록 조회(SELECT)을 요청하는 "/commute" 주소 매핑(GET)
 	 * @return
 	 */
-	@GetMapping(value={"/management","/management/"}) // 이미 컨트롤러 자체에서 공통 경로 "/commute" 를 매핑했으므로 널스트링("")을 지원
+	@GetMapping(value={"/management","/management/"})	// 경로 : /commute/management
 	public String getCommuteList(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.orders.mapper.SellMapper">
+	<sql id="t_order_columns_forSelect">
+		idx,
+		document_number,
+		trade_code,
+		status_code,
+		business_name,
+		business_number,
+		request_date,
+		expected_date,
+		due_date,
+		destination_name,
+		reciver,
+		phone1,
+		phone2,
+		post_code,
+		address1,
+		address2,
+		special_issue,
+		is_deleted,
+		reg_id,
+		reg_date,
+		mod_id,
+		mod_date
+	</sql>
+	<sql id="t_order_detail_columns_forSelect">
+		idx,
+		document_number,
+		department_code,
+		client_name,
+		client_phone,
+		lot_number,
+		invoice_issue,
+		payment_status,
+		unissued_status,
+		supply_amount,
+		vat_amount,
+		total_amount,
+		issue_code,
+		issue_remaks,
+		is_deleted,
+		reg_id,
+		reg_date,
+		mod_id,
+		mod_date
+	</sql>
+
+	<sql id="sell_list_columns_forSelect">
+		d.idx,
+		d.document_number,
+		o.request_date,
+		o.business_name,
+		d.supply_amount,
+		d.vat_amount,
+		d.total_amount,
+		o.expected_date,
+		d.client_name
+	</sql>
+	
+	<!-- 전체 수주 관리 목록 조회(SELECT) -->
+<!-- 	<select id="getSellList" resultType="kr.co.itwillbs.de.orders.dto.OrderDTO"> -->
+<!-- 		SELECT  -->
+<!-- 			<include refid="t_order_columns_forSelect"></include> -->
+<!-- 		FROM t_order -->
+<!-- 	</select> -->
+	<select id="getSellList" resultType="java.util.HashMap">
+		SELECT 
+			<include refid="sell_list_columns_forSelect"></include>
+		FROM t_order o
+		JOIN t_order_detail d
+		ON d.document_number = o.document_number
+		WHERE o.trade_code = '수주'
+	</select>
+</mapper>
