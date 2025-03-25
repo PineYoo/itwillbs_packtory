@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jakarta.servlet.http.HttpSession;
 import kr.co.itwillbs.de.approval.service.ApprovalService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,13 +15,27 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value={"/approval"})
 @Controller
 public class ApprovalController {
-	
 	@Autowired
 	private ApprovalService approvalService;
 	
-//	@Autowired
-//	private CommonUtils comUtil;
-//	
+	//------------------------------------------------------------------------------------------------
+	// 전자결재 리스트 목록 조회 화면
+	@GetMapping(value={"","/"})
+	public String getSampleList(Model model, HttpSession session) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		System.out.println("여기까지 왔나요?");
+		
+//		String id = (String) session.getAttribute("id");
+//		List<SampleDTO> sampleDTOlist = sampleService.getSampleList();
+//		model.addAttribute("sampleDTOlist", sampleDTOlist);
+//		
+//		SampleSearchDTO sampleSearchDTO = new SampleSearchDTO();
+//		model.addAttribute("sampleSearchDTO", sampleSearchDTO);
+		
+		return "approval/approval.html";
+	}
+	
+	
 //	/**
 //	 * 샘플 등록 페이지(view)를 요청하는 "/sample/new" 연결
 //	 * @param model
@@ -51,24 +66,7 @@ public class ApprovalController {
 //		
 //		return "redirect:/sample";
 //	}
-//	
-//	/**
-//	 * 샘플 목록 조회(SELECT)를 요청하는 "/sample" 연결 GET!
-//	 * @return
-//	 */
-	@GetMapping(value={"","/"})
-	public String getSampleList(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		System.out.println("여기까지 왔나요?");
-//		List<SampleDTO> sampleDTOlist = sampleService.getSampleList();
-//		model.addAttribute("sampleDTOlist", sampleDTOlist);
-//		
-//		SampleSearchDTO sampleSearchDTO = new SampleSearchDTO();
-//		model.addAttribute("sampleSearchDTO", sampleSearchDTO);
-		
-		return "approval/approval.html";
-	}
+	
 //	
 //	/**
 //	 * 샘플 검색 조건 조회

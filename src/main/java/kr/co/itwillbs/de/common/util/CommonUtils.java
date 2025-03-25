@@ -28,6 +28,7 @@ public class CommonUtils {
 	 * @return false : 파일 없음, true : 파일 1개 이상 존재함
 	 */
 	public boolean isValidateForRequiredFile(MultipartFile mfile) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("getOriginalFilename is {}, getSize is {}, getName is {}", mfile.getOriginalFilename(), mfile.getSize(), mfile.getName());
 		if(mfile.getSize() == 0) return false;
@@ -41,6 +42,7 @@ public class CommonUtils {
 	 * @return false : 파일 없음, true : 파일 1개 이상 존재함
 	 */
 	public boolean isValidateForRequiredFile(MultipartFile[] mfiles) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		if(mfiles.length == 0) return false;
 		
@@ -66,7 +68,7 @@ public class CommonUtils {
 	 * @param mfile
 	 * @throws Exception
 	 */
-	public Map setFile(MultipartFile mfile) throws Exception {
+	public Map<String, String> setFile(MultipartFile mfile) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("uploadDir {}, separator {}, pathSeparator {}", uploadDir, File.separator, File.pathSeparator);
 		
