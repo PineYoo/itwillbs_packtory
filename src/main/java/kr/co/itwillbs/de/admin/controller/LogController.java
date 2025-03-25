@@ -15,33 +15,13 @@ import kr.co.itwillbs.de.admin.dto.LogDTO;
 import kr.co.itwillbs.de.admin.dto.LogSearchDTO;
 import kr.co.itwillbs.de.admin.service.LogService;
 import kr.co.itwillbs.de.common.util.CommonUtils;
+import kr.co.itwillbs.de.common.util.SequenceUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
 @RequestMapping("/admin/log")
 public class LogController {
-/**
- * Log ERD가 없어서 상상을 해봄
- * 1. 로그
- *  idx
- *  accessId
- *  accessType (1:Front, 2:Admin...?)
- *  accessDevice (1:PC, 2:Mobile -> request.Agent() 였나 그걸로 넣음 될듯?)
- *  ip? HttpServletRequest.getRemoteAddr()
- *  parameters (H2:character varying(1000), MySQL:VARCHAR(1000)||longtext||text, Oracle: varchar2(1000) 정도? (영어니까 1000글자면 충분할듯?) HttpServletRequest.getParameterMap()? getParameterValues()?
- *  url HttpServletRequest.getRequestURI()? I? (이걸로 메뉴 테이블이랑 이어서 이용메뉴 구분도 할 수 있게?)
- *  accessDate
- *  
- * 2. 협력업체 로그인 기능 구현 시 협력업체 로그
- *  idx
- *  loginId
- *  작성/수정 주문문서번호
- *  ip?
- *  loginDate
- *  정도?
- *  근데 2번 너도 1번으로 붙여지지 않을까? 조건절만 따로 빼서 화면 분할?
- */
 	
 	// 계속 사용하게 될 클래스 RequestMapping 문자열 값
 	private final String LOG_PATH="/admin/log";
@@ -50,6 +30,8 @@ public class LogController {
 	private LogService logService;
 	@Autowired
 	private CommonUtils comUtils;
+	@Autowired
+	private SequenceUtils seqUtils;
 	
 	/**
 	 * (개발테스트용)어드민 > 시스템 로그 > 로그 등록
@@ -59,6 +41,8 @@ public class LogController {
 	@GetMapping(value="/new")
 	public String logRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		model.addAttribute("logDTO", new LogDTO());
 		
 		return LOG_PATH+"/log_register_form";
 	}
@@ -80,6 +64,11 @@ public class LogController {
 		return "redirect:"+LOG_PATH;
 	}
 	
+	/**
+	 * 어드민 > 시스템 사용 로그 > 리스트 뷰
+	 * @param model
+	 * @return
+	 */
 	@GetMapping(value= {"","/"})
 	public String getLogList(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -87,6 +76,10 @@ public class LogController {
 		List<LogDTO> logDTOList = logService.getLogList();
 		
 		model.addAttribute("logDTOList", logDTOList);
+		//seqUtils.getEmpSeqFromDB();
+//		String a =seqUtils.getEmpSeqFromFile();
+//		String b = seqUtils.getEmpSeqFromDBForMybatis();
+//		log.info("seqFromFile : {}, seqFromDB : {}", a, b); 
 		
 		//리스트 검색 파라미터로 활용할 LogSearchDTO 객체 생성 후 Model에 저장
 		model.addAttribute("logSearchDTO", new LogSearchDTO());
@@ -140,7 +133,7 @@ public class LogController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value={"/partner","/"})
+	@GetMapping(value={"/partner","/partner/"})
 	public String LogGetPartnerLogList(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
