@@ -17,6 +17,12 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+
+packtory_db.mv.db
+packtory_db.trace.db
+
+
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -35,3 +41,4 @@ out/
 
 ### VS Code ###
 .vscode/
+/FILE_NAME_IS_UNDEFINED

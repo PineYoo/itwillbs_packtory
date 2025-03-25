@@ -1,54 +1,53 @@
 package kr.co.itwillbs.de.approval.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
-import kr.co.itwillbs.de.approval.service.SignService;
-import kr.co.itwillbs.de.common.util.CommonUtils;
-import kr.co.itwillbs.de.sample.dto.SampleDTO;
-import kr.co.itwillbs.de.sample.dto.SampleSearchDTO;
-import kr.co.itwillbs.de.sample.service.SampleService;
+import jakarta.servlet.http.HttpSession;
+import kr.co.itwillbs.de.approval.service.ApprovalService;
 import lombok.extern.slf4j.Slf4j;
 
+/* 전자결재 */
 @Slf4j
 @RequestMapping(value={"/approval"})
 @Controller
-public class SignController {
+public class ApprovalController {
+	@Autowired
+	private ApprovalService approvalService;
 	
-//	@Autowired
-//	private SignService signService;
-//	
-//	@Autowired
-//	private CommonUtils comUtil;
-//	
+	//------------------------------------------------------------------------------------------------
+	// 전자결재 리스트 목록 조회 화면
+	@GetMapping(value={"","/"})
+	public String getSampleList(Model model, HttpSession session) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		System.out.println("여기까지 왔나요?");
+		
+//		String id = (String) session.getAttribute("id");
+//		List<SampleDTO> sampleDTOlist = sampleService.getSampleList();
+//		model.addAttribute("sampleDTOlist", sampleDTOlist);
+//		
+//		SampleSearchDTO sampleSearchDTO = new SampleSearchDTO();
+//		model.addAttribute("sampleSearchDTO", sampleSearchDTO);
+		
+		return "approval/approval.html";
+	}
+	
+	
 //	/**
 //	 * 샘플 등록 페이지(view)를 요청하는 "/sample/new" 연결
 //	 * @param model
 //	 * @return
 //	 */
-//	@GetMapping(value={"/new"})
+//	@GetMapping(value={"/"})
 //	public String sampleRegisterForm(Model model) {
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 //		
 //		model.addAttribute("sampleDTO", new SampleDTO());
 //		
-//		return "sample/sample_register_form";
+//		return "approval/sign";
 //	}
 //
 //	/**
@@ -67,23 +66,7 @@ public class SignController {
 //		
 //		return "redirect:/sample";
 //	}
-//	
-//	/**
-//	 * 샘플 목록 조회(SELECT)를 요청하는 "/sample" 연결 GET!
-//	 * @return
-//	 */
-//	@GetMapping(value={"","/"})
-//	public String getSampleList(Model model) {
-//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-//		
-//		List<SampleDTO> sampleDTOlist = sampleService.getSampleList();
-//		model.addAttribute("sampleDTOlist", sampleDTOlist);
-//		
-//		SampleSearchDTO sampleSearchDTO = new SampleSearchDTO();
-//		model.addAttribute("sampleSearchDTO", sampleSearchDTO);
-//		
-//		return "sample/sample_list";
-//	}
+	
 //	
 //	/**
 //	 * 샘플 검색 조건 조회

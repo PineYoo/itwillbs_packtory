@@ -1,0 +1,43 @@
+2025-03-25 14:50:12.191 [background-preinit][INFO] o.h.v.i.u.Version - HV000001: Hibernate Validator 8.0.2.Final 
+2025-03-25 14:50:12.236 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - Starting PacktoryDeApplication using Java 21 with PID 9728 (C:\Users\ITWILL\git\packtory_\bin\main started by ITWILL in C:\Users\ITWILL\git\packtory_) 
+2025-03-25 14:50:12.237 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - The following 3 profiles are active: "dev2", "classroom", "common" 
+2025-03-25 14:50:12.404 [restartedMain][INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable 
+2025-03-25 14:50:12.404 [restartedMain][INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG' 
+2025-03-25 14:50:12.905 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-25 14:50:12.907 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JDBC repositories in DEFAULT mode. 
+2025-03-25 14:50:12.945 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.commute.repository.CommuteRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
+2025-03-25 14:50:12.947 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.sample.repository.ItemRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
+2025-03-25 14:50:12.947 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 33 ms. Found 0 JDBC repository interfaces. 
+2025-03-25 14:50:12.963 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-25 14:50:12.964 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+2025-03-25 14:50:13.001 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 34 ms. Found 2 JPA repository interfaces. 
+2025-03-25 14:50:13.512 [restartedMain][INFO] o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8090 (http) 
+2025-03-25 14:50:13.523 [restartedMain][INFO] o.a.c.h.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8090"] 
+2025-03-25 14:50:13.524 [restartedMain][INFO] o.a.c.c.StandardService - Starting service [Tomcat] 
+2025-03-25 14:50:13.525 [restartedMain][INFO] o.a.c.c.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36] 
+2025-03-25 14:50:13.563 [restartedMain][INFO] o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext 
+2025-03-25 14:50:13.564 [restartedMain][INFO] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1160 ms 
+2025-03-25 14:50:13.619 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Starting... 
+2025-03-25 14:50:13.851 [restartedMain][INFO] c.z.h.p.HikariPool - Hikari Connection Pool - Added connection com.mysql.cj.jdbc.ConnectionImpl@6abb8586 
+2025-03-25 14:50:13.853 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Start completed. 
+2025-03-25 14:50:13.919 [restartedMain][INFO] o.h.j.i.u.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default] 
+2025-03-25 14:50:13.953 [restartedMain][INFO] o.h.Version - HHH000412: Hibernate ORM core version 6.6.8.Final 
+2025-03-25 14:50:13.982 [restartedMain][INFO] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled 
+2025-03-25 14:50:14.208 [restartedMain][INFO] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer 
+2025-03-25 14:50:14.258 [restartedMain][WARN] o.h.o.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default) 
+2025-03-25 14:50:14.270 [restartedMain][INFO] o.h.o.c.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (Hikari Connection Pool)']
+	Database driver: undefined/unknown
+	Database version: 8.0.41
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown 
+2025-03-25 14:50:14.944 [restartedMain][INFO] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
+2025-03-25 14:50:14.946 [restartedMain][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default' 
+2025-03-25 14:50:15.252 [restartedMain][INFO] o.s.d.j.r.q.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used. 
+2025-03-25 14:50:15.751 [restartedMain][WARN] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning 
+2025-03-25 14:50:16.108 [restartedMain][INFO] o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3306/testdb' 
+2025-03-25 14:50:16.149 [restartedMain][INFO] o.a.c.h.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8090"] 
+2025-03-25 14:50:16.162 [restartedMain][INFO] o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8090 (http) with context path '/' 
+2025-03-25 14:50:16.168 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - Started PacktoryDeApplication in 4.365 seconds (process running for 4.97) 
