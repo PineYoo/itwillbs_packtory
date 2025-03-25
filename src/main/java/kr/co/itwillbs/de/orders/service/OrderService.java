@@ -38,5 +38,10 @@ public class OrderService {
 		return clientMapper.insertClient(clientDTO);
 		
 	}
+
+	public ClientDTO getClient(String idx) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return clientMapper.getClient(idx);
+	}
 	
 }
