@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			dataType : "JSON",
 			data: function(d) {
                 d.status = $('input[name="status"]:checked').val();
-                d.searchDate = $("#schDate").val();
+                d.searchDate = $("#searchDate").val();
                 d.searchValue = $('input[name="keyword_search"]').val();
             },
 			dataSrc: function (res) {
@@ -34,23 +34,27 @@ document.addEventListener("DOMContentLoaded", function(){
 				return data;
 			},
 		},
-//		dom: '<"top"<"left-length"l><"right-buttons"fB>>rt<"bottom"ip>',
-//        buttons: [
+		dom: '<"top"<"left-length"l><"right-buttons"fB>>rt<"bottom"ip>',
+        buttons: [
 //			{
-//                extend: 'copy',
-//                text: '복사',
+//                extend: 'regist',
+//                text: '기안서 작성',
 //            },
-//            {
-//                extend: 'excel',
-//                text: '엑셀 저장',
-//                exportOptions: {
-//		            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-//		        },
-//            },
-//		],
-		order: [[4, 'desc']], // 최초 조회시 해당번호 컬럼 최신순으로 기본 설정
+			{
+                extend: 'copy',
+                text: '복사',
+            },
+            {
+                extend: 'excel',
+                text: '엑셀 저장',
+                exportOptions: {
+		            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+		        },
+            },
+		],
+		order: [[3, 'desc']], // 최초 조회시 해당번호 컬럼 최신순으로 기본 설정
 		columnDefs: [
-			 { targets: [0, 10], orderable: false },
+			 { targets: [0, 9], orderable: false },
 		],
 		columns: [
 			// defaultContent 는 기본값 설정, 데이터 없는 컬럼일 경우 오류나기 때문에 널스트링 처리 해주어야 함
@@ -146,12 +150,20 @@ document.addEventListener("DOMContentLoaded", function(){
 				className : "dt-center",
 				width: '120px',
 				render : function(data, type, row) {
+					// 새창 열기 
 					return `
-						<button class="btn btn-primary detail-btn" data-toggle="modal" data-target="#approvalForm"
-								data-approval-id="${data.approvalIdx}"
-								aria-label="보기 - approval id: ${data.approvalIdx}" aria-controls="approvalForm">
-								보기</button>
+						<button class="btn btn-primary detail-btn" data-approval-id="${data.approvalIdx}"
+								onclick="openApprovalwindow(${data.approvalIdx})">보기</button>
 					`;
+					
+					
+					// 모달창열기 XXXXXXXXX
+//					return `
+//						<button class="btn btn-primary detail-btn" data-toggle="modal" data-target="#approvalForm"
+//								data-approval-id="${data.approvalIdx}"
+//								aria-label="보기 - approval id: ${data.approvalIdx}" aria-controls="approvalForm">
+//								보기</button>
+//					`;
 				}
 			}
         ],
@@ -176,104 +188,12 @@ document.addEventListener("DOMContentLoaded", function(){
         },
 	});
 
-	//-----------------------------------------------------
-	//기안서 확인 팝업 설정
-	$('#approvalForm').on('shown.bs.modal', function () {
-		// 모달이 열리면 첫 번째 입력 필드에 포커스
-		$(this).find('input, button, textarea').first().focus();
-	});
-
-	$('#approvalForm').on('hidden.bs.modal', function () {
-		// 모달이 닫히면 이전에 포커스가 있었던 요소로 돌아가게 처리
-		$('#previousElement').focus();
-		// 모달이 닫힐 때 폼 데이터도 초기화
-		$(this).find('form').trigger('reset');
-	});
-
-	// FAQ 수정하기 버튼 클릭시 폼제출 처리
-	// 1) 수정 버튼 클릭시 모달창 팝업(기존값 가져오기)
-	faqList.on("click", '.detail-btn', function() {
-		const row = $(this).closest('tr');
-		const rowData = faqList.row(row).data();
-		
-		// 수정 모달 화면에 기존 데이터 보이게 셋팅
-		$("#faqId").val(rowData.FAQ_ID); 					// 문의아이디(히든속성값)
-		$("#updatedFaqSubject").val(rowData.FAQ_SUBJECT);	// 문의제목
-		$("#updatedFaqContent").val(rowData.FAQ_CONTENT);	// 문의내용
-		$("#updatedFaqCate").val(rowData.FAQ_CATE);			// 문의유형
-		$("#updatedListStatus").val(rowData.LIST_STATUS);	// 사용여부 값
-		
-		const listStatus = rowData.LIST_STATUS == 1 ? true : false;
-		const listStatusText = rowData.LIST_STATUS == 1 ? "사용함" : "사용안함";
-		$("#updateFlexSwitchCheckDefault").prop("checked", listStatus); // 사용여부 버튼
-		$("#updateFlexSwitchCheckDefaultLab").text(listStatusText); 	// 사용여부 텍스트
-		
-		const contentLength = rowData.FAQ_CONTENT ? rowData.FAQ_CONTENT.length : 0;
-		$("#lengthInfo").text(contentLength); 	// 글자수 표시
-	});
-
-	// 2) 폼 제출전 변경된 사용여부 상태값 저장하기
-	$(document).on("change", "#updateFlexSwitchCheckDefault", function() {
-		const isChecked = $(this).is(':checked');  // 체크 여부
-		const statusValue = isChecked ? 1 : 2;  // 상태 값 (1: 사용, 2: 사용안함)
-		
-		// 업데이트된 상태값을 hidden 필드에 저장
-		$("#updatedListStatus").val(statusValue);  // hidden 필드에 상태값 저장
-		
-	});
-
-	// 3) 수정 완료 버튼 클릭 시 폼 제출
-	$('#updateFaqSubmitBtn').on('click', function(e) {
-		e.preventDefault(); // 폼 기본 제출 방지
-		
-		const isChecked = $("#updateFlexSwitchCheckDefault").is(':checked');
-		$("#updatedListStatus").val(isChecked ? 1 : 2);
-		
-		// 폼제출
-		$("#modifyForm").submit();
-	});
-
-
-	// 내용 작성
-	$("#updatedFaqContent").on('keyup', () => {
-		fnChkByte($("#updatedFaqContent"), 500);
-	});
-
-	// 글자수 제한 함수
-	function fnChkByte(item, maxLength){
-		const str = item.val();
-	    
-	     if (str.length > maxLength) {
-	        alert("글자수는 " + maxLength + "자를 초과할 수 없습니다.");
-	        item.val(str.substring(0, maxLength)); //문자열 자르고 값 넣기
-	     }
-	     $('#lengthInfo').text(item.val().length);
-	}
 	
 	
 	
-	// 기안서 상세보기 팝업 셋팅
-//	productReport.on("click", '.detail-btn', function() {
-//	productReport.on("click", '.edit-btn', function() {
-//		const row = $(this).closest('tr');
-//		const rowData = productReport.row(row).data();
-//
-//		const status = rowData.STATUS;
-//		const actionReason = rowData.ACTION_REASON != null ? rowData.ACTION_REASON : "";
-//		const productId = document.querySelector("#productId");
-//		const reportId = document.querySelector("#reportId");
-//		const statusSelect = document.querySelector(`#reportStatus option[value="${status}"]`);
-//		const reasonTextarea = document.querySelector("#actionReason");
-//		
-//		reportId.value = rowData.REPORT_ID;
-//		productId.value = rowData.PRODUCT_ID;
-//		reasonTextarea.value = actionReason;
-//	    if (statusSelect) statusSelect.selected = true;
-//	    
-//	});
 	
-	// 기존 검색 숨기기
-	$("#productReport_filter").attr("hidden", "hidden");
+	// 기존 검색 입력창 숨기기
+	$("#approvalList_filter").attr("hidden", "hidden");
 	
 	 // 필터 변경 시 데이터 테이블 다시 로드
     $('input[name="status"]').on('change', () => productReport.draw());
@@ -287,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function(){
     });
     
 	// 기간별 검색 필터링 제이쿼리
-    $('#schDate').daterangepicker({
+    $('#searchDate').daterangepicker({
 //        startDate: moment().subtract(29, 'days'),
 //        startDate: false,
 //        endDate: moment(),
@@ -321,13 +241,13 @@ document.addEventListener("DOMContentLoaded", function(){
     });
     
     // 날짜 선택 후에도 placeholder 유지
-    $('#schDate').on('apply.daterangepicker', function(ev, picker) {
+    $('#searchDate').on('apply.daterangepicker', function(ev, picker) {
         $(this).val(`${picker.startDate.format('YYYY-MM-DD')} ~ ${picker.endDate.format('YYYY-MM-DD')}`);
     });
     
 	// 날짜 검색 초기화
 	$("#initDateBtn").on('click', function() {
-		$('#schDate').val('');
+		$('#searchDate').val('');
 		productReport.draw();
 	});
 	
@@ -336,23 +256,117 @@ document.addEventListener("DOMContentLoaded", function(){
 		productReport.draw();
 	});
 	
-	// 조치 사유 작성
-	$("#actionReason").on('keydown', () => {
-		fnChkByte($("#actionReason"), 500);
-	});
-
-});
-
 	
-// 글자수 제한 함수
-function fnChkByte(item, maxLength){
-	const str = item.val();
-    const strLength = str.length;
-    
-     if (strLength > maxLength) {
-        alert("글자수는 " + maxLength + "자를 초과할 수 없습니다.");
-        $(item).val(str.substr(0, maxLength));      //문자열 자르고 값 넣기
-        fnChkByte(item, maxLength);
-     }
-     $('#lengthInfo').text(strLength);
-}
+//-----------------------------------------------------------------------------------------------
+//기안서 확인 팝업 설정 //모달 하지 말라고 팀장님께서 말씀하심~!!!!!!!!!
+//	$('#approvalForm').on('shown.bs.modal', function () {
+//		// 모달이 열리면 첫 번째 입력 필드에 포커스
+//		$(this).find('input, button, textarea').first().focus();
+//	});
+//
+//	$('#approvalForm').on('hidden.bs.modal', function () {
+//		// 모달이 닫히면 이전에 포커스가 있었던 요소로 돌아가게 처리
+//		$('#previousElement').focus();
+//		// 모달이 닫힐 때 폼 데이터도 초기화
+//		$(this).find('form').trigger('reset');
+//	});
+//
+//	// FAQ 수정하기 버튼 클릭시 폼제출 처리
+//	// 1) 수정 버튼 클릭시 모달창 팝업(기존값 가져오기)
+//	faqList.on("click", '.detail-btn', function() {
+//		const row = $(this).closest('tr');
+//		const rowData = faqList.row(row).data();
+//		
+//		// 수정 모달 화면에 기존 데이터 보이게 셋팅
+//		$("#faqId").val(rowData.FAQ_ID); 					// 문의아이디(히든속성값)
+//		$("#updatedFaqSubject").val(rowData.FAQ_SUBJECT);	// 문의제목
+//		$("#updatedFaqContent").val(rowData.FAQ_CONTENT);	// 문의내용
+//		$("#updatedFaqCate").val(rowData.FAQ_CATE);			// 문의유형
+//		$("#updatedListStatus").val(rowData.LIST_STATUS);	// 사용여부 값
+//		
+//		const listStatus = rowData.LIST_STATUS == 1 ? true : false;
+//		const listStatusText = rowData.LIST_STATUS == 1 ? "사용함" : "사용안함";
+//		$("#updateFlexSwitchCheckDefault").prop("checked", listStatus); // 사용여부 버튼
+//		$("#updateFlexSwitchCheckDefaultLab").text(listStatusText); 	// 사용여부 텍스트
+//		
+//		const contentLength = rowData.FAQ_CONTENT ? rowData.FAQ_CONTENT.length : 0;
+//		$("#lengthInfo").text(contentLength); 	// 글자수 표시
+//	});
+//
+//	// 2) 폼 제출전 변경된 사용여부 상태값 저장하기
+//	$(document).on("change", "#updateFlexSwitchCheckDefault", function() {
+//		const isChecked = $(this).is(':checked');  // 체크 여부
+//		const statusValue = isChecked ? 1 : 2;  // 상태 값 (1: 사용, 2: 사용안함)
+//		
+//		// 업데이트된 상태값을 hidden 필드에 저장
+//		$("#updatedListStatus").val(statusValue);  // hidden 필드에 상태값 저장
+//		
+//	});
+//
+//	// 3) 수정 완료 버튼 클릭 시 폼 제출
+//	$('#updateFaqSubmitBtn').on('click', function(e) {
+//		e.preventDefault(); // 폼 기본 제출 방지
+//		
+//		const isChecked = $("#updateFlexSwitchCheckDefault").is(':checked');
+//		$("#updatedListStatus").val(isChecked ? 1 : 2);
+//		
+//		// 폼제출
+//		$("#modifyForm").submit();
+//	});
+//
+//
+//	// 내용 작성
+//	$("#updatedFaqContent").on('keyup', () => {
+//		fnChkByte($("#updatedFaqContent"), 500);
+//	});
+//
+//	// 글자수 제한 함수
+//	function fnChkByte(item, maxLength){
+//		const str = item.val();
+//	    
+//	     if (str.length > maxLength) {
+//	        alert("글자수는 " + maxLength + "자를 초과할 수 없습니다.");
+//	        item.val(str.substring(0, maxLength)); //문자열 자르고 값 넣기
+//	     }
+//	     $('#lengthInfo').text(item.val().length);
+//	}
+//	
+//	
+//	
+//	// 기안서 상세보기 팝업 셋팅
+//	productReport.on("click", '.detail-btn', function() {
+//	productReport.on("click", '.edit-btn', function() {
+//		const row = $(this).closest('tr');
+//		const rowData = productReport.row(row).data();
+//
+//		const status = rowData.STATUS;
+//		const actionReason = rowData.ACTION_REASON != null ? rowData.ACTION_REASON : "";
+//		const productId = document.querySelector("#productId");
+//		const reportId = document.querySelector("#reportId");
+//		const statusSelect = document.querySelector(`#reportStatus option[value="${status}"]`);
+//		const reasonTextarea = document.querySelector("#actionReason");
+//		
+//		reportId.value = rowData.REPORT_ID;
+//		productId.value = rowData.PRODUCT_ID;
+//		reasonTextarea.value = actionReason;
+//	    if (statusSelect) statusSelect.selected = true;
+//	    
+//	});
+//
+
+
+}); // DOMContentLoaded 끝
+
+//// 글자수 제한 함수
+//function fnChkByte(item, maxLength){
+//	const str = item.val();
+//    const strLength = str.length;
+//    
+//     if (strLength > maxLength) {
+//        alert("글자수는 " + maxLength + "자를 초과할 수 없습니다.");
+//        $(item).val(str.substr(0, maxLength));      //문자열 자르고 값 넣기
+//        fnChkByte(item, maxLength);
+//     }
+//     $('#lengthInfo').text(strLength);
+//}
+	

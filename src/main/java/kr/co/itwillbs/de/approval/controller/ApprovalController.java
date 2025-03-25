@@ -34,6 +34,13 @@ public class ApprovalController {
 		
 		return "approval/approval.html";
 	}
+	@GetMapping(value={"/register"})
+	public String approvalRegisterForm() {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		System.out.println("여기까지 왔나요?");
+		
+		return "approval/approval_form.html";
+	}
 	
 	
 //	/**
