@@ -46,9 +46,10 @@ public class ApprovalController {
 	//------------------------------------------------------------------------------------------------
 	// 기안서 작성 화면 조회
 	@GetMapping(value={"/register"})
-	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
+//	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
+	public String apporvalRegisterForm(Model model) {
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		System.out.println("작성자:" + userId);
+//		System.out.println("작성자:" + userId);
 		
 		
 		model.addAttribute("draftDTO", new DraftDTO());
@@ -57,7 +58,7 @@ public class ApprovalController {
 	
 	
 	// 기안서 등록 비즈니스 로직 처리
-	@PostMapping(value={"/register"})
+	@PostMapping(value={"/regist"})
 	public String approvalRegister(@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) {
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		// 유효성 체크

@@ -38,7 +38,7 @@
 			<h1 class="h3 mb-4 text-gray-800">기안서 작성</h1>
 			<!-- 본문 컨테이너 -->
 			<div class="card-body">
-				<form action="/approval/register" id="approvalForm" role="form" method="post" th:object="${draftDTO}">
+				<form action="/approval/regist" id="approvalForm" role="form" method="post" th:object="${draftDTO}">
 			        <div class="form-group">
 			            <label th:for="document_code">사원번호</label>
 			            <input type="text" th:field="*{drafter_id}" class="form-control" readonly>
