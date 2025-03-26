@@ -39,7 +39,6 @@ public class DraftDTO {
 	
 	@NotEmpty(message = "제목을 입력해주세요.")
 	private String title;			// 제목		
-	
 	@NotEmpty(message = "내용을 입력해주세요.")
 	private String content;			// 내용
 	
