@@ -8,6 +8,8 @@ import groovy.transform.ToString;
 import groovy.transform.builder.Builder;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import kr.co.itwillbs.de.approval.constant.ApprovalStatus;
+import kr.co.itwillbs.de.approval.constant.ApprovalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,28 +26,29 @@ public class DraftDTO {
 	private String drafter_position;// 기안자 직급
 
 	//	@NotBlank(message = "결재유형을 선택해주세요.")
-//	private String approval_type;	// 결재유형
-//	
-//	@NotBlank(message = "기안서 양식을 선택해주세요.")
-//	private String doc_code;		// 문서코드
-//	
-//	@NotEmpty(message = "결재자1 선택 필수")
-//	private String approver1;		// 결재자1
-//	@NotEmpty(message = "결재자2 선택 필수")
-//	private String approver2;		// 결재자2
-//	@NotEmpty(message = "결재자3 선택 필수")
-//	private String approver3;		// 결재자3
-//	
-//	@NotEmpty(message = "제목을 입력해주세요.")
-//	private String title;			// 제목		
-//	@NotEmpty(message = "내용을 입력해주세요.")
-//	private String content;			// 내용
-//	
-//	private String file;			// 첨부파일
-//	
-//	private Date draft_date;		// 기안일자
-//	private Date due_date;			// 마감일자
+	private ApprovalType approval_type;	// 결재유형 (일단 enum으로! 나중에 공통코드로 빼기)
 	
+//	@NotBlank(message = "기안서 양식을 선택해주세요.")
+	private String doc_code;		// 문서코드	(공통코드)
+	
+//	@NotEmpty(message = "결재자1 선택 필수")
+	private String approver1;		// 결재자1
+//	@NotEmpty(message = "결재자2 선택 필수")
+	private String approver2;		// 결재자2
+//	@NotEmpty(message = "결재자3 선택 필수")
+	private String approver3;		// 결재자3
+	
+//	@NotEmpty(message = "제목을 입력해주세요.")
+	private String title;			// 제목		
+//	@NotEmpty(message = "내용을 입력해주세요.")
+	private String content;			// 내용
+	
+//	private String file;			// 첨부파일
+	
+	private Date draft_date;		// 기안일자
+	private Date due_date;			// 마감일자
+	
+	private ApprovalStatus approvalStatus; // 진행상태 (일단 enum으로! 나중에 공통코드로 뺄지 고민)
 	
 	
 //	@Builder

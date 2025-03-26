@@ -135,10 +135,10 @@ document.addEventListener("DOMContentLoaded", function(){
 					render : function(data, type, row) {
 						if(!data) return "";
 						switch (data) {
-					        case "진행중": return "<span class='status status-01'>진행중</span>";
-					        case "반려": return "<span class='status status-02'>반려</span>";
-					        case "결재요청": return "<span class='status status-03'>결재요청</span>";
-					        case "결재완료": return "<span class='status status-04'>결재완료</span>";
+					        case "IN_PROGRESS": return "<span class='status status-01'>진행중</span>";
+					        case "REJECTED": return "<span class='status status-02'>반려</span>";
+					        case "REQUESTED": return "<span class='status status-03'>결재요청</span>";
+					        case "APPROVED": return "<span class='status status-04'>결재완료</span>";
 					        default: return "";
 					    }
 					}
