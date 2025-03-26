@@ -2,7 +2,6 @@ package kr.co.itwillbs.de.admin.dto;
 
 import java.time.LocalDateTime;
 
-import kr.co.itwillbs.de.admin.constant.IsDeleted;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +22,7 @@ public class MenuSearchDTO {
 	// 메뉴 url
 	private String url;
 	
-	private IsDeleted isDeleted;
+	private String isDeleted;
 	
 	private String regId;
 	private LocalDateTime regDate;
