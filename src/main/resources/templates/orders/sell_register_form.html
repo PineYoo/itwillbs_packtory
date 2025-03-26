@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 수주등록</title>
+<!-- 부트스트랩 icons 가져오기 -->
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+
+<th:block layout:fragment="css">
+	<!-- dataTables 가져오기 -->
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+</th:block>
+<style type="text/css">
+	
+</style>
+<!-- 다음 우편번호 API -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+
+<body id="page-top">
+	<div layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">주문서등록(수주)</h1>
+
+			<!-- ---------- 본문 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+			    <div class="card-body">
+			        <form th:action="@{/orders/sell}" method="post" th:object="${orderFormDTO}">
+			            <table style="width: 100%; border-collapse: collapse;">
+			                <tr>
+			                    <td style="width: 50%; vertical-align: top;">
+			                        <table style="width: 100%;">
+			                            <tr>
+			                                <th>등록일자</th>
+			                                <td>
+			                                    <input type="date" id="regDate" th:field="*{orderDTO.regDate}">
+			                                </td>
+			                            </tr>
+			                            <tr><td colspan="2"></td></tr>
+			                            <tr>
+			                                <th>요청예정일자</th>
+			                                <td>
+			                                    <input type="date" id="requestDate" th:field="*{orderDTO.requestDate}">
+			                                </td>
+			                            </tr>
+			                            <tr><td colspan="2"></td></tr>
+			                            <tr>
+			                                <th>담당자</th>
+			                                <td><input type="text" id="clientName" th:field="*{orderDetailDTO.clientName}"></td>
+			                            </tr>
+			                            <tr>
+			                                <th>담당자 전화번호</th>
+			                                <td>
+			                                    <input type="text" id="clientPhone" th:field="*{orderDetailDTO.clientPhone}" maxlength="13" placeholder="010-1234-5678">
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <th colspan="2">납품주소</th>
+			                            </tr>
+			                            <tr>
+			                                <td colspan="2">
+			                                    <input type="text" id="postCode" class="postCode_1" th:field="*{orderDTO.postCode}" size="6">&nbsp;&nbsp;&nbsp;&nbsp;
+			                                    <button type="button" id="searchAddressBtn_1">주소찾기</button><br>
+			                                    <input type="text" id="address1" class="address1_1" th:field="*{orderDTO.address1}" placeholder="기본주소 입력"><br>
+			                                    <input type="text" id="address2" class="address2_1" th:field="*{orderDTO.address2}" placeholder="상세주소 입력">
+			                                </td>
+			                            </tr>
+			                        </table>
+			                    </td>
+			
+			                    <td style="width: 50%; vertical-align: top;">
+			                        <table style="width: 100%;">
+			                            <tr>
+			                                <th>사업자 등록 번호</th>
+			                                <td><input type="text" id="businessNumber" th:field="*{orderDTO.businessNumber}" placeholder="123-45-67890"></td>
+			                            </tr>
+			                            <tr>
+			                                <th>상호명</th>
+			                                <td><input type="text" id="companyName" th:field="*{clientDTO.companyName}"></td>
+			                            </tr>
+			                            <tr>
+			                                <th>대표자명</th>
+			                                <td><input type="text" id="ownerName" th:field="*{clientDTO.ownerName}"></td>
+			                            </tr>
+			                            <tr>
+			                                <th>전화번호</th>
+			                                <td>
+			                                    <input type="text" id="phoneNumber" th:field="*{clientDTO.phoneNumber}" maxlength="12" placeholder="010-0000-0000">
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <th>팩스번호</th>
+			                                <td>
+			                                    <input type="text" id="faxNumber" th:field="*{clientDTO.faxNumber}" maxlength="10" placeholder="02-000-0000">
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <th>이메일</th>
+			                                <td><input type="text" id="eMail" th:field="*{clientDTO.eMail}" placeholder="email@example.com"></td>
+			                            </tr>
+			                            <tr>
+			                                <th colspan="2">주소</th>
+			                            </tr>
+			                            <tr>
+			                                <td colspan="2">
+			                                    <input type="text" id="postCode" class="postCode_2" th:field="*{clientDTO.postCode}" size="6">&nbsp;&nbsp;&nbsp;&nbsp;
+			                                    <button type="button" id="searchAddressBtn_2">주소찾기</button><br>
+			                                    <input type="text" id="address1" class="address1_2" th:field="*{clientDTO.address1}" placeholder="기본주소 입력"><br>
+			                                    <input type="text" id="address2" class="address2_2" th:field="*{clientDTO.address2}" placeholder="상세주소 입력">
+			                                </td>
+			                            </tr>
+			                        </table>
+			                    </td>
+			                </tr>
+			            </table>
+			            
+			            <hr>
+			            <!-- ---------- 상품검색 영역 ---------- -->
+			            <div class="col-4 search-box">
+		                     <div class="input-group">
+		                         <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="상품 조회" aria-label="Search" aria-describedby="basic-addon2">
+		                         <div class="input-group-append">
+		                             <button class="btn btn-primary" id="searchBtn" type="submit">조회</button>
+		                         </div>
+		                     </div>
+		                </div>
+		                <br>
+		                <!-- ---------- 상품 리스트 출력 영역 ---------- -->
+		                <div class="table-responsive">
+		                	<table class="table table-bordered" id="sellManagement" width="100%" cellspacing="0">
+								<thead>
+									<tr>
+										<th>No</th>
+										<th>상품번호</th>
+										<th>품명</th>
+										<th>규격</th>
+										<th>수량</th>
+										<th>단가</th>
+										<th>합계금액</th>
+									</tr>
+								</thead>
+								<tbody>
+<!-- 									<tr th:each="item, status : ${sellDTOList}" th:data-id="${sell['idx']}"> -->
+<!-- 									    <td><input type="checkbox"></td> -->
+<!-- 									    <td th:text="${sell['document_number']}"></td> -->
+	<!-- 								    <td th:text="${sell['request_date'] != null ? #temporals.format(sell['request_date'], 'yyyy-MM-dd') : 'No Date'}"></td> -->
+<!-- 									    <td th:text="${sell['request_date']}"></td>		HashMap으로 가져오면서 String으로 들고와짐 -->
+<!-- 									    <td th:text="${sell['business_name']}"></td> -->
+<!-- 									    <td th:text="${sell['supply_amount']}"></td> -->
+<!-- 									    <td th:text="${sell['vat_amount']}"></td> -->
+<!-- 									    <td th:text="${sell['total_amount']}"></td> -->
+<!-- 									</tr> -->
+	
+								</tbody>
+							</table>
+		                	
+		                </div>
+		                
+		                <!-- hidden -->
+<!-- 		                <input type="hidden" id="tradeCode" th:field="*{orderDTO.tradeCode}" th:value="'수주'"> -->
+		                
+			            <!-- -------------------------------------------------------------- -->
+			            <div style="text-align: center; margin-top: 10px;">
+			                <button type="submit">등록</button>
+			                <button type="button" id="cancelBtn">취소</button>
+			            </div>
+			        </form>
+			    </div>
+			</div>
+			<!-- ---------- 본문 컨테이너 끝 ---------- -->			
+		</div>
+		
+		<script type="text/javascript">
+			$(function() {
+				// 휴대번호 입력
+				$('#clientPhone, #phoneNumber').on('input', function() {
+			        // 숫자만 남기기
+			        let value = $(this).val().replace(/\D/g, '');
+			        let formattedValue = '';
+
+			        // 포맷팅 로직
+			        if (value.length > 0) {
+			            if (value.length <= 10) {
+			                // 10자리 이하일 경우
+			                formattedValue += value.substring(0, 3); // 첫 3자리
+			                if (value.length > 3) {
+			                    formattedValue += '-' + value.substring(3, 6); // 중간 3자리
+			                }
+			                if (value.length > 6) {
+			                    formattedValue += '-' + value.substring(6, 10); // 마지막 4자리
+			                }
+			            } else {
+			                // 11자리 이상일 경우
+			                formattedValue += value.substring(0, 3); // 첫 3자리
+			                formattedValue += '-' + value.substring(3, 7); // 중간 4자리
+			                formattedValue += '-' + value.substring(7, 11); // 마지막 4자리
+			            }
+			        }
+					
+			     	// 포맷된 값으로 업데이트
+			        $(this).val(formattedValue);
+			    });
+				
+				// 숫자입력만 허용하는 keypress
+			    $('#clientPhone, #phoneNumber, #businessNumber, #faxNumber').on('keypress', function(e) {
+			    	let keyCode = event.keyCode;
+			        if (keyCode < 48 || keyCode > 57) {
+			            event.preventDefault();
+			        }
+			    });
+				
+				// 납품주소(다음 우편번호 API 활용)
+				// "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
+				$("#searchAddressBtn_1, .postCode_1").click(function() {
+					new daum.Postcode({
+				        oncomplete: function(data) { 
+							// 1) 우편번호(zonecode) 가져와서 우편번호 항목(postCode)에 출력              
+				            $(".postCode_1").val(data.zonecode);
+					
+							// 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서 
+							//    기본주소 항목(address1)에 출력
+							let address = data.address;
+				            
+				            // 3) 만약, 건물명(buildingName)이 존재할 경우(= 널스트링이 아님)
+				            //    기본 주소 뒤에 건물명 결합
+				            if(data.buildingName !== ''){
+				               address += "(" + data.buildingName + ")";
+				            }
+				            
+				            // 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
+				            $(".address1_1").val(address);
+				            
+				            // 5) 상세주소 항목(address2)에 포커스 요청
+				            $(".address2_1").focus();
+				        }
+				    }).open();
+				});
+				
+				// 주소(다음 우편번호 API 활용)
+				$("#searchAddressBtn_2, .postCode_2").click(function() {
+					new daum.Postcode({
+				        oncomplete: function(data) { 
+							// 1) 우편번호(zonecode) 가져와서 우편번호 항목(postCode)에 출력              
+				            $(".postCode_2").val(data.zonecode);
+					
+							// 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서 
+							//    기본주소 항목(address1)에 출력
+							let address = data.address;
+				            
+				            // 3) 만약, 건물명(buildingName)이 존재할 경우(= 널스트링이 아님)
+				            //    기본 주소 뒤에 건물명 결합
+				            if(data.buildingName !== ''){
+				               address += "(" + data.buildingName + ")";
+				            }
+				            
+				            // 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
+				            $(".address1_2").val(address);
+				            
+				            // 5) 상세주소 항목(address2)에 포커스 요청
+				            $(".address2_2").focus();
+				        }
+				    }).open();
+				});
+				
+				// --------------------
+				// 취소버튼
+				$('#cancelBtn').on("click", function() {
+					location.href="/orders/sell";
+				});
+				
+			});
+		</script>
+	</div>
+	<!-- --------------------------------------------------------------------------------------------- -->
+	
+	<th:block layout:fragment="script">
+		<script src="/js/datatables/jquery.dataTables.min.js"></script>
+		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+		<script src="/js/demo/datatables-demo.js"></script>
+	</th:block>
+	
+</body>
+</html>

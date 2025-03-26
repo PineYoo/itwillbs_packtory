@@ -72,7 +72,8 @@
 			                     <div class="input-group">
 			                         <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="품번, 품명, 거래처명 검색" aria-label="Search" aria-describedby="basic-addon2">
 			                         <div class="input-group-append">
-			                             <button class="btn btn-primary" id="searchBtn" type="button">조회</button>
+			                             <button class="btn btn-primary" id="searchBtn" type="submit">조회</button>
+			                             <button class="btn btn-primary" id="registBtn" type="button">등록</button>
 			                         </div>
 			                     </div>
 			                </div>
@@ -123,6 +124,16 @@
 			</div>
 			<!-- ---------- 본문 컨테이너 끝 ---------- -->			
 		</div>
+
+		<script type="text/javascript">
+			$(function() {
+				// 등록 버튼(registBtn) 클릭 시 페이지 이동
+				$('#registBtn').on("click", function() {
+					location.href="/orders/sell/regist";
+				});
+				
+			});
+		</script>
 	</div>
 	<!-- --------------------------------------------------------------------------------------------- -->
 	

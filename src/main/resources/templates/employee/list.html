@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>사원 목록</title>
+<style type="text/css">
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px #ccc;
+    }
+    
+    .clickable-row:hover {
+        background-color: lightblue;
+        cursor: pointer;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+    
+    th {
+        background-color: #f4f4f4;
+    }
+    
+    #searchForm {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+</style>
+</head>
+<body>
+    <h1>사원 목록</h1>
+    <div id="searchForm">
+	    <form th:action="@{/employee}" method="get" th:object="${searchDTO}">
+	        <select id="searchType" name="type" th:field="*{type}">
+	            <option value="name">이름</option>
+	            <option value="dept">부서</option>
+	        </select>
+	        
+	        <input type="text" id="searchValue" name="searchValue" th:field="*{searchValue}" placeholder="검색어 입력">
+	        
+	        <button type="submit">검색</button>
+	        <button type="button" id="btnNew">사원 등록</button>
+	    </form>
+	</div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>인덱스</th>
+                <th>사원번호</th>
+                <th>이름</th>
+                <th>부서</th>
+                <th>하위부서</th>
+                <th>직급</th>
+                <th>입사일</th>
+                <th>직원 상태</th>
+            </tr>
+        </thead>
+        <tbody>
+	        <tr th:each="employee, status : ${employeeList}" th:data-id="${employee.id}" class="clickable-row">
+	            <td th:text="${employee.idx}"></td>
+	            <td th:text="${employee.id}"></td>
+	            <td th:text="${employee.name}"></td>
+	            <td th:text="${employee.departmentCode}"></td>
+	            <td th:text="${employee.subDepartmentCode}"></td>
+	            <td th:text="${employee.positionCode}"></td>
+<!-- 	            <td th:text="${#temporals.format(employee.hireDate, 'yyyy-MM-dd')}"></td> -->
+				<td th:text="${#temporals.format(employee.hireDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+	            <td th:text="${employee.employeeStatus}"></td>  <!-- 상태 값 출력 -->
+	        </tr>
+    	</tbody>
+    </table>
+    
+    <script src="/js/jquery-3.7.1.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $(".clickable-row").on("click", function() {
+                const empId = $(this).data("id");
+                location.href = `/employee/detail/${empId}`;
+            });
+            
+            $("#btnNew").on("click", function() {
+                location.href = "/employee/new";
+            });
+        });
+    </script>
+</body>
+</html>
