@@ -15,8 +15,9 @@
 			<form th:action="@{/admin/menu}" method="post" th:object="${menuDTO}">
 				<label for="menuType">메뉴 타입</label>
 				<input type="text" id="menuType" th:field="*{menuType}">
-				<label for="menuId">메뉴 ID? Group?</label>
-				<input type="text" id="menuId" th:field="*{menuId}">
+<!-- 				<label for="menuId">메뉴 ID? Group?</label>
+				<input type="text" id="menuId" th:field="*{menuId}"> -->
+				<input type="hidden" id="menuId" name="menuId" value="0">
 				<label for="rank">순서</label>
 				<input type="text" id="rank" th:field="*{rank}">
 				<label for="url">URL</label>
@@ -25,6 +26,10 @@
 				<textarea id="description" th:field="*{description}" rows="5"></textarea>
 				<label for="isDeleted">삭제여부</label>
 				<input type="text" id="isDeleted" th:field="*{isDeleted}">
+<!-- 				<select id="isDeleted" th:field="*{isDeleted}">
+					<option th:each="deleted : ${T(kr.co.itwillbs.de.admin.constant.IsDeleted).values()}"
+						th:value="${deleted}" th:text="${deleted}"></option>
+				</select> -->
 				
 				<div id="commandArea">
 					<button type="submit">메뉴 등록</button>
