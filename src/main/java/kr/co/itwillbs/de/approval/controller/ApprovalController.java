@@ -25,7 +25,7 @@ public class ApprovalController {
 	private ApprovalService approvalService;
 	
 	//------------------------------------------------------------------------------------------------
-	// 전자결재 리스트 목록 조회
+	// 전자결재 목록 페이지 매핑 (DATATABLES 그리드 화면)
 	@GetMapping(value={"","/"})
 	public String getSampleList(HttpSession session, Model model) {
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -44,32 +44,40 @@ public class ApprovalController {
 	
 	
 	//------------------------------------------------------------------------------------------------
-	// 기안서 작성 화면 조회
+	// 기안서 작성 페이지 매핑 (GET)
 	@GetMapping(value={"/register"})
-//	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
-	public String apporvalRegisterForm(Model model) {
+	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-//		System.out.println("작성자:" + userId);
+		System.out.println("기안자ID:" + userId);
+		
+		// 기안자ID 값으로 사원정보 가져오기
+//		approvalService.getEmployeeInfo(userId);
 		
 		
-		model.addAttribute("draftDTO", new DraftDTO());
+		// 임시로 하드코딩
+		DraftDTO draftDTO = new DraftDTO();
+		draftDTO.setDrafter_id(userId);
+		draftDTO.setDrafter_name("홍길동");
+		draftDTO.setDrafter_position("대리");
+		
+		
+		model.addAttribute("draftDTO", draftDTO);
 		return "approval/approval_reg_form";
 	}
 	
-	
-	// 기안서 등록 비즈니스 로직 처리
-	@PostMapping(value={"/regist"})
-	public String approvalRegister(@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) {
-//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		// 유효성 체크
-		if(bindingResult.hasErrors()) {
-			return "approval/approval_reg_form";
-		}
-		
-//		approvalService.registerApproval(draftDTO);
-		
-		return "redirect:/"; // 전자결재 리스트 화면으로!
-	}
+	// 작성 후 기안서 등록 비즈니스 로직 처리 (POST)
+//	@PostMapping(value={"/regist"})
+//	public String approvalRegister(@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) {
+////		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+//		// 유효성 체크
+//		if(bindingResult.hasErrors()) {
+//			return "approval/approval_reg_form";
+//		}
+//		
+////		approvalService.registerApproval(draftDTO);
+//		
+//		return "redirect:/"; // 전자결재 리스트 화면으로!
+//	}
 	
 	//------------------------------------------------------------------------------------------------
 	

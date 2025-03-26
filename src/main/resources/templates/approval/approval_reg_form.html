@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-		layout:decorate="~{common/layouts/de_layout}">
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- 		layout:decorate="~{common/layouts/de_layout}"> -->
 <head>
 <title>기안서 작성</title>
 <!-- 부트스트랩 icons 가져오기 -->
@@ -10,23 +10,16 @@
 </th:block>
 
 <th:block layout:fragment="css">
-	<!-- dataTables 가져오기 -->
-	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-	<link href="/css/datatables/datatables.min.css" rel="stylesheet">
-	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
-	
 	<!-- 폰트어썸 가져오기 -->
 	<link href="/css/fontawesome/all.min.css" rel="stylesheet">
 	<script src="/css/fontawesome/all.min.js"></script>
-	
 	<!-- CSS for Page -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
 	<link href="/css/sb-admin-2.css" rel="stylesheet">
-	<link href="/css/adm.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+	<!-- 개별 CSS-->
+	<link href="/css/common.css" rel="stylesheet">
 </th:block>
 </head>
 <body id="page-top">
@@ -35,10 +28,11 @@
 		<div class="container-fluid">
 		
 			<!-- Page Heading -->
-			<h1 class="h3 mb-4 text-gray-800">기안서 작성</h1>
+			<h3 class="h3 mb-4 text-gray-800">기안서 작성</h3>
 			<!-- 본문 컨테이너 -->
 			<div class="card-body">
 				<form action="/approval/regist" id="approvalForm" role="form" method="post" th:object="${draftDTO}">
+					
 			        <div class="form-group">
 			            <label th:for="document_code">사원번호</label>
 			            <input type="text" th:field="*{drafter_id}" class="form-control" readonly>
@@ -54,45 +48,58 @@
 			        
 			        <div class="form-group">
 			            <label th:for="approval_type">결재유형</label>
-			            <input type="text" th:field="*{approval_type}" class="form-control" readonly>
+<!-- 			            <select id="approval_type" th:field="*{approval_type}" class="form-control" > -->
+<!-- 						<select id="itemSellStatus" th:field="*{itemSellStatus}"> -->
+<!-- 			            	<option th:each="approvalType : "></option> -->
+			<!-- 			<option th:each="sellStatus : ${T(com.itwillbs.spring_test3.entity.ItemSellStatus).values()}" -->
+			<!-- 					th:value="${sellStatus}" th:text="${sellStatus}"></option> -->
+<!-- 			            </select> -->
+<!-- 			            <input type="text" th:field="*{approval_type}" class="form-control" readonly> -->
 			        </div>
 			        
 			        <div class="form-group">
-			            <label th:for="doc_code">문서양식</label>
-			            <input type="text" th:field="*{doc_code}" class="form-control" placeholder="양식을 선택해주세요." readonly>
-			        	<button class="btn btn-primary" id="searchDocumentBtn" type="button" value="검색"><i class="fa-solid fa-magnifying-glass"></i></button>
+			            <label th:for="doc_code">기안서 양식</label>
+<!-- 			            <input type="text" th:field="*{doc_code}" class="form-control" placeholder="양식을 선택해주세요." readonly> -->
+			        	<button class="btn btn-primary" id="searchDocumentBtn" type="button">검색 <i class="fa-solid fa-magnifying-glass"></i></button>
 			        </div>
 			        
 			        <div class="form-group">
 			            <label th:for="approver_id">결재라인</label>
-			            <input type="text" th:field="*{approver1}" class="form-control" placeholder="1차 결재" readonly>
-			            <input type="text" th:field="*{approver2}" class="form-control" placeholder="2차 결재" readonly>
-			            <input type="text" th:field="*{approver3}" class="form-control" placeholder="3차 결재" readonly>
-			        	<button type="button" class="btn btn-primary" id="searchApproverBtn" value="검색"><i class="fa-solid fa-magnifying-glass"></i></button>
+<!-- 			            <input type="text" th:field="*{approver1}" class="form-control" placeholder="1차 결재" readonly> -->
+<!-- 			            <input type="text" th:field="*{approver2}" class="form-control" placeholder="2차 결재" readonly> -->
+<!-- 			            <input type="text" th:field="*{approver3}" class="form-control" placeholder="3차 결재" readonly> -->
+			        	<button type="button" class="btn btn-primary" id="searchApproverBtn" >검색 <i class="fa-solid fa-magnifying-glass"></i></button>
 			        </div>
 				
 					
-				
 			        <div class="form-group">
 			            <label th:for="title">제목</label>
-			            <input type="text" th:field="*{title}" class="form-control">
+<!-- 			            <input type="text" th:field="*{title}" class="form-control"> -->
 			        </div>
 			        
 			        <div class="form-group">
 			            <label th:for="content">내용</label>
-			            <input type="text" th:field="*{content}" class="form-control">
-			            <!-- Editor 라이브러리 일단 나중에......... -->
+<!-- 			            <input type="text" th:field="*{content}" class="form-control"> -->
+<!-- 			            <textarea th:field="*{content}" class="form-control" id="content" rows="10"></textarea> -->
+<!-- 			            Editor 라이브러리 일단 나중에......... -->
 			        </div>
 				
 					<!-- 첨부파일도 일단 나중에! -->
-<!-- 			        <div class="form-group"> -->
-<!-- 			            <label th:for="file">첨부파일</label> -->
+			        <div class="form-group">
+			            <label th:for="file">첨부파일</label>
 <!-- 			            <input type="text" th:field="*{file}" class="form-control"> -->
-<!-- 			        </div> -->
-				
-					<button type="submit" class="btn btn-primary" id="submitBtn" value="기안하기"></button>
-				
-										
+			        </div>
+					
+<!-- 			        <div class="form-group"> -->
+<!-- 						<label for="itemImg">첨부파일</label> -->
+<!-- 						<input type="file" id="custom-file-input" name="itemImgFiles" accept="image/*" multiple> -->
+<!-- 						<div id="imgPreviewArea"></div> -->
+<!-- 					</div> -->
+					
+			        <div style="text-align: center">
+						<button type="submit" class="btn btn-primary" id="submitBtn">기안하기</button>
+			        </div>
+									
 				</form>
 			
 				
@@ -161,7 +168,7 @@
 		<script src="/js/datatables/jszip.min.js"></script>
 		<script src="/js/datatables/buttons.print.min.js"></script>
 
-		<!-- Page level custom scripts -->
+		<!-- 개별 js -->
 <!--     	<script src="/js/approval/approval.js"></script> -->
 	
 	</th:block>
