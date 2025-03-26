@@ -16,16 +16,16 @@
 				<div class="card-body">
 					<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
 						<div class="row">
+							<div class="col-sm-12 col-md-4">
+								<button type="button" id="menu1depthToggle">대메뉴 수정(열기)</button>
+								<button type="button" id="menu1Ajax">대메뉴 수정Ajax</button>
+							</div>
+							<div class="col-sm-12 col-md-2">
+							</div>
 							<div class="col-sm-12 col-md-6">
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<button type="button" id="addRow">메뉴 추가</button>
-								<button type="button" id="submitMenu">메뉴 저장</button>
-								<button type="button" id="submitMenuAjax">메뉴 저장Ajax</button>
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<button type="button" id="menu1depthToggle">대메뉴 수정(토글)</button>
-								<button type="button" id="menu1Submit">대메뉴 수정</button>
+								<button type="button" id="addRow">소메뉴 추가</button>
+								<button type="button" id="menu2Submit">소메뉴 저장</button>
+								<button type="button" id="menu2Ajax">소메뉴 저장Ajax</button>
 							</div>
 						</div>
 						<div class="row">
@@ -61,11 +61,11 @@
 											<th>순서</th>
 											<th>주소</th>
 											<th>삭제여부</th>
-											<th>액션</th>
+											<th>삭제</th>
 										</tr>
 									</thead>
 									<tbody id="2depth_menu">
-										<tr th:each="item, status : ${menuDTOIdList}" class="clickable-row">
+										<tr th:each="item, status : ${menuDTOIdList}" class="clickable-row menu2depth_items">
 											<td><input type="text" name="menuId" th:value="${item.menuId}" placeholder="메뉴 ID" /></td>
 											<td><input type="text" name="description" th:value="${item.description}" placeholder="메뉴 설명" /></td>
 											<td><input type="text" name="rank" th:value="${item.rank}" placeholder="순서" /></td>
@@ -87,7 +87,7 @@
 											<td><input type="text" id="isDeleted" th:field="${item[__${status.index}__].isDeleted}" placeholder="삭제 여부 (Y/N)" /></td> -->
 											<td><button type="button" class="remove2thMenu">삭제</button></td>
 										</tr>
-										<tr th:if="${#lists.isEmpty(menuDTOIdList)}" class="clickable-row" data-id="1">
+										<tr th:if="${#lists.isEmpty(menuDTOIdList)}" class="clickable-row menu2depth_items" data-id="1">
 											<td><input type="text" id="menuId" name="menuId" placeholder="메뉴 ID" /></td>
 											<td><input type="text" id="description" name="description" placeholder="메뉴 설명" /></td>
 											<td><input type="text" id="rank" name="rank" placeholder="순서" /></td>
@@ -120,7 +120,7 @@
 				console.group('click! addRow!');
 				let idx = $('#2depth_menu').children('tr').length+1;
 				console.log('idx is %s', idx);
-				let tableRowHtml = '<tr class="clickable-row" data-id='+idx+'>';
+				let tableRowHtml = '<tr class="clickable-row menu2depth_items" data-id='+idx+'>';
 				tableRowHtml += '<td><input type="text" name="menuId" value="" placeholder="메뉴 ID" /></td>';
 				tableRowHtml += '<td><input type="text" name="description" value="" placeholder="메뉴 설명" /></td>';
 				tableRowHtml += '<td><input type="text" name="rank" value="" placeholder="순서" /></td>';
@@ -140,16 +140,41 @@
 			});
 			
 			// 메뉴 저장 서브밋 처리
-			$('#submitMenu').on("click", function() {
+			$('#menu2Submit').on("click", function() {
 				console.group('click! submitMenu!');
+				alert("서브밋 불가!");
+				return false;
 				$('#menuDTOListForm').submit();
 				console.groupEnd();
 			});
 			
-			$('#submitMenuAjax').on("click", function() {
+			$('#menu2Ajax').on("click", function() {
 				console.group('click! submitMenu!');
 				//function submitMenu() {
-					const menuItems = document.querySelectorAll(".clickable-row");
+					let _rowCnt = $('.menu2depth_items').length;
+					let _totalCnt = $('.menu2depth_items').find('input').length;
+					let _hasValueCnt = 0;
+					const _rankSet = new Set();
+					$('.menu2depth_items').find('input').each(function(idx, item) {
+						if(item.name == "rank") _rankSet.add(item.value);
+						if(item.value != "" || item.value.length > 0) _hasValueCnt += 1;
+					});
+					
+					if(_totalCnt != _hasValueCnt) {
+						alert("소메뉴는 빈 값을 허용하지 않습니다.\n값을 입력하거나, 비어있는 메뉴 행을 삭제 후 저장해주세요.");
+						return false;
+					}
+/* 					console.log("_rowCnt : %s", _rowCnt);
+					console.log(typeof _rowCnt);
+					console.log(_rankSet);
+					console.log("_rankSet.size : %s", _rankSet.size);
+					console.log(typeof _rankSet.size); */
+					if(_rowCnt <= _rankSet) {
+						alert("순서는 중복될 수 없습니다.\n메뉴마다 다른 값을 입력해주세요.");
+						return false;
+					}
+					
+					const menuItems = document.querySelectorAll(".menu2depth_items");
 					const menuList = [];
 			
 					menuItems.forEach(item => {
@@ -212,20 +237,26 @@
 			// 1depth 메뉴 수정모드
 			$('#menu1depthToggle').on("click", function() {
 				console.group('click! #menu1depthToggle!');
-				
+				let _isDisabled = document.querySelector('#major_menuType').disabled;
+				console.log("_isDisabled : " + _isDisabled);
+				if(_isDisabled) {
+					$('#menu1depthToggle').text("대메뉴 수정(닫기)");
+				} else {
+					$('#menu1depthToggle').text("대메뉴 수정(열기)");
+				}
 				let inputItems = $('#major_menuType').parents('tr').children('td').find('input');
 				//console.log(inputItems);
 				// 현재 disabled 값을 가져온다! 가져온것!
-				let isDisabled = !document.querySelector('#major_menuType').disabled;
-				console.log("target isDisabled : " + isDisabled);
+				let _targetIsDisabled = !_isDisabled;
+				console.log("_targetIsDisabled : " + _targetIsDisabled);
 				for(let i=0; i<inputItems.length; i++) {
-					inputItems[i].disabled = isDisabled;
+					inputItems[i].disabled = _targetIsDisabled;
 				}
 				
 				console.groupEnd();
 			});
 			
-			$('#menu1Submit').on("click", function() {
+			$('#menu1Ajax').on("click", function() {
 				console.group('click! #menu1depthToggle!');
 				let _groupType = document.querySelector('#major_menuType').value;
 				if(!confirm("[ "+ _groupType + " ] 메뉴 정보를 수정 하시겠습니까?")){

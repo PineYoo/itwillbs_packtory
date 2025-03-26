@@ -49,17 +49,25 @@ public class MenuService {
 
 	
 	/**
-	 * 메뉴 관리 2depth에 마스터 정보 조회하기
+	 * 메뉴 관리 2depth에서 1depth 정보 조회하기
 	 * @param menuSearchDTO
 	 * @return
+	 * @throws Exception 
 	 */
-	public MenuDTO getMenuIdMaster(MenuSearchDTO menuSearchDTO) {
+	public MenuDTO getMenuTypeByIdx(MenuSearchDTO menuSearchDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		List<MenuDTO> menuDTOlist = getMenuTypeList(menuSearchDTO);
 		log.info("menuDTOlist size{}, {}", menuDTOlist.size(), menuDTOlist);
 		
-		// 가져온 menuDTOList에서 menuType을 searchDTO 에 넣는다
-		MenuDTO menuDTO = menuDTOlist.get(0);
+		MenuDTO menuDTO = null;
+		
+		// 1depth 객체는 하나여야 한다. 그냥 따로 만들자니.. 좀 그래서..
+		if(menuDTOlist.size() == 1) {
+			// 가져온 menuDTOList에서 menuType을 searchDTO 에 넣는다
+			menuDTO = menuDTOlist.get(0);
+		} else {
+			throw new Exception("메뉴 정보를 찾을 수 없습니다.");
+		}
 		
 		return menuDTO;
 	}
@@ -69,19 +77,20 @@ public class MenuService {
 	 * @param menuSearchDTO
 	 * @return
 	 */
-	public List<MenuDTO> getMenuIdList(MenuSearchDTO menuSearchDTO) {
+	public List<MenuDTO> getMenuIdListByMenuType(MenuSearchDTO menuSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		// 바로 검색하려니까 menuType값을 알수가 없다.
 		
-		List<MenuDTO> menuDTOlist = getMenuTypeList(menuSearchDTO);
-		log.info("menuDTOlist size{}, {}", menuDTOlist.size(), menuDTOlist);
+		// 컨트롤러에서 넘겨준 idx와 menuType 파라미터 확인
+		log.info("menuSearchDTO is {}", menuSearchDTO);
 		
 		// 가져온 menuDTOList에서 menuType을 searchDTO 에 넣는다
-		menuSearchDTO.setMenuType(menuDTOlist.get(0).getMenuType());
-		menuSearchDTO.setIsDeleted(IsDeleted.N);
+		/*
+		 * menuSearchDTO.setMenuType(menuDTOlist.get(0).getMenuType());
+		 * menuSearchDTO.setIsDeleted(IsDeleted.N);
+		 */
 		log.info("menuSearchDTO parameters : {}", menuSearchDTO);
 		
-		return menuMapper.getMenuIdList(menuSearchDTO);
+		return menuMapper.getMenuIdListByMenuType(menuSearchDTO);
 	}
 
 	/**

@@ -29,7 +29,7 @@ public interface MenuMapper {
 	 * @param menuSearchDTO
 	 * @return
 	 */
-	List<MenuDTO> getMenuIdList(MenuSearchDTO menuSearchDTO);
+	List<MenuDTO> getMenuIdListByMenuType(MenuSearchDTO menuSearchDTO);
 
 	/**
 	 * 메뉴 목록에서 isDeleted 수정하기 

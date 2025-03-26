@@ -100,7 +100,7 @@
 			</where>
 	</select>
 	
-	<select id="getMenuIdList" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
+	<select id="getMenuIdListByMenuType" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
 								resultType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		select 
 			<include refid="t_menu_columns_forSelect" />
@@ -108,9 +108,8 @@
 		<where>
 			menu_id != '0'
 			<if test="menuType != null">AND menu_type = #{menuType} </if>
-			<!-- <if test="menuId != null">AND menu_id = #{menuId} </if> -->
-			<!-- <if test="isDeleted != null">AND is_deleted = #{isDeleted} </if> -->
 		</where>
+		order by rank asc
 	</select>
 	
 	<update id="modifyMenu1Depth" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
