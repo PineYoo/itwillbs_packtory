@@ -16,73 +16,266 @@
 				<div class="card-body">
 					<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
 						<div class="row">
-							<div class="col-sm-12 col-md-3">
-								<label>AccessID:
-									<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
+							<div class="col-sm-12 col-md-6">
 							</div>
 							<div class="col-sm-12 col-md-3">
-								<label>Search:
-								<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
+								<button type="button" id="addRow">메뉴 추가</button>
+								<button type="button" id="submitMenu">메뉴 저장</button>
+								<button type="button" id="submitMenuAjax">메뉴 저장Ajax</button>
 							</div>
 							<div class="col-sm-12 col-md-3">
-								<label>Search2:
-								<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<button type="button" id="newBtn">메뉴 작성</button>
+								<button type="button" id="menu1depthToggle">대메뉴 수정(토글)</button>
+								<button type="button" id="menu1Submit">대메뉴 수정</button>
 							</div>
 						</div>
 						<div class="row">
 						</div>
+						<input type="hidden" th:field="${menuDTO.idx}" id="major_idx"/>
 						<table class="table table-bordered">
 							<thead>
 								<tr>
-									<th>번호</th>
-									<th>메뉴타입</th>
-									<th>메뉴아이디</th>
-									<th>메뉴순서</th>
+									<th>메뉴구분</th>
+									<!-- <th>메뉴아이디</th> -->
+									<th>순서</th>
 									<th>주소</th>
 									<th>삭제여부</th>
-									<th>작성자</th>
-									<th>접근일자</th>
-									<th>액션</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item, status : ${menuDTOList}" th:data-id="${item.idx}" class="clickable-row">
-									<!-- <th:block th:object="${item}"> -->
-									<td th:text="${status.count}"></td>
-									<td th:text="${item.menuType}"></td>
-									<td th:text="${item.menuId}"></td>
-									<td th:text="${item.rank}"></td>
-									<td th:text="${item.url}"></td>
-									<td th:text="${item.isDeleted}"></td>
-									<td th:text="${item.regId}"></td>
-									<td th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
-									<td><button type="button" id="modfiyBtn" th:text="${item.isDeleted =='Y'? '보이기':'숨기기'}"></button>
-									</td>
+								<tr th:object="${menuDTO}">
+									<td><input type="text" th:field="*{menuType}" id="major_menuType" disabled></td>
+									<!-- <td><input type="text" th:field="*{menuId}" disabled></td> -->
+									<td><input type="text" th:field="*{rank}" disabled></td>
+									<td><input type="text" th:field="*{url}" disabled></td>
+									<td><input type="text" th:field="*{isDeleted}" disabled></td>
 								</tr>
 							</tbody>
 						</table>
+						<div class="row">
+							<form action="/admin/menu/depthform" method="post" id="menuDTOListForm">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>메뉴아이디</th>
+											<th>메뉴설명</th>
+											<th>순서</th>
+											<th>주소</th>
+											<th>삭제여부</th>
+											<th>액션</th>
+										</tr>
+									</thead>
+									<tbody id="2depth_menu">
+										<tr th:each="item, status : ${menuDTOIdList}" class="clickable-row">
+											<td><input type="text" name="menuId" th:value="${item.menuId}" placeholder="메뉴 ID" /></td>
+											<td><input type="text" name="description" th:value="${item.description}" placeholder="메뉴 설명" /></td>
+											<td><input type="text" name="rank" th:value="${item.rank}" placeholder="순서" /></td>
+											<td><input type="text" name="url" th:value="${item.url}" placeholder="URL" /></td>
+											<td><input type="text" name="isDeleted" th:value="${item.isDeleted}" placeholder="삭제 여부 (Y/N)" /></td>
+											<!-- <th:block th:object="${item}"> -->
+									<!--/*	<td th:text="${item.menuType}"></td>
+											<td th:text="${item.menuId}"></td>
+											<td th:text="${item.url}"></td>
+											<td><select id="isDeleted" th:field="${item.isDeleted}">
+												<option th:each="deleted : ${T(kr.co.itwillbs.de.admin.constant.IsDeleted).values()}"
+														th:value="${deleted}" th:text="${deleted}"></option>
+												</select>
+											</td> */-->
+<!-- 											<td><input type="text" id="menuType" th:field="${item[__${status.index}__].menuType}" placeholder="메뉴 타입" /></td>
+											<td><input type="text" id="menuId" th:field="${item[__${status.index}__].menuId}" placeholder="메뉴 ID" /></td>
+											<td><input type="text" id="rank" th:field="${item[__${status.index}__].rank}" placeholder="순위" /></td>
+											<td><input type="text" id="url" th:field="${item[__${status.index}__].url}" placeholder="URL" /></td>
+											<td><input type="text" id="isDeleted" th:field="${item[__${status.index}__].isDeleted}" placeholder="삭제 여부 (Y/N)" /></td> -->
+											<td><button type="button" class="remove2thMenu">삭제</button></td>
+										</tr>
+										<tr th:if="${#lists.isEmpty(menuDTOIdList)}" class="clickable-row" data-id="1">
+											<td><input type="text" id="menuId" name="menuId" placeholder="메뉴 ID" /></td>
+											<td><input type="text" id="description" name="description" placeholder="메뉴 설명" /></td>
+											<td><input type="text" id="rank" name="rank" placeholder="순서" /></td>
+											<td><input type="text" id="url" name="url" placeholder="URL" /></td>
+											<td><input type="text" id="isDeleted" name="isDeleted" placeholder="삭제 여부 (Y/N)" /></td>
+											<td><button type="button" class="remove2thMenu">삭제</button></td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
+		</div>
+		<script type="text/javascript">
+/* 			$(".remove2thMenu").on("click", function() {
+				console.group('click! .remove2thMenu!');
+				
+				console.groupEnd();
+			}); */
+/* 			$("[id^='trRemove']").on("click", function() {
+				console.group('click! .trRemove!');
+				
+				console.groupEnd();
+			}); */
 			
-			<script type="text/javascript">
-				$('#newBtn').on("click", function() {
-					location.href="/admin/menu/new";
+			// 메뉴 추가 버튼 클릭 이벤트
+			$('#addRow').on("click", function() {
+				console.group('click! addRow!');
+				let idx = $('#2depth_menu').children('tr').length+1;
+				console.log('idx is %s', idx);
+				let tableRowHtml = '<tr class="clickable-row" data-id='+idx+'>';
+				tableRowHtml += '<td><input type="text" name="menuId" value="" placeholder="메뉴 ID" /></td>';
+				tableRowHtml += '<td><input type="text" name="description" value="" placeholder="메뉴 설명" /></td>';
+				tableRowHtml += '<td><input type="text" name="rank" value="" placeholder="순서" /></td>';
+				tableRowHtml += '<td><input type="text" name="url" value="" placeholder="URL" /></td>';
+				tableRowHtml += '<td><input type="text" name="isDeleted" value="" placeholder="삭제 여부 (Y/N)" /></td>';
+/* 				tableRowHtml += '<td><input type="text" name="menuType['+(idx-1)+']" value="" placeholder="메뉴 타입" /></td>';
+				tableRowHtml += '<td><input type="text" name="menuId['+(idx-1)+']" value="" placeholder="메뉴 ID" /></td>';
+				tableRowHtml += '<td><input type="text" name="rank['+(idx-1)+']" value="" placeholder="순위" /></td>';
+				tableRowHtml += '<td><input type="text" name="url['+(idx-1)+']" value="" placeholder="URL" /></td>';
+				tableRowHtml += '<td><input type="text" name="isDeleted['+(idx-1)+']" value="" placeholder="삭제 여부 (Y/N)" /></td>'; */
+				//버튼 외의 디자인적 요소를 사용해야 할 경우 th:each와 th:if도 함께 손봐야 한다.
+				//tableRowHtml += '<td><a href="#none" id="trRemove-'+idx+'" class="remove2thMenu">삭제</a></td>';
+				tableRowHtml += '<td><button type="button" class="remove2thMenu">삭제</button></td>';
+				tableRowHtml += '</tr>';
+				$('#2depth_menu').append(tableRowHtml);
+				console.groupEnd();
+			});
+			
+			// 메뉴 저장 서브밋 처리
+			$('#submitMenu').on("click", function() {
+				console.group('click! submitMenu!');
+				$('#menuDTOListForm').submit();
+				console.groupEnd();
+			});
+			
+			$('#submitMenuAjax').on("click", function() {
+				console.group('click! submitMenu!');
+				//function submitMenu() {
+					const menuItems = document.querySelectorAll(".clickable-row");
+					const menuList = [];
+			
+					menuItems.forEach(item => {
+						const menu = {
+							menuType : document.querySelector('#major_menuType').value,
+							menuId: item.querySelector('[name="menuId"]').value,
+							rank: item.querySelector('[name="rank"]').value,
+							url: item.querySelector('[name="url"]').value,
+							isDeleted: item.querySelector('[name="isDeleted"]').value,
+							description: item.querySelector('[name="description"]').value
+						};
+						menuList.push(menu);
+					});
+					console.log(menuList);
+					if(!confirm("소메뉴를 저장 하시겠습니까?")) {
+						return false;
+					}
+					// JSON 데이터를 서버로 전송
+					fetch("/admin/menu/2depthjson", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(menuList)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.state === "success") {
+							alert(data.message);
+							location.reload(); // 현재 페이지 새로 고침
+						}
+						
+					})
+					.catch(error => {
+						console.error("전송 오류:", error);
+						if(data.state === "fail") {
+							alert(data.message);
+						}
+					});
+				//}
+				console.groupEnd();
+			});
+			
+			// 2depth 메뉴들의 삭제 버튼에 이벤트
+			$('#2depth_menu').on("click", '.remove2thMenu', function() {
+				console.group('click! #2depth_menu > .remove2thMenu!');
+				//랜더링 이후 append로 들어간 dom에 이렇게 해야지 이벤트가 걸리다니?
+				console.log($(this));
+				//디자인을 위해 최소한? 1개는 가지고 있어야 할것 같다
+				if($('#2depth_menu').children('tr').length > 1) {
+					//클릭한 버튼의 부모 tr을 없애주세요
+					$(this).parents('tr').remove();
+				} else {
+					console.log("It's imposible");
+				}
+				console.groupEnd();
+			});
+			
+			// 1depth 메뉴 수정모드
+			$('#menu1depthToggle').on("click", function() {
+				console.group('click! #menu1depthToggle!');
+				
+				let inputItems = $('#major_menuType').parents('tr').children('td').find('input');
+				//console.log(inputItems);
+				// 현재 disabled 값을 가져온다! 가져온것!
+				let isDisabled = !document.querySelector('#major_menuType').disabled;
+				console.log("target isDisabled : " + isDisabled);
+				for(let i=0; i<inputItems.length; i++) {
+					inputItems[i].disabled = isDisabled;
+				}
+				
+				console.groupEnd();
+			});
+			
+			$('#menu1Submit').on("click", function() {
+				console.group('click! #menu1depthToggle!');
+				let _groupType = document.querySelector('#major_menuType').value;
+				if(!confirm("[ "+ _groupType + " ] 메뉴 정보를 수정 하시겠습니까?")){
+					return;
+				}
+				// 빈 객체 생성
+				let _jsonObj = {};
+				let _name, _value; // _이름과 값으로 쓸 변수 생성
+				// 반복 돌면서 데이터 가져오기
+				let _inputItems = $('#major_menuType').parents('tr').children('td').find('input');
+				$(_inputItems).each(function(idx) {
+					_name = $(this).attr('name');	// DTO 클래스 필드 값 가져오기
+					_value = $(this).val();	// DTO 클래스 필드에 들어갈 값 가져오기
+					_jsonObj[_name] = _value;
+				});
+				// 인덱스 넣기
+				_jsonObj['idx'] = $('#major_idx').val();
+				console.log(_jsonObj);
+				// JSON 데이터를 서버로 전송
+				fetch("/admin/menu/1depthjson", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify(_jsonObj)
+				})
+				.then(response => response.json())
+				.then(data => {
+					console.log("서버 응답:", data);
+					if(data.state === "success") {
+						alert(data.message);
+						location.reload(); // 현재 페이지 새로 고침
+					}
+					
+				})
+				.catch(error => {
+					console.error("전송 오류:", error);
+					if(data.state === "fail") {
+						alert(data.message);
+					}
 				});
 				
-				$('.clickable-row').on("click", function() {
-					const id = $(this).data("id");
-					console.log("click id is %s", id);
-					location.href=`/admin/menu/${id}`;
-				});
-			</script>
-		</div>
+				
+				console.groupEnd();
+			});
+			
+			function inputDisabledToggle() {
+				
+			}
+		</script>
 	</th:block>
 </body>
 </html>

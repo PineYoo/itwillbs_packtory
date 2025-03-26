@@ -15,7 +15,7 @@ import lombok.ToString;
 public class MenuDTO {
 
 	// 테이블 PK
-	private String idx;
+	private Long idx;
 	// 메뉴 타입(공통코드화 해야할듯?)
 	private String menuType;
 	// 메뉴 ID 2뎁스 이상 있을 때 묶음? 근데 이 이름이 맞아?
@@ -27,11 +27,20 @@ public class MenuDTO {
 	// description 메뉴 설명
 	private String description;
 	
-	private IsDeleted isDeleted;
+	private String isDeleted;
 	
 	private String regId;
 	private LocalDateTime regDate;
 	
 	private String modId;
 	private LocalDateTime modDate;
+	
+	public MenuDTO(String menuType, String menuId, String rank, String url, String isDeleted) {
+		this.menuType = menuType;
+		this.menuId = menuId;
+		this.rank = rank;
+		this.url = url;
+		this.isDeleted = isDeleted;
+	}
+	
 }

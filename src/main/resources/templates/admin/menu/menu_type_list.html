@@ -42,13 +42,13 @@
 								<tr>
 									<th>번호</th>
 									<th>메뉴타입</th>
-									<th>메뉴아이디</th>
+									<!-- <th>메뉴아이디</th> -->
 									<th>메뉴순서</th>
 									<th>주소</th>
 									<th>삭제여부</th>
 									<th>작성자</th>
-									<th>접근일자</th>
-									<th>액션</th>
+									<th>작성일자</th>
+									<!-- <th>액션</th> -->
 								</tr>
 							</thead>
 							<tbody>
@@ -56,14 +56,20 @@
 									<!-- <th:block th:object="${item}"> -->
 									<td th:text="${status.count}"></td>
 									<td th:text="${item.menuType}"></td>
-									<td th:text="${item.menuId}"></td>
+									<!-- <td th:text="${item.menuId}"></td> -->
 									<td th:text="${item.rank}"></td>
 									<td th:text="${item.url}"></td>
 									<td th:text="${item.isDeleted}"></td>
 									<td th:text="${item.regId}"></td>
 									<td th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
-									<td><button type="button" id="modfiyBtn" th:text="${item.isDeleted =='Y'? '보이기':'숨기기'}"></button>
-									</td>
+									<!-- <td th:switch="${item.isDeleted}">
+										<button type="button" id="modfiyBtn" th:case="Y">보이기</button>
+										<button type="button" id="modfiyBtn" th:case="N">숨기기</button>
+										<span th:case="Y">삭제됨</span>
+										<span th:case="N">살아있음</span>
+									</td> -->
+<!-- 										<button type="button" id="modfiyBtn" th:if="${item.isDeleted == Y}">보이기</button>
+										<button type="button" id="modfiyBtn" th:unless="${item.isDeleted != Y}">숨기기</button> -->
 								</tr>
 							</tbody>
 						</table>

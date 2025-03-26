@@ -1,8 +1,11 @@
 package kr.co.itwillbs.de.admin.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +13,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.co.itwillbs.de.admin.dto.Menu2ndDTO;
 import kr.co.itwillbs.de.admin.dto.MenuDTO;
+import kr.co.itwillbs.de.admin.dto.MenuDTOList;
 import kr.co.itwillbs.de.admin.dto.MenuSearchDTO;
 import kr.co.itwillbs.de.admin.service.MenuService;
 import kr.co.itwillbs.de.common.util.CommonUtils;
@@ -96,11 +103,115 @@ public class MenuController {
 		if(!comUtils.isLongValue(id)) {
 			return "redirect:"+MENU_PATH;
 		}
-		menuSearchDTO.setMenuId(id);
+		menuSearchDTO.setIdx(id);
+		MenuDTO menuDTO = menuService.getMenuIdMaster(menuSearchDTO);
+		log.info("menuDTO is {}", menuDTO);
+		model.addAttribute("menuDTO", menuDTO);
 		List<MenuDTO> menuDTOIdList = menuService.getMenuIdList(menuSearchDTO);
+		log.info("menuDTOIdList is {}", menuDTOIdList);
 		model.addAttribute("menuDTOIdList", menuDTOIdList);
 		
 		return MENU_PATH+"/menu_id_list";
+	}
+	
+	@PostMapping("/depthform")
+	public String menuIdRegister(@ModelAttribute MenuDTOList menuDTOList, Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info("requestData : {}", menuDTOList);
+		
+		if(menuDTOList != null && menuDTOList.getMenuList().size() != 0) {
+			for (Menu2ndDTO menu  : menuDTOList.getMenuList()) {
+				log.info("{}", comUtils.ObjToString(menu));
+			}
+		}
+		
+		return MENU_PATH+"/menu_id_list";
+	}
+	
+	/**
+	 * 어드민 > 메뉴 목록 > 메뉴관리(1Depth) > 대메뉴 수정
+	 * <br> 전체 삭제 후 인서트 작업이기에 등록/수정 한곳에서 이루어짐
+	 * @param menuList
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/11depthjson")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> menu1ModifyJson11(@RequestBody Map<String, Object> paramMap,  Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info("requestData : {}", paramMap);
+		
+		
+		Map<String, Object> response = new HashMap<>();
+		try {
+			//menuService.modifyMenu1Depth(menuDTO);
+			response.put("state", "success");
+			response.put("message", "정상적으로 수행 되었습니다.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("state", "fail");
+			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
+		}
+		
+		return ResponseEntity.ok(response);
+	}
+	/**
+	 * 어드민 > 메뉴 목록 > 메뉴관리(1Depth) > 대메뉴 수정
+	 * <br> 전체 삭제 후 인서트 작업이기에 등록/수정 한곳에서 이루어짐
+	 * @param menuList
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/1depthjson")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> menu1ModifyJson(@RequestBody MenuDTO menuDTO,  Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info("requestData : {}", menuDTO);
+		
+		Map<String, Object> response = new HashMap<>();
+		try {
+			menuService.modifyMenu1Depth(menuDTO);
+			response.put("state", "success");
+			response.put("message", "정상적으로 수행 되었습니다.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("state", "fail");
+			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
+		}
+		
+		return ResponseEntity.ok(response);
+	}
+	
+	//json 데이터 받아짐
+	/**
+	 * 어드민 > 메뉴 목록 > 메뉴관리(2Depth) > 소메뉴 등록/수정
+	 * <br> 전체 삭제 후 인서트 작업이기에 등록/수정 한곳에서 이루어짐
+	 * @param menuList
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/2depthjson")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> menu2RegisterJson(@RequestBody List<MenuDTO> menuList,  Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info("requestData : {}", menuList);
+		
+		Map<String, Object> response = new HashMap<>();
+		try {
+			menuService.registerMenu2Depth(menuList);
+			response.put("state", "success");
+			response.put("message", "정상적으로 수행 되었습니다.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("state", "fail");
+			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
+		}
+		
+		return ResponseEntity.ok(response);
 	}
 	
 	/**
@@ -125,7 +236,7 @@ public class MenuController {
 			return "redirect:"+MENU_PATH;
 		}
 		
-		menuDTO.setIdx(idx);
+		menuDTO.setIdx(Long.parseLong(idx));
 		menuService.modifyMenuIsDeleted(menuDTO);
 		
 		// 상품 상세정보 조회 페이지 리다이렉트(GET 방식 /items/ 와 id값 결합 필요)
