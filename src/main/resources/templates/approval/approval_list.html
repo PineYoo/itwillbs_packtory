@@ -25,7 +25,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
 	<link href="/css/sb-admin-2.css" rel="stylesheet">
-	<link href="/css/adm.css" rel="stylesheet">
+	<link href="/css/common.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
 </th:block>
 </head>
@@ -39,6 +39,13 @@
 		<!-- 본문 컨테이너 -->
 		<div class="card-body">
 		
+			<!-- 기안서 작성 버튼 -->
+			<div class="regist-wrap">
+				<!-- 로그인한 사용자 ID 저장 -->
+<!--				<input type="hidden" id="userId" th:value="${#httpSession.getAttribute('userId')}">-->
+				<button class="btn btn-success ml-2" id="registerBtn" type="button">기안서 작성</button>
+			</div>
+			
 			<!-- 검색바 -->
 			<div class="search-wrap border">
 				<section class="d-flex search-inner">
@@ -98,7 +105,7 @@
 		    		<!-- 키워드검색 -->
 		    		<div class="col-5 search-box">
 	                     <div class="input-group">
-	                         <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="제목, 사용자 검색" aria-label="Search" aria-describedby="basic-addon2">
+	                         <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="제목/내용/사원명 검색" aria-label="Search" aria-describedby="basic-addon2">
 	                         <div class="input-group-append">
 	                             <button class="btn btn-primary" id="searchBtn" type="button">검색</button>
 	                         </div>
@@ -107,11 +114,6 @@
 	  			</section>
 			</div>
 			<!-- 검색바 끝 -->
-			
-			<!-- 기안서 작성 버튼 -->
-			<div class="regist-wrap">
-				<button class="btn btn-success ml-2" id="registerBtn" type="button">기안서 작성</button>
-			</div>
 			
 			
 			<!-- 그리드(테이블) -->
@@ -167,7 +169,6 @@
 		<script src="/js/datatables/buttons.html5.min.js"></script>
 		<script src="/js/datatables/jszip.min.js"></script>
 		<script src="/js/datatables/buttons.print.min.js"></script>
-
 		<!-- Page level custom scripts -->
     	<script src="/js/approval/approval.js"></script>
 	</th:block>

@@ -1523,3 +1523,6 @@ select
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
 	at java.base/java.lang.Thread.run(Thread.java:1583)
 >>>>>>> branch 'main' of https://github.com/mingming-01/packtory_.git
+2025-03-25 18:33:19.788325+09:00 jdbc[23]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]T_COMMUTE"; expected "TRUNCATE"; SQL statement:
+T_COMMUTE [42001-232]

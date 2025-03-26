@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2025-03-25 20:00:47.283 [RMI TCP Connection(28)-127.0.0.1][INFO] o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested. 
 2025-03-25 20:00:47.285 [RMI TCP Connection(28)-127.0.0.1][INFO] o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
 2025-03-25 20:00:47.286 [tomcat-shutdown][INFO] o.a.c.h.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"] 
@@ -6,3 +7,6 @@
 2025-03-25 20:00:47.294 [RMI TCP Connection(28)-127.0.0.1][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default' 
 2025-03-25 20:00:47.295 [RMI TCP Connection(28)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown initiated... 
 2025-03-25 20:00:47.296 [RMI TCP Connection(28)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown completed. 
+=======
+2025-03-26 08:58:06.320 [Hikari Connection Pool housekeeper][WARN] c.z.h.p.HikariPool - Hikari Connection Pool - Thread starvation or clock leap detected (housekeeper delta=8h37m41s437ms72µs100ns). 
+>>>>>>> branch 'main' of https://github.com/mingming-01/packtory_.git

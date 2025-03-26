@@ -338,3 +338,19 @@ body {font-family: "Nunito", 'Pretendard', serif;}
 
 .result {font-size:14px;padding:4px; display: none;}
 
+
+
+#registerBtn {
+    float: right;
+/*    margin-right: 10px;*/
+	margin-bottom: 10px;
+/*	background-color: #3c3e3c;*/
+/*	border: #3c3e3c;*/
+	font-weight: 700;
+}
+
+.regist-wrap {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px;
+}

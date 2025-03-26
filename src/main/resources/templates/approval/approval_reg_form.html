@@ -65,9 +65,9 @@
 			        
 			        <div class="form-group">
 			            <label th:for="approver_id">결재라인</label>
-			            <input type="text" th:field="*{approver1}" class="form-control" readonly>
-			            <input type="text" th:field="*{approver2}" class="form-control" readonly>
-			            <input type="text" th:field="*{approver3}" class="form-control" readonly>
+			            <input type="text" th:field="*{approver1}" class="form-control" placeholder="1차 결재" readonly>
+			            <input type="text" th:field="*{approver2}" class="form-control" placeholder="2차 결재" readonly>
+			            <input type="text" th:field="*{approver3}" class="form-control" placeholder="3차 결재" readonly>
 			        	<button type="button" class="btn btn-primary" id="searchApproverBtn" value="검색"><i class="fa-solid fa-magnifying-glass"></i></button>
 			        </div>
 				
