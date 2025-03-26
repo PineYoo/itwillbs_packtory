@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>사원 상세정보</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #ccc;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        input, select, textarea {
+            width: 95%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            display: block;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <h2>사원 상세정보</h2>
+
+    <form th:action="@{/employee/detail/{id}(id=${employeeDetailDTO.id})}" method="post" th:object="${employeeDetailDTO}">
+        <input type="hidden" name="_method" value="put">
+        
+        <label>사원번호</label>
+        <input type="text" th:field="*{id}" readonly>
+        
+        <label>전화번호</label>
+        <input type="text" th:field="*{phoneNumber}" readonly>
+        
+        <label>이메일</label>
+        <input type="text" th:field="*{email}" readonly>
+        
+        <label>성별</label>
+        <select th:field="*{gender}" disabled>
+            <option value="M" th:selected="*{gender} == 'M'">남성</option>
+            <option value="F" th:selected="*{gender} == 'F'">여성</option>
+        </select>
+        
+        <label>주소1</label>
+        <input type="text" th:field="*{address1}" readonly>
+        
+        <label>주소2</label>
+        <input type="text" th:field="*{address2}" readonly>
+        
+        <label>프로필 사진</label>
+        <img th:src="|${profileImage != null} ? ${profileImage} : '/images/default-profile.png'|"alt="프로필 사진">
+        
+        <label>급여은행 코드</label>
+        <input type="text" th:field="*{salaryBankCode}" readonly>
+        
+        <label>급여은행 이름</label>
+        <input type="text" th:field="*{salaryBankName}" readonly>
+        
+        <label>급여계좌번호</label>
+        <input type="text" th:field="*{salaryAccountNumber}" readonly>
+        
+        <label>급여계좌 예금주</label>
+        <input type="text" th:field="*{salaryAccountHolder}" readonly>
+        
+        <label>직원 차량 여부</label>
+        <input type="text" th:field="*{hasVehicle}" readonly>
+        
+        <label>직원 상태 코드</label>
+        <input type="text" th:field="*{employeeStatusCode}" readonly>
+        
+        <label>직원 상태 시작일</label>
+        <input type="date" th:field="*{statusStartDate}" readonly>
+        
+        <label>직원 상태 종료일</label>
+        <input type="date" th:field="*{statusEndDate}" readonly>
+        
+        <label>작성자</label>
+        <input type="text" th:field="*{regId}" readonly>
+        
+        <label>작성일자</label>
+        <input type="date" th:field="*{regDate}" readonly>
+        
+        <label>최종 수정자</label>
+        <input type="text" th:field="*{modId}" readonly>
+        
+        <label>최종 수정일자</label>
+        <input type="date" th:field="*{modDate}" readonly>
+
+        <div id="commandArea">
+            <!-- 수정 버튼 추가 -->
+            <button type="button" id="btnEdit">사원수정</button>
+            <button type="submit" id="btnSave" style="display:none;">수정 저장</button> <!-- 숨겨진 상태 -->
+            <button type="button" id="btnRemove" data-id="${employeeDetailDTO.id}">사원삭제</button>
+            <button type="button" id="btnList">사원목록</button>
+        </div>
+    </form>
+
+    <script src="/js/jquery-3.7.1.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            // 수정 버튼 클릭 시 수정 필드 활성화
+            $("#btnEdit").on("click", function() {
+                $("input[readonly]").prop("readonly", false);  // 모든 readonly 속성 제거
+                $("select[readonly]").prop("disabled", false);  // select 태그도 활성화
+                $("#btnSave").show(); // 수정 저장 버튼 표시
+                $(this).hide(); // 사원수정 버튼 숨기기
+            });
+
+            // 삭제 버튼 클릭 시
+            $("#btnRemove").on("click", function() {
+                const empId = $(this).data("id");
+                if(confirm("사원을 삭제하시겠습니까?")) {
+                    $.ajax({
+                        url: `/employee/${empId}/delete`,
+                        type: "POST",
+                        success: function(response) {
+                            if(response === "success") {
+                                alert("사원 삭제 성공!");
+                                location.href = "/employee";
+                            } else {
+                                alert("삭제 실패: " + response);
+                            }
+                        },
+                        error: function(error) {
+                            alert("사원 삭제 과정에서 오류 발생!");
+                            console.error(error);
+                        }
+                    });
+                }
+            });
+
+            // 목록 버튼 클릭 시
+            $("#btnList").on("click", function() {
+                location.href = "/employee";
+            });
+        });
+    </script>
+</body>
+</html>
