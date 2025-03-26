@@ -51,15 +51,15 @@ public class ApprovalController {
 		System.out.println("기안자ID:" + userId);
 		
 		// 기안자ID 값으로 사원정보 가져오기
-//		approvalService.getEmployeeInfo(userId);
-		
+		DraftDTO draftDTO = approvalService.getEmployeeInfo(userId);
+		System.out.println("사원 정보 : " + draftDTO );
 		
 		// 임시로 하드코딩
-		DraftDTO draftDTO = new DraftDTO();
-		draftDTO.setDrafter_id(userId);
-		draftDTO.setDrafter_name("홍길동");
-		draftDTO.setDrafter_position("대리");
-		
+//		DraftDTO draftDTO = new DraftDTO();
+//		draftDTO.setDrafter_id(userId);
+//		draftDTO.setDrafter_name("홍길동");
+//		draftDTO.setDrafter_department("인사과");
+//		draftDTO.setDrafter_position("대리");
 		
 		model.addAttribute("draftDTO", draftDTO);
 		return "approval/approval_reg_form";

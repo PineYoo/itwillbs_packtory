@@ -19,10 +19,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @ToString
 public class DraftDTO {
-	private Long id;				// 기안서ID
+	private Long idx;				// 기안서ID
 	
 	private String drafter_id;		// 기안자ID(사원번호)
 	private String drafter_name;	// 기안자명(작성자)
+	private String drafter_department;// 기안자 부서
 	private String drafter_position;// 기안자 직급
 
 	//	@NotBlank(message = "결재유형을 선택해주세요.")
