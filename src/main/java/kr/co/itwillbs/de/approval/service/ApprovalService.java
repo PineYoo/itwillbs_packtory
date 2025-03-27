@@ -50,8 +50,8 @@ public class ApprovalService {
 		System.out.println(draftDTO);
 		//-------------------------------------------------------------
 		// 기안서 저장
-//		return 1;
-		return approvalMapper.insertApproval(draftDTO);
+		return 1;
+//		return approvalMapper.insertApproval(draftDTO);
 	}
 	
 	
