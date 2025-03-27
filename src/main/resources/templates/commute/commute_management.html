@@ -22,21 +22,23 @@
 						<table class="table table-bordered" id="commuteManagement" width="100%" cellspacing="0">
 							<thead>
 								<tr>
-<!-- 									<th>날짜</th> -->
 									<th>사원번호</th>
+									<th>날짜</th>
 <!-- 									<th>부서</th> -->
 <!-- 									<th>직책</th> -->
 <!-- 									<th>이름</th> -->
 									<th>출근시간</th>
-<!-- 									<th>퇴근시간</th> -->
+									<th>퇴근시간</th>
 									<th>근무상태</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="commute, status : ${commuteDTOList}" th:data-id="${commute.idx}" class="clickable-row">
+								<tr th:each="commute, status : ${commuteList}" th:data-id="${commute.workDate}" class="clickable-row">
 									<td th:text="${commute.employeeId}"></td>
-									<td th:text="${commute.regDate != null ? #temporals.format(commute.regDate, 'yyyy-MM-dd HH:mm:ss') : 'No Date'}"></td>
-									<td th:text="${commute.workStatusCode}"></td>
+									<td th:text="${commute.workDate}"></td>
+									<td th:text="${commute.checkIn != null ? #temporals.format(commute.checkIn, 'HH:mm:ss') : '-'}"></td>
+									<td th:text="${commute.checkOut != null ? #temporals.format(commute.checkOut, 'HH:mm:ss') : '-'}"></td>
+									<td th:text="${commute.workStatus}"></td>
 								</tr>
 							</tbody>
 						</table>

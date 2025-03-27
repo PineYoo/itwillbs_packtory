@@ -8,8 +8,8 @@
 		document_number,
 		trade_code,
 		status_code,
-		business_name,
-		business_number,
+		company_name,
+		company_number,
 		request_date,
 		expected_date,
 		due_date,
@@ -53,7 +53,7 @@
 		d.idx,
 		d.document_number,
 		o.request_date,
-		o.business_name,
+		o.company_name,
 		d.supply_amount,
 		d.vat_amount,
 		d.total_amount,
@@ -79,28 +79,28 @@
 	<insert id="insertOrder">
 		INSERT INTO t_order
 		VALUES (
-			null	-- idx(auto_increment)
-			, null	-- document_number(임시)
-			, '수주'	-- trade_code(임시)
-			, '미발행'	-- status_code(임시)
-			, ''	-- business_name(임시)
-			, #{businessNumber}	-- business_number
-			, #{requestDate}	-- request_date
-			, null	-- expected_date(임시)
-			, null 	-- due_date(임시)
-			, null	-- destination_name(임시)
-			, null	-- reciver(임시)
-			, null	-- phone1(임시)
-			, null	-- phone2(임시)
-			, #{postCode}	-- post_code
-			, #{address1}	-- address1
-			, #{address2}	-- address2
-			, null	-- special_issue
-			, null	-- is_deleted
-			, null	-- reg_id(임시 - 나중에 session에서 가져올것)
-			, now()	-- reg_date
-			, null	-- mod_id(임시 - 나중에 session에서 가져올것)
-			, now()	-- mod_date
+			null					-- idx(auto_increment)
+			, null					-- document_number(임시 - 시퀀스 활용?)
+			, '수주'				-- trade_code(임시 - 나중에 코드로 가져올거임)
+			, '미출고'				-- status_code(임시 - 나중에 코드로 가져올거임)
+			, ''					-- company_name(임시 - t_client.company_name 에서 가져올거임)
+			, ''					-- company_number(임시 - t_client.business_number 에서 가져올거임)
+			, #{requestDate}		-- request_date
+			, null					-- expected_date(나중에 상세화면에서 우리가 적는 부분)
+			, #{dueDate} 			-- due_date
+			, #{destinationName}	-- destination_name
+			, #{receiver}			-- reciver
+			, #{phone1}				-- phone1
+			, #{phone2}				-- phone2
+			, #{postCode}			-- post_code
+			, #{address1}			-- address1
+			, #{address2}			-- address2
+			, null					-- special_issue
+			, null					-- is_deleted
+			, null					-- reg_id(임시 - 나중에 session에서 가져올것)
+			, now()					-- reg_date
+			, null					-- mod_id(임시 - 나중에 session에서 가져올것)
+			, now()					-- mod_date
 		)
 	</insert>
 	<insert id="insertOrderDetail">

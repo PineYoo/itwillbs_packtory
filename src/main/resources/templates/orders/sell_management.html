@@ -105,16 +105,16 @@
 							<tbody>
 								<tr th:each="sell, status : ${sellDTOList}" th:data-id="${sell['idx']}">
 								    <td><input type="checkbox"></td>
-								    <td th:text="${sell['document_number']}"></td>
+								    <td th:text="${sell['document_number'] != null ? sell['document_number'] : '-'}"></td>
 <!-- 								    <td th:text="${sell['request_date'] != null ? #temporals.format(sell['request_date'], 'yyyy-MM-dd') : 'No Date'}"></td> -->
-								    <td th:text="${sell['request_date']}"></td>		<!-- HashMap으로 가져오면서 String으로 들고와짐 -->
-								    <td th:text="${sell['business_name']}"></td>
-								    <td th:text="${sell['supply_amount']}"></td>
-								    <td th:text="${sell['vat_amount']}"></td>
-								    <td th:text="${sell['total_amount']}"></td>
+								    <td th:text="${sell['reg_date'] != null ? sell['reg_date'] : '-'}"></td>		<!-- HashMap으로 가져오면서 String으로 들고와짐 -->
+								    <td th:text="${sell['company_name'] != null ? sell['company_name'] : '-'}"></td>
+								    <td th:text="${sell['supply_amount'] != null ? sell['supply_amount'] : '-'}"></td>
+								    <td th:text="${sell['vat_amount'] != null ? sell['vat_amount'] : '-'}"></td>
+								    <td th:text="${sell['total_amount'] != null ? sell['total_amount'] : '-'}"></td>
 <!-- 								    <td th:text="${sell['expected_date'] != null ? #temporals.format(sell['expected_date'], 'yyyy-MM-dd') : 'No Date'}"></td> -->
-								    <td th:text="${sell['expected_date']}"></td>	<!-- HashMap으로 가져오면서 String으로 들고와짐 -->
-								    <td th:text="${sell['client_name']}"></td>
+								    <td th:text="${sell['expected_date'] != null ? sell['expected_date'] : '-'}"></td>	<!-- HashMap으로 가져오면서 String으로 들고와짐 -->
+								    <td th:text="${sell['client_name'] != null ? sell['client_name'] : '회의 전'}"></td>
 								</tr>
 
 							</tbody>
