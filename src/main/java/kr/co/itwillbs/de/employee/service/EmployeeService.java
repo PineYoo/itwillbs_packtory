@@ -68,7 +68,7 @@ public class EmployeeService {
     }
 
     // ✅ 사원 기본 정보 수정 (리스트 페이지에서 수정)
-    @Transactional
+    @Transactional 
     public void updateEmployee(EmployeeDTO employeeDTO) {
         // 기존 사원 정보 조회 (사원번호로 찾기)
         Employee employee = employeeRepository.findById(employeeDTO.getId())
