@@ -87,7 +87,7 @@ public class EmployeeController {
         log.info("{} --- start", Thread.currentThread().getStackTrace()[1].getMethodName());
         EmployeeDetailDTO employeeDetailDTO = employeeService.getEmployeeDetail(id);
         model.addAttribute("employeeDetailDTO", employeeDetailDTO);
-        return "employee/list_detail";
+        return "employee/list_detail"; // list_detail 페이지로 이동
     }
 
     // 사원 수정 처리
@@ -96,7 +96,7 @@ public class EmployeeController {
         log.info("{} --- start", Thread.currentThread().getStackTrace()[1].getMethodName());
         employeeDetailDTO.setId(id);
         employeeService.updateEmployeeDetail(employeeDetailDTO);
-        return "redirect:/employee/list_detail/" + id;
+        return "redirect:/employee/detail/" + id; // 사원 상세 페이지로 리다이렉트
     }
 
     // 사원 삭제 처리

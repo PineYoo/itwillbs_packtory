@@ -13,7 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import kr.co.itwillbs.de.employee.dto.EmployeeDetailDTO;
 import lombok.Builder;
@@ -31,9 +31,9 @@ import lombok.ToString;
 @ToString
 public class EmployeeDetail {
 	
-	@ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee; // Employee와 양방향 관계
+	@OneToOne
+	@JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Employee employee; // 연관된 Employee 객체
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,7 +41,7 @@ public class EmployeeDetail {
     private Long idx; // 테이블 인덱스
 
     @Column(name = "id", length = 50, nullable = false)
-    private String id; // 사원번호
+    private String id; // 사원번호 (기본 테이블의 id와 동일하게 설정)
 
     @Column(length = 50, nullable = false)
     private String phoneNumber; // 전화번호
@@ -96,6 +96,7 @@ public class EmployeeDetail {
 
     @LastModifiedDate
     private LocalDateTime modDate; // 최종작성일자
+
 
     // 빌더 패턴
     @Builder

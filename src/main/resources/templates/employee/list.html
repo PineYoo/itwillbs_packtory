@@ -66,6 +66,7 @@
                 <th>하위부서</th>
                 <th>직급</th>
                 <th>입사일</th>
+                <th>경력</th>
                 <th>직원 상태</th>
             </tr>
         </thead>
@@ -79,6 +80,7 @@
 	            <td th:text="${employee.positionCode}"></td>
 <!-- 	            <td th:text="${#temporals.format(employee.hireDate, 'yyyy-MM-dd')}"></td> -->
 				<td th:text="${#temporals.format(employee.hireDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+				<td th:text="${employee.workExperience != null ? employee.workExperience : '경력 없음'}"></td>
 	            <td th:text="${employee.employeeStatus}"></td>  <!-- 상태 값 출력 -->
 	        </tr>
     	</tbody>

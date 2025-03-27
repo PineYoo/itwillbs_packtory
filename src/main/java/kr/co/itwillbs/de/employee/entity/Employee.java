@@ -13,7 +13,6 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import kr.co.itwillbs.de.employee.dto.EmployeeDTO;
@@ -32,9 +31,13 @@ import lombok.ToString;
 @ToString
 public class Employee {
 	
-	@OneToOne
-    @JoinColumn(name = "employee_detail_id")
-    private EmployeeDetail employeeDetail;
+	@OneToOne(mappedBy = "employee") // EmployeeDetail과의 1:1 관계 설정
+	private EmployeeDetail employeeDetail; // EmployeeDetail 엔티티와 관계 설정
+	
+	// getEmployeeDetail 메소드 추가
+    public EmployeeDetail getEmployeeDetail() {
+        return employeeDetail;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -86,7 +89,7 @@ public class Employee {
     @Builder
     public Employee(String id, String name, String ssn, String departmentCode, String subDepartmentCode,
                     String positionCode, LocalDateTime hireDate, LocalDateTime resignationDate, String workExperience,
-                    String regId, LocalDateTime regDate, String modId, LocalDateTime modDate, EmployeeDetail employeeDetail) {
+                    String regId, LocalDateTime regDate, String modId, LocalDateTime modDate) {
         this.id = id;
         this.name = name;
         this.ssn = ssn;
@@ -100,7 +103,6 @@ public class Employee {
         this.regDate = regDate;
         this.modId = modId;
         this.modDate = modDate;
-        this.employeeDetail = employeeDetail; // EmployeeDetail 설정
     }
 
     // Employee -> EmployeeDTO 변환 메서드
@@ -121,14 +123,6 @@ public class Employee {
                 .modId(modId)
                 .modDate(modDate)
                 .build();
-    }
-
-    // EmployeeDetail을 설정하는 메서드 추가
-    public void setEmployeeDetail(EmployeeDetail employeeDetail) {
-        this.employeeDetail = employeeDetail;
-        if (employeeDetail != null) {
-            employeeDetail.setEmployee(this); // 양방향 관계를 위한 설정
-        }
     }
 
     // UPDATE 수행을 위한 메서드

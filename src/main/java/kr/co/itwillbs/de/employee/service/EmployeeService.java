@@ -55,37 +55,42 @@ public class EmployeeService {
             employeeDTO.setId(generateEmployeeId());
         }
 
+        // 사원 엔티티 저장
         Employee employee = employeeDTO.toEntity();
         employeeRepository.save(employee);
 
-        // T_EMPLOYEE_DETAIL에도 별도의 추가 정보가 있다면 저장
+        // 사원 상세 정보가 있다면 별도로 저장
         if (employeeDTO.getEmployeeDetailDTO() != null) {
             EmployeeDetail employeeDetail = employeeDTO.getEmployeeDetailDTO().toEntity();
-            employeeDetail.setEmployee(employee);
+            employeeDetail.setEmployee(employee);  // 연관된 사원 엔티티 설정
             employeeDetailRepository.save(employeeDetail);
         }
     }
-
-    // ✅ 사원 상세정보 조회 (사원번호(id)만 반환)
+    
+    // ✅ 사원 상세정보 조회 (사원번호(id)로 조회)
     public EmployeeDetailDTO getEmployeeDetail(String id) {
+        // 사원 조회 (사원번호로 조회)
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
 
-        // T_EMPLOYEE_DETAIL은 조회하지 않고, 기본 정보에서 사원번호(id)만 설정
-        EmployeeDetailDTO detailDTO = new EmployeeDetailDTO();
-        detailDTO.setId(employee.getId());
-        return detailDTO;
+        // 사원 상세 조회 (사원번호로 상세정보 조회, 없으면 빈 객체 반환)
+        EmployeeDetail employeeDetail = employeeDetailRepository.findByEmployeeId(id)
+                .orElse(new EmployeeDetail());  // 디테일 정보가 없다면 빈 객체로 처리
+
+        // EmployeeDetailDTO로 변환
+        return new EmployeeDetailDTO(employee.getId(), employeeDetail); // 수정된 생성자 호출
     }
 
-    // ✅ 사원 수정 처리 (T_EMPLOYEE_DETAIL이 있을 경우에만 수정)
+
+    // ✅ 사원 수정 처리
     @Transactional
     public void updateEmployeeDetail(EmployeeDetailDTO employeeDetailDTO) {
-        // 여기서는 사원번호만 표시하므로, 수정할 정보가 있다면 필요한 필드만 업데이트
-        // 기본적으로 T_EMPLOYEE_DETAIL이 없다면 예외를 발생시킬 수도 있음
+        // 사원번호로 기존 상세 정보를 조회
         EmployeeDetail employeeDetail = employeeDetailRepository.findByEmployeeId(employeeDetailDTO.getId())
                 .orElseThrow(() -> new RuntimeException("EmployeeDetail not found with employeeId: " + employeeDetailDTO.getId()));
 
-        employeeDetail.changeEmployeeDetail(employeeDetailDTO);
+        // DTO에서 받은 값으로 수정
+        employeeDetail.changeEmployeeDetail(employeeDetailDTO);  // EmployeeDetail에 맞는 수정 메서드 호출
         employeeDetailRepository.save(employeeDetail);
     }
 
