@@ -2,24 +2,16 @@ package kr.co.itwillbs.de.approval.dto;
 
 import java.util.Date;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import groovy.transform.ToString;
-import groovy.transform.builder.Builder;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import kr.co.itwillbs.de.approval.constant.ApprovalStatus;
 import kr.co.itwillbs.de.approval.constant.ApprovalType;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+
+@Data
 @NoArgsConstructor
-@ToString
 public class DraftDTO {
-//	private String approval_no;		// 결재번호
+	private String approval_no;		// 결재번호
 	
 	private String drafter_id;		// 기안자ID(사원번호)
 	private String drafter_name;	// 기안자명(작성자)
@@ -34,7 +26,9 @@ public class DraftDTO {
 	private String approver2;		// 결재자2
 	private String approver3;		// 결재자3
 	
+//	@NotEmpty(message = "제목 입력 필수")
 	private String title;			// 제목		
+//	@NotEmpty(message = "내용 입력 필수")
 	private String content;			// 내용
 //	private String uploadFile;		// 첨부파일 => 따로 DTO 할것
 	

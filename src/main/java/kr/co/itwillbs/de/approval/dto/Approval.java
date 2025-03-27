@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.approval.entity;
+package kr.co.itwillbs.de.approval.dto;
 
 import java.sql.Date;
 
