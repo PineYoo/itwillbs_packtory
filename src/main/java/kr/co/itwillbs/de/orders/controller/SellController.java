@@ -78,7 +78,7 @@ public class SellController {
 		
 		// 주문서 등록 요청(INSERT)
 		sellService.registerOrder(orderFormDTO.getOrderDTO());
-		sellService.registerOrderDetail(orderFormDTO.getOrderDetailDTO());
+//		sellService.registerOrderDetail(orderFormDTO.getOrderDetailDTO());
 		
 	    
 	    

@@ -46,4 +46,8 @@
 	<select id="getSeqEmpIdfromMySQL" resultType="string">
 		SELECT nextVal('seq_emp_id')
 	</select>
+	
+	<select id="getSeqOrderNumberfromMySQL" resultType="string">
+		SELECT nextVal('seq_order_number')
+	</select>
 </mapper>

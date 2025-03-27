@@ -18,8 +18,8 @@ public class OrderDTO {
     private String documentNumber; 	// 문서번호
     private String tradeCode; 		// 거래종류_코드
     private String statusCode; 		// 주문상태_코드
-    private String businessName; 	// 거래처명
-    private String businessNumber; 	// 사업자번호
+    private String companyName; 	// 거래처명
+    private String companyNumber; 	// 사업자번호
     private String requestDate; 	// 요청일자
     private String expectedDate; 	// 예정일
     private String dueDate; 		// 마감일자

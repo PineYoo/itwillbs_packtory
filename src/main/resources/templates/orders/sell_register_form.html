@@ -14,7 +14,16 @@
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 </th:block>
 <style type="text/css">
-	
+	.essential {
+        background-color: #fffbe6; /* 연한 노랑 */
+    }
+    .filled {
+        background-color: white;
+    }
+    
+    #companyNumber {
+    	width: 60%;
+    }
 </style>
 <!-- 다음 우편번호 API -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -28,56 +37,90 @@
 			<h1 class="h3 mb-2 text-gray-800">주문서등록(수주)</h1>
 
 			<!-- ---------- 본문 컨테이너 ---------- -->
-			<div class="card shadow mb-4">
+			<div class="card shadow mb-4" style="min-width: 760px;">
 			    <div class="card-body">
 			        <form th:action="@{/orders/sell}" method="post" th:object="${orderFormDTO}">
-			            <table style="width: 100%; border-collapse: collapse;">
+			            <table style="border-collapse: collapse; min-width: 750px;">
+			                <tr>
+			                	<td style="width: 50%; vertical-align: top;">
+			                        <table style="width: 100%;">
+			                        	<tr>
+				                            <th width="130px">요청예정일자</th>
+				                            <td><input type="date" id="requestDate" class="essential" th:field="*{orderDTO.requestDate}"></td>
+				                        </tr>
+				                        <tr>
+				                            <th>요청마감일자</th>
+				                            <td><input type="date" id="dueDate" class="essential" th:field="*{orderDTO.dueDate}"></td>
+				                        </tr>
+			                        </table>
+			                    </td>
+			                    <td style="width: 50%; vertical-align: top;">
+			                        <table style="width: 100%;">
+			                            <tr>
+				                            <th width="130px">담당자</th>
+				                            <td><input type="text" id="clientName" th:field="*{orderDetailDTO.clientName}"></td>
+				                        </tr>
+				                        <tr>
+				                            <th>담당자 전화번호</th>
+				                            <td><input type="text" id="clientPhone" th:field="*{orderDetailDTO.clientPhone}" maxlength="13" placeholder="010-1234-5678"><br></td>
+				                        </tr>
+			         			   </table>
+			         			</td>
+		         			</tr>
+		         		</table>
+			            
+                        <!-- -------------------------------------------------- -->
+			            <hr>
+			            <table style="border-collapse: collapse; min-width: 750px;">
+		         			<tr>
+			                	<td style="width: 50%; vertical-align: top;">
+			                        <table style="width: 100%;">
+			                        	<tr>
+				                            <th width="130px">목적지명</th>
+				                            <td><input type="text" id="destinationName" class="essential" th:field="*{orderDTO.destinationName}"></td>
+				                        </tr>
+				                        <tr>
+				                            <th>받는사람</th>
+				                            <td><input type="text" id="receiver" class="essential" th:field="*{orderDTO.receiver}"></td>
+				                        </tr>
+				                        <tr>
+				                            <th>전화번호1</th>
+				                            <td><input type="text" id="phone1" class="essential" th:field="*{orderDTO.phone1}" maxlength="13" placeholder="010-1234-5678"></td>
+				                        </tr>
+				                        <tr>
+				                            <th>전화번호2</th>
+				                            <td><input type="text" id="phone2" th:field="*{orderDTO.phone2}" maxlength="13" placeholder="010-1234-5678"></td>
+				                        </tr>
+			                        </table>
+			                    </td>
+			                    <td style="width: 50%; vertical-align: top;">
+			                        <table style="width: 100%;">
+			                            <tr>
+				                            <th style="vertical-align: top; width: 130px;">납품주소</th>
+				                            <td>
+			                                    <input type="text" id="postCode" class="postCode_1 essential" th:field="*{orderDTO.postCode}" size="8">&nbsp;&nbsp;&nbsp;&nbsp;
+			                                    <button type="button" id="searchAddressBtn_1">주소찾기</button><br>
+			                                    <input type="text" id="address1" class="address1_1 essential" th:field="*{orderDTO.address1}" placeholder="기본주소 입력"><br>
+			                                    <input type="text" id="address2" class="address2_1 essential" th:field="*{orderDTO.address2}" placeholder="상세주소 입력">
+											</td>
+				                        </tr>
+			         			   </table>
+			         			</td>
+		         			</tr>
+			            </table>
+			            
+                        <!-- -------------------------------------------------- -->
+			            <hr>
+			            <table style="border-collapse: collapse; min-width: 750px;">
 			                <tr>
 			                    <td style="width: 50%; vertical-align: top;">
 			                        <table style="width: 100%;">
 			                            <tr>
-			                                <th>등록일자</th>
+			                                <th width="130px">사업자 등록 번호</th>
 			                                <td>
-			                                    <input type="date" id="regDate" th:field="*{orderDTO.regDate}">
+			                                	<input type="text" id="companyNumber" th:field="*{orderDTO.companyNumber}" placeholder="123-45-67890">
+			                                	<button type="button">조회</button>
 			                                </td>
-			                            </tr>
-			                            <tr><td colspan="2"></td></tr>
-			                            <tr>
-			                                <th>요청예정일자</th>
-			                                <td>
-			                                    <input type="date" id="requestDate" th:field="*{orderDTO.requestDate}">
-			                                </td>
-			                            </tr>
-			                            <tr><td colspan="2"></td></tr>
-			                            <tr>
-			                                <th>담당자</th>
-			                                <td><input type="text" id="clientName" th:field="*{orderDetailDTO.clientName}"></td>
-			                            </tr>
-			                            <tr>
-			                                <th>담당자 전화번호</th>
-			                                <td>
-			                                    <input type="text" id="clientPhone" th:field="*{orderDetailDTO.clientPhone}" maxlength="13" placeholder="010-1234-5678">
-			                                </td>
-			                            </tr>
-			                            <tr>
-			                                <th colspan="2">납품주소</th>
-			                            </tr>
-			                            <tr>
-			                                <td colspan="2">
-			                                    <input type="text" id="postCode" class="postCode_1" th:field="*{orderDTO.postCode}" size="6">&nbsp;&nbsp;&nbsp;&nbsp;
-			                                    <button type="button" id="searchAddressBtn_1">주소찾기</button><br>
-			                                    <input type="text" id="address1" class="address1_1" th:field="*{orderDTO.address1}" placeholder="기본주소 입력"><br>
-			                                    <input type="text" id="address2" class="address2_1" th:field="*{orderDTO.address2}" placeholder="상세주소 입력">
-			                                </td>
-			                            </tr>
-			                        </table>
-			                    </td>
-			
-			                    <td style="width: 50%; vertical-align: top;">
-			                        <table style="width: 100%;">
-			                            <tr>
-			                                <th>사업자 등록 번호</th>
-			                                <td><input type="text" id="businessNumber" th:field="*{orderDTO.businessNumber}" placeholder="123-45-67890"></td>
 			                            </tr>
 			                            <tr>
 			                                <th>상호명</th>
@@ -89,26 +132,24 @@
 			                            </tr>
 			                            <tr>
 			                                <th>전화번호</th>
-			                                <td>
-			                                    <input type="text" id="phoneNumber" th:field="*{clientDTO.phoneNumber}" maxlength="12" placeholder="010-0000-0000">
-			                                </td>
+			                                <td><input type="text" id="phoneNumber" th:field="*{clientDTO.phoneNumber}" maxlength="13" placeholder="010-1234-5678"></td>
 			                            </tr>
 			                            <tr>
 			                                <th>팩스번호</th>
-			                                <td>
-			                                    <input type="text" id="faxNumber" th:field="*{clientDTO.faxNumber}" maxlength="10" placeholder="02-000-0000">
-			                                </td>
+			                                <td><input type="text" id="faxNumber" th:field="*{clientDTO.faxNumber}" maxlength="10" placeholder="02-000-0000"></td>
 			                            </tr>
 			                            <tr>
 			                                <th>이메일</th>
 			                                <td><input type="text" id="eMail" th:field="*{clientDTO.eMail}" placeholder="email@example.com"></td>
 			                            </tr>
+			                        </table>
+			                    </td>
+			                    <td style="width: 50%; vertical-align: top;">
+			                        <table style="width: 100%;">
 			                            <tr>
-			                                <th colspan="2">주소</th>
-			                            </tr>
-			                            <tr>
-			                                <td colspan="2">
-			                                    <input type="text" id="postCode" class="postCode_2" th:field="*{clientDTO.postCode}" size="6">&nbsp;&nbsp;&nbsp;&nbsp;
+			                                <th style="vertical-align: top; width: 130px;">주소</th>
+			                                <td>
+			                                    <input type="text" id="postCode" class="postCode_2" th:field="*{clientDTO.postCode}" size="8">&nbsp;&nbsp;&nbsp;&nbsp;
 			                                    <button type="button" id="searchAddressBtn_2">주소찾기</button><br>
 			                                    <input type="text" id="address1" class="address1_2" th:field="*{clientDTO.address1}" placeholder="기본주소 입력"><br>
 			                                    <input type="text" id="address2" class="address2_2" th:field="*{clientDTO.address2}" placeholder="상세주소 입력">
@@ -125,7 +166,7 @@
 		                     <div class="input-group">
 		                         <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="상품 조회" aria-label="Search" aria-describedby="basic-addon2">
 		                         <div class="input-group-append">
-		                             <button class="btn btn-primary" id="searchBtn" type="submit">조회</button>
+		                             <button class="btn btn-primary" id="searchBtn" type="button">조회</button>
 		                         </div>
 		                     </div>
 		                </div>
@@ -150,7 +191,7 @@
 <!-- 									    <td th:text="${sell['document_number']}"></td> -->
 	<!-- 								    <td th:text="${sell['request_date'] != null ? #temporals.format(sell['request_date'], 'yyyy-MM-dd') : 'No Date'}"></td> -->
 <!-- 									    <td th:text="${sell['request_date']}"></td>		HashMap으로 가져오면서 String으로 들고와짐 -->
-<!-- 									    <td th:text="${sell['business_name']}"></td> -->
+<!-- 									    <td th:text="${sell['company_name']}"></td> -->
 <!-- 									    <td th:text="${sell['supply_amount']}"></td> -->
 <!-- 									    <td th:text="${sell['vat_amount']}"></td> -->
 <!-- 									    <td th:text="${sell['total_amount']}"></td> -->
@@ -178,7 +219,7 @@
 		<script type="text/javascript">
 			$(function() {
 				// 휴대번호 입력
-				$('#clientPhone, #phoneNumber').on('input', function() {
+				$('#clientPhone, #phone1, #phone2, #phoneNumber').on('input', function() {
 			        // 숫자만 남기기
 			        let value = $(this).val().replace(/\D/g, '');
 			        let formattedValue = '';
@@ -207,20 +248,21 @@
 			    });
 				
 				// 숫자입력만 허용하는 keypress
-			    $('#clientPhone, #phoneNumber, #businessNumber, #faxNumber').on('keypress', function(e) {
+			    $('#clientPhone, #phone1, #phone2, #phoneNumber, #companyNumber, #faxNumber').on('keypress', function(e) {
 			    	let keyCode = event.keyCode;
 			        if (keyCode < 48 || keyCode > 57) {
 			            event.preventDefault();
 			        }
 			    });
 				
+				// ----------------------------------
 				// 납품주소(다음 우편번호 API 활용)
 				// "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
 				$("#searchAddressBtn_1, .postCode_1").click(function() {
 					new daum.Postcode({
 				        oncomplete: function(data) { 
 							// 1) 우편번호(zonecode) 가져와서 우편번호 항목(postCode)에 출력              
-				            $(".postCode_1").val(data.zonecode);
+				            $(".postCode_1").val(data.zonecode).addClass("filled");
 					
 							// 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서 
 							//    기본주소 항목(address1)에 출력
@@ -233,7 +275,7 @@
 				            }
 				            
 				            // 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
-				            $(".address1_1").val(address);
+				            $(".address1_1").val(address).addClass("filled");
 				            
 				            // 5) 상세주소 항목(address2)에 포커스 요청
 				            $(".address2_1").focus();
@@ -267,12 +309,31 @@
 				    }).open();
 				});
 				
-				// --------------------
+				// ----------------------------------
 				// 취소버튼
 				$('#cancelBtn').on("click", function() {
 					location.href="/orders/sell";
 				});
 				
+				
+				// ----------------------------------
+				// 필수입력요소
+				$(".essential").each(function () {
+		            if ($(this).val().trim() !== "") {
+		                $(this).addClass("filled");
+		            }
+		        });
+
+		        $(".essential").on("input", function () {
+		            if ($(this).val().trim() !== "") {
+		                $(this).addClass("filled");
+		            } else {
+		                $(this).removeClass("filled");
+		            }
+		        });
+		        
+		        
+		        
 			});
 		</script>
 	</div>
