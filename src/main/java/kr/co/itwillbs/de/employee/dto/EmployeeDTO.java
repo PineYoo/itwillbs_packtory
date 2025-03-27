@@ -62,19 +62,23 @@ public class EmployeeDTO {
 
     // Employee 객체를 받아서 DTO로 변환하는 생성자 추가
     public EmployeeDTO(Employee employee) {
-    	this.idx = employee.getIdx();
+        this.idx = employee.getIdx();
         this.id = employee.getId();
         this.name = employee.getName();
         this.departmentCode = employee.getDepartmentCode();
         this.subDepartmentCode = employee.getSubDepartmentCode();
         this.positionCode = employee.getPositionCode();
         this.hireDate = employee.getHireDate();
-        // 필요한 다른 필드들도 초기화
+        this.resignationDate = employee.getResignationDate();
+        this.workExperience = employee.getWorkExperience();
+        this.regId = employee.getRegId();
+        this.regDate = employee.getRegDate();
+        this.modId = employee.getModId();
+        this.modDate = employee.getModDate();
         
-        // EmployeeDetailDTO에서 상태 정보 가져오기
+        // EmployeeDTO 생성 부분
         if (employee.getEmployeeDetail() != null) {
-            this.employeeDetailDTO = new EmployeeDetailDTO(employee.getEmployeeDetail());
-            this.employeeStatus = this.employeeDetailDTO.getEmployeeStatusCode();  // 상태 값을 EmployeeDTO에 설정
+            this.employeeDetailDTO = new EmployeeDetailDTO(employee.getId(), employee.getEmployeeDetail());
         }
     }
 
