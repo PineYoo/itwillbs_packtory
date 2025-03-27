@@ -35,7 +35,7 @@ public class EmployeeDetail {
 	@JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Employee employee; // 연관된 Employee 객체
 
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "idx")
     private Long idx; // 테이블 인덱스

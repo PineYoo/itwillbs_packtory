@@ -126,22 +126,54 @@ public class Employee {
     }
 
     // UPDATE 수행을 위한 메서드
-    public void changeEmployee(EmployeeDTO employeeDTO) {
-        this.name = employeeDTO.getName();
-        this.ssn = employeeDTO.getSsn();
-        this.departmentCode = employeeDTO.getDepartmentCode();
-        this.subDepartmentCode = employeeDTO.getSubDepartmentCode();
-        this.positionCode = employeeDTO.getPositionCode();
-        this.hireDate = employeeDTO.getHireDate();
-        this.resignationDate = employeeDTO.getResignationDate();
-        this.workExperience = employeeDTO.getWorkExperience();
+    public void updateEmployee(EmployeeDTO employeeDTO) {
+        // 이름 업데이트 (널이면 기존 값 유지, 널 아니면 새 값으로 갱신)
+        if (employeeDTO.getName() != null) {
+            this.name = employeeDTO.getName();
+        }
 
-        // modId, modDate는 수정 시에만 업데이트
+        // 주민등록번호 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getSsn() != null) {
+            this.ssn = employeeDTO.getSsn();
+        }
+
+        // 부서 코드 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getDepartmentCode() != null) {
+            this.departmentCode = employeeDTO.getDepartmentCode();
+        }
+
+        // 하위 부서 코드 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getSubDepartmentCode() != null) {
+            this.subDepartmentCode = employeeDTO.getSubDepartmentCode();
+        }
+
+        // 직급 코드 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getPositionCode() != null) {
+            this.positionCode = employeeDTO.getPositionCode();
+        }
+
+        // 입사일 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getHireDate() != null) {
+            this.hireDate = employeeDTO.getHireDate();
+        }
+
+        // 퇴사일 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getResignationDate() != null) {
+            this.resignationDate = employeeDTO.getResignationDate();
+        }
+
+        // 경력 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getWorkExperience() != null) {
+            this.workExperience = employeeDTO.getWorkExperience();
+        }
+
+        // 수정자 정보 갱신 (널이면 기존 값 유지)
         if (employeeDTO.getModId() != null) {
             this.modId = employeeDTO.getModId();
         }
-        if (employeeDTO.getModDate() != null) {
-            this.modDate = employeeDTO.getModDate();
-        }
+
+        // 수정일자 자동 갱신 (현재 시간으로 갱신)
+        this.modDate = LocalDateTime.now();  // 수정할 때마다 현재 시간으로 갱신
     }
+
 }
