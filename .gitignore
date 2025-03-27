@@ -18,10 +18,12 @@ bin/
 !**/src/test/**/bin/
 
 
-packtory_db.mv.db
-packtory_db.trace.db
+packtory_db.mv.db - data
+packtory_db.trace.db - data
 
 application.log - logs
+
+
 
 *.yml
 *.log
