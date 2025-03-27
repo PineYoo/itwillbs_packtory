@@ -65,8 +65,8 @@
 			      </div>
 			      <div class="modal-body">
 			      	<form th:action="@{/orders/client}" method="post" th:object="${clientDTO}" id="registerClientForm">
-						<label for="code">코드</label>
-						<input type="text" id="code" th:field="*{code}">
+						<label for="businessNumber">사업자번호</label>
+						<input type="text" id="businessNumber" th:field="*{businessNumber}">
 						<label for="companyName">회사명</label>
 						<input type="text" id="companyName" th:field="*{companyName}">
 						<label for="ownerName">대표자명</label>
@@ -117,8 +117,7 @@
 						data : form_date,
 						success: function(response) {
 							if(response === "success") {
-								console.log(response);
-								alert(response);
+								alert("등록되었습니다.");
 								window.location.reload();
 							} else {
 								console.log(response);
@@ -138,7 +137,7 @@
 							<thead>
 								<tr>
 									<th class="checkHead">#</th>
-									<th>거래처 코드</th>
+									<th>사업자 번호</th>
 									<th>상호명</th>
 									<th>대표이름</th>
 									<th>담당자 이름</th>
@@ -148,9 +147,9 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item, status : ${clientDTOList}" th:data-id="${item.idx}">
+								<tr th:each="item, status : ${clientDTOList}" th:data-id="${item.businessNumber}">
 									<td><input type="checkbox"></td>
-									<td th:text="${item.code}"></td>
+									<td th:text="${item.businessNumber}"></td>
 									<td th:text="${item.companyName}"></td>
 									<td th:text="${item.ownerName}"></td>
 									<td th:text="${item.regId}"></td>
@@ -166,8 +165,9 @@
 		</div>
 		<script type="text/javascript">
 			$("#dataTable tbody").on('click', 'tr', function() {
-				var idx = $(this).data('id');
-				location.href="/orders/clientDetail?idx=" + idx;
+				var businessNumber = $(this).data('id');
+				console.log(businessNumber);
+				location.href="/orders/clientDetail?businessNumber=" + businessNumber;
 			});
 		</script>
 	</div>

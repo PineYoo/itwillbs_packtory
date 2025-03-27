@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/bs_layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/bs_layout}">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style type="text/css">
-	.client-container {
-		width: 60%;
-		margin: auto;
-		margin-top : 50px;
-		margin-bottom : 20px;
-	}
-	
-	.client-container div {
-		margin-bottom: 10px;
-	}
-	
-	
+.client-container {
+	width: 60%;
+	margin: auto;
+	margin-top: 50px;
+	margin-bottom: 20px;
+}
+
+.client-container div {
+	margin-bottom: 10px;
+}
 </style>
 
 
@@ -26,121 +24,135 @@
 	<div layout:fragment="contents">
 		<div class="container-fluid">
 			<h1 class="h3 mb-2 text-gray-800">거래처 상세정보</h1>
-			
+
 			<div class="client-container">
-				<form action="" method="post" class="row g-3">
-					<th:block th:object="${clientDTO}" >
-					  <div class="col-md-6">
-					    <label for="code" class="form-label">거래처 코드</label>
-					    <input id="code" type="text" class="form-control" th:field="*{code}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="companyName" class="form-label">상호명</label>
-					    <input id="companyName" type="text" class="form-control" th:field="*{companyName}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="ownerName" class="form-label">대표자명</label>
-					    <input id="ownerName" type="text" class="form-control" th:field="*{ownerName}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="companyCategory" class="form-label">업태</label>
-					    <input id="companyCategory" type="text" class="form-control" th:field="*{companyCategory}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="companySubject" class="form-label">종목</label>
-					    <input id="companySubject" type="text" class="form-control" th:field="*{companySubject}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="phoneNumber" class="form-label">전화번호</label>
-					    <input id="phoneNumber" type="text" class="form-control" th:field="*{phoneNumber}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="eMail" class="form-label">E-mail</label>
-					    <input id="eMail" type="text" class="form-control" th:field="*{eMail}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="faxNumber" class="form-label">팩스번호</label>
-					    <input id="faxNumber" type="text" class="form-control" th:field="*{faxNumber}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="address1" class="form-label">주소1</label>
-					    <input id="address1" type="text" class="form-control" th:field="*{address1}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="address2" class="form-label">주소2</label>
-					    <input id="address2" type="text" class="form-control" th:field="*{address2}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="creditLimit" class="form-label">여신한도</label>
-					    <input id="creditLimit" type="text" class="form-control" th:field="*{creditLimit}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="isDeleted" class="form-label">삭제유무</label>
-					    <input id="isDeleted" type="text" class="form-control" th:field="*{isDeleted}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="memo" class="form-label">메모</label>
-					    <input id="memo" type="text" class="form-control" th:field="*{memo}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="status" class="form-label">상태</label>
-					    <input id="status" type="text" class="form-control" th:field="*{status}" >
-					  </div>
-					  <div class="col-md-6">
-					    <label for="statusMessage" class="form-label">상태_상세내용</label>
-					    <input id="statusMessage" type="text" class="form-control" th:field="*{statusMessage}" >
-					  </div>
+				<form action="/orders/updateClient" method="post" class="row g-3">
+					<th:block th:object="${client}">
+						<div class="col-md-6">
+							<label for="businessNumber" class="form-label">사업자번호</label>
+							<input id="businessNumber" type="text" class="form-control" th:value="*{BUSINESS_NUMBER}" name="businessNumber" readonly>
+						</div>
+						<div class="col-md-6">
+							<label for="companyName" class="form-label">상호명</label>
+							<input id="companyName" type="text" class="form-control" th:value="*{COMPANY_NAME}" name="companyName">
+						</div>
+						<div class="col-md-6">
+							<label for="ownerName" class="form-label">대표자명</label>
+							<input id="ownerName" type="text" class="form-control" th:value="*{OWNER_NAME}" name="ownerName">
+						</div>
+						<div class="col-md-6">
+							<label for="companyCategory" class="form-label">업태</label>
+							<input id="companyCategory" type="text" class="form-control" th:value="*{COMPANY_CATEGORY}" name="companyCategory">
+						</div>
+						<div class="col-md-6">
+							<label for="companySubject" class="form-label">종목</label>
+							<input id="companySubject" type="text" class="form-control" th:value="*{COMPANY_SUBJECT}" name="companySubject">
+						</div>
+						<div class="col-md-6">
+							<label for="phoneNumber" class="form-label">전화번호</label>
+							<input id="phoneNumber" type="text" class="form-control" th:value="*{PHONE_NUMBER}" name="phoneNumber">
+						</div>
+						<div class="col-md-6">
+							<label for="eMail" class="form-label">E-mail</label>
+							<input id="eMail" type="text" class="form-control" th:value="*{E_MAIL}" name="eMail">
+						</div>
+						<div class="col-md-6">
+							<label for="faxNumber" class="form-label">팩스번호</label>
+							<input id="faxNumber" type="text" class="form-control" th:value="*{FAX_NUMBER}" name="faxNumber">
+						</div>
+						<div class="col-md-6">
+							<label for="address1" class="form-label">주소1</label>
+							<input id="address1" type="text" class="form-control" th:value="*{ADDRESS1}" name="address1">
+						</div>
+						<div class="col-md-6">
+							<label for="address2" class="form-label">주소2</label>
+							<input id="address2" type="text" class="form-control" th:value="*{ADDRESS2}" name="address2">
+						</div>
+						<div class="col-md-6">
+							<label for="creditLimit" class="form-label">여신한도</label>
+							<input id="creditLimit" type="text" class="form-control" th:value="*{CREDIT_LIMIT}" name="creditLimit">
+						</div>
+						<div class="col-md-6">
+							<label for="isDeleted" class="form-label">삭제유무</label>
+							<input id="isDeleted" type="text" class="form-control" th:value="*{IS_DELETED}" name="isDeleted">
+						</div>
+						<div class="col-md-6">
+							<label for="memo" class="form-label">메모</label>
+							<input id="memo" type="text" class="form-control" th:value="*{MEMO}" name="memo">
+						</div>
+						<div class="col-md-6">
+							<label for="status" class="form-label">상태</label>
+							<input id="status" type="text" class="form-control" th:value="*{STATUS}" name="status">
+						</div>
+						<div class="col-md-6">
+							<label for="statusMessage" class="form-label">상태_상세내용</label>
+							<input id="statusMessage" type="text" class="form-control" th:value="*{STATUS_MESSAGE}" name="statusMessage">
+						</div>
+						
+						<div class="col-md-6">
+							<label for="clientEmployeeName" class="form-label">당당자</label>
+							<input id="clientEmployeeName" type="text" class="form-control" th:value="*{CLIENT_EMPLOYEE_NAME}" name="clientEmployeeName">
+						</div>
+						<div class="col-md-6">
+							<label for="clientEmployeeMemo" class="form-label">담당자 메모</label>
+							<input id="clientEmployeeMemo" type="text" class="form-control" th:value="*{CLIENT_EMPLOYEE_MEMO}" name="clientEmployeeMemo">
+						</div>
+						<div class="col-md-6">
+							<label for="phone1" class="form-label">전화1</label>
+							<input id="phone1" type="text" class="form-control" th:value="*{PHONE1}" name="phone1">
+						</div>
+						<div class="col-md-6">
+							<label for="phone2" class="form-label">전화2</label>
+							<input id="phone2" type="text" class="form-control" th:value="*{PHONE2}" name="phone2">
+						</div>
+						
 					</th:block>
-<!-- 					<th:block th:object="${clientInfoDTO}"> -->
-<!-- 					  <div class="col-md-6"> -->
-<!-- 					    <label for="" class="form-label"></label> -->
-<!-- 					    <input id="" type="text" class="form-control" th:field="*{}" > -->
-<!-- 					  </div> -->
-<!-- 					</th:block>  -->
+					
+					<hr class="sidebar-divider my-0">
+					<button type="submit">test</button>
 				</form>
 			</div>
-			
-			<hr class="sidebar-divider my-0">
-			
-			
-			
-			
-			
-<!-- 			<form action="" method="post" th:object="${clientDTO}"> -->
-<!-- 				<label for="code">거래처코드</label> -->
-<!-- 				<input type="text" id="code" th:field="*{code}"> -->
-<!-- 				<label for="companyName">상호명</label> -->
-<!-- 				<input type="text" id="companyName" th:field="*{companyName}"> -->
-<!-- 				<label for="ownerName">대표자명</label> -->
-<!-- 				<input type="text" id="ownerName" th:field="*{ownerName}"> -->
-<!-- 				<label for="companyCategory">업태</label> -->
-<!-- 				<input type="text" id="companyCategory" th:field="*{companyCategory}"> -->
-<!-- 				<label for="companySubject">종목</label> -->
-<!-- 				<input type="text" id="companySubject" th:field="*{companySubject}"> -->
-<!-- 				<label for="phoneNumber">전화번호</label> -->
-<!-- 				<input type="text" id="phoneNumber" th:field="*{phoneNumber}"> -->
-<!-- 				<label for="eMail">E-mail</label> -->
-<!-- 				<input type="text" id="eMail" th:field="*{eMail}"> -->
-<!-- 				<label for="faxNumber">팩스번호</label> -->
-<!-- 				<input type="text" id="faxNumber" th:field="*{faxNumber}"> -->
-<!-- 				<label for="address1">주소1</label> -->
-<!-- 				<input type="text" id="address1" th:field="*{address1}"> -->
-<!-- 				<label for="address2">주소2</label> -->
-<!-- 				<input type="text" id="address2" th:field="*{address2}"> -->
-<!-- 				<label for="creditLimit">여신한도</label> -->
-<!-- 				<input type="text" id="creditLimit" th:field="*{creditLimit}"> -->
-<!-- 				<label for="isDeleted">삭제유무</label> -->
-<!-- 				<input type="text" id="isDeleted" th:field="*{isDeleted}"> -->
-<!-- 				<label for="memo">메모</label> -->
-<!-- 				<input type="text" id="memo" th:field="*{memo}"> -->
-<!-- 				<label for="status">상태</label> -->
-<!-- 				<input type="text" id="status" th:field="*{status}"> -->
-<!-- 				<label for="statusMessage">상태_상세내용</label> -->
-<!-- 				<input type="text" id="statusMessage" th:field="*{statusMessage}"> -->
-<!-- 			</form> -->
+
+
+
+
+
+
+			<!-- 			<form action="" method="post" th:object="${clientDTO}"> -->
+			<!-- 				<label for="code">거래처코드</label> -->
+			<!-- 				<input type="text" id="code" th:field="*{code}"> -->
+			<!-- 				<label for="companyName">상호명</label> -->
+			<!-- 				<input type="text" id="companyName" th:field="*{companyName}"> -->
+			<!-- 				<label for="ownerName">대표자명</label> -->
+			<!-- 				<input type="text" id="ownerName" th:field="*{ownerName}"> -->
+			<!-- 				<label for="companyCategory">업태</label> -->
+			<!-- 				<input type="text" id="companyCategory" th:field="*{companyCategory}"> -->
+			<!-- 				<label for="companySubject">종목</label> -->
+			<!-- 				<input type="text" id="companySubject" th:field="*{companySubject}"> -->
+			<!-- 				<label for="phoneNumber">전화번호</label> -->
+			<!-- 				<input type="text" id="phoneNumber" th:field="*{phoneNumber}"> -->
+			<!-- 				<label for="eMail">E-mail</label> -->
+			<!-- 				<input type="text" id="eMail" th:field="*{eMail}"> -->
+			<!-- 				<label for="faxNumber">팩스번호</label> -->
+			<!-- 				<input type="text" id="faxNumber" th:field="*{faxNumber}"> -->
+			<!-- 				<label for="address1">주소1</label> -->
+			<!-- 				<input type="text" id="address1" th:field="*{address1}"> -->
+			<!-- 				<label for="address2">주소2</label> -->
+			<!-- 				<input type="text" id="address2" th:field="*{address2}"> -->
+			<!-- 				<label for="creditLimit">여신한도</label> -->
+			<!-- 				<input type="text" id="creditLimit" th:field="*{creditLimit}"> -->
+			<!-- 				<label for="isDeleted">삭제유무</label> -->
+			<!-- 				<input type="text" id="isDeleted" th:field="*{isDeleted}"> -->
+			<!-- 				<label for="memo">메모</label> -->
+			<!-- 				<input type="text" id="memo" th:field="*{memo}"> -->
+			<!-- 				<label for="status">상태</label> -->
+			<!-- 				<input type="text" id="status" th:field="*{status}"> -->
+			<!-- 				<label for="statusMessage">상태_상세내용</label> -->
+			<!-- 				<input type="text" id="statusMessage" th:field="*{statusMessage}"> -->
+			<!-- 			</form> -->
 		</div>
 	</div>
-	
-	
+
+
 </body>
 </html>
