@@ -70,12 +70,12 @@ spring:
   datasource:
     hikari:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://localhost:3306/packtory
-      username: root
-      password: 1234
-#      jdbc-url: jdbc:mysql://58.238.167.201:3333/packtory_dev?useUnicode=true&characterEncoding=utf8
-#      username: packtoryTeam
-#      password: packtoryTeam250305
+#      jdbc-url: jdbc:mysql://localhost:3306/packtory
+#      username: root
+#      password: 1234
+      jdbc-url: jdbc:mysql://58.238.167.201:3333/packtory_dev?useUnicode=true&characterEncoding=utf8
+      username: packtoryTeam
+      password: packtoryTeam250305
 
   jpa:
     show_sql: true

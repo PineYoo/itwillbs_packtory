@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,9 +32,9 @@ public class ApprovalController {
 	private ApprovalService approvalService;
 	
 	//------------------------------------------------------------------------------------------------
-	// 전자결재 목록 페이지 매핑 (DATATABLES 그리드 화면)
+	// 전자결재 페이지 매핑
 	@GetMapping(value={"","/"})
-	public String getSampleList(HttpSession session, Model model) {
+	public String approvalForm(HttpSession session, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		// 세션 아이디값 가져오기
 //		String userId = (String) session.getAttribute("id");
@@ -42,12 +43,19 @@ public class ApprovalController {
 		
 		return "approval/approval_list";
 	}
+	//------------------------------------------------------------------------------------------------
+	// 전자결재 리스트 목록 조회(Datatables 그리드)
+//	@ResponseBody
+//	@PostMapping(value = {"/list"})
+//	public String getApprovalList() {
+//		
+//	}
 	
 	//------------------------------------------------------------------------------------------------
 	// 기안서 작성 페이지 매핑 (GET)
 	@GetMapping(value={"/register"})
 	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		System.out.println("기안자ID:" + userId); // e1001
 		
 		// 기안자ID 값으로 사원정보 가져오기
@@ -74,10 +82,11 @@ public class ApprovalController {
 		
 		// 기안서 등록(저장)
 		int insertApproval = approvalService.registerApproval(draftDTO);
-		System.out.println("성공??" + insertApproval);
+		if(insertApproval> 0) {
+			return ""; // 성공했을 경우 새창 닫기
+		}
 		
-		
-		return "redirect:/approval/"; // 전자결재 리스트 화면으로!
+		return ""; // 실패했을 경우 페이지 그대로
 	}
 	
 	//------------------------------------------------------------------------------------------------
