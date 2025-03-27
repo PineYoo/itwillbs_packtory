@@ -15,7 +15,6 @@ import kr.co.itwillbs.de.admin.dto.LogDTO;
 import kr.co.itwillbs.de.admin.dto.LogSearchDTO;
 import kr.co.itwillbs.de.admin.service.LogService;
 import kr.co.itwillbs.de.common.util.CommonUtils;
-import kr.co.itwillbs.de.common.util.SequenceUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,8 +29,6 @@ public class LogController {
 	private LogService logService;
 	@Autowired
 	private CommonUtils comUtils;
-	@Autowired
-	private SequenceUtils seqUtils;
 	
 	/**
 	 * (개발테스트용)어드민 > 시스템 로그 > 로그 등록
@@ -76,10 +73,6 @@ public class LogController {
 		List<LogDTO> logDTOList = logService.getLogList();
 		
 		model.addAttribute("logDTOList", logDTOList);
-		//seqUtils.getEmpSeqFromDB();
-//		String a =seqUtils.getEmpSeqFromFile();
-//		String b = seqUtils.getEmpSeqFromDBForMybatis();
-//		log.info("seqFromFile : {}, seqFromDB : {}", a, b); 
 		
 		//리스트 검색 파라미터로 활용할 LogSearchDTO 객체 생성 후 Model에 저장
 		model.addAttribute("logSearchDTO", new LogSearchDTO());

@@ -96,30 +96,68 @@
 			<where>
 				<if test="isDeleted != null">AND is_deleted = #{isDeleted} </if>
 				<if test="menuId != null">AND menu_id = #{menuId} </if>
+				<if test="idx != null">AND idx = #{idx} </if>
 			</where>
 	</select>
 	
-	<select id="getMenuIdList" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
+	<select id="getMenuIdListByMenuType" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
 								resultType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		select 
 			<include refid="t_menu_columns_forSelect" />
 		from t_menu
 		<where>
-			<if test="menu_type != null">AND menu_type = #{menuType} </if>
-			<if test="menuId != null">AND menu_id = #{menuId} </if>
-			<if test="isDeleted != null">AND is_deleted = #{isDeleted} </if>
+			menu_id != '0'
+			<if test="menuType != null">AND menu_type = #{menuType} </if>
 		</where>
+		order by rank asc
 	</select>
+	
+	<update id="modifyMenu1Depth" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
+		update t_menu
+			<set>
+				<if test="menuType != null">menu_type = #{menuType},</if>
+				<if test="rank != null">rank = #{rank},</if>
+				<if test="url != null">url = #{url},</if>
+				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+				<if test='modId !=null and !modId.equals("")'>mod_id = #{modId},</if>
+				<if test='modId !=null and !modId.equals("")'>mod_date = now(),</if>
+			</set> 
+		where idx = #{idx}
+	</update>
 	
 	<update id="modifyMenuIsDeleted" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		update t_menu
 			<set>
 				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-				<if test='modId !=null and !modId.equals("")'>mod_id = #{mod_id},</if>
+				<if test='modId !=null and !modId.equals("")'>mod_id = #{modId},</if>
 				<if test='modId !=null and !modId.equals("")'>mod_date = now(),</if>
 			</set> 
 		where idx = #{idx}
 	</update>
 	
 	<!-- 뭔가 대량 인서트나 업데이트가 있을것 같은데...? -->
+	<delete id="removeMenu2Depth" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
+		delete from t_menu 
+		where menu_type = #{menuType}
+		  and menu_id != '0'
+	</delete>
+	
+	<insert id="registerMenu2Depth" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
+		insert into t_menu (
+			<trim suffixOverrides=",">
+			menu_type,
+			menu_id,
+			rank,
+			url,
+			is_deleted,
+			description,
+			reg_id,
+			reg_date,
+			</trim>
+		) values 
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.menuType}, #{item.menuId}, #{item.rank}, #{item.url}, #{item.isDeleted}, #{item.description}, #{item.regId}, now())
+		</foreach>
+		
+	</insert>
 </mapper>

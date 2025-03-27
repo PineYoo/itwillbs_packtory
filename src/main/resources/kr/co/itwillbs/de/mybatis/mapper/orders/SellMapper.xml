@@ -75,4 +75,57 @@
 		ON d.document_number = o.document_number
 		WHERE o.trade_code = '수주'
 	</select>
+	
+	<insert id="insertOrder">
+		INSERT INTO t_order
+		VALUES (
+			null	-- idx(auto_increment)
+			, null	-- document_number(임시)
+			, '수주'	-- trade_code(임시)
+			, '미발행'	-- status_code(임시)
+			, ''	-- business_name(임시)
+			, #{businessNumber}	-- business_number
+			, #{requestDate}	-- request_date
+			, null	-- expected_date(임시)
+			, null 	-- due_date(임시)
+			, null	-- destination_name(임시)
+			, null	-- reciver(임시)
+			, null	-- phone1(임시)
+			, null	-- phone2(임시)
+			, #{postCode}	-- post_code
+			, #{address1}	-- address1
+			, #{address2}	-- address2
+			, null	-- special_issue
+			, null	-- is_deleted
+			, null	-- reg_id(임시 - 나중에 session에서 가져올것)
+			, now()	-- reg_date
+			, null	-- mod_id(임시 - 나중에 session에서 가져올것)
+			, now()	-- mod_date
+		)
+	</insert>
+	<insert id="insertOrderDetail">
+		INSERT INTO t_order_detail
+		VALUES (
+			null	-- idx(auto_increment)
+			, null	-- document_number(임시)
+			, null	-- department_code(임시)
+			, #{clientName}	-- client_name
+			, #{clientPhone}	-- client_phone
+			, null	-- lot_number(임시)
+			, null	-- invoice_issue(임시)
+			, null	-- payment_status(임시)
+			, null	-- unissued_status(임시)
+			, null	-- supply_amount(임시)
+			, null	-- vat_amount(임시)
+			, null	-- total_amount(임시)
+			, null	-- issue_code(임시)
+			, null	-- issue_remaks(임시)
+			, null	-- is_deleted
+			, null	-- reg_id(임시 - 나중에 session에서 가져올것)
+			, now()	-- reg_date
+			, null	-- mod_id(임시 - 나중에 session에서 가져올것)
+			, now()	-- mod_date
+		)
+	
+	</insert>
 </mapper>

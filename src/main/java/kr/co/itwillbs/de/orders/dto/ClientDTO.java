@@ -2,7 +2,6 @@ package kr.co.itwillbs.de.orders.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +23,7 @@ public class ClientDTO {
 	private String phoneNumber;			//	전화번호
 	private String eMail;				//	E-mail
 	private String faxNumber;			//	팩스번호
+	private String postCode;			//	우편번호
 	private String address1;			//	주소1
 	private String address2;			//	주소2
 	private String creditLimit;			//	여신한도

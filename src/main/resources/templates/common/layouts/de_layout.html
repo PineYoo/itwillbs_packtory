@@ -3,7 +3,7 @@
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 	<title>레이아웃 타이틀! 의도한거야?</title>
-	<th:block th:include="~{common/fragments/de_common::headContents}"></th:block>
+	<th:block th:insert="~{common/fragments/de_common::headContents}"></th:block>
 	<!-- 레이아웃 용 css -->
 	<th:block layout:fragment="css"></th:block><!-- 내부 스타일 (Internal Style Sheet)-->
 	<th:block layout:fragment="script"></th:block><!-- 내부 스크립트 (Internal JS)-->
@@ -21,7 +21,7 @@
 			<div id="content">
 				<!-- Topbar -->
 				<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" 
-					th:include="~{common/fragments/de_topbar::header}"></nav>
+					th:insert="~{common/fragments/de_topbar::header}"></nav>
 				<!-- End of Topbar -->
 				
 				<!-- ======================================== -->
@@ -30,12 +30,12 @@
 				
 				<!-- ======================================== -->	
 				
-				<div th:include="~{common/fragments/de_modal::modalContents}"></div>
+				<div th:insert="~{common/fragments/de_modal::modalContents}"></div>
 			</div>
 			<!-- End of Main Content -->
 			
 			<!-- Footer -->
-			<footer class="sticky-footer bg-white" th:include="~{common/fragments/de_footer::footer}">
+			<footer class="sticky-footer bg-white" th:insert="~{common/fragments/de_footer::footer}">
 			</footer>
 			<!-- End of Footer -->
 		</div>

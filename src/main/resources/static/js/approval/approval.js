@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		scrollX: true, 
 		autoWidth: false,		
 		ajax : {
-			url: "ApprovalList",
+			url: "/approval/list",
 			type: "POST",
 			dataType : "JSON",
 			data: function(d) {
@@ -135,10 +135,10 @@ document.addEventListener("DOMContentLoaded", function(){
 					render : function(data, type, row) {
 						if(!data) return "";
 						switch (data) {
-					        case "진행중": return "<span class='status status-01'>진행중</span>";
-					        case "반려": return "<span class='status status-02'>반려</span>";
-					        case "결재요청": return "<span class='status status-03'>결재요청</span>";
-					        case "결재완료": return "<span class='status status-04'>결재완료</span>";
+					        case "IN_PROGRESS": return "<span class='status status-01'>진행중</span>";
+					        case "REJECTED": return "<span class='status status-02'>반려</span>";
+					        case "REQUESTED": return "<span class='status status-03'>결재요청</span>";
+					        case "APPROVED": return "<span class='status status-04'>결재완료</span>";
 					        default: return "";
 					    }
 					}
@@ -155,8 +155,6 @@ document.addEventListener("DOMContentLoaded", function(){
 						<button class="btn btn-primary detail-btn" data-approval-id="${data.approvalIdx}"
 								onclick="openApprovalwindow(${data.approvalIdx})">보기</button>
 					`;
-					
-					
 					// 모달창열기 XXXXXXXXX
 //					return `
 //						<button class="btn btn-primary detail-btn" data-toggle="modal" data-target="#approvalForm"
@@ -188,23 +186,24 @@ document.addEventListener("DOMContentLoaded", function(){
         },
 	});
 	
-	
-	
+	//--------------------------------------------------
 	// 기안서 작성 버튼 클릭 이벤트(새창 열기)
 	$("#registerBtn").on('click', function() {
 		//로그인한 사용자 id 가져오기
 //		let userId = $("#userId").val();
-//		let userId = hong; //일단 하드코딩
-//		let url = `/approval/register?userId=` + encodeURIComponent(userId);
-		let url = `/approval/register`;
+		let userId = "e1001"; //일단 하드코딩
 		
-		window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+//		let url = `/approval/register`;
+		let url = `/approval/register?userId=` + userId;
+//		let url = `/approval/register?userId=` + encodeURIComponent(userId); //userId보안설정
+		
+		window.open(url, '_blank', 'width=800,height=1200,scrollbars=yes,resizable=yes');
 	
 	});
+
 	
-	
-	
-	
+		
+	//--------------------------------------------------
 	// 기존 검색 입력창 숨기기
 	$("#approvalList_filter").attr("hidden", "hidden");
 	
@@ -219,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function(){
         if (e.which == 13)  productReport.draw();
     });
     
-	//------------------------------------------------------	
+	//---------------------------------------------------
 	// 기간별 검색 필터링 제이쿼리 (datepicker)
     $('#searchDate').daterangepicker({
 //        startDate: moment().subtract(29, 'days'),
@@ -269,8 +268,7 @@ document.addEventListener("DOMContentLoaded", function(){
     $("#searchDateBtn").on('click', function() {
 		productReport.draw();
 	});
-	//------------------------------------------------------	
-	
+	//---------------------------------------------------
 	
 //-----------------------------------------------------------------------------------------------
 //기안서 확인 팝업 설정 //모달 하지 말라고 팀장님께서 말씀하심~!!!!!!!!!
@@ -345,8 +343,6 @@ document.addEventListener("DOMContentLoaded", function(){
 //	     }
 //	     $('#lengthInfo').text(item.val().length);
 //	}
-//	
-//	
 //	
 //	// 기안서 상세보기 팝업 셋팅
 //	productReport.on("click", '.detail-btn', function() {

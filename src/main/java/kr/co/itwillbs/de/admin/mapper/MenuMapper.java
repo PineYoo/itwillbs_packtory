@@ -29,7 +29,7 @@ public interface MenuMapper {
 	 * @param menuSearchDTO
 	 * @return
 	 */
-	List<MenuDTO> getMenuIdList(MenuSearchDTO menuSearchDTO);
+	List<MenuDTO> getMenuIdListByMenuType(MenuSearchDTO menuSearchDTO);
 
 	/**
 	 * 메뉴 목록에서 isDeleted 수정하기 
@@ -37,5 +37,28 @@ public interface MenuMapper {
 	 * @return
 	 */
 	int modifyMenuIsDeleted(MenuDTO menuDTO);
+
+	
+	/**
+	 * 메뉴 1depth(대메뉴) 수정
+	 * @param menuDTO
+	 * @return
+	 */
+	int modifyMenu1Depth(MenuDTO menuDTO);
+	
+	/**
+	 * 메뉴 2depth(소메뉴) 등록 전 삭제
+	 * @param menuDTO
+	 * @return
+	 */
+	int removeMenu2Depth(MenuDTO menuDTO);
+	
+	/**
+	 * 메뉴 2depth(소메뉴) 등록
+	 * @param menuList
+	 * @return
+	 */
+	int registerMenu2Depth(List<MenuDTO> menuList);
+
 
 }
