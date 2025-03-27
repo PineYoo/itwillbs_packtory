@@ -1,5 +1,7 @@
 package kr.co.itwillbs.de.approval.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +11,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -28,7 +34,7 @@ public class ApprovalController {
 	// 전자결재 목록 페이지 매핑 (DATATABLES 그리드 화면)
 	@GetMapping(value={"","/"})
 	public String getSampleList(HttpSession session, Model model) {
-//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		// 세션 아이디값 가져오기
 //		String userId = (String) session.getAttribute("id");
 		
@@ -37,34 +43,41 @@ public class ApprovalController {
 		return "approval/approval_list";
 	}
 	
-	
 	//------------------------------------------------------------------------------------------------
 	// 기안서 작성 페이지 매핑 (GET)
 	@GetMapping(value={"/register"})
 	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
-//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		System.out.println("기안자ID:" + userId); // e1001
 		
 		// 기안자ID 값으로 사원정보 가져오기
 		DraftDTO draftDTO = approvalService.getEmployeeInfo(userId);
 		
-		
 		model.addAttribute("draftDTO", draftDTO);
 		return "approval/approval_reg_form";
 	}
 	
+	//------------------------------------------------------------------------------------------------
 //	 작성 후 기안서 등록 비즈니스 로직 처리 (POST)
 	@PostMapping(value={"/regist"})
-	public String approvalRegister(@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) {
+	public String approvalRegister(
+			@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) throws JsonProcessingException {
+//			@RequestParam("itemImgFiles") List<MultipartFile> itemImgFiles) { 
+			//=> 파일 등록은 나중에!!
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		System.out.println("입력한 정보 : " +  draftDTO);
+		
 		// 유효성 체크
-		if(bindingResult.hasErrors()) {
-			return "approval/approval_reg_form";
-		}
+//		if(bindingResult.hasErrors()) {
+//			return "approval/approval_reg_form";
+//		}
 		
-//		approvalService.registerApproval(draftDTO);
+		// 기안서 등록(저장)
+		int insertApproval = approvalService.registerApproval(draftDTO);
+		System.out.println("성공??" + insertApproval);
 		
-		return "redirect:/"; // 전자결재 리스트 화면으로!
+		
+		return "redirect:/approval/"; // 전자결재 리스트 화면으로!
 	}
 	
 	//------------------------------------------------------------------------------------------------

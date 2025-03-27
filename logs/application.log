@@ -1,58 +1,68 @@
-2025-03-27 15:13:10.320 [http-nio-8080-exec-6][WARN] o.s.w.s.PageNotFound - No mapping for POST /approval/list 
-2025-03-27 15:13:10.323 [http-nio-8080-exec-6][WARN] o.s.w.s.PageNotFound - No endpoint POST /approval/list. 
-2025-03-27 15:13:10.345 [http-nio-8080-exec-9][WARN] o.s.w.s.PageNotFound - No mapping for POST /approval/list 
-2025-03-27 15:13:10.345 [http-nio-8080-exec-9][WARN] o.s.w.s.PageNotFound - No endpoint POST /approval/list. 
-2025-03-27 15:13:12.934 [http-nio-8080-exec-4][ERROR] o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.jdbc.BadSqlGrammarException: 
-### Error querying database.  Cause: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "EMPLOYEE_TEST" not found; SQL statement:
-select *
-		from employee_test
-		where id = ? [42102-232]
-### The error may exist in file [C:\Users\ITWILL\git\packtory_\bin\main\kr\co\itwillbs\de\mybatis\mapper\approval\ApprovalMapper.xml]
-### The error may involve kr.co.itwillbs.de.approval.mapper.ApprovalMapper.selectEmployeeInfo
-### The error occurred while executing a query
-### SQL: select *   from employee_test   where id = ?
-### Cause: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "EMPLOYEE_TEST" not found; SQL statement:
-select *
-		from employee_test
-		where id = ? [42102-232]
+2025-03-27 18:19:02.593 [http-nio-8090-exec-1][INFO] k.c.i.d.c.c.MainController - mainView---start 
+2025-03-27 18:19:04.192 [http-nio-8090-exec-7][INFO] k.c.i.d.s.c.BootStrapController - mainView---start 
+2025-03-27 18:19:04.203 [http-nio-8090-exec-7][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-7][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 6, col 12. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-27 18:19:04.204 [http-nio-8090-exec-7][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-7][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 15, col 8. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-27 18:19:04.207 [http-nio-8090-exec-7][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-7][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 19, col 10. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-27 18:19:04.210 [http-nio-8090-exec-7][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-7][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 28, col 10. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-27 18:19:04.212 [http-nio-8090-exec-7][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-7][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 34, col 13. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-27 18:19:05.206 [http-nio-8090-exec-8][INFO] k.c.i.d.c.c.CommuteController - getCommuteList---start 
+2025-03-27 18:19:05.264 [http-nio-8090-exec-8][DEBUG] o.h.SQL - 
+    select
+        c1_0.idx,
+        c1_0.employee_id,
+        c1_0.reg_date,
+        c1_0.work_status_code 
+    from
+        t_commute c1_0 
+2025-03-27 18:19:05.264 [http-nio-8090-exec-8][DEBUG] o.h.SQL - 
+    select
+        c1_0.idx,
+        c1_0.employee_id,
+        c1_0.reg_date,
+        c1_0.work_status_code 
+    from
+        t_commute c1_0 
+2025-03-27 18:19:05.370 [http-nio-8090-exec-8][DEBUG] o.h.SQL - 
+    select
+        c1_0.idx,
+        c1_0.employee_id,
+        c1_0.reg_date,
+        c1_0.work_status_code 
+    from
+        t_commute c1_0 
+2025-03-27 18:19:05.370 [http-nio-8090-exec-8][DEBUG] o.h.SQL - 
+    select
+        c1_0.idx,
+        c1_0.employee_id,
+        c1_0.reg_date,
+        c1_0.work_status_code 
+    from
+        t_commute c1_0 
+2025-03-27 18:19:05.395 [http-nio-8090-exec-8][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-8][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 6, col 12. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-27 18:19:05.398 [http-nio-8090-exec-8][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-8][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 15, col 8. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-27 18:19:05.399 [http-nio-8090-exec-8][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-8][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 19, col 10. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-27 18:19:05.404 [http-nio-8090-exec-8][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-8][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 28, col 10. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-27 18:19:05.405 [http-nio-8090-exec-8][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-8][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 34, col 13. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-27 18:19:07.219 [http-nio-8090-exec-9][INFO] k.c.i.d.o.c.OrderController - orderMain---start 
+2025-03-27 18:19:07.220 [http-nio-8090-exec-9][INFO] k.c.i.d.o.s.OrderService - getClientList---start 
+2025-03-27 18:19:07.336 [http-nio-8090-exec-9][ERROR] o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.jdbc.BadSqlGrammarException: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Table 'packtory.t_client' doesn't exist
+### The error may exist in file [C:\Users\ITWILL\git\packtory_\bin\main\kr\co\itwillbs\de\mybatis\mapper\orders\OrderMapper.xml]
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT        idx,   business_number,   company_name,   owner_name,   company_category,   company_subject,   phone_number,   e_mail,   fax_number,   address1,   address2,   credit_limit,   is_deleted,   memo,   status,   status_message,   reg_id,   reg_date,   mod_id,   mod_date        FROM t_client
+### Cause: java.sql.SQLSyntaxErrorException: Table 'packtory.t_client' doesn't exist
 ; bad SQL grammar []] with root cause 
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "EMPLOYEE_TEST" not found; SQL statement:
-select *
-		from employee_test
-		where id = ? [42102-232]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:7945)
-	at org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:7916)
-	at org.h2.command.Parser.readTableOrView(Parser.java:7895)
-	at org.h2.command.Parser.readTablePrimary(Parser.java:1769)
-	at org.h2.command.Parser.readTableReference(Parser.java:2249)
-	at org.h2.command.Parser.parseSelectFromPart(Parser.java:2702)
-	at org.h2.command.Parser.parseSelect(Parser.java:2810)
-	at org.h2.command.Parser.parseQueryPrimary(Parser.java:2692)
-	at org.h2.command.Parser.parseQueryTerm(Parser.java:2547)
-	at org.h2.command.Parser.parseQueryExpressionBody(Parser.java:2526)
-	at org.h2.command.Parser.parseQueryExpressionBodyAndEndOfQuery(Parser.java:2519)
-	at org.h2.command.Parser.parseQueryExpression(Parser.java:2512)
-	at org.h2.command.Parser.parseQuery(Parser.java:2479)
-	at org.h2.command.Parser.parsePrepared(Parser.java:610)
-	at org.h2.command.Parser.parse(Parser.java:581)
-	at org.h2.command.Parser.parse(Parser.java:556)
-	at org.h2.command.Parser.prepareCommand(Parser.java:484)
-	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:645)
-	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:561)
-	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1164)
-	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:93)
-	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:315)
-	at com.zaxxer.hikari.pool.ProxyConnection.prepareStatement(ProxyConnection.java:328)
-	at com.zaxxer.hikari.pool.HikariProxyConnection.prepareStatement(HikariProxyConnection.java)
-	at org.apache.ibatis.executor.statement.PreparedStatementHandler.instantiateStatement(PreparedStatementHandler.java:88)
-	at org.apache.ibatis.executor.statement.BaseStatementHandler.prepare(BaseStatementHandler.java:90)
-	at org.apache.ibatis.executor.statement.RoutingStatementHandler.prepare(RoutingStatementHandler.java:60)
-	at org.apache.ibatis.executor.SimpleExecutor.prepareStatement(SimpleExecutor.java:90)
-	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:64)
+java.sql.SQLSyntaxErrorException: Table 'packtory.t_client' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:354)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java)
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:65)
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.query(RoutingStatementHandler.java:80)
+	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:65)
 	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:336)
 	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:158)
 	at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:110)
@@ -60,18 +70,18 @@ select *
 	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:154)
 	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:147)
 	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:142)
-	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:75)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:333)
-	at jdk.proxy2/jdk.proxy2.$Proxy140.selectOne(Unknown Source)
-	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:154)
-	at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:87)
+	at jdk.proxy2/jdk.proxy2.$Proxy141.selectList(Unknown Source)
+	at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:194)
+	at org.apache.ibatis.binding.MapperMethod.executeForMany(MapperMethod.java:147)
+	at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:80)
 	at org.apache.ibatis.binding.MapperProxy$PlainMethodInvoker.invoke(MapperProxy.java:141)
 	at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:86)
-	at jdk.proxy4/jdk.proxy4.$Proxy145.selectEmployeeInfo(Unknown Source)
-	at kr.co.itwillbs.de.approval.service.ApprovalService.getEmployeeInfo(ApprovalService.java:17)
-	at kr.co.itwillbs.de.approval.controller.ApprovalController.apporvalRegisterForm(ApprovalController.java:51)
+	at jdk.proxy4/jdk.proxy4.$Proxy158.getClientList(Unknown Source)
+	at kr.co.itwillbs.de.orders.service.OrderService.getClientList(OrderService.java:29)
+	at kr.co.itwillbs.de.orders.controller.OrderController.orderMain(OrderController.java:35)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:257)
@@ -116,57 +126,26 @@ select *
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
 	at java.base/java.lang.Thread.run(Thread.java:1583)
-2025-03-27 15:13:12.973 [http-nio-8080-exec-3][ERROR] o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.jdbc.BadSqlGrammarException: 
-### Error querying database.  Cause: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "EMPLOYEE_TEST" not found; SQL statement:
-select *
-		from employee_test
-		where id = ? [42102-232]
-### The error may exist in file [C:\Users\ITWILL\git\packtory_\bin\main\kr\co\itwillbs\de\mybatis\mapper\approval\ApprovalMapper.xml]
-### The error may involve kr.co.itwillbs.de.approval.mapper.ApprovalMapper.selectEmployeeInfo
-### The error occurred while executing a query
-### SQL: select *   from employee_test   where id = ?
-### Cause: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "EMPLOYEE_TEST" not found; SQL statement:
-select *
-		from employee_test
-		where id = ? [42102-232]
+2025-03-27 18:19:09.909 [http-nio-8090-exec-5][INFO] k.c.i.d.o.c.OrderController - orderMain---start 
+2025-03-27 18:19:09.909 [http-nio-8090-exec-5][INFO] k.c.i.d.o.s.OrderService - getClientList---start 
+2025-03-27 18:19:09.911 [http-nio-8090-exec-5][ERROR] o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.jdbc.BadSqlGrammarException: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Table 'packtory.t_client' doesn't exist
+### The error may exist in file [C:\Users\ITWILL\git\packtory_\bin\main\kr\co\itwillbs\de\mybatis\mapper\orders\OrderMapper.xml]
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT        idx,   business_number,   company_name,   owner_name,   company_category,   company_subject,   phone_number,   e_mail,   fax_number,   address1,   address2,   credit_limit,   is_deleted,   memo,   status,   status_message,   reg_id,   reg_date,   mod_id,   mod_date        FROM t_client
+### Cause: java.sql.SQLSyntaxErrorException: Table 'packtory.t_client' doesn't exist
 ; bad SQL grammar []] with root cause 
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "EMPLOYEE_TEST" not found; SQL statement:
-select *
-		from employee_test
-		where id = ? [42102-232]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:7945)
-	at org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:7916)
-	at org.h2.command.Parser.readTableOrView(Parser.java:7895)
-	at org.h2.command.Parser.readTablePrimary(Parser.java:1769)
-	at org.h2.command.Parser.readTableReference(Parser.java:2249)
-	at org.h2.command.Parser.parseSelectFromPart(Parser.java:2702)
-	at org.h2.command.Parser.parseSelect(Parser.java:2810)
-	at org.h2.command.Parser.parseQueryPrimary(Parser.java:2692)
-	at org.h2.command.Parser.parseQueryTerm(Parser.java:2547)
-	at org.h2.command.Parser.parseQueryExpressionBody(Parser.java:2526)
-	at org.h2.command.Parser.parseQueryExpressionBodyAndEndOfQuery(Parser.java:2519)
-	at org.h2.command.Parser.parseQueryExpression(Parser.java:2512)
-	at org.h2.command.Parser.parseQuery(Parser.java:2479)
-	at org.h2.command.Parser.parsePrepared(Parser.java:610)
-	at org.h2.command.Parser.parse(Parser.java:581)
-	at org.h2.command.Parser.parse(Parser.java:556)
-	at org.h2.command.Parser.prepareCommand(Parser.java:484)
-	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:645)
-	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:561)
-	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1164)
-	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:93)
-	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:315)
-	at com.zaxxer.hikari.pool.ProxyConnection.prepareStatement(ProxyConnection.java:328)
-	at com.zaxxer.hikari.pool.HikariProxyConnection.prepareStatement(HikariProxyConnection.java)
-	at org.apache.ibatis.executor.statement.PreparedStatementHandler.instantiateStatement(PreparedStatementHandler.java:88)
-	at org.apache.ibatis.executor.statement.BaseStatementHandler.prepare(BaseStatementHandler.java:90)
-	at org.apache.ibatis.executor.statement.RoutingStatementHandler.prepare(RoutingStatementHandler.java:60)
-	at org.apache.ibatis.executor.SimpleExecutor.prepareStatement(SimpleExecutor.java:90)
-	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:64)
+java.sql.SQLSyntaxErrorException: Table 'packtory.t_client' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:354)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java)
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:65)
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.query(RoutingStatementHandler.java:80)
+	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:65)
 	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:336)
 	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:158)
 	at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:110)
@@ -174,18 +153,18 @@ select *
 	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:154)
 	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:147)
 	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:142)
-	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:75)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:333)
-	at jdk.proxy2/jdk.proxy2.$Proxy140.selectOne(Unknown Source)
-	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:154)
-	at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:87)
+	at jdk.proxy2/jdk.proxy2.$Proxy141.selectList(Unknown Source)
+	at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:194)
+	at org.apache.ibatis.binding.MapperMethod.executeForMany(MapperMethod.java:147)
+	at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:80)
 	at org.apache.ibatis.binding.MapperProxy$PlainMethodInvoker.invoke(MapperProxy.java:141)
 	at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:86)
-	at jdk.proxy4/jdk.proxy4.$Proxy145.selectEmployeeInfo(Unknown Source)
-	at kr.co.itwillbs.de.approval.service.ApprovalService.getEmployeeInfo(ApprovalService.java:17)
-	at kr.co.itwillbs.de.approval.controller.ApprovalController.apporvalRegisterForm(ApprovalController.java:51)
+	at jdk.proxy4/jdk.proxy4.$Proxy158.getClientList(Unknown Source)
+	at kr.co.itwillbs.de.orders.service.OrderService.getClientList(OrderService.java:29)
+	at kr.co.itwillbs.de.orders.controller.OrderController.orderMain(OrderController.java:35)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:257)
@@ -230,44 +209,36 @@ select *
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
 	at java.base/java.lang.Thread.run(Thread.java:1583)
-2025-03-27 15:13:22.410 [RMI TCP Connection(12)-127.0.0.1][INFO] o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested. 
-2025-03-27 15:13:22.412 [RMI TCP Connection(12)-127.0.0.1][INFO] o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
-2025-03-27 15:13:22.413 [tomcat-shutdown][INFO] o.a.c.h.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"] 
-2025-03-27 15:13:22.417 [tomcat-shutdown][INFO] o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
-2025-03-27 15:13:22.418 [RMI TCP Connection(12)-127.0.0.1][INFO] o.a.c.h.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"] 
-2025-03-27 15:13:22.422 [RMI TCP Connection(12)-127.0.0.1][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default' 
-2025-03-27 15:13:22.423 [RMI TCP Connection(12)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown initiated... 
-2025-03-27 15:13:22.424 [RMI TCP Connection(12)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown completed. 
-2025-03-27 15:13:23.936 [background-preinit][INFO] o.h.v.i.u.Version - HV000001: Hibernate Validator 8.0.2.Final 
-2025-03-27 15:13:23.970 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - Starting PacktoryDeApplication using Java 21 with PID 8268 (C:\Users\ITWILL\git\packtory_\bin\main started by ITWILL in C:\Users\ITWILL\git\packtory_) 
-2025-03-27 15:13:23.971 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - The following 3 profiles are active: "dev2", "classroom", "common" 
-2025-03-27 15:13:24.143 [restartedMain][INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable 
-2025-03-27 15:13:24.143 [restartedMain][INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG' 
-2025-03-27 15:13:24.659 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
-2025-03-27 15:13:24.660 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JDBC repositories in DEFAULT mode. 
-2025-03-27 15:13:24.699 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.commute.repository.CommuteRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
-2025-03-27 15:13:24.700 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.employee.repository.EmployeeDetailRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
-2025-03-27 15:13:24.702 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.employee.repository.EmployeeRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
-2025-03-27 15:13:24.703 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.sample.repository.ItemRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
-2025-03-27 15:13:24.703 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 38 ms. Found 0 JDBC repository interfaces. 
-2025-03-27 15:13:24.713 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
-2025-03-27 15:13:24.713 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
-2025-03-27 15:13:24.754 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 38 ms. Found 4 JPA repository interfaces. 
-2025-03-27 15:13:25.263 [restartedMain][INFO] o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8090 (http) 
-2025-03-27 15:13:25.274 [restartedMain][INFO] o.a.c.h.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8090"] 
-2025-03-27 15:13:25.275 [restartedMain][INFO] o.a.c.c.StandardService - Starting service [Tomcat] 
-2025-03-27 15:13:25.275 [restartedMain][INFO] o.a.c.c.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36] 
-2025-03-27 15:13:25.315 [restartedMain][INFO] o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext 
-2025-03-27 15:13:25.315 [restartedMain][INFO] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1172 ms 
-2025-03-27 15:13:25.368 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Starting... 
-2025-03-27 15:13:25.589 [restartedMain][INFO] c.z.h.p.HikariPool - Hikari Connection Pool - Added connection com.mysql.cj.jdbc.ConnectionImpl@bef66bd 
-2025-03-27 15:13:25.590 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Start completed. 
-2025-03-27 15:13:25.656 [restartedMain][INFO] o.h.j.i.u.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default] 
-2025-03-27 15:13:25.696 [restartedMain][INFO] o.h.Version - HHH000412: Hibernate ORM core version 6.6.8.Final 
-2025-03-27 15:13:25.724 [restartedMain][INFO] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled 
-2025-03-27 15:13:25.943 [restartedMain][INFO] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer 
-2025-03-27 15:13:25.993 [restartedMain][WARN] o.h.o.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default) 
-2025-03-27 15:13:26.005 [restartedMain][INFO] o.h.o.c.pooling - HHH10001005: Database info:
+2025-03-27 18:20:23.977 [background-preinit][INFO] o.h.v.i.u.Version - HV000001: Hibernate Validator 8.0.2.Final 
+2025-03-27 18:20:24.027 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - Starting PacktoryDeApplication using Java 21 with PID 5496 (C:\Users\ITWILL\git\packtory_\bin\main started by ITWILL in C:\Users\ITWILL\git\packtory_) 
+2025-03-27 18:20:24.027 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - The following 3 profiles are active: "dev2", "classroom", "common" 
+2025-03-27 18:20:24.234 [restartedMain][INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable 
+2025-03-27 18:20:24.236 [restartedMain][INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG' 
+2025-03-27 18:20:24.864 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-27 18:20:24.865 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JDBC repositories in DEFAULT mode. 
+2025-03-27 18:20:24.909 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.commute.repository.CommuteRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
+2025-03-27 18:20:24.912 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.employee.repository.EmployeeDetailRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
+2025-03-27 18:20:24.915 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.employee.repository.EmployeeRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
+2025-03-27 18:20:24.917 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.sample.repository.ItemRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
+2025-03-27 18:20:24.917 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 46 ms. Found 0 JDBC repository interfaces. 
+2025-03-27 18:20:24.929 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-27 18:20:24.930 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+2025-03-27 18:20:24.975 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 41 ms. Found 4 JPA repository interfaces. 
+2025-03-27 18:20:25.544 [restartedMain][INFO] o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8090 (http) 
+2025-03-27 18:20:25.554 [restartedMain][INFO] o.a.c.h.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8090"] 
+2025-03-27 18:20:25.556 [restartedMain][INFO] o.a.c.c.StandardService - Starting service [Tomcat] 
+2025-03-27 18:20:25.556 [restartedMain][INFO] o.a.c.c.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36] 
+2025-03-27 18:20:25.594 [restartedMain][INFO] o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext 
+2025-03-27 18:20:25.594 [restartedMain][INFO] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1358 ms 
+2025-03-27 18:20:25.656 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Starting... 
+2025-03-27 18:20:26.052 [restartedMain][INFO] c.z.h.p.HikariPool - Hikari Connection Pool - Added connection com.mysql.cj.jdbc.ConnectionImpl@600ef899 
+2025-03-27 18:20:26.054 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Start completed. 
+2025-03-27 18:20:26.126 [restartedMain][INFO] o.h.j.i.u.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default] 
+2025-03-27 18:20:26.167 [restartedMain][INFO] o.h.Version - HHH000412: Hibernate ORM core version 6.6.8.Final 
+2025-03-27 18:20:26.192 [restartedMain][INFO] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled 
+2025-03-27 18:20:26.446 [restartedMain][INFO] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer 
+2025-03-27 18:20:26.551 [restartedMain][WARN] o.h.o.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default) 
+2025-03-27 18:20:26.565 [restartedMain][INFO] o.h.o.c.pooling - HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (Hikari Connection Pool)']
 	Database driver: undefined/unknown
 	Database version: 8.0.41
@@ -275,78 +246,30 @@ select *
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown 
-2025-03-27 15:13:26.770 [restartedMain][INFO] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
-2025-03-27 15:13:26.772 [restartedMain][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default' 
-2025-03-27 15:13:27.134 [restartedMain][INFO] o.s.d.j.r.q.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used. 
-2025-03-27 15:13:27.700 [restartedMain][WARN] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning 
-2025-03-27 15:13:28.061 [restartedMain][INFO] o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3306/packtory' 
-2025-03-27 15:13:28.100 [restartedMain][INFO] o.a.c.h.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8090"] 
-2025-03-27 15:13:28.113 [restartedMain][INFO] o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8090 (http) with context path '/' 
-2025-03-27 15:13:28.118 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - Started PacktoryDeApplication in 4.556 seconds (process running for 5.072) 
-2025-03-27 15:13:31.440 [RMI TCP Connection(6)-127.0.0.1][INFO] o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested. 
-2025-03-27 15:13:31.442 [RMI TCP Connection(6)-127.0.0.1][INFO] o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
-2025-03-27 15:13:31.444 [tomcat-shutdown][INFO] o.a.c.h.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8090"] 
-2025-03-27 15:13:31.447 [tomcat-shutdown][INFO] o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
-2025-03-27 15:13:31.447 [RMI TCP Connection(6)-127.0.0.1][INFO] o.a.c.h.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8090"] 
-2025-03-27 15:13:31.451 [RMI TCP Connection(6)-127.0.0.1][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default' 
-2025-03-27 15:13:31.452 [RMI TCP Connection(6)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown initiated... 
-2025-03-27 15:13:31.459 [RMI TCP Connection(6)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown completed. 
-2025-03-27 15:13:32.996 [background-preinit][INFO] o.h.v.i.u.Version - HV000001: Hibernate Validator 8.0.2.Final 
-2025-03-27 15:13:33.030 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - Starting PacktoryDeApplication using Java 21 with PID 24088 (C:\Users\ITWILL\git\packtory_\bin\main started by ITWILL in C:\Users\ITWILL\git\packtory_) 
-2025-03-27 15:13:33.031 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - The following 3 profiles are active: "dev2", "classroom", "common" 
-2025-03-27 15:13:33.204 [restartedMain][INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable 
-2025-03-27 15:13:33.204 [restartedMain][INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG' 
-2025-03-27 15:13:33.709 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
-2025-03-27 15:13:33.710 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JDBC repositories in DEFAULT mode. 
-2025-03-27 15:13:33.747 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.commute.repository.CommuteRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
-2025-03-27 15:13:33.748 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.employee.repository.EmployeeDetailRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
-2025-03-27 15:13:33.750 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.employee.repository.EmployeeRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
-2025-03-27 15:13:33.752 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface kr.co.itwillbs.de.sample.repository.ItemRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table. 
-2025-03-27 15:13:33.752 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 36 ms. Found 0 JDBC repository interfaces. 
-2025-03-27 15:13:33.762 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
-2025-03-27 15:13:33.762 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
-2025-03-27 15:13:33.807 [restartedMain][INFO] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 43 ms. Found 4 JPA repository interfaces. 
-2025-03-27 15:13:34.324 [restartedMain][INFO] o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8090 (http) 
-2025-03-27 15:13:34.334 [restartedMain][INFO] o.a.c.h.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8090"] 
-2025-03-27 15:13:34.335 [restartedMain][INFO] o.a.c.c.StandardService - Starting service [Tomcat] 
-2025-03-27 15:13:34.335 [restartedMain][INFO] o.a.c.c.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36] 
-2025-03-27 15:13:34.373 [restartedMain][INFO] o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext 
-2025-03-27 15:13:34.374 [restartedMain][INFO] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1169 ms 
-2025-03-27 15:13:34.431 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Starting... 
-2025-03-27 15:13:34.657 [restartedMain][INFO] c.z.h.p.HikariPool - Hikari Connection Pool - Added connection com.mysql.cj.jdbc.ConnectionImpl@306c323b 
-2025-03-27 15:13:34.658 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Start completed. 
-2025-03-27 15:13:34.727 [restartedMain][INFO] o.h.j.i.u.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default] 
-2025-03-27 15:13:34.759 [restartedMain][INFO] o.h.Version - HHH000412: Hibernate ORM core version 6.6.8.Final 
-2025-03-27 15:13:34.788 [restartedMain][INFO] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled 
-2025-03-27 15:13:35.013 [restartedMain][INFO] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer 
-2025-03-27 15:13:35.065 [restartedMain][WARN] o.h.o.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default) 
-2025-03-27 15:13:35.077 [restartedMain][INFO] o.h.o.c.pooling - HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (Hikari Connection Pool)']
-	Database driver: undefined/unknown
-	Database version: 8.0.41
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown 
-2025-03-27 15:13:35.813 [restartedMain][INFO] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
-2025-03-27 15:13:35.816 [restartedMain][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default' 
-2025-03-27 15:13:36.183 [restartedMain][INFO] o.s.d.j.r.q.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used. 
-2025-03-27 15:13:36.708 [restartedMain][WARN] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning 
-2025-03-27 15:13:37.079 [restartedMain][INFO] o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3306/packtory' 
-2025-03-27 15:13:37.121 [restartedMain][INFO] o.a.c.h.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8090"] 
-2025-03-27 15:13:37.136 [restartedMain][INFO] o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8090 (http) with context path '/' 
-2025-03-27 15:13:37.143 [restartedMain][INFO] k.c.i.d.PacktoryDeApplication - Started PacktoryDeApplication in 4.528 seconds (process running for 5.049) 
-2025-03-27 15:13:46.740 [http-nio-8090-exec-1][INFO] o.a.c.c.C.[.[.[/] - Initializing Spring DispatcherServlet 'dispatcherServlet' 
-2025-03-27 15:13:46.740 [http-nio-8090-exec-1][INFO] o.s.w.s.DispatcherServlet - Initializing Servlet 'dispatcherServlet' 
-2025-03-27 15:13:46.741 [http-nio-8090-exec-1][INFO] o.s.w.s.DispatcherServlet - Completed initialization in 1 ms 
-2025-03-27 15:13:46.769 [http-nio-8090-exec-1][INFO] k.c.i.d.c.c.MainController - mainView---start 
-2025-03-27 15:13:48.040 [http-nio-8090-exec-2][INFO] k.c.i.d.s.c.BootStrapController - mainView---start 
-2025-03-27 15:13:48.446 [http-nio-8090-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-2][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 6, col 12. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
-2025-03-27 15:13:48.456 [http-nio-8090-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-2][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 15, col 8. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
-2025-03-27 15:13:48.463 [http-nio-8090-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-2][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 19, col 10. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
-2025-03-27 15:13:48.473 [http-nio-8090-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-2][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 28, col 10. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
-2025-03-27 15:13:48.475 [http-nio-8090-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-2][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 34, col 13. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
-2025-03-27 15:13:49.651 [http-nio-8090-exec-5][WARN] o.s.w.s.PageNotFound - No mapping for POST /approval/list 
-2025-03-27 15:13:49.655 [http-nio-8090-exec-5][WARN] o.s.w.s.PageNotFound - No endpoint POST /approval/list. 
-2025-03-27 15:13:49.673 [http-nio-8090-exec-4][WARN] o.s.w.s.PageNotFound - No mapping for POST /approval/list 
-2025-03-27 15:13:49.674 [http-nio-8090-exec-4][WARN] o.s.w.s.PageNotFound - No endpoint POST /approval/list. 
+2025-03-27 18:20:27.414 [restartedMain][INFO] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
+2025-03-27 18:20:27.416 [restartedMain][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default' 
+2025-03-27 18:20:27.835 [restartedMain][INFO] o.s.d.j.r.q.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used. 
+2025-03-27 18:20:28.411 [restartedMain][WARN] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning 
+2025-03-27 18:20:28.854 [restartedMain][INFO] o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3306/packtory' 
+2025-03-27 18:20:28.894 [restartedMain][INFO] o.a.c.h.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8090"] 
+2025-03-27 18:20:28.898 [restartedMain][WARN] o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop' 
+2025-03-27 18:20:28.900 [restartedMain][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default' 
+2025-03-27 18:20:28.902 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown initiated... 
+2025-03-27 18:20:28.909 [restartedMain][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown completed. 
+2025-03-27 18:20:28.920 [restartedMain][INFO] o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled. 
+2025-03-27 18:20:28.942 [restartedMain][ERROR] o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8090 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8090 or configure this application to listen on another port.
+ 
