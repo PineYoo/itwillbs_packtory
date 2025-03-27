@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2025-03-27 01:10:32.805 [http-nio-8090-exec-4][WARN] o.s.w.s.PageNotFound - No mapping for POST /approval/list 
 2025-03-27 01:10:32.818 [http-nio-8090-exec-4][WARN] o.s.w.s.PageNotFound - No endpoint POST /approval/list. 
 2025-03-27 01:10:32.879 [http-nio-8090-exec-7][WARN] o.s.w.s.PageNotFound - No mapping for POST /approval/list 
@@ -100,3 +101,13 @@ java.lang.NumberFormatException: For input string: "e1001"
 	at java.base/java.lang.Thread.run(Thread.java:1583)
 2025-03-27 01:10:35.439 [http-nio-8090-exec-3][WARN] o.s.w.s.PageNotFound - No mapping for GET /favicon.ico 
 2025-03-27 01:10:35.440 [http-nio-8090-exec-3][WARN] o.s.w.s.PageNotFound - No endpoint GET /favicon.ico. 
+=======
+2025-03-27 11:00:20.320 [RMI TCP Connection(18)-127.0.0.1][INFO] o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested. 
+2025-03-27 11:00:20.324 [RMI TCP Connection(18)-127.0.0.1][INFO] o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
+2025-03-27 11:00:20.325 [tomcat-shutdown][INFO] o.a.c.h.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8090"] 
+2025-03-27 11:00:20.329 [tomcat-shutdown][INFO] o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
+2025-03-27 11:00:20.329 [RMI TCP Connection(18)-127.0.0.1][INFO] o.a.c.h.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8090"] 
+2025-03-27 11:00:20.335 [RMI TCP Connection(18)-127.0.0.1][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default' 
+2025-03-27 11:00:20.336 [RMI TCP Connection(18)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown initiated... 
+2025-03-27 11:00:20.344 [RMI TCP Connection(18)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown completed. 
+>>>>>>> branch 'main' of https://github.com/mingming-01/packtory_.git

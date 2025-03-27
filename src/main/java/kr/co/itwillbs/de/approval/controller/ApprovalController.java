@@ -29,15 +29,12 @@ public class ApprovalController {
 	@GetMapping(value={"","/"})
 	public String getSampleList(HttpSession session, Model model) {
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		System.out.println("여기 왔나요?");
 		
+		// 세션 아이디값 가져오기
 //		String userId = (String) session.getAttribute("id");
 		
-//		List<SampleDTO> sampleDTOlist = sampleService.getSampleList();
-//		model.addAttribute("sampleDTOlist", sampleDTOlist);
-//		
-//		SampleSearchDTO sampleSearchDTO = new SampleSearchDTO();
-//		model.addAttribute("sampleSearchDTO", sampleSearchDTO);
+		// 해당 회원의 전자결재 목록 가져오기
+		
 		
 		return "approval/approval_list";
 	}
@@ -48,10 +45,11 @@ public class ApprovalController {
 	@GetMapping(value={"/register"})
 	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		System.out.println("기안자ID:" + userId);
+		System.out.println("기안자ID:" + userId); // e1001
 		
 		// 기안자ID 값으로 사원정보 가져오기
 		DraftDTO draftDTO = approvalService.getEmployeeInfo(userId);
+<<<<<<< HEAD
 		System.out.println("사원 정보 : " + draftDTO );
 		
 		// 임시로 하드코딩
@@ -60,6 +58,10 @@ public class ApprovalController {
 //		draftDTO.setDrafter_name("홍길동");
 //		draftDTO.setDrafter_department("인사과");
 //		draftDTO.setDrafter_position("대리");
+=======
+		System.out.println("사원 정보 : " + draftDTO.getDrafter_name());
+		
+>>>>>>> branch 'main' of https://github.com/mingming-01/packtory_.git
 		
 		model.addAttribute("draftDTO", draftDTO);
 		return "approval/approval_reg_form";

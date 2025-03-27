@@ -10,6 +10,10 @@ import kr.co.itwillbs.de.approval.mapper.ApprovalMapper;
 public class ApprovalService {
 	@Autowired
 	private ApprovalMapper approvalMapper;
+
+	public DraftDTO getEmployeeInfo(String userId) {
+		return approvalMapper.selectEmployee(userId);
+	}
 	
 	//------------------------------------------------------------
 	// 로그인한 userId로 사원 정보 가져오기
