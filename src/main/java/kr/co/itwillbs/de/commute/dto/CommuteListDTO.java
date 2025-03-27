@@ -14,11 +14,14 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class CommuteListDTO {	// Wrapper DTO로 묶어버림
-	private String employeeId; // 사원번호
-	private Date workDate; // 날짜
-	private LocalDateTime checkIn; // 출근시간
+	private Date workDate; 			// 날짜
+	private String employeeId; 		// 사원번호
+	private String department; 		// 부서
+	private String position; 		// 직책
+	private String name;	 		// 이름
+	private LocalDateTime checkIn; 	// 출근시간
 	private LocalDateTime checkOut; // 퇴근시간
-	private String workStatus; // 근무상태
+	private String workStatus; 		// 근무상태
     
 	@Builder
 	public CommuteListDTO(String employeeId, Date workDate, LocalDateTime checkIn, LocalDateTime checkOut,

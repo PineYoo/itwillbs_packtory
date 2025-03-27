@@ -29,7 +29,7 @@ public class ApprovalService {
 		
 		// ----------- approval_no 결재번호 생성 ----------- 
 		// "A"+ yyyyMMdd + 4자리 숫자 (총13자리)  예) A202503270001
-		String approval_no = draftDTO.getApproval_no();
+//		String approval_no = draftDTO.getApproval_no();
 		
 		String today = new SimpleDateFormat("yyyyMMdd").format(new Date());
 		int code = 1;
@@ -44,9 +44,9 @@ public class ApprovalService {
 		}
 		
 		String formattedCode = String.format("%04d", code); // 4자리 숫자로 포맷
-		approval_no = "A" + today + formattedCode; // 최종 결재번호 생성
+//		approval_no = "A" + today + formattedCode; // 최종 결재번호 생성
 		
-		draftDTO.setApproval_no(approval_no);
+//		draftDTO.setApproval_no(approval_no);
 		System.out.println(draftDTO);
 		//-------------------------------------------------------------
 		// 기안서 저장

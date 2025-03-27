@@ -7,11 +7,13 @@
 	<resultMap id="draftResultMap" type="kr.co.itwillbs.de.approval.dto.DraftDTO">
 	    <result property="drafter_id" column="id"/>
 	    <result property="drafter_name" column="name"/>
+	    <result property="drafter_department" column="department_name"/>
+	    <result property="drafter_position" column="position_name"/>
 	    <result property="drafter_department" column="department_code"/>
 	    <result property="drafter_position" column="position_code"/>
 	</resultMap>
 	<select id="selectEmployeeInfo" parameterType="String" resultMap="draftResultMap">
-		SELECT *
+		select *
 		FROM t_employee
 		WHERE id = #{userId}
 	</select>

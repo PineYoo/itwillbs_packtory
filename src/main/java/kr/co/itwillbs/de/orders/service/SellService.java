@@ -39,7 +39,7 @@ public class SellService {
 	public void registerOrder(@Valid OrderDTO orderDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-//		commonService.cr
+		orderDTO.setDocumentNumber(commonService.getSeqOrderNumberfromMySQL());
 		sellMapper.insertOrder(orderDTO);
 	}
 
