@@ -15,7 +15,7 @@ public class ClientDTO {
 	
 	private Long idx;
 	
-	private String code;				//	거래처코드
+	private String businessNumber;				//	거래처코드
 	private String companyName;			//	상호명
 	private String ownerName;			//	대표자명
 	private String companyCategory;		//	업태

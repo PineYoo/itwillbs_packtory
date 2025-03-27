@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="kr.co.itwillbs.de.orders.mapper.ClientMapper">
+	
+	<!-- href: https://mybatis.org/mybatis-3/ko/dynamic-sql.html -->
+	<sql id="templates" >
+		<![CDATA[]]><!-- Character DATA(CDATA) 는 <![CDATA[문자열]]> 파싱되지 않고 그대로 출력을 위함, 쿼리에서 이스케이프 문자를 사용하지 않기 위해 썼음 -->
+		<!-- 예시) 컬럼명 &gt;(&lt;) #{필드명} -> 컬럼명<![CDATA[>(<)]]> #{필드명} -->
+		<if test="blabla != null"></if><!-- mybatis가 동적쿼리가 되는 시작 점. -->
+		
+		<choose><!-- mybatis switch 문 -->
+			<when test="bla != null">
+			</when>
+			<when test="bla != null and blabla != null">
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		
+		<where></where><!-- where 엘리먼트는 태그에 의해 컨텐츠가 리턴되면 단순히 “WHERE”만을 추가한다. 게다가 컨텐츠가 “AND”나 “OR”로 시작한다면 그 “AND”나 “OR”를 지워버린다. -->
+		<trim prefix="WHERE" prefixOverrides="AND |OR "></trim><!-- 위의<where>의 <trim>버전 -->
+		
+		<set></set><!--  set 엘리먼트는 동적으로 SET 키워드를 붙히고 필요없는 콤마를 제거한다. -->
+		<trim prefix="SET" suffixOverrides=","></trim><!-- 위의<set>의 <trim>버전 -->
+		
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")" nullable="true">
+			#{item}
+		</foreach>
+		
+		<foreach item="item" index="index" collection="list">
+			(#{item.index}, #{item.id}, #{item.name}, #{item.isDeleted})
+		</foreach>
+		<!-- like 문 사용 시
+		[MySQL||H2]column LIKE CONCAT('%',#{keyword},'%')
+		[Oracle]column LIKE '%'||#{keyword}||'%'
+		[MSSQL]column LIKE '%'+#{keyword}+'%'
+		 -->
+	</sql>
+	
+	<sql id="t_client_columns_forSelect">
+		idx,
+		business_number,
+		company_name,
+		owner_name,
+		company_category,
+		company_subject,
+		phone_number,
+		e_mail,
+		fax_number,
+		address1,
+		address2,
+		credit_limit,
+		is_deleted,
+		memo,
+		status,
+		status_message,
+		reg_id,
+		reg_date,
+		mod_id,
+		mod_date
+	</sql>
+	
+	<!-- 모든 거래처 목록 조회 -->
+	<select id="getClientList" resultType="kr.co.itwillbs.de.orders.dto.ClientDTO">
+		SELECT
+			<include refid="t_client_columns_forSelect"></include>
+		  FROM t_client
+	</select>
+	
+	<!-- 거래처 정보 입력 -->
+	<insert id="insertClient">
+		INSERT
+		  INTO t_client (
+		<trim suffixOverrides=",">
+			   business_number,
+			   company_name,
+			   owner_name,
+			   company_category,
+			   company_subject,
+			   phone_number,
+			   e_mail,
+			   fax_number,
+			   address1,
+			   address2,
+			   credit_limit,
+			   is_deleted,
+			   memo,
+			   status,
+			   status_message,
+			<if test='modId !=null and !modId.equals("")'>
+			   mod_id,
+			   mod_date,
+			</if>
+		</trim>
+	  ) VALUES (
+			<trim suffixOverrides=",">
+			   #{businessNumber},
+			   #{companyName},
+			   #{ownerName},
+			   #{companyCategory},
+			   #{companySubject},
+			   #{phoneNumber},
+			   #{eMail},
+			   #{faxNumber},
+			   #{address1},
+			   #{address2},
+			   #{creditLimit},
+			   #{isDeleted},
+			   #{memo},
+			   #{status}, 
+			   #{statusMessage},
+			<if test='modId !=null and !modId.equals("")'>
+			   #{mod_id},
+			   #{mod_date},
+			</if>
+		</trim>
+		)
+	</insert>
+	
+	<!-- 거래처 상세정보 요청 -->
+	<select id="getClient" resultType="map">
+		SELECT *
+		  FROM T_CLIENT T1 LEFT OUTER JOIN T_CLIENT_INFO T2
+		    ON T1.BUSINESS_NUMBER = T2.BUSINESS_NUMBER
+		 WHERE T1.BUSINESS_NUMBER = #{businessNumber}
+	</select>
+	
+	<update id="updateClientDTO">
+		UPDATE T_CLIENT
+			<set>
+			   BUSINESS_NUMBER = #{businessNumber},
+			   COMPANY_NAME = #{companyName},
+			   OWNER_NAME = #{ownerName},
+			   COMPANY_CATEGORY = #{companyCategory},
+			   COMPANY_SUBJECT = #{companySubject},
+			   PHONE_NUMBER = #{phoneNumber},
+			   E_MAIL = #{eMail},
+			   FAX_NUMBER = #{faxNumber},
+			   ADDRESS1 = #{address1},
+			   ADDRESS2 = #{address2},
+			   CREDIT_LIMIT = #{creditLimit},
+			   IS_DELETED = #{isDeleted},
+			   MEMO = #{memo},
+			   STATUS = #{status},
+			   STATUS_MESSAGE = #{statusMessage},
+			   MOD_ID = NULL, -- 임시로 NULL
+			   MOD_DATE = NOW(),
+			</set>
+		 WHERE BUSINESS_NUMBER = #{businessNumber}
+	</update>
+	
+	<select id="getClientInfo">
+		SELECT COUNT(BUSINESS_NUMBER)
+		  FROM T_CLIENT_INFO
+		 WHERE BUSINESS_NUMBER = #{businessNumber}
+	</select>
+	
+	<!-- 거래처_부가정보 테이블 사업자번호 등록 -->
+	<insert id="insertClientInfo">
+		INSERT
+		  INTO T_CLIENT_INFO (
+		<trim suffixOverrides=",">
+			   BUSINESS_NUMBER,
+			   CLIENT_EMPLOYEE_NAME,
+			   CLIENT_EMPLOYEE_MEMO,
+			   PHONE1,
+			   PHONE2,
+			   REG_ID,
+			   REG_DATE,
+		</trim>
+		     )
+		VALUES (
+		<trim suffixOverrides=",">
+			   #{businessNumber},
+			   #{clientEmployeeName},
+			   #{clientEmployeeMemo},
+			   #{phone1},
+			   #{phone2},
+			   NULL,	-- 최초작성자 임시로 NULL
+			   NOW(),
+		</trim>
+			 )
+	</insert>
+	
+	<update id="updateClientInfoDTO">
+		UPDATE T_CLIENT_INFO
+			<set>
+			   CLIENT_EMPLOYEE_NAME = #{clientEmployeeName},
+			   CLIENT_EMPLOYEE_MEMO = #{clientEmployeeMemo},
+			   PHONE1 = #{phone1},
+			   PHONE2 = #{phone2},
+			   MOD_ID = NULL,  -- 최종수정자 임시로 NULL
+			   MOD_DATE = NOW(),
+			</set>
+		 WHERE BUSINESS_NUMBER = #{businessNumber}
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
