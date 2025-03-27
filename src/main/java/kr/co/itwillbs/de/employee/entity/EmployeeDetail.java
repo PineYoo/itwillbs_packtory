@@ -36,7 +36,7 @@ public class EmployeeDetail {
 	private Employee employee; // 연관된 Employee 객체
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idx")
     private Long idx; // 테이블 인덱스
 

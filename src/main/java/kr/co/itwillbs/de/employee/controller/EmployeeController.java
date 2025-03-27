@@ -69,13 +69,13 @@ public class EmployeeController {
     public String registerEmployee(EmployeeDTO employeeDTO) {
         log.info("registerEmployee --- start");
 
-        if (employeeDTO.getId() == null || employeeDTO.getId().isEmpty()) {
-            employeeDTO.setId(generateEmployeeId());
-        }
-
-        if (employeeDTO.getHireDate() == null) {
-            employeeDTO.setHireDate(LocalDateTime.now());
-        }
+//        if (employeeDTO.getId() == null || employeeDTO.getId().isEmpty()) {
+//            employeeDTO.setId(generateEmployeeId());
+//        }
+//
+//        if (employeeDTO.getHireDate() == null) {
+//            employeeDTO.setHireDate(LocalDateTime.now());
+//        }
 
         employeeService.registerEmployee(employeeDTO);
         return "redirect:/employee";
@@ -127,9 +127,9 @@ public class EmployeeController {
         return "redirect:/employee/detail/" + id;
     }
 
-    // 자동 생성 ID 메서드
-    private String generateEmployeeId() {
-        log.info("generateEmployeeId --- start");
-        return "EMP" + UUID.randomUUID().toString().substring(0, 8);
-    }
+//    // 자동 생성 ID 메서드
+//    private String generateEmployeeId() {
+//        log.info("generateEmployeeId --- start");
+//        return "EMP" + UUID.randomUUID().toString().substring(0, 8);
+//    }
 }

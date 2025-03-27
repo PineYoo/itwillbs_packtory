@@ -1,5 +1,6 @@
 package kr.co.itwillbs.de.employee.service;
 
+import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.employee.dto.EmployeeDTO;
 import kr.co.itwillbs.de.employee.dto.EmployeeDetailDTO;
 import kr.co.itwillbs.de.employee.dto.EmployeeSearchDTO;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,6 +25,9 @@ public class EmployeeService {
 
     @Autowired
     private EmployeeDetailRepository employeeDetailRepository;
+    
+    @Autowired
+    private CommonService commonService;
 
     // ✅ 사원 목록 조회 (전체 목록)
     public List<EmployeeDTO> getEmployeeList() {
@@ -53,6 +58,14 @@ public class EmployeeService {
     public void registerEmployee(EmployeeDTO employeeDTO) {
         if (employeeDTO.getId() == null || employeeDTO.getId().isEmpty()) {
             employeeDTO.setId(generateEmployeeId());
+        }
+        
+        if (employeeDTO.getId() == null || employeeDTO.getId().isEmpty()) {
+            employeeDTO.setId(generateEmployeeId());
+        }
+
+        if (employeeDTO.getHireDate() == null) {
+            employeeDTO.setHireDate(LocalDateTime.now());
         }
 
         // 사원 엔티티 저장
@@ -116,6 +129,9 @@ public class EmployeeService {
 
     // ✅ 자동 생성 ID 메서드
     private String generateEmployeeId() {
-        return "EMP" + UUID.randomUUID().toString().substring(0, 8);
+//        commonService.createSeqEmpIdfromMysql();
+        return commonService.createSeqEmpIdfromMysql();
+//    	return "EMP" + UUID.randomUUID().toString().substring(0, 8);
+        
     }
 }
