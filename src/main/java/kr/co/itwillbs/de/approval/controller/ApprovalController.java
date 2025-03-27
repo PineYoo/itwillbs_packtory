@@ -49,19 +49,9 @@ public class ApprovalController {
 		
 		// 기안자ID 값으로 사원정보 가져오기
 		DraftDTO draftDTO = approvalService.getEmployeeInfo(userId);
-<<<<<<< HEAD
-		System.out.println("사원 정보 : " + draftDTO );
+		System.out.println("사원 정보 : " + draftDTO.getDrafter_id() );
+		System.out.println("사원 정보 : " + draftDTO.getDrafter_department() );
 		
-		// 임시로 하드코딩
-//		DraftDTO draftDTO = new DraftDTO();
-//		draftDTO.setDrafter_id(userId);
-//		draftDTO.setDrafter_name("홍길동");
-//		draftDTO.setDrafter_department("인사과");
-//		draftDTO.setDrafter_position("대리");
-=======
-		System.out.println("사원 정보 : " + draftDTO.getDrafter_name());
-		
->>>>>>> branch 'main' of https://github.com/mingming-01/packtory_.git
 		
 		model.addAttribute("draftDTO", draftDTO);
 		return "approval/approval_reg_form";

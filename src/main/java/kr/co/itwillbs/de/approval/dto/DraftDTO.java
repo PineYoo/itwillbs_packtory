@@ -19,11 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @ToString
 public class DraftDTO {
-<<<<<<< HEAD
-	private Long idx;				// 기안서ID
-=======
-	private String approval_no;		// 결재번호
->>>>>>> branch 'main' of https://github.com/mingming-01/packtory_.git
+//	private String approval_no;		// 결재번호
 	
 	private String drafter_id;		// 기안자ID(사원번호)
 	private String drafter_name;	// 기안자명(작성자)
@@ -40,10 +36,9 @@ public class DraftDTO {
 	
 	private String title;			// 제목		
 	private String content;			// 내용
+//	private String uploadFile;		// 첨부파일 => 따로 DTO 할것
 	
-//	private String file;			// 첨부파일
-	
-	private Date draft_date;		// 기안일자
+//	private Date draft_date;		// 기안일자
 	private Date due_date;			// 마감일자
 	
 	private ApprovalStatus approvalStatus; // 진행상태 (일단 enum으로! 나중에 공통코드로 뺄지 고민)

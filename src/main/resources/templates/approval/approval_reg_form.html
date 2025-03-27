@@ -12,7 +12,6 @@
 <th:block layout:fragment="css">
 	<!-- dataTables 가져오기 -->
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 	<link href="/css/datatables/datatables.min.css" rel="stylesheet">
 	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
 	<!-- 폰트어썸 가져오기 -->
@@ -22,15 +21,15 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
-	<link href="/css/sb-admin-2.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link href="/css/common.css" rel="stylesheet">
 	<!-- 개별 CSS-->
 	<link href="/css/approval/approval_reg_form.css" rel="stylesheet">
 </th:block>
 <!-- JS -->
 <th:block layout:fragment="script">
 	<!-- Bootstrap core JavaScript-->
-	<script src="/js/jquery/jquery.min.js"></script>
 	<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script src="/js/jquery-3.7.1.js"></script>
     <!-- Core plugin JavaScript-->
@@ -62,10 +61,10 @@
 			<h3 class="reg-title">기안서 작성</h3>
 			<!-- 본문 컨테이너 -->
 			<div class="main-container">
-				<form action="/approval/regist" id="approvalForm" role="form" method="post" th:object="${draftDTO}">
+				<form action="/approval/regist" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${draftDTO}" >
 			        <div class="form-div">
-			            <label th:for="document_code">사원번호</label>
-			            <input type="text" th:field="*{drafter_id}" class="form-control" readonly>
+			            <label th:for="documentCode">사원번호</label>
+			            <input type="text" id="" th:field="*{drafter_id}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
 			            <label th:for="document_code">작성자</label>
@@ -83,15 +82,10 @@
 			        <div class="form-div">
 			            <label th:for="approval_type">결재유형</label>
 			            <select id="approval_type" th:field="*{approval_type}" class="form-control" >
-<!-- 			            	<option th:each="approvalType : ${T(ApprovalType).values()}"
-										th:value="${approvalType}" th:text="${approvalType}"></option> -->
-<!-- 			            <select id="approval_type" th:field="*{approval_type}" class="form-control" > -->
-<!-- 						<select id="itemSellStatus" th:field="*{itemSellStatus}"> -->
-<!-- 			            	<option th:each="approvalType : "></option> -->
-			<!-- 			<option th:each="sellStatus : ${T(com.itwillbs.spring_test3.entity.ItemSellStatus).values()}" -->
-			<!-- 					th:value="${sellStatus}" th:text="${sellStatus}"></option> -->
+			            	<!-- 공통코드 approval_type 가져오기 -->
+<!-- 			            	<option th:each="sellStatus : ${itemSellStatusList}" -->
+<!-- 									th:value="${sellStatus.commonCode}" th:text="${sellStatus.commonCodeName}"></option> -->
 			            </select>
-<!-- 			            <input type="text" th:field="*{approval_type}" class="form-control" readonly> -->
 			        </div>
 			        
 			        <div class="form-div">
@@ -108,7 +102,7 @@
 				            <input type="text" th:field="*{approver3}" class="form-control" placeholder="3차 결재" readonly>
 				        	<button type="button" class="btn btn-primary" id="searchApproverBtn" >검색 <i class="fa-solid fa-magnifying-glass"></i></button>
 						</div>
-					
+					</div>
 					<!-- datepicker 사용 -->
 					<div class="form-div">
 					    <label for="due_date">결재기간</label>
@@ -128,18 +122,11 @@
 			            <textarea th:field="*{content}" class="form-control" id="content" rows="10"></textarea>
 <!-- 			            Editor 라이브러리 일단 나중에......... -->
 			        </div>
-				
-					<!-- 첨부파일도 일단 나중에! -->
-			        <div class="form-div">
-			            <label th:for="file">첨부파일</label>
-<!-- 			            <input type="text" th:field="*{file}" class="form-control"> -->
-			        </div>
 					
-<!-- 			        <div class="form-div"> -->
-<!-- 						<label for="itemImg">첨부파일</label> -->
-<!-- 						<input type="file" id="custom-file-input" name="itemImgFiles" accept="image/*" multiple> -->
-<!-- 						<div id="imgPreviewArea"></div> -->
-<!-- 					</div> -->
+					<div class="form-div">
+					    <label for="fileUpload">첨부파일</label>
+					    <input type="file" id="fileUpload" name="uploadFile" multiple>
+					</div>
 					
 			        <div style="text-align: center">
 						<button type="submit" class="btn btn-primary" id="submitBtn">기안하기</button>

@@ -1,7 +1,9 @@
 @charset "UTF-8";
 @import '/css/fonts/pre/pretendard.css';
 
-body { font-family: "Nunito", 'Pretendard', serif; }
+body {
+    font-family: "Nunito", "Pretendard", sans-serif;
+}
 
 label {
   display: inline-block;
@@ -213,3 +215,14 @@ label {
 }
 
 .status-00 { background: var(--info); }
+
+
+/* @media (max-width: 600px) { */
+/*     .form-control { */
+/*         min-width: 100%; 화면이 작아지면 입력 필드 전체 너비 차지 */
+/*     } */
+
+/*     .approver-line { */
+/*         flex-wrap: wrap; */
+/*     } */
+/* } */

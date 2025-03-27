@@ -19,14 +19,15 @@ import lombok.ToString;
 @ToString
 public class Approval {
 	
-	private Long idx;				// 테이블 인덱스
-	private String approval_id;		// 기안서 ID
-	private String approval_type;	// 결재 유형 (휴가/발령/지출결의/...) - 공통코드
-	private String doc_code;		// 문서 코드 (휴가신청서, 지출결의서,..) - 공통코드 
+//	private Long idx;				// 테이블 인덱스
+	private String approval_no;		// 결재번호
+	private String approval_type;	// 결재유형 (휴가/발령/지출결의/...) - 공통코드
+	private String doc_no;			// 문서양식번호 (휴가신청서, 지출결의서,..) 
 	private String title; 			// 제목
 	private String content;			// 내용
 	private String file;			// 첨부파일
 	private ApprovalType progress_status; // 진행상태 (진행중/반려/결제요청/결재완료)
+	
 	private String drafter_id;		// 기안자 ID
 	private Date draft_date; 		// 기안일자
 	private Date due_date;			// 마감일자
