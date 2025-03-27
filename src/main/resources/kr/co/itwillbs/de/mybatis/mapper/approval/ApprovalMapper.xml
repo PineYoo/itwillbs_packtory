@@ -3,16 +3,70 @@
 		"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.co.itwillbs.de.approval.mapper.ApprovalMapper">
+<<<<<<< HEAD
+=======
+	<!-- 사원정보 조회 -->
+>>>>>>> branch 'main' of https://github.com/mingming-01/packtory_.git
 	<resultMap id="draftResultMap" type="kr.co.itwillbs.de.approval.dto.DraftDTO">
 	    <result property="drafter_id" column="id"/>
 	    <result property="drafter_name" column="name"/>
+<<<<<<< HEAD
 	    <result property="drafter_department" column="department_name"/>
 	    <result property="drafter_position" column="position_name"/>
+=======
+<!-- 	    <result property="drafter_department" column="department_name"/> -->
+<!-- 	    <result property="drafter_position" column="position_name"/> -->
+		<!-- 테스트용 -->
+	    <result property="drafter_department" column="department_code"/>
+	    <result property="drafter_position" column="position_code"/>
+>>>>>>> branch 'main' of https://github.com/mingming-01/packtory_.git
 	</resultMap>
 	<select id="selectEmployeeInfo" parameterType="String" resultMap="draftResultMap">
+<<<<<<< HEAD
 		select *
 		from employee_test
 		where id = #{userId}
+=======
+		SELECT *
+		FROM t_employee
+		WHERE id = #{userId}
+>>>>>>> branch 'main' of https://github.com/mingming-01/packtory_.git
 	</select>
 	
+<<<<<<< HEAD
+=======
+	<!-- 결재 번호 최대값 확인 -->
+	<select id="getLastApprovalNo" parameterType="String" resultType="String">
+		SELECT approval_no
+		FROM t_approval
+		WHERE approval_no LIKE CONCAT('A',#{today}, '%')
+		ORDER BY approval_no DESC
+        LIMIT 1
+	</select>
+	
+	<insert id="insertApproval">
+		INSERT INTO t_approval
+		VALUES (
+			#{approval_no}
+			, #{approval_type}
+			, #{doc_no}
+			, #{title}
+			, #{content}
+			, #{upload_file}
+			, #{progress_status}
+			, #{drafter_id}
+			, #{draft_date}
+			, #{due_date}
+			, #{approver1}
+			, #{approver2}
+			, #{approver3}
+		)
+		
+	
+	
+	</insert>
+	
+	
+	
+>>>>>>> branch 'main' of https://github.com/mingming-01/packtory_.git
 </mapper>

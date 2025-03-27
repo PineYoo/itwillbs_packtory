@@ -31,7 +31,7 @@ public class OrderController {
 	@GetMapping("/client")
 	public String orderMain(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
+		//	거래처 모든 목록 요청
 		List<ClientDTO> clientDTOList = orderService.getClientList();
 		
 		model.addAttribute("clientDTOList", clientDTOList);
@@ -65,6 +65,7 @@ public class OrderController {
 		
 		//	businessNumber(거래처코드)로 거래처 정보 가져오기
 		Map<String, Object> client = orderService.getClient(businessNumber);
+		log.info(client.toString());
 		model.addAttribute("client", client);
 		
 		return "orders/client_detail.html";

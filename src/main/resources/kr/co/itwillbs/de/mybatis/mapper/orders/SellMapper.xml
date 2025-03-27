@@ -80,7 +80,7 @@
 		INSERT INTO t_order
 		VALUES (
 			null					-- idx(auto_increment)
-			, null					-- document_number(임시 - 시퀀스 활용?)
+			, #{documentNumber}		-- document_number(임시 - 시퀀스 활용?)
 			, '수주'				-- trade_code(임시 - 나중에 코드로 가져올거임)
 			, '미출고'				-- status_code(임시 - 나중에 코드로 가져올거임)
 			, ''					-- company_name(임시 - t_client.company_name 에서 가져올거임)
