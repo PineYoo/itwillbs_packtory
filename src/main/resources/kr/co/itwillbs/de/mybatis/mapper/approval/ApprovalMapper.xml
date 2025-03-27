@@ -2,25 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 		"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.co.itwillbs.de.approval.mapper.ApprovalMapper">	
-	<resultMap id="draftResultMap" type="kr.co.itwillbs.de.approval.dto.DraftDTO">
-	    <result property="drafter_id" column="id"/>
-	    <result property="drafter_name" column="name"/>
-	    <result property="drafter_position" column="position_name"/>
-	</resultMap>
-<!-- 	<select id="selectEmployee" parameterType="string" -->
-<!-- 			resultType="kr.co.itwillbs.de.approval.dto.DraftDTO"> -->
-<!-- 		select * -->
-<!-- 		from employee_test -->
-<!-- 		where id = #{drafter_id} -->
-<!-- 	</select> -->
-	<select id="selectEmployee" parameterType="string" resultMap="draftResultMap">
-	    SELECT id, name, position_name 
-	    FROM employee_test 
-	    WHERE id = #{userId}
+<mapper namespace="kr.co.itwillbs.de.approval.mapper.ApprovalMapper">
+	<select id="selectEmployeeInfo" parameterType="String"
+								resultType="kr.co.itwillbs.de.approval.dto.DraftDTO">
+		select *
+		from employee_test
+			<where>
+				<if test="userId != null">AND id = #{userId} </if>
+			</where>
 	</select>
-	
-	
-	
 	
 </mapper>
