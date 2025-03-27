@@ -1,8 +1,8 @@
-2025-03-26 20:41:59.100 [RMI TCP Connection(69)-127.0.0.1][INFO] o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested. 
-2025-03-26 20:41:59.104 [RMI TCP Connection(69)-127.0.0.1][INFO] o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
-2025-03-26 20:41:59.105 [tomcat-shutdown][INFO] o.a.c.h.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8090"] 
-2025-03-26 20:41:59.108 [tomcat-shutdown][INFO] o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
-2025-03-26 20:41:59.108 [RMI TCP Connection(69)-127.0.0.1][INFO] o.a.c.h.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8090"] 
-2025-03-26 20:41:59.112 [RMI TCP Connection(69)-127.0.0.1][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default' 
-2025-03-26 20:41:59.114 [RMI TCP Connection(69)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown initiated... 
-2025-03-26 20:41:59.118 [RMI TCP Connection(69)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown completed. 
+2025-03-27 11:00:20.320 [RMI TCP Connection(18)-127.0.0.1][INFO] o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested. 
+2025-03-27 11:00:20.324 [RMI TCP Connection(18)-127.0.0.1][INFO] o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
+2025-03-27 11:00:20.325 [tomcat-shutdown][INFO] o.a.c.h.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8090"] 
+2025-03-27 11:00:20.329 [tomcat-shutdown][INFO] o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
+2025-03-27 11:00:20.329 [RMI TCP Connection(18)-127.0.0.1][INFO] o.a.c.h.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8090"] 
+2025-03-27 11:00:20.335 [RMI TCP Connection(18)-127.0.0.1][INFO] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default' 
+2025-03-27 11:00:20.336 [RMI TCP Connection(18)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown initiated... 
+2025-03-27 11:00:20.344 [RMI TCP Connection(18)-127.0.0.1][INFO] c.z.h.HikariDataSource - Hikari Connection Pool - Shutdown completed. 
