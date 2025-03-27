@@ -14,7 +14,7 @@ public interface CommonMapper {
 	String getSeqEmpIdfromH2();
 	
 	/**
-	 * MySQL에서 seq 가져오기
+	 * MySQL에서 seq 가져오기 >> emp_id
 	 * <br> 시퀀스로 이용할 테이블 생성
 	 * <br> 시퀀스를 생성 할 프로시저 생성
 	 * <br> 생성 한 시퀀스의 다음 값을 가져오는 함수 생성
@@ -23,4 +23,15 @@ public interface CommonMapper {
 	 * @return seq_emp_id
 	 */
 	String getSeqEmpIdfromMySQL();
+	
+	/**
+	 * MySQL에서 seq 가져오기 >> order_number
+	 * <br> 시퀀스로 이용할 테이블 생성
+	 * <br> 시퀀스를 생성 할 프로시저 생성
+	 * <br> 생성 한 시퀀스의 다음 값을 가져오는 함수 생성
+	 * <br> 초기값 셋팅
+	 * <br> 함수 호출 사용! SELECT nextval('seq_order_number')
+	 * @return seq_emp_id
+	 */
+	String getSeqOrderNumberfromMySQL();
 }

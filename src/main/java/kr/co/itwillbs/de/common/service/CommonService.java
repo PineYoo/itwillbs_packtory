@@ -35,10 +35,18 @@ public class CommonService {
 	}
 	
 	/**
-	 * MySQL DB에서 시퀀스 가져오기
+	 * MySQL DB에서 시퀀스 가져오기 >> emp_id
 	 * @return String seq_*!
 	 */
 	public String createSeqEmpIdfromMysql() {
 		return commonMapper.getSeqEmpIdfromMySQL(); 
+	}
+	
+	/**
+	 * MySQL DB에서 시퀀스 가져오기 >> order_number
+	 * @return String seq_*!
+	 */
+	public String getSeqOrderNumberfromMySQL() {
+		return commonMapper.getSeqOrderNumberfromMySQL(); 
 	}
 }
