@@ -11,13 +11,14 @@
 		    e.department_code AS department,   	-- 부서
 	        e.position_code AS position,       	-- 직책
 	        e.name,								-- 이름
-		    MIN(CASE WHEN work_status_code = '출근' THEN c.reg_date END) AS checkIn,
-		    MAX(CASE WHEN work_status_code = '퇴근' THEN c.reg_date END) AS checkOut,
+		    MIN(CASE WHEN c.work_status_code = '출근' THEN c.reg_date END) AS checkIn,
+		    MAX(CASE WHEN c.work_status_code = '퇴근' THEN c.reg_date END) AS checkOut,
 		    -- GROUP_CONCAT을 사용하여 work_status_code를 하나로 합친 후, 마지막 값만 추출
-      		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT work_status_code ORDER BY c.reg_date SEPARATOR ', '), ', ', -1) AS workStatus
+      		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT c.work_status_code ORDER BY c.reg_date SEPARATOR ', '), ', ', -1) AS workStatus
 		FROM t_commute c
 		JOIN t_employee e ON c.employee_id = e.id  -- 사원 테이블과 조인
-		GROUP BY c.employee_id, e.department, e.position, DATE(c.reg_date)  -- 날짜별, 사용자별 그룹화
-		ORDER BY work_date DESC, c.employee_id;
+		GROUP BY c.employee_id, e.department_code, e.position_code, e.name, DATE(c.reg_date)
+		-- 오라클에서는 GROUP BY 절에 포함되지 않은 컬럼을 SELECT 절에서 사용할 수 없으므로, 모든 비집계 컬럼을 GROUP BY 절에 추가해야함
+		ORDER BY work_date DESC, c.employee_id
 	</select>
 </mapper>
