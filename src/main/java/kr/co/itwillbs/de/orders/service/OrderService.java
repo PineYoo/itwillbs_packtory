@@ -65,7 +65,7 @@ public class OrderService {
 	public void updateClientInfo(ClientInfoDTO clientInfoDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		if(clientMapper.getClientInfo(clientInfoDTO.getBusinessNumber()) > 0) { // 사업자 번호로 T_CLIENT_INFO 테이블 조회
+		if(clientMapper.getClientInfo(clientInfoDTO.getCompanyNumber()) > 0) { // 사업자 번호로 T_CLIENT_INFO 테이블 조회
 			//	조회결과가 있을 시 UPDATE
 			log.info(">>>>>>>>>>>>>>>>>>>>>>>>>updateClientInfo");
 			clientMapper.updateClientInfo(clientInfoDTO);

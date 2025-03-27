@@ -4,12 +4,13 @@ import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import kr.co.itwillbs.de.employee.entity.EmployeeDetail;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import kr.co.itwillbs.de.employee.entity.Employee;
+import kr.co.itwillbs.de.employee.entity.EmployeeDetail;
 
 @Getter
 @Setter
@@ -61,13 +62,28 @@ public class EmployeeDetailDTO {
     private String modId; // 최종 작성자
 
     private LocalDateTime modDate; // 최종작성일자
-    
-    // EmployeeDetail 객체를 받아서 DTO로 변환하는 생성자 추가
-    public EmployeeDetailDTO(EmployeeDetail employeeDetail) {
-        this.id = employeeDetail.getId();
-        this.phoneNumber = employeeDetail.getPhoneNumber();
-        this.email = employeeDetail.getEmail();
-        // 필요한 다른 필드들도 초기화
+
+    // Employee와 EmployeeDetail 객체를 받아서 DTO로 변환하는 생성자 추가
+    public EmployeeDetailDTO(String id, EmployeeDetail employeeDetail) {
+        this.id = id;
+        this.phoneNumber = employeeDetail.getPhoneNumber() != null ? employeeDetail.getPhoneNumber() : "";
+        this.email = employeeDetail.getEmail() != null ? employeeDetail.getEmail() : "";
+        this.gender = employeeDetail.getGender() != null ? employeeDetail.getGender() : "";
+        this.address1 = employeeDetail.getAddress1() != null ? employeeDetail.getAddress1() : "";
+        this.address2 = employeeDetail.getAddress2() != null ? employeeDetail.getAddress2() : "";
+        this.fileIdxs = employeeDetail.getFileIdxs() != null ? employeeDetail.getFileIdxs() : "";
+        this.salaryBankCode = employeeDetail.getSalaryBankCode() != null ? employeeDetail.getSalaryBankCode() : "";
+        this.salaryBankName = employeeDetail.getSalaryBankName() != null ? employeeDetail.getSalaryBankName() : "";
+        this.salaryAccountNumber = employeeDetail.getSalaryAccountNumber() != null ? employeeDetail.getSalaryAccountNumber() : "";
+        this.salaryAccountHolder = employeeDetail.getSalaryAccountHolder() != null ? employeeDetail.getSalaryAccountHolder() : "";
+        this.hasVehicle = employeeDetail.getHasVehicle() != null ? employeeDetail.getHasVehicle() : "No";
+        this.employeeStatusCode = employeeDetail.getEmployeeStatusCode() != null ? employeeDetail.getEmployeeStatusCode() : "";
+        this.statusStartDate = employeeDetail.getStatusStartDate() != null ? employeeDetail.getStatusStartDate() : LocalDateTime.now();
+        this.statusEndDate = employeeDetail.getStatusEndDate() != null ? employeeDetail.getStatusEndDate() : null;
+        this.regId = employeeDetail.getRegId();
+        this.regDate = employeeDetail.getRegDate();
+        this.modId = employeeDetail.getModId();
+        this.modDate = employeeDetail.getModDate();
     }
 
     @Builder

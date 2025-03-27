@@ -33,7 +33,7 @@ public interface ClientMapper {
 	 * @param businessNumber
 	 * @return Map<String, Object>
 	 */
-	Map<String, Object> getClient(String businessNumber);
+	Map<String, Object> getClient(String companyNumber);
 	
 	/**
 	 * 거래처 정보 수정
@@ -49,7 +49,7 @@ public interface ClientMapper {
 	 * @param businessNumber
 	 * @return
 	 */
-	int getClientInfo(String businessNumber);
+	int getClientInfo(String companyNumber);
 	
 	/**
 	 * 거래처_부가정보 테이블 사업자번호 등록

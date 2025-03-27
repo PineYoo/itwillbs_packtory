@@ -1,5 +1,6 @@
 package kr.co.itwillbs.de.employee.service;
 
+import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.employee.dto.EmployeeDTO;
 import kr.co.itwillbs.de.employee.dto.EmployeeDetailDTO;
 import kr.co.itwillbs.de.employee.dto.EmployeeSearchDTO;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,6 +25,9 @@ public class EmployeeService {
 
     @Autowired
     private EmployeeDetailRepository employeeDetailRepository;
+    
+    @Autowired
+    private CommonService commonService;
 
     // ✅ 사원 목록 조회 (전체 목록)
     public List<EmployeeDTO> getEmployeeList() {
@@ -31,7 +36,7 @@ public class EmployeeService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ 사원 검색 기능 추가
+    // ✅ 사원 검색 기능
     public List<EmployeeDTO> searchEmployees(EmployeeSearchDTO searchDTO) {
         List<Employee> employees;
 
@@ -54,11 +59,20 @@ public class EmployeeService {
         if (employeeDTO.getId() == null || employeeDTO.getId().isEmpty()) {
             employeeDTO.setId(generateEmployeeId());
         }
+        
+        if (employeeDTO.getId() == null || employeeDTO.getId().isEmpty()) {
+            employeeDTO.setId(generateEmployeeId());
+        }
 
+        if (employeeDTO.getHireDate() == null) {
+            employeeDTO.setHireDate(LocalDateTime.now());
+        }
+
+        // 사원 엔티티 저장
         Employee employee = employeeDTO.toEntity();
         employeeRepository.save(employee);
 
-        // T_EMPLOYEE_DETAIL에도 별도의 추가 정보가 있다면 저장
+        // 사원 상세 정보 저장 (필요할 경우)
         if (employeeDTO.getEmployeeDetailDTO() != null) {
             EmployeeDetail employeeDetail = employeeDTO.getEmployeeDetailDTO().toEntity();
             employeeDetail.setEmployee(employee);
@@ -66,38 +80,58 @@ public class EmployeeService {
         }
     }
 
-    // ✅ 사원 상세정보 조회 (사원번호(id)만 반환)
-    public EmployeeDetailDTO getEmployeeDetail(String id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+    // ✅ 사원 기본 정보 수정 (리스트 페이지에서 수정)
+    @Transactional 
+    public void updateEmployee(EmployeeDTO employeeDTO) {
+        // 기존 사원 정보 조회 (사원번호로 찾기)
+        Employee employee = employeeRepository.findById(employeeDTO.getId())
+                .orElseThrow(() -> new RuntimeException("사원 정보를 찾을 수 없습니다: " + employeeDTO.getId()));
 
-        // T_EMPLOYEE_DETAIL은 조회하지 않고, 기본 정보에서 사원번호(id)만 설정
-        EmployeeDetailDTO detailDTO = new EmployeeDetailDTO();
-        detailDTO.setId(employee.getId());
-        return detailDTO;
-    }
+        // 엔티티의 update 메서드 호출하여 사원 정보 수정
+        employee.updateEmployee(employeeDTO);
 
-    // ✅ 사원 수정 처리 (T_EMPLOYEE_DETAIL이 있을 경우에만 수정)
-    @Transactional
-    public void updateEmployeeDetail(EmployeeDetailDTO employeeDetailDTO) {
-        // 여기서는 사원번호만 표시하므로, 수정할 정보가 있다면 필요한 필드만 업데이트
-        // 기본적으로 T_EMPLOYEE_DETAIL이 없다면 예외를 발생시킬 수도 있음
-        EmployeeDetail employeeDetail = employeeDetailRepository.findByEmployeeId(employeeDetailDTO.getId())
-                .orElseThrow(() -> new RuntimeException("EmployeeDetail not found with employeeId: " + employeeDetailDTO.getId()));
-
-        employeeDetail.changeEmployeeDetail(employeeDetailDTO);
-        employeeDetailRepository.save(employeeDetail);
+        // 명시적으로 save 호출하여 변경된 내용 저장
+        // 변경된 내용이 엔티티에 반영되었고, JPA가 더티체킹을 통해 자동으로 DB에 반영하긴 하지만, save() 호출을 통해 명확하게 처리
+        employeeRepository.save(employee);
     }
 
     // ✅ 사원 삭제 처리
     @Transactional
     public void deleteEmployee(String id) {
-        employeeDetailRepository.deleteById(id);
-        employeeRepository.deleteById(id);
+    	employeeDetailRepository.deleteById(id); // 상세정보 삭제
+    	employeeRepository.deleteById(id); // 기본정보 삭제
+    }
+
+    // ✅ 사원 상세정보 조회 (사원번호(id)로 조회)
+    public EmployeeDetailDTO getEmployeeDetail(String id) {
+        // 사원 기본 정보 조회
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("사원 정보를 찾을 수 없습니다: " + id));
+
+        // 사원 상세 정보 조회 (없으면 빈 객체 반환)
+        EmployeeDetail employeeDetail = employeeDetailRepository.findByEmployeeId(id)
+                .orElse(new EmployeeDetail());
+
+        return new EmployeeDetailDTO(employee.getId(), employeeDetail);
+    }
+
+    // ✅ 사원 상세 정보 수정 (list_detail 페이지에서 수정)
+    @Transactional
+    public void updateEmployeeDetail(EmployeeDetailDTO employeeDetailDTO) {
+        // 기존 상세 정보를 조회 (없으면 새로 생성)
+        EmployeeDetail employeeDetail = employeeDetailRepository.findByEmployeeId(employeeDetailDTO.getId())
+                .orElse(new EmployeeDetail());
+
+        // DTO에서 받은 값으로 기존 데이터 수정
+        employeeDetail.changeEmployeeDetail(employeeDetailDTO);
+        employeeDetailRepository.save(employeeDetail);
     }
 
     // ✅ 자동 생성 ID 메서드
     private String generateEmployeeId() {
-        return "EMP" + UUID.randomUUID().toString().substring(0, 8);
+//        commonService.createSeqEmpIdfromMysql();
+        return commonService.createSeqEmpIdfromMysql();
+//    	return "EMP" + UUID.randomUUID().toString().substring(0, 8);
+        
     }
 }

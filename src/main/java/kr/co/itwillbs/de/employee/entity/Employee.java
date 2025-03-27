@@ -13,7 +13,6 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import kr.co.itwillbs.de.employee.dto.EmployeeDTO;
@@ -32,12 +31,16 @@ import lombok.ToString;
 @ToString
 public class Employee {
 	
-	@OneToOne
-    @JoinColumn(name = "employee_detail_id")
-    private EmployeeDetail employeeDetail;
+	@OneToOne(mappedBy = "employee") // EmployeeDetail과의 1:1 관계 설정
+	private EmployeeDetail employeeDetail; // EmployeeDetail 엔티티와 관계 설정
+	
+	// getEmployeeDetail 메소드 추가
+    public EmployeeDetail getEmployeeDetail() {
+        return employeeDetail;
+    }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idx")
     private Long idx; // 테이블 인덱스
 
@@ -86,7 +89,7 @@ public class Employee {
     @Builder
     public Employee(String id, String name, String ssn, String departmentCode, String subDepartmentCode,
                     String positionCode, LocalDateTime hireDate, LocalDateTime resignationDate, String workExperience,
-                    String regId, LocalDateTime regDate, String modId, LocalDateTime modDate, EmployeeDetail employeeDetail) {
+                    String regId, LocalDateTime regDate, String modId, LocalDateTime modDate) {
         this.id = id;
         this.name = name;
         this.ssn = ssn;
@@ -100,7 +103,6 @@ public class Employee {
         this.regDate = regDate;
         this.modId = modId;
         this.modDate = modDate;
-        this.employeeDetail = employeeDetail; // EmployeeDetail 설정
     }
 
     // Employee -> EmployeeDTO 변환 메서드
@@ -123,31 +125,55 @@ public class Employee {
                 .build();
     }
 
-    // EmployeeDetail을 설정하는 메서드 추가
-    public void setEmployeeDetail(EmployeeDetail employeeDetail) {
-        this.employeeDetail = employeeDetail;
-        if (employeeDetail != null) {
-            employeeDetail.setEmployee(this); // 양방향 관계를 위한 설정
-        }
-    }
-
     // UPDATE 수행을 위한 메서드
-    public void changeEmployee(EmployeeDTO employeeDTO) {
-        this.name = employeeDTO.getName();
-        this.ssn = employeeDTO.getSsn();
-        this.departmentCode = employeeDTO.getDepartmentCode();
-        this.subDepartmentCode = employeeDTO.getSubDepartmentCode();
-        this.positionCode = employeeDTO.getPositionCode();
-        this.hireDate = employeeDTO.getHireDate();
-        this.resignationDate = employeeDTO.getResignationDate();
-        this.workExperience = employeeDTO.getWorkExperience();
+    public void updateEmployee(EmployeeDTO employeeDTO) {
+        // 이름 업데이트 (널이면 기존 값 유지, 널 아니면 새 값으로 갱신)
+        if (employeeDTO.getName() != null) {
+            this.name = employeeDTO.getName();
+        }
 
-        // modId, modDate는 수정 시에만 업데이트
+        // 주민등록번호 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getSsn() != null) {
+            this.ssn = employeeDTO.getSsn();
+        }
+
+        // 부서 코드 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getDepartmentCode() != null) {
+            this.departmentCode = employeeDTO.getDepartmentCode();
+        }
+
+        // 하위 부서 코드 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getSubDepartmentCode() != null) {
+            this.subDepartmentCode = employeeDTO.getSubDepartmentCode();
+        }
+
+        // 직급 코드 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getPositionCode() != null) {
+            this.positionCode = employeeDTO.getPositionCode();
+        }
+
+        // 입사일 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getHireDate() != null) {
+            this.hireDate = employeeDTO.getHireDate();
+        }
+
+        // 퇴사일 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getResignationDate() != null) {
+            this.resignationDate = employeeDTO.getResignationDate();
+        }
+
+        // 경력 업데이트 (널이면 기존 값 유지)
+        if (employeeDTO.getWorkExperience() != null) {
+            this.workExperience = employeeDTO.getWorkExperience();
+        }
+
+        // 수정자 정보 갱신 (널이면 기존 값 유지)
         if (employeeDTO.getModId() != null) {
             this.modId = employeeDTO.getModId();
         }
-        if (employeeDTO.getModDate() != null) {
-            this.modDate = employeeDTO.getModDate();
-        }
+
+        // 수정일자 자동 갱신 (현재 시간으로 갱신)
+        this.modDate = LocalDateTime.now();  // 수정할 때마다 현재 시간으로 갱신
     }
+
 }

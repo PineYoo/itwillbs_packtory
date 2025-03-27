@@ -41,7 +41,7 @@
 	
 	<sql id="t_client_columns_forSelect">
 		idx,
-		business_number,
+		company_number,
 		company_name,
 		owner_name,
 		company_category,
@@ -74,7 +74,7 @@
 		INSERT
 		  INTO t_client (
 		<trim suffixOverrides=",">
-			   business_number,
+			   company_number,
 			   company_name,
 			   owner_name,
 			   company_category,
@@ -96,7 +96,7 @@
 		</trim>
 	  ) VALUES (
 			<trim suffixOverrides=",">
-			   #{businessNumber},
+			   #{companyNumber},
 			   #{companyName},
 			   #{ownerName},
 			   #{companyCategory},
@@ -122,15 +122,15 @@
 	<!-- 거래처 상세정보 요청 -->
 	<select id="getClient" resultType="map">
 		SELECT *
-		  FROM T_CLIENT T1 LEFT OUTER JOIN T_CLIENT_INFO T2
-		    ON T1.BUSINESS_NUMBER = T2.BUSINESS_NUMBER
-		 WHERE T1.BUSINESS_NUMBER = #{businessNumber}
+		  FROM t_client T1 LEFT OUTER JOIN t_client_info T2
+		    ON T1.COMPANY_NUMBER = T2.COMPANY_NUMBER
+		 WHERE T1.COMPANY_NUMBER = #{companyNumber}
 	</select>
 	
-	<update id="updateClientDTO">
-		UPDATE T_CLIENT
+	<update id="updateClient">
+		UPDATE t_client
 			<set>
-			   BUSINESS_NUMBER = #{businessNumber},
+			   COMPANY_NUMBER = #{companyNumber},
 			   COMPANY_NAME = #{companyName},
 			   OWNER_NAME = #{ownerName},
 			   COMPANY_CATEGORY = #{companyCategory},
@@ -148,21 +148,21 @@
 			   MOD_ID = NULL, -- 임시로 NULL
 			   MOD_DATE = NOW(),
 			</set>
-		 WHERE BUSINESS_NUMBER = #{businessNumber}
+		 WHERE COMPANY_NUMBER = #{companyNumber}
 	</update>
 	
 	<select id="getClientInfo">
-		SELECT COUNT(BUSINESS_NUMBER)
-		  FROM T_CLIENT_INFO
-		 WHERE BUSINESS_NUMBER = #{businessNumber}
+		SELECT COUNT(COMPANY_NUMBER)
+		  FROM t_client_info
+		 WHERE COMPANY_NUMBER = #{companyNumber}
 	</select>
 	
 	<!-- 거래처_부가정보 테이블 사업자번호 등록 -->
 	<insert id="insertClientInfo">
 		INSERT
-		  INTO T_CLIENT_INFO (
+		  INTO t_client_info (
 		<trim suffixOverrides=",">
-			   BUSINESS_NUMBER,
+			   COMPANY_NUMBER,
 			   CLIENT_EMPLOYEE_NAME,
 			   CLIENT_EMPLOYEE_MEMO,
 			   PHONE1,
@@ -173,7 +173,7 @@
 		     )
 		VALUES (
 		<trim suffixOverrides=",">
-			   #{businessNumber},
+			   #{companyNumber},
 			   #{clientEmployeeName},
 			   #{clientEmployeeMemo},
 			   #{phone1},
@@ -184,8 +184,8 @@
 			 )
 	</insert>
 	
-	<update id="updateClientInfoDTO">
-		UPDATE T_CLIENT_INFO
+	<update id="updateClientInfo">
+		UPDATE t_client_info
 			<set>
 			   CLIENT_EMPLOYEE_NAME = #{clientEmployeeName},
 			   CLIENT_EMPLOYEE_MEMO = #{clientEmployeeMemo},
@@ -194,7 +194,7 @@
 			   MOD_ID = NULL,  -- 최종수정자 임시로 NULL
 			   MOD_DATE = NOW(),
 			</set>
-		 WHERE BUSINESS_NUMBER = #{businessNumber}
+		 WHERE COMPANY_NUMBER = #{companyNumber}
 	</update>
 	
 </mapper>
