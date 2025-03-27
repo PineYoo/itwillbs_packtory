@@ -29,12 +29,10 @@ public class ApprovalController {
 	@GetMapping(value={"","/"})
 	public String getSampleList(HttpSession session, Model model) {
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
 		// 세션 아이디값 가져오기
 //		String userId = (String) session.getAttribute("id");
 		
 		// 해당 회원의 전자결재 목록 가져오기
-		
 		
 		return "approval/approval_list";
 	}
@@ -49,26 +47,25 @@ public class ApprovalController {
 		
 		// 기안자ID 값으로 사원정보 가져오기
 		DraftDTO draftDTO = approvalService.getEmployeeInfo(userId);
-		System.out.println("사원 정보 : " + draftDTO.getDrafter_name());
 		
 		
 		model.addAttribute("draftDTO", draftDTO);
 		return "approval/approval_reg_form";
 	}
 	
-	// 작성 후 기안서 등록 비즈니스 로직 처리 (POST)
-//	@PostMapping(value={"/regist"})
-//	public String approvalRegister(@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) {
-////		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-//		// 유효성 체크
-//		if(bindingResult.hasErrors()) {
-//			return "approval/approval_reg_form";
-//		}
-//		
-////		approvalService.registerApproval(draftDTO);
-//		
-//		return "redirect:/"; // 전자결재 리스트 화면으로!
-//	}
+//	 작성 후 기안서 등록 비즈니스 로직 처리 (POST)
+	@PostMapping(value={"/regist"})
+	public String approvalRegister(@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) {
+//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		// 유효성 체크
+		if(bindingResult.hasErrors()) {
+			return "approval/approval_reg_form";
+		}
+		
+//		approvalService.registerApproval(draftDTO);
+		
+		return "redirect:/"; // 전자결재 리스트 화면으로!
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	

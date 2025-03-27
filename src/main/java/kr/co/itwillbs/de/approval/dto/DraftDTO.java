@@ -19,10 +19,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @ToString
 public class DraftDTO {
-	private String approval_no;		// 결재번호
+//	private String approval_no;		// 결재번호
 	
 	private String drafter_id;		// 기안자ID(사원번호)
 	private String drafter_name;	// 기안자명(작성자)
+	private String drafter_department;// 기안자 부서
 	private String drafter_position;// 기안자 직급
 
 	private ApprovalType approval_type;	// 결재유형 (일단 enum으로! 나중에 공통코드로 빼기)
@@ -35,10 +36,9 @@ public class DraftDTO {
 	
 	private String title;			// 제목		
 	private String content;			// 내용
+//	private String uploadFile;		// 첨부파일 => 따로 DTO 할것
 	
-//	private String file;			// 첨부파일
-	
-	private Date draft_date;		// 기안일자
+//	private Date draft_date;		// 기안일자
 	private Date due_date;			// 마감일자
 	
 	private ApprovalStatus approvalStatus; // 진행상태 (일단 enum으로! 나중에 공통코드로 뺄지 고민)

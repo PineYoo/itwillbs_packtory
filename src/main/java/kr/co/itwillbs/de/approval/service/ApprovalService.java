@@ -11,8 +11,10 @@ public class ApprovalService {
 	@Autowired
 	private ApprovalMapper approvalMapper;
 
+	//------------------------------------------------------------
+	// 로그인한 userId로 사원 정보 가져오기
 	public DraftDTO getEmployeeInfo(String userId) {
-		return approvalMapper.selectEmployee(userId);
+		return approvalMapper.selectEmployeeInfo(userId);
 	}
 	
 	

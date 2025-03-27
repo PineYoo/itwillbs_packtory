@@ -1,0 +1,228 @@
+@charset "UTF-8";
+@import '/css/fonts/pre/pretendard.css';
+
+body {
+    font-family: "Nunito", "Pretendard", sans-serif;
+}
+
+label {
+  display: inline-block;
+}
+.main-container {
+  position: relative; /* 내부 요소가 부모 영역을 기준으로 정렬되도록 설정 */
+  overflow: hidden; /* 혹시라도 버튼이 넘치는 경우 방지 */
+}
+
+.reg-title {
+  text-align: center; /* 텍스트를 가운데 정렬 */
+  display: block; /* 블록 요소로 설정 */
+  margin: 0 auto; /* 좌우 마진 자동 설정 */
+  margin-top: 1em;
+  margin-bottom: 1em;
+  font-weight: 700;
+}
+
+.form-div {
+	display: flex;
+  	align-items: center; /* 세로 중앙 정렬 */
+  	gap: 8px; /* 요소 간 간격 조절 */
+ 	margin-bottom: 1em;
+}
+
+.form-div label {
+  width: 100px; /* 라벨 고정 너비 설정 */
+  text-align: left; /* 텍스트 우측 정렬 */
+  flex-shrink: 0; /* label 크기 줄어들지 않도록 설정 */
+}
+
+.form-control {
+  flex: 1; /* 가능한 최대 너비 차지 */
+  min-width: 200px; /* 최소 너비 설정 */
+  height: 38px; /* 버튼과 동일한 높이 설정 */
+}
+
+.btn {
+  white-space: nowrap; /* 버튼 텍스트 줄바꿈 방지 */
+  height: 38px;
+/*  flex-shrink: 0;  버튼 크기가 줄어들지 않도록 설정 */
+}
+
+/* 결재라인 입력 요소들을 한 줄로 정렬 */
+.approver-line {
+  display: flex;
+  gap: 10px;  /* 요소들 간의 간격 */
+  align-items: center; /* 세로로 가운데 정렬 */
+  flex-wrap: nowrap; /* 줄 바꿈 방지 */
+  width: 100%;  /* 부모 영역을 100%로 맞추기 */
+}
+.approver-line input {
+  flex: 1 1 180px;  /* 가변 크기, 최소 너비 설정 */
+  min-width: 150px;  /* 최소 크기 */
+}
+
+#searchApproverBtn {
+  flex-shrink: 0;  /* 버튼 크기 유지 */
+  height: 38px;  /* 버튼 높이 동일하게 설정 */
+  white-space: nowrap;  /* 버튼 내 텍스트 줄 바꿈 방지 */
+}
+
+
+
+.form-check {
+  display: block;
+  min-height: 1.5rem;
+  padding-left: 1.5em;
+}
+
+.form-check .form-check-input {
+  float: left;
+  margin-left: -1.5em;
+}
+
+.form-check-reverse {
+  padding-right: 1.5em;
+  padding-left: 0;
+  text-align: right;
+}
+
+.form-check-reverse .form-check-input {
+  float: right;
+  margin-right: -1.5em;
+  margin-left: 0;
+}
+
+.form-check-input {
+  width: 1em;
+  height: 1em;
+  margin-top: 0.25em;
+  vertical-align: top;
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  appearance: none;
+}
+
+.form-check-input[type=checkbox] {
+  border-radius: 0.25em;
+}
+
+.form-check-input[type=radio] {
+  border-radius: 50%;
+}
+
+.form-check-input:active {
+  filter: brightness(90%);
+}
+
+.form-check-input:focus {
+  border-color: transparent;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(0, 97, 242, 0.25);
+}
+
+.form-check-input:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.form-check-input:checked[type=checkbox] {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+}
+
+.form-check-input:checked[type=radio] {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+.form-check-input:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.form-check-input[disabled] ~ .form-check-label, 
+.form-check-input:disabled ~ .form-check-label {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  background-color: #a3a3a3;
+  height: 17px;
+  width: 30px;
+  border-radius: 1.875rem;
+  transition: background-color .25s ease, border-color .25s ease;
+}
+
+.form-switch .form-check-input:after {
+  transition: transform .25s ease-in-out, background-color .25s ease-in-out;
+  content: "";
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  border: 1px solid #a3a3a3;
+  position: absolute;
+  background-color: #fff;
+  transform: translateX(1px);
+  top: -2px;
+  left: -6px;
+}
+
+.form-switch .form-check-input:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.form-switch .form-check-input:checked:after {
+  transform: translateX(20px);
+  border-color: var(--primary);
+}
+
+.dataTable td {
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.dataTable th, .dataTable td {
+  width: auto;
+}
+
+.table { font-size: 15px; }
+.btn { font-size: 15px; font-weight: 500; }
+
+.grade {
+  background: var(--dark);
+  color: var(--white);
+  padding: 4px 10px;
+  border-radius: 50px;
+  display: inline-block;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.grade-adm { background: var(--cyan); min-width: 65px; }
+.grade-normal {}
+
+.status {
+  background: var(--orange);
+  color: var(--white);
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status-00 { background: var(--info); }
+
+
+/* @media (max-width: 600px) { */
+/*     .form-control { */
+/*         min-width: 100%; 화면이 작아지면 입력 필드 전체 너비 차지 */
+/*     } */
+
+/*     .approver-line { */
+/*         flex-wrap: wrap; */
+/*     } */
+/* } */
