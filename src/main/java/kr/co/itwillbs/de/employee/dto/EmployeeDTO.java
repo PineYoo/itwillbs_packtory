@@ -41,7 +41,7 @@ public class EmployeeDTO {
 
     @NotNull(message = "입사일은 필수 입력 값입니다.")
     private LocalDateTime hireDate = LocalDateTime.now(); // 입사일
-
+    
     private LocalDateTime resignationDate; // 퇴사일
 
     @Size(max = 50, message = "경력은 50자 이내로 입력해주세요.")
@@ -57,9 +57,6 @@ public class EmployeeDTO {
 
     private EmployeeDetailDTO employeeDetailDTO; // EmployeeDetailDTO 추가
     
-    // 추가된 필드: 직원 상태
-    private String employeeStatus;  // 상태 필드 추가
-
     // Employee 객체를 받아서 DTO로 변환하는 생성자 추가
     public EmployeeDTO(Employee employee) {
         this.idx = employee.getIdx();
@@ -78,7 +75,7 @@ public class EmployeeDTO {
         
         // EmployeeDTO 생성 부분
         if (employee.getEmployeeDetail() != null) {
-            this.employeeDetailDTO = new EmployeeDetailDTO(employee.getId(), employee.getEmployeeDetail());
+            this.employeeDetailDTO = new EmployeeDetailDTO(employee.getId(), employee.getEmployeeDetail(), employee);
         }
     }
 
@@ -102,7 +99,6 @@ public class EmployeeDTO {
         this.modId = modId;
         this.modDate = modDate;
         this.employeeDetailDTO = employeeDetailDTO;
-        this.employeeStatus = employeeStatus;  // 상태 필드 추가
     }
 
     // EmployeeDTO -> Employee 엔티티 변환 메서드
