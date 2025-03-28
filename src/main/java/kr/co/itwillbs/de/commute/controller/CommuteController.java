@@ -29,10 +29,10 @@ public class CommuteController {
 	public String getCommuteList(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		// 하드코딩
-		String id = "e1001";	// 홍길동의 사번 e1001 하드코딩
+		String id = "100006";	// 허민의 사번 100006 하드코딩
 		
 		List<CommuteListDTO> commuteList = commuteService.getCommuteList(id);
-		log.debug("commuteList : " + commuteList);
+		log.info("commuteList : " + commuteList);
 		
 		model.addAttribute("commuteList",commuteList);
 		
