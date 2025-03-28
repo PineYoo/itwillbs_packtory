@@ -4,6 +4,11 @@
 	  layout:decorate="~{common/layouts/bs_layout}">
 <head>
 <title>팩토리(PackTory) - 출퇴근관리</title>
+<!-- 부트스트랩 icons 가져오기 -->
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+<!-- dataTables 가져오기 -->
 <th:block layout:fragment="css">
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 </th:block>
@@ -19,14 +24,14 @@
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table table-bordered" id="commuteManagement" width="100%" cellspacing="0">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" th:object="${commuteList}">
 							<thead>
 								<tr>
-									<th>사원번호</th>
 									<th>날짜</th>
-<!-- 									<th>부서</th> -->
-<!-- 									<th>직책</th> -->
-<!-- 									<th>이름</th> -->
+									<th>사원번호</th>
+									<th>부서</th>
+									<th>직책</th>
+									<th>이름</th>
 									<th>출근시간</th>
 									<th>퇴근시간</th>
 									<th>근무상태</th>
@@ -34,8 +39,11 @@
 							</thead>
 							<tbody>
 								<tr th:each="commute, status : ${commuteList}" th:data-id="${commute.workDate}" class="clickable-row">
-									<td th:text="${commute.employeeId}"></td>
 									<td th:text="${commute.workDate}"></td>
+									<td th:text="${commute.employeeId}"></td>
+									<td th:text="${commute.department}"></td>
+									<td th:text="${commute.position}"></td>
+									<td th:text="${commute.name}"></td>
 									<td th:text="${commute.checkIn != null ? #temporals.format(commute.checkIn, 'HH:mm:ss') : '-'}"></td>
 									<td th:text="${commute.checkOut != null ? #temporals.format(commute.checkOut, 'HH:mm:ss') : '-'}"></td>
 									<td th:text="${commute.workStatus}"></td>
@@ -48,6 +56,7 @@
 		</div>
 	</div>
 	<th:block layout:fragment="script">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 		<script src="/js/datatables/jquery.dataTables.min.js"></script>
 		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
 		<script src="/js/demo/datatables-demo.js"></script>

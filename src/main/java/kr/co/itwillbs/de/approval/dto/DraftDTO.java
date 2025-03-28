@@ -8,10 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-@Data
 @NoArgsConstructor
+@Data
 public class DraftDTO {
-//	private String approval_no;		// 결재번호
+	private String approval_no;		// 결재번호
 	
 	private String drafter_id;		// 기안자ID(사원번호)
 	private String drafter_name;	// 기안자명(작성자)
