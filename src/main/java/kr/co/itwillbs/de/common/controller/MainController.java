@@ -38,4 +38,9 @@ public class MainController {
 				"Disallow: /files/*\n" + //업로드한 파일 수집X
 				"Disallow: /admin/*\n"; //어드민 수집X
 	}
+	
+	@GetMapping("/test/draft")
+	public String test() {
+		return "/approval/draft_form.html";
+	}
 }
