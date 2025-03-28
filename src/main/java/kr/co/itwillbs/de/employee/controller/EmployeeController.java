@@ -1,9 +1,7 @@
 package kr.co.itwillbs.de.employee.controller;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -69,14 +67,6 @@ public class EmployeeController {
     public String registerEmployee(EmployeeDTO employeeDTO) {
         log.info("registerEmployee --- start");
 
-//        if (employeeDTO.getId() == null || employeeDTO.getId().isEmpty()) {
-//            employeeDTO.setId(generateEmployeeId());
-//        }
-//
-//        if (employeeDTO.getHireDate() == null) {
-//            employeeDTO.setHireDate(LocalDateTime.now());
-//        }
-
         employeeService.registerEmployee(employeeDTO);
         return "redirect:/employee";
     }
@@ -92,11 +82,11 @@ public class EmployeeController {
         
         try {
             // 서비스에서 사원 정보 수정
-            employeeService.updateEmployee(employeeDTO); // t_employee 테이블 수정
+        	employeeService.updateEmployee(employeeDTO); // t_employee 테이블 수정
             return ResponseEntity.ok("사원 정보가 수정되었습니다.");
         } catch (Exception e) {
-            log.error("수정 실패: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("수정 중 오류가 발생했습니다.");
+        	log.error("수정 실패: {}", e.getMessage());
+        	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("수정 중 오류가 발생했습니다.");
         }
     }
 
@@ -104,9 +94,9 @@ public class EmployeeController {
     @DeleteMapping("/delete/{id}")
     @ResponseBody
     public ResponseEntity<String> deleteEmployee(@PathVariable("id") String id) {
-        log.info("deleteEmployee --- start for id: {}", id);
-        employeeService.deleteEmployee(id);
-        return ResponseEntity.ok("삭제되었습니다.");
+    	log.info("deleteEmployee --- start for id: {}", id);
+    	employeeService.deleteEmployee(id);
+    	return ResponseEntity.ok("삭제되었습니다.");
     }
 
     // 사원 상세정보 페이지
@@ -118,18 +108,17 @@ public class EmployeeController {
         return "employee/list_detail";
     }
 
-    // 사원 상세 정보 수정 (list_detail 페이지에서 수정)
-    @PostMapping("/detail/{id}")
-    public String updateEmployeeDetail(@PathVariable("id") String id, @ModelAttribute EmployeeDetailDTO employeeDetailDTO) {
+    // 사원 상세정보 수정
+    @PutMapping("/detail/{id}")
+    public String updateEmployeeDetail(@PathVariable("id") String id, 
+                                       @ModelAttribute EmployeeDTO employeeDTO, 
+                                       @ModelAttribute EmployeeDetailDTO employeeDetailDTO) {
         log.info("updateEmployeeDetail --- start for id: {}", id);
-        employeeDetailDTO.setId(id);
-        employeeService.updateEmployeeDetail(employeeDetailDTO); // t_employee_detail 테이블 수정
+
+        // 사원 기본 정보와 상세 정보 동시에 업데이트
+        employeeService.updateEmployeeDetailAndSsn(employeeDTO, employeeDetailDTO);
+
         return "redirect:/employee/detail/" + id;
     }
 
-//    // 자동 생성 ID 메서드
-//    private String generateEmployeeId() {
-//        log.info("generateEmployeeId --- start");
-//        return "EMP" + UUID.randomUUID().toString().substring(0, 8);
-//    }
 }

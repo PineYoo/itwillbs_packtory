@@ -1,39 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/de_layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>사원 목록</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>팩토리(PackTory) - 사원 목록</title>
+    
+    <th:block layout:fragment="headContents">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    </th:block>
+    
+    <th:block layout:fragment="css">
+        <link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+        <link href="/css/datatables/datatables.min.css" rel="stylesheet">
+        <link href="/css/fontawesome/all.min.css" rel="stylesheet">
+        <script src="/css/fontawesome/all.min.js"></script>
+        <link href="/css/sb-admin-2.css" rel="stylesheet">
+        <link href="/css/common.css" rel="stylesheet">
+    </th:block>
+
     <style type="text/css">
-        /* 기존 Bootstrap 스타일과 함께 사용자 정의 스타일 */
+        /* 부드러운 효과 및 hover 시 배경색 변경 */
         .clickable-row {
-            transition: background-color 0.2s ease; /* 부드러운 배경색 전환 효과 */
+            transition: background-color 0.2s ease;
         }
         .clickable-row:hover {
-            background-color: #e0e0e0; /* 마우스 오버 시 밝은 회색 배경 */
+            background-color: #e0e0e0;
+        }
+        /* 스타일을 명확히 지정하여 클릭 시 배경색이 변경되도록 */
+        .table tbody tr.clickable-row:hover {
+            background-color: #f0f0f0;
         }
     </style>
 </head>
-<body>
-    <div class="container mt-5">
-        <h1>사원 목록</h1>
+<body id="page-top">
+<div layout:fragment="contents">
+    <h1 class="h3 mb-4 text-gray-800">사원 목록</h1>
+    <div class="card-body">
         <div class="mb-4">
-            <form th:action="@{/employee}" method="get" th:object="${searchDTO}" class="form-inline justify-content-between">
-                <div class="form-group">
-                    <select id="searchType" name="type" th:field="*{type}" class="form-control mr-2">
-                        <option value="name">이름</option>
-                        <option value="dept">부서</option>
-                    </select>
-                    <input type="text" id="searchValue" name="searchValue" th:field="*{searchValue}" placeholder="검색어 입력" class="form-control mr-2">
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary mr-2">검색</button>
-                    <button type="button" id="btnNew" class="btn btn-success">사원 등록</button>
-                </div>
-            </form>
-        </div>
+    <!-- 버튼을 오른쪽으로 정렬하기 위한 클래스 추가 -->
+    <div class="d-flex justify-content-end">
+        <button type="button" id="btnNew" class="btn btn-success mb-3">사원 등록</button>
+    </div>
+</div>
         
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead class="thead-light">
                 <tr>
                     <th>인덱스</th>
@@ -49,14 +59,14 @@
             </thead>
             <tbody>
                 <tr th:each="employee : ${employeeList}" th:data-id="${employee.id}" class="clickable-row">
-                    <td data-key="idx" th:text="${employee.idx}"></td>
-                    <td data-key="id" th:text="${employee.id}"></td>
-                    <td data-key="name" th:text="${employee.name}" class="editable"></td>
-                    <td data-key="departmentCode" th:text="${employee.departmentCode}" class="editable"></td>
-                    <td data-key="subDepartmentCode" th:text="${employee.subDepartmentCode}" class="editable"></td>
-                    <td data-key="positionCode" th:text="${employee.positionCode}" class="editable"></td>
-                    <td data-key="hireDate" th:text="${#temporals.format(employee.hireDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                    <td data-key="workExperience" th:text="${employee.workExperience != null ? employee.workExperience : '경력 없음'}" class="editable"></td>
+                    <td th:text="${employee.idx}"></td>
+                    <td th:text="${employee.id}"></td>
+                    <td th:text="${employee.name}" class="editable" th:data-key="name"></td>
+                    <td th:text="${employee.departmentCode}" class="editable" th:data-key="departmentCode"></td>
+                    <td th:text="${employee.subDepartmentCode}" class="editable" th:data-key="subDepartmentCode"></td>
+                    <td th:text="${employee.positionCode}" class="editable" th:data-key="positionCode"></td>
+                    <td th:text="${#temporals.format(employee.hireDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${employee.workExperience}" class="editable" th:data-key="workExperience"></td>
                     <td>
                         <button class="btn btn-warning btn-sm edit-btn">수정</button>
                         <button class="btn btn-success btn-sm save-btn" style="display: none;">저장</button>
@@ -66,97 +76,110 @@
             </tbody>
         </table>
     </div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<th:block layout:fragment="script">
+    <script src="/js/jquery-3.7.1.js"></script>
+    <script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/datatables/jquery.dataTables.min.js"></script>
+    <script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript">
-    $(function() {
-        let isEditing = false; // 수정 중 여부 확인
+$(document).ready(function() {
+    // 테이블을 DataTable로 초기화
+    $('#dataTable').DataTable({
+        "paging": true,         // 페이징 활성화
+        "searching": true,      // 검색 기능 활성화
+        "info": true,           // 테이블 정보 표시
+        "lengthChange": true,   // 페이지 크기 변경 옵션 활성화
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/Korean.json" // 한국어 적용
+        }
+    });
 
-        // 수정 버튼 클릭
-        $(".edit-btn").on("click", function() {
-            const row = $(this).closest("tr");
-            row.find("td.editable").each(function() {
-                let text = $(this).text().trim();
-                let key = $(this).data("key"); // data-key 속성값 가져오기
-                $(this).html(`<input type='text' class='form-control' name='${key}' value='${text}'>`);
-            });
+    let isEditing = false; // 수정 모드 여부
 
-            row.addClass("edit-mode");
-            $(this).hide();
-            row.find(".save-btn").show();
-            isEditing = true; // 수정 모드 활성화
+    // 동적으로 추가된 요소에도 적용할 수 있도록 이벤트 위임 사용
+    $(document).on("click", ".clickable-row td:not(.edit-mode)", function() {
+        if (!isEditing) {
+            const id = $(this).closest("tr").data("id");
+            location.href = `/employee/detail/${id}`;
+        }
+    });
 
-            // 수정 중에는 상세 페이지 이동 비활성화
-            $(".clickable-row").off("click");
+    // 등록 버튼 클릭 시 이동
+    $("#btnNew").on("click", function(event) {
+        event.stopPropagation();
+        location.href = "/employee/new";
+    });
+
+    // 수정 버튼 클릭
+    $(document).on("click", ".edit-btn", function(event) {
+        event.stopPropagation();
+        const row = $(this).closest("tr");
+        row.find("td.editable").each(function() {
+            let text = $(this).text().trim();
+            let key = $(this).data("key");
+            $(this).html(`<input type="text" class="form-control" name="${key}" value="${text}">`);
         });
+        row.addClass("edit-mode");
+        $(this).hide();
+        row.find(".save-btn").show();
+        isEditing = true;
+    });
 
-        // 저장 버튼 클릭
-        $(".save-btn").on("click", function(event) {
-            event.preventDefault(); // 자동 페이지 이동 방지
+    // 저장 버튼 클릭 (AJAX 요청)
+    $(document).on("click", ".save-btn", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const row = $(this).closest("tr");
+        const id = row.data("id");
+        let updatedData = {};
 
-            const row = $(this).closest("tr");
-            const id = row.data("id"); // 사원번호로 id 가져오기
-            let updatedData = {};
+        row.find("td.editable").each(function() {
+            let key = $(this).data("key");
+            let value = $(this).find("input").val().trim();
+            updatedData[key] = value;
+        });
+        updatedData["id"] = id;
 
-            // 각 editable td에서 name과 input 값을 가져와 JSON 객체 생성
-            row.find("td.editable").each(function() {
-                let key = $(this).data("key");
-                let value = $(this).find("input").val().trim();
-                updatedData[key] = value;
-            });
-            // id는 따로 설정
-            updatedData["id"] = id;
+        $.ajax({
+            url: `/employee/update/${id}`,
+            type: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(updatedData),
+            success: function(response) {
+                alert("수정되었습니다.");
+                location.reload();
+            },
+            error: function() {
+                alert("수정 실패.");
+            }
+        });
+        isEditing = false;
+    });
 
+    // 삭제 버튼 클릭
+    $(document).on("click", ".delete-btn", function(event) {
+        event.stopPropagation();
+        const row = $(this).closest("tr");
+        const id = row.data("id");
+
+        if (confirm("정말 삭제하시겠습니까?")) {
             $.ajax({
-                url: `/employee/update/${id}`,
-                type: "PUT",  // HTTP 메소드를 PUT으로 변경 (컨트롤러와 일치)
-                contentType: "application/json",
-                data: JSON.stringify(updatedData),
-                success: function() {
-                    alert("수정되었습니다.");
-                    location.reload();
+                url: `/employee/delete/${id}`,
+                type: "DELETE",
+                success: function(response) {
+                    alert("삭제되었습니다.");
+                    window.location.href = "/employee";
                 },
                 error: function() {
-                    alert("수정 실패.");
+                    alert("삭제 실패.");
                 }
             });
-
-            isEditing = false; // 수정 완료
-        });
-
-        // 삭제 버튼 클릭
-        $(".delete-btn").on("click", function() {
-            const row = $(this).closest("tr");
-            const id = row.data("id");
-
-            if (confirm("정말 삭제하시겠습니까?")) {
-                $.ajax({
-                    url: `/employee/delete/${id}`,
-                    type: "DELETE",
-                    success: function() {
-                        alert("삭제되었습니다.");
-                        window.location.href = "/employee"; // 리스트 페이지로 이동
-                    },
-                    error: function() {
-                        alert("삭제 실패.");
-                    }
-                });
-            }
-        });
-
-        // 상세 페이지 이동
-        $(".clickable-row td:not(.edit-mode)").on("click", function() {
-            if (!isEditing) { // 수정 중이 아닐 때만 이동
-                const id = $(this).closest("tr").data("id");
-                location.href = `/employee/detail/${id}`;
-            }
-        });
-
-        // 등록 버튼 클릭 시 form 페이지로 이동
-        $("#btnNew").on("click", function() {
-            location.href = "/employee/new";
-        });
+        }
     });
-    </script>
+});
+</script>
+</th:block>
 </body>
 </html>

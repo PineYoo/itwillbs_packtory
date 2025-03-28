@@ -1,62 +1,92 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/de_layout}">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>사원 등록</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <title>팩토리(PackTory) - 사원 등록</title>
+    
+    <!-- 헤드 섹션, 공통 스타일 추가 -->
+    <th:block layout:fragment="headContents">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    </th:block>
+    
+    <th:block layout:fragment="css">
+        <link href="/css/fontawesome/all.min.css" rel="stylesheet">
+        <link href="/css/sb-admin-2.css" rel="stylesheet">
+        <link href="/css/common.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    </th:block>
+
+    <style>
+        .form-label {
+            font-weight: bold;
+        }
+    </style>
 </head>
-<body>
+<body id="page-top">
 
-    <div class="container mt-5">
-        <h2>사원 등록</h2>
-        <form action="#" th:action="@{/employee/new}" th:object="${employee}" method="post">
-            <div class="mb-3">
-                <label for="name" class="form-label">이름</label>
-                <input type="text" class="form-control" id="name" th:field="*{name}" required>
-            </div>
+    <!-- 페이지 내용 -->
+    <div layout:fragment="contents">
+        <div class="container mt-5">
+            <h2 class="h3 mb-4 text-gray-800">사원 등록</h2>
+            <form action="#" th:action="@{/employee/new}" th:object="${employee}" method="post">
+                <div class="mb-3">
+                    <label for="name" class="form-label">이름</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                </div>
 
-            <!-- 주민등록번호 입력 필드 -->
-            <div class="mb-3">
-                <label for="ssn" class="form-label">주민등록번호</label>
-                <input type="text" class="form-control" id="ssn" th:field="*{ssn}" maxlength="14" required placeholder="YYYYMMDD-XXXXXXX">
-            </div>
+                <div class="mb-3">
+                    <label for="ssn" class="form-label">주민등록번호</label>
+                    <input type="text" class="form-control" id="ssn" th:field="*{ssn}" maxlength="14" required placeholder="YYYYMMDD-XXXXXXX">
+                </div>
 
-            <div class="mb-3">
-                <label for="departmentCode" class="form-label">부서</label>
-                <input type="text" class="form-control" id="departmentCode" th:field="*{departmentCode}" required>
-            </div>
-            <div class="mb-3">
-                <label for="subDepartmentCode" class="form-label">하위부서</label>
-                <input type="text" class="form-control" id="subDepartmentCode" th:field="*{subDepartmentCode}" required>
-            </div>
-            <div class="mb-3">
-                <label for="positionCode" class="form-label">직급</label>
-                <input type="text" class="form-control" id="positionCode" th:field="*{positionCode}" required>
-            </div>
-            
-            <!-- 입사일과 퇴사일은 자동으로 처리되므로 입력을 제거합니다 -->
-            <div class="mb-3">
-                <label for="workExperience" class="form-label">경력</label>
-                <input type="text" class="form-control" id="workExperience" th:field="*{workExperience}">
-            </div>
-            <button type="submit" class="btn btn-primary">등록</button>
-        </form>
+                <div class="mb-3">
+                    <label for="departmentCode" class="form-label">부서</label>
+                    <input type="text" class="form-control" id="departmentCode" th:field="*{departmentCode}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="subDepartmentCode" class="form-label">하위부서</label>
+                    <input type="text" class="form-control" id="subDepartmentCode" th:field="*{subDepartmentCode}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="positionCode" class="form-label">직급</label>
+                    <input type="text" class="form-control" id="positionCode" th:field="*{positionCode}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="workExperience" class="form-label">경력</label>
+                    <input type="text" class="form-control" id="workExperience" th:field="*{workExperience}">
+                </div>
+
+                <button type="submit" class="btn btn-success">등록</button>
+                <a href="/employee" class="btn btn-secondary ml-2">목록으로</a>
+            </form>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 공통 스크립트 -->
+    <th:block layout:fragment="script">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- 주민등록번호 하이픈 자동 추가 JavaScript -->
-    <script>
-        // 주민등록번호 입력 시 하이픈 자동 추가
-        document.getElementById('ssn').addEventListener('input', function(e) {
-            var value = e.target.value.replace(/[^0-9]/g, '');  // 숫자만 남기기
-            if (value.length > 6) {
-                value = value.slice(0, 6) + '-' + value.slice(6, 13);  // 6자리 후에 하이픈 추가
-            }
-            e.target.value = value; 
-        });
-    </script>
+        <script>
+    // 주민등록번호 하이픈 자동 추가
+    document.addEventListener('DOMContentLoaded', function() {
+        const ssnInput = document.getElementById('ssn');
+        
+        if (ssnInput) {
+            ssnInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^0-9]/g, '');  // 숫자만 남기기
+                if (value.length > 6) {
+                    value = value.slice(0, 6) + '-' + value.slice(6, 13);  // 6자리 후에 하이픈 추가
+                }
+                e.target.value = value; 
+            });
+        }
+    });
+</script>
+
+    </th:block>
 </body>
 </html>
