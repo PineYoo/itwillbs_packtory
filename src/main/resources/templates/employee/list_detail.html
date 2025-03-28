@@ -56,6 +56,9 @@
         <label>사원번호</label>
         <input type="text" th:field="*{id}" readonly>
         
+        <label>주민번호</label>
+        <input type="text" th:field="*{ssn}" readonly> <!-- 주민번호 추가 -->
+        
         <label>전화번호</label>
         <input type="text" th:field="*{phoneNumber}" readonly>
         
@@ -75,7 +78,7 @@
         <input type="text" th:field="*{address2}" readonly>
         
         <label>프로필 사진</label>
-        <img th:src="|${profileImage != null} ? ${profileImage} : '/images/default-profile.png'|"alt="프로필 사진">
+        <img th:src="|${profileImage != null} ? ${profileImage} : '/images/default-profile.png'|" alt="프로필 사진">
         
         <label>급여은행 코드</label>
         <input type="text" th:field="*{salaryBankCode}" readonly>
@@ -124,43 +127,48 @@
 
     <script src="/js/jquery-3.7.1.js"></script>
     <script type="text/javascript">
-        $(function() {
-            // 수정 버튼 클릭 시 수정 필드 활성화
-            $("#btnEdit").on("click", function() {
-                $("input[readonly]").prop("readonly", false);  // 모든 readonly 속성 제거
-                $("select[readonly]").prop("disabled", false);  // select 태그도 활성화
-                $("#btnSave").show(); // 수정 저장 버튼 표시
-                $(this).hide(); // 사원수정 버튼 숨기기
-            });
+    $(function() {
+        // 수정 버튼 클릭 시 수정 필드 활성화
+        $("#btnEdit").on("click", function() {
+            // 사원번호와 주민번호를 제외한 모든 입력 필드를 활성화
+            $("input[readonly]").prop("readonly", false);  // 모든 readonly 속성 제거
+            $("select[disabled]").prop("disabled", false);  // select 태그도 활성화
+            $("#btnSave").show(); // 수정 저장 버튼 표시
+            $(this).hide(); // 사원수정 버튼 숨기기
 
-            // 삭제 버튼 클릭 시
-            $("#btnRemove").on("click", function() {
-                const empId = $(this).data("id");
-                if(confirm("사원을 삭제하시겠습니까?")) {
-                    $.ajax({
-                        url: `/employee/${empId}/delete`,
-                        type: "POST",
-                        success: function(response) {
-                            if(response === "success") {
-                                alert("사원 삭제 성공!");
-                                location.href = "/employee";
-                            } else {
-                                alert("삭제 실패: " + response);
-                            }
-                        },
-                        error: function(error) {
-                            alert("사원 삭제 과정에서 오류 발생!");
-                            console.error(error);
-                        }
-                    });
-                }
-            });
-
-            // 목록 버튼 클릭 시
-            $("#btnList").on("click", function() {
-                location.href = "/employee";
-            });
+            // 사원번호와 주민번호는 수정할 수 없도록 다시 readonly 처리
+            $("input[name='id']").prop("readonly", true);
+            $("input[name='ssn']").prop("readonly", true);
         });
-    </script>
+
+        // 삭제 버튼 클릭 시
+        $("#btnRemove").on("click", function() {
+            const empId = $(this).data("id");
+            if(confirm("사원을 삭제하시겠습니까?")) {
+                $.ajax({
+                    url: `/employee/${empId}/delete`,
+                    type: "POST",
+                    success: function(response) {
+                        if(response === "success") {
+                            alert("사원 삭제 성공!");
+                            location.href = "/employee";
+                        } else {
+                            alert("삭제 실패: " + response);
+                        }
+                    },
+                    error: function(error) {
+                        alert("사원 삭제 과정에서 오류 발생!");
+                        console.error(error);
+                    }
+                });
+            }
+        });
+
+        // 목록 버튼 클릭 시
+        $("#btnList").on("click", function() {
+            location.href = "/employee";
+        });
+    });
+</script>
 </body>
 </html>

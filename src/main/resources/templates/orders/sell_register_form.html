@@ -121,7 +121,7 @@
 				                            <th style="vertical-align: top; width: 130px;">납품주소</th>
 				                            <td>
 			                                    <input type="text" id="postCode" class="postCode_1 essential" th:field="*{orderDTO.postCode}" size="8">&nbsp;&nbsp;&nbsp;&nbsp;
-			                                    <button type="button" id="searchAddressBtn_1">주소찾기</button><br>
+			                                    <button type="button" id="searchAddressBtn_1" class="btn btn-outline-primary ml-2">주소찾기</button><br>
 			                                    <input type="text" id="address1" class="address1_1 essential" th:field="*{orderDTO.address1}" placeholder="기본주소 입력"><br>
 			                                    <input type="text" id="address2" class="address2_1 essential" th:field="*{orderDTO.address2}" placeholder="상세주소 입력">
 											</td>
@@ -141,7 +141,7 @@
 			                                <th width="130px">사업자 등록 번호</th>
 			                                <td>
 			                                	<input type="text" id="companyNumber" th:field="*{orderDTO.companyNumber}" placeholder="123-45-67890">
-			                                	<button type="button">조회</button>
+			                                	<button type="button"  class="btn btn-outline-primary ml-2">조회</button>
 			                                </td>
 			                            </tr>
 			                            <tr>
@@ -172,7 +172,7 @@
 			                                <th style="vertical-align: top; width: 130px;">주소</th>
 			                                <td>
 			                                    <input type="text" id="postCode" class="postCode_2" th:field="*{clientDTO.postCode}" size="8">&nbsp;&nbsp;&nbsp;&nbsp;
-			                                    <button type="button" id="searchAddressBtn_2">주소찾기</button><br>
+			                                    <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2">주소찾기</button><br>
 			                                    <input type="text" id="address1" class="address1_2" th:field="*{clientDTO.address1}" placeholder="기본주소 입력"><br>
 			                                    <input type="text" id="address2" class="address2_2" th:field="*{clientDTO.address2}" placeholder="상세주소 입력">
 			                                </td>
@@ -229,8 +229,8 @@
 		                
 			            <!-- -------------------------------------------------------------- -->
 			            <div style="text-align: center; margin-top: 10px;">
-			                <button type="submit">등록</button>
-			                <button type="button" id="cancelBtn">취소</button>
+			                <button type="submit" class="btn btn-primary">등록</button>
+			                <button type="button" id="cancelBtn" class="btn btn-success ml-2">취소</button>
 			            </div>
 			        </form>
 			    </div>

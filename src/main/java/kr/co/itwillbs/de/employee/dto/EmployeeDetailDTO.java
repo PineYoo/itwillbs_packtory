@@ -21,6 +21,8 @@ public class EmployeeDetailDTO {
     private String id; // 사원번호
 
     private String phoneNumber; // 전화번호
+    
+    private String ssn;
 
     private String email; // 이메일
 
@@ -62,9 +64,10 @@ public class EmployeeDetailDTO {
     private String modId; // 최종 작성자
 
     private LocalDateTime modDate; // 최종작성일자
+    
 
     // Employee와 EmployeeDetail 객체를 받아서 DTO로 변환하는 생성자 추가
-    public EmployeeDetailDTO(String id, EmployeeDetail employeeDetail) {
+    public EmployeeDetailDTO(String id, EmployeeDetail employeeDetail, Employee employee) {
         this.id = id;
         this.phoneNumber = employeeDetail.getPhoneNumber() != null ? employeeDetail.getPhoneNumber() : "";
         this.email = employeeDetail.getEmail() != null ? employeeDetail.getEmail() : "";
@@ -84,6 +87,7 @@ public class EmployeeDetailDTO {
         this.regDate = employeeDetail.getRegDate();
         this.modId = employeeDetail.getModId();
         this.modDate = employeeDetail.getModDate();
+        this.ssn = employee.getSsn();  // Employee 엔티티에서 ssn을 가져옵니다
     }
 
     @Builder
