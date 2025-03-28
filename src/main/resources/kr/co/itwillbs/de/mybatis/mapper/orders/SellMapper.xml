@@ -70,62 +70,60 @@
 	<select id="getSellList" resultType="java.util.HashMap">
 		SELECT 
 			<include refid="sell_list_columns_forSelect"></include>
-		FROM t_order o
-		JOIN t_order_detail d
-		ON d.document_number = o.document_number
-		WHERE o.trade_code = '수주'
+	 	  FROM t_order o
+		  JOIN t_order_detail d
+		    ON d.document_number = o.document_number
+	     WHERE o.trade_code = '수주'
 	</select>
 	
 	<insert id="insertOrder">
 		INSERT INTO t_order
-		VALUES (
-			null					-- idx(auto_increment)
-			, #{documentNumber}		-- document_number(임시 - 시퀀스 활용?)
-			, '수주'				-- trade_code(임시 - 나중에 코드로 가져올거임)
-			, '미출고'				-- status_code(임시 - 나중에 코드로 가져올거임)
-			, ''					-- company_name(임시 - t_client.company_name 에서 가져올거임)
-			, ''					-- company_number(임시 - t_client.business_number 에서 가져올거임)
-			, #{requestDate}		-- request_date
-			, null					-- expected_date(나중에 상세화면에서 우리가 적는 부분)
-			, #{dueDate} 			-- due_date
-			, #{destinationName}	-- destination_name
-			, #{receiver}			-- reciver
-			, #{phone1}				-- phone1
-			, #{phone2}				-- phone2
-			, #{postCode}			-- post_code
-			, #{address1}			-- address1
-			, #{address2}			-- address2
-			, null					-- special_issue
-			, null					-- is_deleted
-			, null					-- reg_id(임시 - 나중에 session에서 가져올것)
-			, now()					-- reg_date
-			, null					-- mod_id(임시 - 나중에 session에서 가져올것)
-			, now()					-- mod_date
-		)
+		VALUES (null				-- idx(auto_increment)
+			 , #{documentNumber}	-- document_number
+			 , '수주'				-- trade_code(임시 - 나중에 코드로 가져올거임)
+			 , '미출고'				-- status_code(임시 - 나중에 코드로 가져올거임)
+			 , ''					-- company_name(임시 - t_client.company_name 에서 가져올거임)
+			 , ''					-- company_number(임시 - t_client.business_number 에서 가져올거임)
+			 , #{requestDate}		-- request_date
+			 , null					-- expected_date(나중에 상세화면에서 우리가 적는 부분)
+			 , #{dueDate} 			-- due_date
+			 , #{destinationName}	-- destination_name
+			 ,  #{receiver}			-- reciver
+			 , #{phone1}			-- phone1
+			 , #{phone2}			-- phone2
+			 , #{postCode}			-- post_code
+			 , #{address1}			-- address1
+			 , #{address2}			-- address2
+			 , null					-- special_issue
+			 , null					-- is_deleted
+			 , null					-- reg_id(임시 - 나중에 session에서 가져올것)
+			 , now()				-- reg_date
+			 , null					-- mod_id(임시 - 나중에 session에서 가져올것)
+			 , now()				-- mod_date
+			 )
 	</insert>
 	<insert id="insertOrderDetail">
 		INSERT INTO t_order_detail
-		VALUES (
-			null	-- idx(auto_increment)
-			, null	-- document_number(임시)
-			, null	-- department_code(임시)
-			, #{clientName}	-- client_name
-			, #{clientPhone}	-- client_phone
-			, null	-- lot_number(임시)
-			, null	-- invoice_issue(임시)
-			, null	-- payment_status(임시)
-			, null	-- unissued_status(임시)
-			, null	-- supply_amount(임시)
-			, null	-- vat_amount(임시)
-			, null	-- total_amount(임시)
-			, null	-- issue_code(임시)
-			, null	-- issue_remaks(임시)
-			, null	-- is_deleted
-			, null	-- reg_id(임시 - 나중에 session에서 가져올것)
-			, now()	-- reg_date
-			, null	-- mod_id(임시 - 나중에 session에서 가져올것)
-			, now()	-- mod_date
-		)
+		VALUES (null			-- idx(auto_increment)
+			 , null				-- document_number(임시)
+			 , null				-- department_code(임시)
+			 , #{clientName}	-- client_name
+			 , #{clientPhone}	-- client_phone
+		 	 , null				-- lot_number(임시)
+			 , null				-- invoice_issue(임시)
+			 , null				-- payment_status(임시)
+			 , null				-- unissued_status(임시)
+			 , null				-- supply_amount(임시)
+			 , null				-- vat_amount(임시)
+			 , null				-- total_amount(임시)
+			 , null				-- issue_code(임시)
+			 , null				-- issue_remaks(임시)
+			 , null				-- is_deleted
+			 , null				-- reg_id(임시 - 나중에 session에서 가져올것)
+			 , now()			-- reg_date
+			 , null				-- mod_id(임시 - 나중에 session에서 가져올것)
+			 , now()			-- mod_date
+			 )
 	
 	</insert>
 </mapper>

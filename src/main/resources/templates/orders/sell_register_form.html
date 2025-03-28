@@ -1,17 +1,34 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-		layout:decorate="~{common/layouts/de_layout}">
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- 		layout:decorate="~{common/layouts/de_layout}"> -->
 <head>
 <title>팩토리(PackTory) - 수주등록</title>
+
+<!-- layout:decorate="~{common/layouts/de_layout}" 빼면서 datepicker 적용 안되는 문제 -->
+<th:block th:insert="~{common/fragments/de_common::headContents}"></th:block>
+
 <!-- 부트스트랩 icons 가져오기 -->
 <th:block layout:fragment="headContents">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </th:block>
-
+<!-- CSS -->
 <th:block layout:fragment="css">
 	<!-- dataTables 가져오기 -->
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<link href="/css/datatables/datatables.min.css" rel="stylesheet">
+	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
+	<!-- 폰트어썸 가져오기 -->
+	<link href="/css/fontawesome/all.min.css" rel="stylesheet">
+	<script src="/css/fontawesome/all.min.js"></script>
+	<!-- CSS for Page -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+	<!-- 개별 CSS-->
+	<link href="/css/common.css" rel="stylesheet">
 </th:block>
 <style type="text/css">
 	.essential {
@@ -32,7 +49,7 @@
 <body id="page-top">
 	<div layout:fragment="contents">
 		<!-- Begin Page Content -->
-		<div class="container-fluid">
+		<div class="container-fluid" style="margin-top: 20px;">
 			<!-- Page Heading -->
 			<h1 class="h3 mb-2 text-gray-800">주문서등록(수주)</h1>
 
@@ -46,11 +63,16 @@
 			                        <table style="width: 100%;">
 			                        	<tr>
 				                            <th width="130px">요청예정일자</th>
-				                            <td><input type="date" id="requestDate" class="essential" th:field="*{orderDTO.requestDate}"></td>
+				                            <td>
+				                            	<input type="text" id="requestDate" class="rounded-sm mr-2 essential" th:field="*{orderDTO.requestDate}" placeholder="날짜 선택" autocomplete="off">
+				                            </td>
 				                        </tr>
 				                        <tr>
 				                            <th>요청마감일자</th>
-				                            <td><input type="date" id="dueDate" class="essential" th:field="*{orderDTO.dueDate}"></td>
+				                            <td>
+<!-- 				                            	<input type="text" id="dueDate" class="rounded-sm mr-2 essential" th:field="*{orderDTO.dueDate}" placeholder="날짜 선택" autocomplete="off" disabled> -->
+				                            	<input type="text" id="dueDate" class="rounded-sm mr-2 essential" th:field="*{orderDTO.dueDate}" placeholder="날짜 선택" autocomplete="off">
+				                            </td>
 				                        </tr>
 			                        </table>
 			                    </td>
@@ -255,7 +277,7 @@
 			        }
 			    });
 				
-				// ----------------------------------
+		     	//---------------------------------------------------
 				// 납품주소(다음 우편번호 API 활용)
 				// "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
 				$("#searchAddressBtn_1, .postCode_1").click(function() {
@@ -309,14 +331,14 @@
 				    }).open();
 				});
 				
-				// ----------------------------------
+		     	//---------------------------------------------------
 				// 취소버튼
 				$('#cancelBtn').on("click", function() {
-					location.href="/orders/sell";
+				    window.close();
 				});
 				
 				
-				// ----------------------------------
+		     	//---------------------------------------------------
 				// 필수입력요소
 				$(".essential").each(function () {
 		            if ($(this).val().trim() !== "") {
@@ -332,18 +354,86 @@
 		            }
 		        });
 		        
+		     	// ===== 캘린더 ===============================================
+				// 요청 예정일자 선택 (datepicker)
+			    $('#requestDate').daterangepicker({
+			        singleDatePicker: true, // 단일 날짜 선택 모드
+			        showDropdowns: true, // 년월 수동 선택 가능
+			        autoApply: true, // 확인/취소 버튼 없이 즉시 반영
+			        autoUpdateInput: false, // 초기 입력 필드 비우기
+			        locale: {
+			            format: 'YYYY-MM-DD', // 날짜 형식
+			            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+			            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+			            applyLabel: "확인",
+			            cancelLabel: "취소"
+			        },
+			        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
+			        minDate: moment(), // 오늘 이후 선택 가능
+			        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
+			        // ---------------------------------------------------------------
+			    }).on('apply.daterangepicker', function(ev, picker) {
+			        $(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
+			        $(this).addClass("filled");
+			    });
+		     	
+			    // 요청 예정일자 선택 후 마감일자 활성화
+			    $('#requestDate').on('apply.daterangepicker', function(ev, picker) {
+			        $('#dueDate').prop('disabled', false); // 비활성화 해제
+			        $('#dueDate').val(''); // 기존 값 초기화
+
+			        $('#dueDate').daterangepicker({
+			            singleDatePicker: true,
+			            showDropdowns: true,
+			            autoApply: true,
+			            autoUpdateInput: false,
+			            locale: {
+			                format: 'YYYY-MM-DD',
+			                daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+			                monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+			                applyLabel: "확인",
+			                cancelLabel: "취소"
+			            },
+				        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
+			            minDate: picker.startDate.clone().add(7, 'days'), // 요청 예정일 + 7일
+			            maxDate: moment().add(1, 'year')
+				        // ---------------------------------------------------------------
+			        }).on('apply.daterangepicker', function(ev, picker) {
+			            $(this).val(picker.startDate.format('YYYY-MM-DD'));
+			            $(this).addClass("filled");
+			        }).on('show.daterangepicker', function(ev, picker) {
+//	 			        console.log("캘린더 열림"); // 캘린더가 열리는지 확인
+			        });
+			    });
+		     	// ===== 캘린더 끝 ============================================
 		        
 		        
-			});
+		        
+		    });
 		</script>
 	</div>
 	<!-- --------------------------------------------------------------------------------------------- -->
-	
+	<!-- JS -->
 	<th:block layout:fragment="script">
+		<!-- Bootstrap core JavaScript-->
+		<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
+		<script src="/js/jquery-3.7.1.js"></script>
+	    <!-- Core plugin JavaScript-->
+	    <script src="/js/jquery-easing/jquery.easing.min.js"></script>
+	    <!-- Custom scripts for all pages-->
+	    <script src="/js/sb-admin-2.min.js"></script>
+	   	<!-- Page level plugins -->
 		<script src="/js/datatables/jquery.dataTables.min.js"></script>
 		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
 		<script src="/js/demo/datatables-demo.js"></script>
+	   	<script src="/js/datepicker/moment.min.js"></script>
+	   	<script src="/js/datepicker/daterangepicker.js"></script>
+	   	<script src="/js/datatables/dataTables.buttons.min.js"></script>
+		<script src="/js/datatables/buttons.html5.min.js"></script>
+		<script src="/js/datatables/jszip.min.js"></script>
+		<script src="/js/datatables/buttons.print.min.js"></script>
 	</th:block>
+
 	
 </body>
 </html>
