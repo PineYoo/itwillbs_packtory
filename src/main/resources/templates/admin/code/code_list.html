@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>코드 리스트</title>
+</head>
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">코드 리스트</h1>
+			<!-- 리스트 출력 -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
+						<div class="row">
+							<div class="col-sm-12 col-md-3">
+								<label>AccessID:
+									<input type="search" class="form-control form-control-sm" placeholder="">
+								</label>
+							</div>
+							<div class="col-sm-12 col-md-3">
+								<label>Search:
+								<input type="search" class="form-control form-control-sm" placeholder="">
+								</label>
+							</div>
+							<div class="col-sm-12 col-md-3">
+								<label>Search2:
+								<input type="search" class="form-control form-control-sm" placeholder="">
+								</label>
+							</div>
+							<div class="col-sm-12 col-md-3">
+								<button type="button" id="newBtn">신규코드등록</button>
+							</div>
+						</div>
+						<div class="row">
+						</div>
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>번호</th>
+									<th>공통코드그룹</th>
+									<th>이름</th>
+									<th>설명</th>
+									<th>사용여부</th>
+									<th>등록자</th>
+									<th>등록일자</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item, status : ${codeDTOList}" th:data-id="${item.idx}" class="clickable-row">
+									<!-- <th:block th:object="${item}"> -->
+									<td th:text="${status.count}"></td>
+									<td th:text="${item.majorCode}"></td>
+									<td th:text="${item.name}"></td>
+									<td th:text="${item.description}"></td>
+									<td th:text="${item.isDeleted}"></td>
+									<td th:text="${item.regId}"></td>
+									<td th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			
+			<script type="text/javascript">
+				$(function() {
+					$('#newBtn').on("click", function() {
+						location.href="/admin/code/new";
+					});
+					
+					$('.clickable-row').on("click", function() {
+						const id = $(this).data("id");
+						console.log("click id is %s", id);
+						location.href=`/admin/code/${id}`;
+					});
+				}); // end of $(function() {
+			</script>
+		</div>
+	</th:block>
+</body>
+</html>
