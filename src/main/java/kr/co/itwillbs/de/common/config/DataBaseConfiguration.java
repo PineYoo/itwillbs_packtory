@@ -10,20 +10,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration // 부트에 configuration 으로 작성 했을 때 application.properties||yml 설정 을 둘다 불러주는 경우와 아닌 경우가 있다는 것도 공부 필요
-@PropertySource("classpath:/application.yml")
+//@PropertySource("classpath:/application.yml")
 @MapperScan(basePackages = {"kr.co.itwillbs.de.*.mapper"})
 public class DataBaseConfiguration {
 
-	final ApplicationContext applicationContext; 
+	private final ApplicationContext applicationContext; 
 	// mapper.xml 위치를 Resource 객체로 가져오기 위함
 	
-	// 이거랑 위랑 @Autowired로 ...하는거 아닌가? 감이 없네?
 	public DataBaseConfiguration(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
@@ -52,7 +50,7 @@ public class DataBaseConfiguration {
 		SqlSessionFactoryBean session = new SqlSessionFactoryBean();
 		session.setDataSource(dataSource);
 		session.setConfigLocation(applicationContext.getResource("classpath:kr/co/itwillbs/de/mybatis/mybatis-config.xml"));
-		session.setMapperLocations(applicationContext.getResources("classpath:kr/co/itwillbs/de/mybatis/mapper/**/*.xml"));
+		session.setMapperLocations(applicationContext.getResources("classpath:kr/co/itwillbs/de/mybatis/mapper/**/*Mapper.xml"));
 		//session.setTypeAliasesPackage("kr.co.itwillbs.*"); //config에서 선언하는거랑 이 방법에 대한 공부 필요 뭔지 모르겠음!
 		return session.getObject();
 	}

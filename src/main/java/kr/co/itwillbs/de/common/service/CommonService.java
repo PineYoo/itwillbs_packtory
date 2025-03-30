@@ -1,6 +1,5 @@
 package kr.co.itwillbs.de.common.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.itwillbs.de.common.mapper.CommonMapper;
@@ -8,23 +7,11 @@ import kr.co.itwillbs.de.common.mapper.CommonMapper;
 @Service
 public class CommonService {
 
-//	@Autowired
-//	private EmpSeqRepository empSeqRepository;
-	
-	@Autowired
-	private CommonMapper commonMapper;
-	
-	/**
-	 * JPA 버전 seq 는 잠시 중단..
-	 * @param name
-	 * @return
-	 */
-//	@Transactional
-//	public EmpSeq createSeq(String name) {
-//		EmpSeq empSeq = new EmpSeq("making seq!");
-//		
-//		return empSeqRepository.save(empSeq);
-//	}
+	private final CommonMapper commonMapper;
+	//@Autowired
+	public CommonService(CommonMapper commonMapper) {
+		this.commonMapper = commonMapper;
+	}
 	
 	/**
 	 * H2 DB에서 시퀀스 가져오기
