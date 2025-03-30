@@ -2,7 +2,6 @@ package kr.co.itwillbs.de.sample.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,8 +28,11 @@ public class ItemController {
  * 수업 시간에 진행한 JPA 게시판!
  */
 	
-	@Autowired
 	private ItemService itemService;
+	//@Autowired
+	public ItemController(ItemService itemService) {
+		this.itemService = itemService;
+	}
 	
 	/**
 	 * 아이템 등록 페이지(view)와 연결

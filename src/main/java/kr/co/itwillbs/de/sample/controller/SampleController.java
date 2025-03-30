@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import kr.co.itwillbs.de.common.util.CommonUtils;
+import kr.co.itwillbs.de.common.util.FileUtil;
+import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.sample.dto.SampleDTO;
 import kr.co.itwillbs.de.sample.dto.SampleSearchDTO;
 import kr.co.itwillbs.de.sample.service.SampleService;
@@ -34,11 +34,12 @@ public class SampleController {
  * @return
  */
 	
-	@Autowired
-	private SampleService sampleService;
+	private final SampleService sampleService;
+	//@Autowired
+	public SampleController(SampleService sampleService) {
+		this.sampleService = sampleService;
+	}
 	
-	@Autowired
-	private CommonUtils comUtil;
 	
 	/**
 	 * 샘플 등록 페이지(view)를 요청하는 "/sample/new" 연결
@@ -120,7 +121,7 @@ public class SampleController {
 		
 		log.info("requestData : {} ", idx);
 		
-		if(comUtil.isLongValue(idx)) {
+		if(StringUtil.isLongValue(idx)) {
 			// 정수일 경우 조회 가능
 			model.addAttribute("sampleDTO", sampleService.getSample(idx));
 			// 조회 수도 있기 때문에 업데이트 하자!
@@ -156,7 +157,7 @@ public class SampleController {
 		log.info("requestData : param = {}, dto = {} ", idx, sampleDTO);
 		
 		try {
-			if(comUtil.isLongValue(idx)) {
+			if(StringUtil.isLongValue(idx)) {
 				//정수일 경우 업데이트 가능
 				sampleDTO.setIdx(Long.parseLong(idx));
 				sampleService.modifySample(sampleDTO);
@@ -190,7 +191,7 @@ public class SampleController {
 		
 		Map<String, Object> response = new HashMap<>();
 		try {
-			if(comUtil.isLongValue(idx)) {
+			if(StringUtil.isLongValue(idx)) {
 				sampleService.removeItem(Long.parseLong(idx));
 				response.put("status", "success");
 				response.put("message", "정상적으로 수정 되었습니다.");
@@ -222,14 +223,21 @@ public class SampleController {
 	 * @return
 	 */
 	@PostMapping("blabla1")
-	public String setMultipartSample1(@ModelAttribute SampleDTO sampleDTO, @RequestParam MultipartFile[] mfils) {
+	public String setMultipartSample1(@ModelAttribute SampleDTO sampleDTO, @RequestParam List<MultipartFile> mfileList) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestData : {} ", sampleDTO);
 		
 		// 멀티파트 파일 필수 일 경우
-		if(!comUtil.isValidateForRequiredFile(mfils)) {
-			// 필수 파일 없기에 다시 입력 페이지로 리다이렉트 시켜야 함
+		for(MultipartFile mfile: mfileList) {
+			if(!FileUtil.isValidateForRequiredFile(mfile)) {
+				// 필수 파일 없기에 다시 입력 페이지로 리다이렉트 시켜야 함
+				
+			}
+			
+			if(FileUtil.isSpecial(mfile.getOriginalFilename())) {
+				// 파일에 특수 문자가 있기 때문에 오류 발생 시켜야 함
+			}
 		}
 		// 기타 인풋 데이터 벨리데이트 (중략)
 		
@@ -251,14 +259,21 @@ public class SampleController {
 	 */
 	@PostMapping("blabla2")
 	@ResponseBody
-	public String setMultipartSample2(SampleDTO sampleDTO, @RequestParam MultipartFile[] mfils) {
+	public String setMultipartSample2(SampleDTO sampleDTO, @RequestParam List<MultipartFile> mfileList) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestData : {} ", sampleDTO);
 		
 		// 멀티파트 파일 필수 일 경우
-		if(!comUtil.isValidateForRequiredFile(mfils)) {
-			// 필수 파일 없기에 다시 입력 페이지로 리다이렉트 시켜야 함
+		for(MultipartFile mfile: mfileList) {
+			if(!FileUtil.isValidateForRequiredFile(mfile)) {
+				// 필수 파일 없기에 다시 입력 페이지로 리다이렉트 시켜야 함
+				
+			}
+			
+			if(FileUtil.isSpecial(mfile.getOriginalFilename())) {
+				// 파일에 특수 문자가 있기 때문에 오류 발생 시켜야 함
+			}
 		}
 		// 기타 인풋 데이터 벨리데이트 (중략)
 		

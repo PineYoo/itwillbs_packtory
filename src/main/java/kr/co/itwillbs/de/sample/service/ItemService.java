@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ItemService {
 
-	@Autowired
 	private ItemRepository itemRepository;
+	//@Autowired
+	public ItemService(ItemRepository itemRepository) {
+		this.itemRepository = itemRepository;
+	}
 
 	public void registerItem(ItemDTO itemDto) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());

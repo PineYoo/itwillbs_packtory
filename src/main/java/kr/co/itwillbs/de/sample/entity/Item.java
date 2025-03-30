@@ -26,7 +26,7 @@ import lombok.ToString;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "item")
+@Table(name = "t_item")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -112,4 +112,17 @@ public class Item {
 		this.itemDetail = itemDto.getItemDetail();
 		this.itemSellStatus = itemDto.getItemSellStatus();
 	}
+	
+	/* script for MySQL
+	create table t_item (
+	item_id int auto_increment primary key,
+	item_nm varchar(50),
+	price decimal(10, 2),
+	stock_qty int default 0,
+	item_detail varchar(50),
+	item_sell_status enum('y', 'n') default 'n',
+	reg_time datetime default current_timestamp,
+	update_time datetime default current_timestamp
+	);
+	 */
 }

@@ -2,7 +2,6 @@ package kr.co.itwillbs.de.sample.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 public class SampleService {
 
-	@Autowired
-	private SampleMapper sampleMapper;
+	private final SampleMapper sampleMapper;
+	//@Autowired
+	public SampleService(SampleMapper sampleMapper) {
+		this.sampleMapper = sampleMapper;
+	}
 	
 	/**
 	 * 매퍼에서 샘플 리스트 가져오기
