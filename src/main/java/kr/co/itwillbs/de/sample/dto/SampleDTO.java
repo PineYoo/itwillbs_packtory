@@ -61,4 +61,20 @@ public class SampleDTO {
 		}
 		return sb.toString();
 	}
+	
+	/* script for MySQL Create table 
+	create table t_demo (
+	idx int auto_increment primary key,
+	id varchar(50),
+	name varchar(50),
+	password varchar(50),
+	role varchar(50),
+	is_deleted enum('y', 'n') default 'y',
+	read_cnt int default 0,
+	reg_id varchar(50),
+	mod_date datetime default current_timestamp,
+	mod_id varchar(50),
+	reg_date datetime default current_timestamp
+	);
+	 */
 }
