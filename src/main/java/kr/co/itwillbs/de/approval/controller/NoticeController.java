@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import kr.co.itwillbs.de.approval.dto.NoticeDTO;
 import kr.co.itwillbs.de.approval.dto.NoticeSearchDTO;
 import kr.co.itwillbs.de.approval.service.NoticeService;
-import kr.co.itwillbs.de.common.util.CommonUtils;
+import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.sample.dto.SampleDTO;
 import kr.co.itwillbs.de.sample.dto.SampleSearchDTO;
 import kr.co.itwillbs.de.sample.service.SampleService;
@@ -32,9 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeController {
 	@Autowired
 	private NoticeService noticeService;
-	
-	@Autowired
-	private CommonUtils comUtil;
 	
 	/**
 	 * 샘플 등록 페이지(view)를 요청하는 "/sample/new" 연결
@@ -116,7 +113,7 @@ public class NoticeController {
 		
 		log.info("requestData : {} ", idx);
 		
-		if(comUtil.isLongValue(idx)) {
+		if(StringUtil.isLongValue(idx)) {
 			// 정수일 경우 조회 가능
 			model.addAttribute("sampleDTO", noticeService.getNotice(idx));
 			// 조회 수도 있기 때문에 업데이트 하자!
@@ -155,7 +152,7 @@ public class NoticeController {
 		log.info("requestData : param = {}, dto = {} ", idx, noticeDTO);
 		
 		try {
-			if(comUtil.isLongValue(idx)) {
+			if(StringUtil.isLongValue(idx)) {
 				//정수일 경우 업데이트 가능
 				noticeDTO.setIdx(idx);
 				
@@ -192,7 +189,7 @@ public class NoticeController {
 		
 		Map<String, Object> response = new HashMap<>();
 		try {
-			if(comUtil.isLongValue(idx)) {
+			if(StringUtil.isLongValue(idx)) {
 				noticeService.removeItem(idx);
 				
 				//	DTO에 idx 를 String으로 해놓음
