@@ -1,6 +1,13 @@
-2025-03-27 18:44:06.963 [http-nio-8090-exec-9][INFO] k.c.i.d.a.c.ApprovalController - approvalForm---start 
-2025-03-27 18:44:07.353 [http-nio-8090-exec-3][WARN] o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter 'userId' for method parameter type String is not present] 
-2025-03-27 18:44:09.213 [http-nio-8090-exec-1][WARN] o.s.w.s.PageNotFound - No mapping for GET /approval/register 
-2025-03-27 18:44:09.213 [http-nio-8090-exec-1][WARN] o.s.w.s.PageNotFound - No endpoint GET /approval/register. 
-2025-03-27 18:44:09.241 [http-nio-8090-exec-4][WARN] o.s.w.s.PageNotFound - No mapping for GET /favicon.ico 
-2025-03-27 18:44:09.243 [http-nio-8090-exec-4][WARN] o.s.w.s.PageNotFound - No endpoint GET /favicon.ico. 
+2025-03-31 12:49:00.475 [http-nio-8090-exec-1][INFO] o.a.c.c.C.[.[.[/] - Initializing Spring DispatcherServlet 'dispatcherServlet' 
+2025-03-31 12:49:00.482 [http-nio-8090-exec-1][INFO] o.s.w.s.DispatcherServlet - Initializing Servlet 'dispatcherServlet' 
+2025-03-31 12:49:00.486 [http-nio-8090-exec-1][INFO] o.s.w.s.DispatcherServlet - Completed initialization in 3 ms 
+2025-03-31 12:49:00.548 [http-nio-8090-exec-1][INFO] k.c.i.d.c.c.MainController - mainView---start 
+2025-03-31 12:49:03.288 [http-nio-8090-exec-2][INFO] k.c.i.d.s.c.BootStrapController - mainView---start 
+2025-03-31 12:49:04.131 [http-nio-8090-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-2][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 6, col 12. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-31 12:49:04.153 [http-nio-8090-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-2][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 15, col 8. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-31 12:49:04.170 [http-nio-8090-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-2][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 19, col 10. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-31 12:49:04.193 [http-nio-8090-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-2][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 28, col 10. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-31 12:49:04.198 [http-nio-8090-exec-2][WARN] o.t.s.p.StandardIncludeTagProcessor - [THYMELEAF][http-nio-8090-exec-2][common/layouts/bs_layout] Deprecated attribute {th:include,data-th-include} found in template common/layouts/bs_layout, line 34, col 13. Please use {th:insert,data-th-insert} instead, this deprecated attribute will be removed in future versions of Thymeleaf. 
+2025-03-31 12:49:06.041 [http-nio-8090-exec-3][INFO] k.c.i.d.a.c.ApprovalController - approvalForm---start 
+2025-03-31 12:49:06.448 [http-nio-8090-exec-4][WARN] o.s.w.s.PageNotFound - No mapping for POST /approval/list 
+2025-03-31 12:49:06.461 [http-nio-8090-exec-4][WARN] o.s.w.s.PageNotFound - No endpoint POST /approval/list. 
