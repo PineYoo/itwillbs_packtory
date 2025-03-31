@@ -31,15 +31,23 @@
 	<link href="/css/common.css" rel="stylesheet">
 </th:block>
 <style type="text/css">
+	input {
+        border: 1px solid #ccc;
+        padding: 5px;
+        margin: 2px;
+	}
 	.essential {
         background-color: #fffbe6; /* 연한 노랑 */
     }
     .filled {
         background-color: white;
     }
+    .postCode_1, .postCode_2 {
+    	width:106px;
+    }
     
     #companyNumber {
-    	width: 60%;
+    	width: 132px;
     }
 </style>
 <!-- 다음 우편번호 API -->
@@ -56,7 +64,7 @@
 			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4" style="min-width: 760px;">
 			    <div class="card-body">
-			        <form th:action="@{/orders/sell}" method="post" th:object="${orderFormDTO}">
+			        <form th:action="@{/orders/sell/regist}" method="post" th:object="${orderFormDTO}">
 			            <table style="border-collapse: collapse; min-width: 750px;">
 			                <tr>
 			                	<td style="width: 50%; vertical-align: top;">
@@ -120,7 +128,7 @@
 			                            <tr>
 				                            <th style="vertical-align: top; width: 130px;">납품주소</th>
 				                            <td>
-			                                    <input type="text" id="postCode" class="postCode_1 essential" th:field="*{orderDTO.postCode}" size="8">&nbsp;&nbsp;&nbsp;&nbsp;
+			                                    <input type="text" id="postCode" class="postCode_1 essential" th:field="*{orderDTO.postCode}" maxlength="5">
 			                                    <button type="button" id="searchAddressBtn_1" class="btn btn-outline-primary ml-2">주소찾기</button><br>
 			                                    <input type="text" id="address1" class="address1_1 essential" th:field="*{orderDTO.address1}" placeholder="기본주소 입력"><br>
 			                                    <input type="text" id="address2" class="address2_1 essential" th:field="*{orderDTO.address2}" placeholder="상세주소 입력">
@@ -171,7 +179,7 @@
 			                            <tr>
 			                                <th style="vertical-align: top; width: 130px;">주소</th>
 			                                <td>
-			                                    <input type="text" id="postCode" class="postCode_2" th:field="*{clientDTO.postCode}" size="8">&nbsp;&nbsp;&nbsp;&nbsp;
+			                                    <input type="text" id="postCode" class="postCode_2" th:field="*{clientDTO.postCode}" maxlength="5">
 			                                    <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2">주소찾기</button><br>
 			                                    <input type="text" id="address1" class="address1_2" th:field="*{clientDTO.address1}" placeholder="기본주소 입력"><br>
 			                                    <input type="text" id="address2" class="address2_2" th:field="*{clientDTO.address2}" placeholder="상세주소 입력">
@@ -230,7 +238,7 @@
 			            <!-- -------------------------------------------------------------- -->
 			            <div style="text-align: center; margin-top: 10px;">
 			                <button type="submit" class="btn btn-primary">등록</button>
-			                <button type="button" id="cancelBtn" class="btn btn-success ml-2">취소</button>
+			                <button type="button" id="cancelBtn" class="btn btn-secondary ml-2">취소</button>
 			            </div>
 			        </form>
 			    </div>

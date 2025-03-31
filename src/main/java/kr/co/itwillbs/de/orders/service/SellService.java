@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
-import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
 import kr.co.itwillbs.de.orders.mapper.SellMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,14 +24,11 @@ public class SellService {
 
 
 	// 전체 수주 관리 목록 조회 요청
-//	public List<OrderDTO> getSellList() {
-//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-//		return sellMapper.getSellList();
-//	}
 	public List<HashMap<String, Object>> getSellList() {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return sellMapper.getSellList();
-	}
+
+        return sellMapper.getSellList();
+    }
 
 	// ------------------------------------------------------------------------------------
 	// 주문서 등록 요청

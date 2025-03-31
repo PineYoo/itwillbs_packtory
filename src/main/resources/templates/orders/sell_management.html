@@ -28,7 +28,9 @@
 	<link href="/css/common.css" rel="stylesheet">
 </th:block>
 <style type="text/css">
-	
+	.clickable-row td:hover {
+		background-color: #edfbfc;
+	}
 </style>
 
 </head>
@@ -51,53 +53,55 @@
 						<button class="btn btn-success ml-2" id="registerBtn" type="button">등록</button>
 					</div>
 					<!-- ---------- 검색바 ---------- -->
-					<div class="search-wrap border">
-						<section class="d-flex search-inner">
-							<!-- 주문상태별 검색-->
-							<div class="col pl-4 search-box">
-								<div class="search-ttl">주문상태별</div>
-								<div class="category-filter input-group">
-									<div class="form-check">
-										<input class="form-check-input" id="reset" type="radio" name="orderStatus"  value="0" checked>
-										<label class="form-check-label" for="reset">전체</label>
+		            <form action="/orders/sell" method="POST">
+						<div class="search-wrap border">
+							<section class="d-flex search-inner">
+								<!-- 주문상태별 검색-->
+								<div class="col pl-4 search-box">
+									<div class="search-ttl">주문상태별</div>
+									<div class="category-filter input-group">
+										<div class="form-check">
+											<input class="form-check-input" id="reset" type="radio" name="orderStatus"  value="0" checked>
+											<label class="form-check-label" for="reset">전체</label>
+										</div>
+										<div class="form-check ml-3">
+											<input class="form-check-input" id="notRelease" type="radio" name="orderStatus" value="1">
+											<label class="form-check-label" for="notRelease">미출고</label>
+										</div>
+										<div class="form-check ml-3">
+											<input class="form-check-input" id="complete" type="radio" name="orderStatus" value="2">
+											<label class="form-check-label" for="complete">출고완료</label>
+										</div>
+										<div class="form-check ml-3">
+											<input class="form-check-input" id="cancel" type="radio" name="orderStatus" value="3">
+											<label class="form-check-label" for="cancel">취소</label>
+										</div>
 									</div>
-									<div class="form-check ml-3">
-										<input class="form-check-input" id="notRelease" type="radio" name="orderStatus" value="1">
-										<label class="form-check-label" for="notRelease">미출고</label>
+					    		</div>
+			
+					    		<!-- 주문일자선택조회 -->
+					    		<div class="col-5 px-4 search-box">
+					    			<div class="search-ttl">주문일자</div>
+					    			<div class="input-group align-items-center justify-content-center schDate-wrap">
+				    					<input type="text" class="form-control rounded-sm mr-2" placeholder="날짜 선택" value="" name="searchDate" id="searchDate"  autocomplete="off"/>
+<!-- 										<button class="btn btn-primary" id="searchDateBtn" type="button"><i class="fa-solid fa-magnifying-glass"></i></button> -->
+										<button class="btn btn-success ml-2" id="initDateBtn" type="button"><i class="fa-solid fa-rotate"></i></button>
 									</div>
-									<div class="form-check ml-3">
-										<input class="form-check-input" id="complete" type="radio" name="orderStatus" value="2">
-										<label class="form-check-label" for="complete">출고완료</label>
-									</div>
-									<div class="form-check ml-3">
-										<input class="form-check-input" id="cancel" type="radio" name="orderStatus" value="3">
-										<label class="form-check-label" for="cancel">취소</label>
-									</div>
-								</div>
-				    		</div>
-		
-				    		<!-- 주문일자선택조회 -->
-				    		<div class="col-5 px-4 search-box">
-				    			<div class="search-ttl">주문일자</div>
-				    			<div class="input-group align-items-center justify-content-center schDate-wrap">
-			    					<input type="text" class="form-control rounded-sm mr-2" placeholder="날짜 선택" value="" name="searchDate" id="searchDate"  autocomplete="off"/>
-									<button class="btn btn-primary" id="searchDateBtn" type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
-									<button class="btn btn-success ml-2" id="initDateBtn" type="button"><i class="fa-solid fa-rotate"></i></button>
-								</div>
-				    		</div>
-				    		
-				    		<!-- 키워드검색 -->
-				    		<div class="col-4 search-box">
-				    			<div class="search-ttl">검색</div>
-			                     <div class="input-group">
-			                         <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="품번, 품명, 거래처명 검색" aria-label="Search" aria-describedby="basic-addon2">
-			                         <div class="input-group-append">
-			                             <button class="btn btn-primary" id="searchBtn" type="submit">조회</button>
-			                         </div>
-			                     </div>
-			                </div>
-			  			</section>
-					</div>
+					    		</div>
+					    		
+					    		<!-- 키워드검색 -->
+					    		<div class="col-4 search-box">
+					    			<div class="search-ttl">검색</div>
+				                     <div class="input-group">
+				                        <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="품번, 품명, 거래처명 검색" aria-label="Search" aria-describedby="basic-addon2">
+				                        <div class="input-group-append">
+											<button class="btn btn-primary" id="searchBtn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+				                        </div>
+				                     </div>
+				                </div>
+				  			</section>
+						</div>
+					</form>
 					<!-- ---------- 검색바 끝 ---------- -->
                  </div>
             </div>
@@ -122,17 +126,16 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="sell, status : ${sellDTOList}" th:data-id="${sell['document_number']}">
+								<tr th:each="sell, status : ${sellDTOList}" th:data-id="${sell['document_number']}" class="clickable-row">
 								    <td><input type="checkbox"></td>
 								    <td th:text="${sell['document_number'] != null ? sell['document_number'] : '-'}"></td>
-<!-- 								    <td th:text="${sell['request_date'] != null ? #temporals.format(sell['request_date'], 'yyyy-MM-dd') : 'No Date'}"></td> -->
-								    <td th:text="${sell['reg_date'] != null ? sell['reg_date'] : '-'}"></td>		<!-- HashMap으로 가져오면서 String으로 들고와짐 -->
+								    <td th:text="${sell['reg_date'] != null ? #temporals.format(sell['reg_date'], 'yyyy-MM-dd') : '-'}"></td>	<!-- java.time.LocalDateTime -->
 								    <td th:text="${sell['company_name'] != null ? sell['company_name'] : '-'}"></td>
 								    <td th:text="${sell['supply_amount'] != null ? sell['supply_amount'] : '-'}"></td>
 								    <td th:text="${sell['vat_amount'] != null ? sell['vat_amount'] : '-'}"></td>
 								    <td th:text="${sell['total_amount'] != null ? sell['total_amount'] : '-'}"></td>
-<!-- 								    <td th:text="${sell['expected_date'] != null ? #temporals.format(sell['expected_date'], 'yyyy-MM-dd') : 'No Date'}"></td> -->
-								    <td th:text="${sell['expected_date'] != null ? sell['expected_date'] : '-'}"></td>	<!-- HashMap으로 가져오면서 String으로 들고와짐 -->
+<!-- 								    <td th:text="${sell['expected_date'] != null ? #temporals.format(sell['expected_date'], 'yyyy-MM-dd') : '-'}"></td> -->
+								    <td th:text="${sell['expected_date'] != null ? sell['expected_date'] : '-'}"></td>	<!-- HashMap으로 가져오면서 String으로 들고와짐(java.lang.String) -->
 								    <td th:text="${sell['client_name'] != null ? sell['client_name'] : '회의 전'}"></td>
 								</tr>
 
@@ -152,14 +155,14 @@
 					window.open("/orders/sell/regist", "_blank", "width=810,height=1200,scrollbars=yes,resizable=yes");
 				});
 			    
-				//---------------------------------------------------
+				// ---------------------------------------------------
 				// 수주 리스트 각 행 클릭 시 주문 상세 클릭 시 이벤트(새창 열기)
 				$("#dataTable tbody").on('click', 'tr', function() {
 					var documentNumber = $(this).data('id');
 					window.open("/orders/sell/" + documentNumber, "_blank", "width=810,height=1200,scrollbars=yes,resizable=yes");
 				});
 
-				//--------------------------------------------------
+				// --------------------------------------------------
 				
 				// 필터 변경 시 데이터 테이블 다시 로드
 			    $('input[name="status"]').on('change', () => productReport.draw());
@@ -172,7 +175,7 @@
 			        if (e.which == 13)  productReport.draw();
 			    });
 			    
-				//---------------------------------------------------
+				// ---------------------------------------------------
 				// 기간별 검색 필터링 제이쿼리 (datepicker)
 			    $('#searchDate').daterangepicker({
 //			        startDate: moment().subtract(29, 'days'),
@@ -223,9 +226,7 @@
 					productReport.draw();
 				});
 				
-				//---------------------------------------------------
-				
-				
+				// ---------------------------------------------------
 				
 			});
 		</script>
