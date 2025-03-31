@@ -10,33 +10,56 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">코드 리스트</h1>
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">코드 리스트</h1>
+			</div>
+			<!-- Content Row -->
+			<div class="row">
+				<div class="card shadow col-xl-12 col-lg-12 mb-1">
+					<div class="card-body">
+						<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? 안해주더라 -->
+							<form th:action="@{/admin/code/search}" method="get" th:object="${codeSearchDTO}">
+							<table class="table table-borderd">
+								<tr>
+									<td class="col-sm-12 col-md-2"><label for="majorCode">공통코드</label></td>
+									<td class="col-sm-12 col-md-3"><input type="text" id="majorCode" th:field="*{majorCode}"></td>
+									<td class="col-sm-12 col-md-2"><label for="isDeleted">삭제여부</label></td>
+									<td class="col-sm-12 col-md-3"><select name="isDeleted" id="isDeleted" th:value="*{isDeleted}" class="form-select" aria-label="Default select example">
+																		<option value="">선택</option>
+																		<option value="Y">삭제</option>
+																		<option value="N">사용중</option>
+																	</select>
+									</td>
+									<td class="col-sm-12 col-md-1" rowspan="2">
+										<!-- <div class="d-grid col-2 gap-2 d-md-block"> -->
+										<div class="d-grid col-2 gap-2 mx-auto">
+											<button type="submit" class="btn btn-primary">검색</button>
+										</div>
+									</td>
+									<td class="col-sm-12 col-md-1" rowspan="2">
+										<div class="d-grid col-2 gap-2 mx-auto">
+											<button type="button" id="newBtn" class="btn btn-success">코드 작성</button>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="col-sm-12 col-md-2"><label for="name">공통코드이름</label></td>
+									<td class="col-sm-12 col-md-3"><input type="text" id="name" th:field="*{name}"></td>
+									<td class="col-sm-12 col-md-2"><label for="regId">작성자</label></td>
+									<td class="col-sm-12 col-md-3"><input type="text" id="regId" th:field="*{regId}"></td>
+									<!-- <td></td>
+									<td></td> 위 tr에서 rowspan 희생 td들-->
+								</tr>
+							</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
 			<!-- 리스트 출력 -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
-						<div class="row">
-							<div class="col-sm-12 col-md-3">
-								<label>AccessID:
-									<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<label>Search:
-								<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<label>Search2:
-								<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<button type="button" id="newBtn">신규코드등록</button>
-							</div>
-						</div>
-						<div class="row">
-						</div>
 						<table class="table table-bordered">
 							<thead>
 								<tr>
@@ -59,6 +82,9 @@
 									<td th:text="${item.isDeleted}"></td>
 									<td th:text="${item.regId}"></td>
 									<td th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
+								</tr>
+								<tr th:if="${#lists.isEmpty(codeDTOList)}" class="clickable-row menu2depth_items" data-id="1">
+									<td colspan="7"><span>조회 된 데이터가 없습니다.</span></td>
 								</tr>
 							</tbody>
 						</table>
