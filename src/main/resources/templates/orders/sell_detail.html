@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- 		layout:decorate="~{common/layouts/de_layout}"> -->
+<head>
+<title>팩토리(PackTory) - 수주등록</title>
+
+<!-- layout:decorate="~{common/layouts/de_layout}" 빼면서 datepicker 적용 안되는 문제 -->
+<th:block th:insert="~{common/fragments/de_common::headContents}"></th:block>
+
+<!-- 부트스트랩 icons 가져오기 -->
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+<!-- CSS -->
+<th:block layout:fragment="css">
+	<!-- dataTables 가져오기 -->
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<link href="/css/datatables/datatables.min.css" rel="stylesheet">
+	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
+	<!-- 폰트어썸 가져오기 -->
+	<link href="/css/fontawesome/all.min.css" rel="stylesheet">
+	<script src="/css/fontawesome/all.min.js"></script>
+	<!-- CSS for Page -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+	<!-- 개별 CSS-->
+	<link href="/css/common.css" rel="stylesheet">
+</th:block>
+<style type="text/css">
+	.essential {
+        background-color: #fffbe6; /* 연한 노랑 */
+    }
+    .filled {
+        background-color: white;
+    }
+    
+</style>
+<!-- 다음 우편번호 API -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+
+<body id="page-top">
+	<div layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid" style="margin-top: 20px;">
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">주문서상세(수주)</h1>
+
+			<!-- ---------- 본문 컨테이너 ---------- -->
+			<div class="card shadow mb-4" style="min-width: 760px;">
+			    <div class="card-body">
+			        <form th:action="@{/orders/sell/modify}" method="post">
+						<th:block th:object=${sellDTO}>	
+							<table style="border-collapse: collapse; min-width: 750px;">
+				                <tr>
+				                	<td style="width: 50%; vertical-align: top;">
+				                        <table style="width: 100%;">
+				                        	<tr>
+							                	<th width="130px">거래종류</th>
+							                	<td><input type="text" id="tradeCode" th:value="*{trade_code}" name="tradeCode" disabled></td>
+					                        </tr>
+					                        <tr>
+							                	<th>주문상태</th>
+							                	<td><input type="text" id="statusCode" th:value="*{status_code}" name="statusCode"></td>
+					                        </tr>
+					                        <tr>
+							                	<th>예정일</th>
+							                	<td><input type="text" id="expectedDate" th:value="*{expected_date}" name="expectedDate"></td>
+					                        </tr>
+				                        </table>
+				                    </td>
+				                    <td style="width: 50%; vertical-align: top;">
+				                        <table style="width: 100%;">
+				                            <tr>
+					                            <th width="130px">거래처명</th>
+					                            <td><input type="text" id="companyName" th:value="*{company_name}" name="companyName" disabled></td>
+					                        </tr>
+					                        <tr>
+					                            <th>사업자번호</th>
+					                            <td><input type="text" id="companyNumber" th:value="*{company_number}" name="companyName" disabled><br></td>
+					                        </tr>
+					                        <tr>
+					                            <th>특이사항</th>
+					                            <td><input type="text" id="specialIssue" th:value="*{special_issue}" name="specialIssue"><br></td>
+					                        </tr>
+					                        <tr>
+					                            <th>삭제유무</th>
+					                            <td>
+												    <select id="isDeleted" name="isDeleted">
+												        <option value="Y" th:selected="*{is_deleted} == 'Y'">사용</option>
+												        <option value="N" th:selected="*{is_deleted} == 'N'">미사용</option>
+												    </select>
+												</td>
+					                        </tr>
+				         			   </table>
+				         			</td>
+			         			</tr>
+							</table>
+							
+	                        <!-- -------------------------------------------------- -->
+				            <hr>
+				            <table style="border-collapse: collapse; min-width: 750px;">
+				                <tr>
+				                	<td style="width: 50%; vertical-align: top;">
+				                        <table style="width: 100%;">
+				                        	<tr>
+					                            <th width="130px">요청예정일자</th>
+					                            <td>
+					                            	<input type="text" id="requestDate" class="rounded-sm mr-2 essential" th:value="*{request_date}" name="requestDate">
+					                            </td>
+					                        </tr>
+					                        <tr>
+					                            <th>요청마감일자</th>
+					                            <td>
+					                            	<input type="text" id="dueDate" class="rounded-sm mr-2 essential" th:value="*{due_date}" name="dueDate">
+					                            </td>
+					                        </tr>
+				                        </table>
+				                    </td>
+				                    <td style="width: 50%; vertical-align: top;">
+				                        <table style="width: 100%;">
+				                            <tr>
+					                            <th width="130px">담당자</th>
+					                            <td><input type="text" id="clientName" th:value="*{client_name}" name="clientName"></td>
+					                        </tr>
+					                        <tr>
+					                            <th>담당자 전화번호</th>
+					                            <td><input type="text" id="clientPhone" th:value="*{client_phone}" name="clientPhone" maxlength="13"><br></td>
+					                        </tr>
+				         			   </table>
+				         			</td>
+			         			</tr>
+			         		</table>
+				            
+	                        <!-- -------------------------------------------------- -->
+				            <hr>
+				            <table style="border-collapse: collapse; min-width: 750px;">
+			         			<tr>
+				                	<td style="width: 50%; vertical-align: top;">
+				                        <table style="width: 100%;">
+				                        	<tr>
+					                            <th width="130px">목적지명</th>
+					                            <td><input type="text" id="destinationName" class="essential" th:value="*{destination_name}" name="destinationName"></td>
+					                        </tr>
+					                        <tr>
+					                            <th>받는사람</th>
+					                            <td><input type="text" id="receiver" class="essential" th:value="*{receiver}" name="receiver"></td>
+					                        </tr>
+					                        <tr>
+					                            <th>전화번호1</th>
+					                            <td><input type="text" id="phone1" class="essential" th:value="*{phone1}" name="phone1" maxlength="13"></td>
+					                        </tr>
+					                        <tr>
+					                            <th>전화번호2</th>
+					                            <td><input type="text" id="phone2" th:value="*{phone2}" name="phone2" maxlength="13"></td>
+					                        </tr>
+				                        </table>
+				                    </td>
+				                    <td style="width: 50%; vertical-align: top;">
+				                        <table style="width: 100%;">
+				                            <tr>
+					                            <th style="vertical-align: top; width: 130px;">납품주소</th>
+					                            <td>
+				                                    <input type="text" id="postCode" class="postCode_1 essential" th:value="*{post_code}" name="postCode" size="8">&nbsp;&nbsp;&nbsp;&nbsp;
+				                                    <button type="button" id="searchAddressBtn_1" class="btn btn-outline-primary ml-2">주소찾기</button><br>
+				                                    <input type="text" id="address1" class="address1_1 essential" th:value="*{address1}" name="address1"><br>
+				                                    <input type="text" id="address2" class="address2_1 essential" th:value="*{address2}" name="address2">
+												</td>
+					                        </tr>
+				         			   </table>
+				         			</td>
+			         			</tr>
+				            </table>
+				            
+<!-- 	                        -------------------------------------------------- -->
+				            <hr>
+				            <table style="border-collapse: collapse; min-width: 750px;">
+				                <tr>
+				                    <td style="width: 50%; vertical-align: top;">
+				                        <table style="width: 100%;">
+				                            <tr>
+				                                <th width="130px">사업자 등록 번호</th>
+				                                <td>
+				                                	<input type="text" id="companyNumber" th:value="*{company_number}" name="companyNumber" disabled>
+<!-- 				                                	<button type="button"  class="btn btn-outline-primary ml-2">조회</button> -->
+				                                </td>
+				                            </tr>
+				                            <tr>
+				                                <th>상호명</th>
+<!-- 				                                <td><input type="text" id="companyName" th:value="*{company_name}" name="companyName" disabled></td> -->
+				                            </tr>
+				                            <tr>
+				                                <th>대표자명</th>
+<!-- 				                                <td><input type="text" id="ownerName" th:value="*{owner_name}" name="ownerName" disabled></td> -->
+				                            </tr>
+				                            <tr>
+				                                <th>전화번호</th>
+<!-- 				                                <td><input type="text" id="phoneNumber" th:value="*{phone_number}" maxlength="13" name="phoneNumber" disabled></td> -->
+				                            </tr>
+				                            <tr>
+				                                <th>팩스번호</th>
+<!-- 				                                <td><input type="text" id="faxNumber" th:value="*{fax_number}" maxlength="10" name="faxNumber" disabled></td> -->
+				                            </tr>
+				                            <tr>
+				                                <th>이메일</th>
+<!-- 				                                <td><input type="text" id="eMail" th:value="*{e_mail}" name="eMail" disabled></td> -->
+				                            </tr>
+				                        </table>
+				                    </td>
+				                    <td style="width: 50%; vertical-align: top;">
+				                        <table style="width: 100%;">
+				                            <tr>
+				                                <th style="vertical-align: top; width: 130px;">주소</th>
+				                                <td>
+<!-- 				                                    <input type="text" id="postCode" class="postCode_2" th:value="*{clientDTO.postCode}" size="8">&nbsp;&nbsp;&nbsp;&nbsp; -->
+<!-- 				                                    <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2">주소찾기</button><br> -->
+<!-- 				                                    <input type="text" id="address1" class="address1_2" th:value="*{clientDTO.address1}" placeholder="기본주소 입력"><br> -->
+<!-- 				                                    <input type="text" id="address2" class="address2_2" th:value="*{clientDTO.address2}" placeholder="상세주소 입력"> -->
+				                                </td>
+				                            </tr>
+				                        </table>
+				                    </td>
+				                </tr>
+				            </table>
+
+				            <hr>
+			                <!-- ---------- 상품 리스트 출력 영역 ---------- -->
+			                <div class="table-responsive">
+			                	<table class="table table-bordered" id="sellManagement" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>상품번호</th>
+											<th>품명</th>
+											<th>규격</th>
+											<th>수량</th>
+											<th>단가</th>
+											<th>합계금액</th>
+										</tr>
+									</thead>
+									<tbody>
+	<!-- 									<tr th:each="item, status : ${sellDTOList}" th:data-id="${sell['idx']}"> -->
+	<!-- 									    <td><input type="checkbox"></td> -->
+	<!-- 									    <td th:text="${sell['document_number']}"></td> -->
+		<!-- 								    <td th:text="${sell['request_date'] != null ? #temporals.format(sell['request_date'], 'yyyy-MM-dd') : 'No Date'}"></td> -->
+	<!-- 									    <td th:text="${sell['request_date']}"></td>		HashMap으로 가져오면서 String으로 들고와짐 -->
+	<!-- 									    <td th:text="${sell['company_name']}"></td> -->
+	<!-- 									    <td th:text="${sell['supply_amount']}"></td> -->
+	<!-- 									    <td th:text="${sell['vat_amount']}"></td> -->
+	<!-- 									    <td th:text="${sell['total_amount']}"></td> -->
+	<!-- 									</tr> -->
+		
+									</tbody>
+								</table>
+			                </div>
+			                	
+			                <!-- hidden -->
+			                <input type="hidden" th:value="*{document_number}" name="documentNumber">
+				            <!-- -------------------------------------------------------------- -->
+				            <div style="text-align: center; margin-top: 10px;">
+				                <button type="submit" id="modifyBtn" class="btn btn-primary">수정</button>
+<!-- 				                <button type="button" id="removeBtn" class="btn btn-success ml-2" th:data-id="${document_number}">삭제</button> -->
+								<button type="button" id="cancelBtn" class="btn btn-secondary ml-2" >닫기</button>
+				            </div>
+			            </th:block>
+			        </form>
+			    </div>
+			</div>
+			<!-- ---------- 본문 컨테이너 끝 ---------- -->			
+		</div>
+		
+		<script type="text/javascript">
+			$(function() {
+				// 휴대번호 입력
+				$('#clientPhone, #phone1, #phone2, #phoneNumber').on('input', function() {
+			        // 숫자만 남기기
+			        let value = $(this).val().replace(/\D/g, '');
+			        let formattedValue = '';
+
+			        // 포맷팅 로직
+			        if (value.length > 0) {
+			            if (value.length <= 10) {
+			                // 10자리 이하일 경우
+			                formattedValue += value.substring(0, 3); // 첫 3자리
+			                if (value.length > 3) {
+			                    formattedValue += '-' + value.substring(3, 6); // 중간 3자리
+			                }
+			                if (value.length > 6) {
+			                    formattedValue += '-' + value.substring(6, 10); // 마지막 4자리
+			                }
+			            } else {
+			                // 11자리 이상일 경우
+			                formattedValue += value.substring(0, 3); // 첫 3자리
+			                formattedValue += '-' + value.substring(3, 7); // 중간 4자리
+			                formattedValue += '-' + value.substring(7, 11); // 마지막 4자리
+			            }
+			        }
+					
+			     	// 포맷된 값으로 업데이트
+			        $(this).val(formattedValue);
+			    });
+				
+				// 숫자입력만 허용하는 keypress
+			    $('#clientPhone, #phone1, #phone2, #phoneNumber, #companyNumber, #faxNumber').on('keypress', function(e) {
+			    	let keyCode = event.keyCode;
+			        if (keyCode < 48 || keyCode > 57) {
+			            event.preventDefault();
+			        }
+			    });
+				
+		     	//---------------------------------------------------
+				// 납품주소(다음 우편번호 API 활용)
+				// "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
+				$("#searchAddressBtn_1, .postCode_1").click(function() {
+					new daum.Postcode({
+				        oncomplete: function(data) { 
+							// 1) 우편번호(zonecode) 가져와서 우편번호 항목(postCode)에 출력              
+				            $(".postCode_1").val(data.zonecode).addClass("filled");
+					
+							// 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서 
+							//    기본주소 항목(address1)에 출력
+							let address = data.address;
+				            
+				            // 3) 만약, 건물명(buildingName)이 존재할 경우(= 널스트링이 아님)
+				            //    기본 주소 뒤에 건물명 결합
+				            if(data.buildingName !== ''){
+				               address += "(" + data.buildingName + ")";
+				            }
+				            
+				            // 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
+				            $(".address1_1").val(address).addClass("filled");
+				            
+				            // 5) 상세주소 항목(address2)에 포커스 요청
+				            $(".address2_1").focus();
+				        }
+				    }).open();
+				});
+				
+				// 주소(다음 우편번호 API 활용)
+				$("#searchAddressBtn_2, .postCode_2").click(function() {
+					new daum.Postcode({
+				        oncomplete: function(data) { 
+							// 1) 우편번호(zonecode) 가져와서 우편번호 항목(postCode)에 출력              
+				            $(".postCode_2").val(data.zonecode);
+					
+							// 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서 
+							//    기본주소 항목(address1)에 출력
+							let address = data.address;
+				            
+				            // 3) 만약, 건물명(buildingName)이 존재할 경우(= 널스트링이 아님)
+				            //    기본 주소 뒤에 건물명 결합
+				            if(data.buildingName !== ''){
+				               address += "(" + data.buildingName + ")";
+				            }
+				            
+				            // 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
+				            $(".address1_2").val(address);
+				            
+				            // 5) 상세주소 항목(address2)에 포커스 요청
+				            $(".address2_2").focus();
+				        }
+				    }).open();
+				});
+				
+		     	//---------------------------------------------------
+				// 삭제버튼
+				$('#removeBtn').on("click", function() {
+					// 삭제할 상품의 document_number 가져오기
+					const documentNumber = $(this).data("id");
+					
+					if(confirm("상품을 삭제하시겠습니까?")) {
+						alert(documentNumber);
+						// AJAX 를 사용하여 요청 방식을 DELETE 로 지정하여 삭제 요청 전송
+// 						$.ajax({
+// 	 						url: "/orders/sell/delete/" + documentNumber, 
+// 							type: "DELETE", 	// 요청 방식 DELETE 로 지정
+// 							success: function(response) {
+// 								if(response == "success") {
+// 									alert("상품 삭제 성공!");
+// 									window.close(); // 현재 창 닫기
+// 									window.opener.location.reload(); // 부모 창 새로고침
+// 								} else {
+// 									alert(response);
+// 								}
+// 							}, 
+// 							error: function(error) {
+// 								alert("상품 삭제 과정에서 오류 발생!");
+// 								console.log(error);
+// 							}
+// 						});
+					}
+				});
+				
+		     	//---------------------------------------------------
+				// 취소버튼
+				$('#cancelBtn').on("click", function() {
+				    window.close();
+				});
+				
+		     	//---------------------------------------------------
+				// 필수입력요소
+				$(".essential").each(function () {
+		            if ($(this).val().trim() !== "") {
+		                $(this).addClass("filled");
+		            }
+		        });
+
+		        $(".essential").on("input", function () {
+		            if ($(this).val().trim() !== "") {
+		                $(this).addClass("filled");
+		            } else {
+		                $(this).removeClass("filled");
+		            }
+		        });
+		        
+		     	// ===== 캘린더 ===============================================
+				// 요청 예정일자 선택 (datepicker)
+			    $('#requestDate, #expectedDate').daterangepicker({
+			        singleDatePicker: true, // 단일 날짜 선택 모드
+			        showDropdowns: true, // 년월 수동 선택 가능
+			        autoApply: true, // 확인/취소 버튼 없이 즉시 반영
+			        autoUpdateInput: false, // 초기 입력 필드 비우기
+			        locale: {
+			            format: 'YYYY-MM-DD', // 날짜 형식
+			            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+			            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+			            applyLabel: "확인",
+			            cancelLabel: "취소"
+			        },
+			        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
+			        minDate: moment(), // 오늘 이후 선택 가능
+			        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
+			        // ---------------------------------------------------------------
+			    }).on('apply.daterangepicker', function(ev, picker) {
+			        $(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
+			        $(this).addClass("filled");
+			    });
+		     	
+			    // 요청 예정일자 선택 후 마감일자 활성화
+			    $('#requestDate').on('apply.daterangepicker', function(ev, picker) {
+			        $('#dueDate').prop('disabled', false); // 비활성화 해제
+			        $('#dueDate').val(''); // 기존 값 초기화
+
+			        $('#dueDate').daterangepicker({
+			            singleDatePicker: true,
+			            showDropdowns: true,
+			            autoApply: true,
+			            autoUpdateInput: false,
+			            locale: {
+			                format: 'YYYY-MM-DD',
+			                daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+			                monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+			                applyLabel: "확인",
+			                cancelLabel: "취소"
+			            },
+				        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
+			            minDate: picker.startDate.clone().add(7, 'days'), // 요청 예정일 + 7일
+			            maxDate: moment().add(1, 'year')
+				        // ---------------------------------------------------------------
+			        }).on('apply.daterangepicker', function(ev, picker) {
+			            $(this).val(picker.startDate.format('YYYY-MM-DD'));
+			            $(this).addClass("filled");
+			        }).on('show.daterangepicker', function(ev, picker) {
+//	 			        console.log("캘린더 열림"); // 캘린더가 열리는지 확인
+			        });
+			    });
+		     	// ===== 캘린더 끝 ============================================
+		        
+		        
+		        
+		    });
+		</script>
+	</div>
+	<!-- --------------------------------------------------------------------------------------------- -->
+	<!-- JS -->
+	<th:block layout:fragment="script">
+		<!-- Bootstrap core JavaScript-->
+		<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
+		<script src="/js/jquery-3.7.1.js"></script>
+	    <!-- Core plugin JavaScript-->
+	    <script src="/js/jquery-easing/jquery.easing.min.js"></script>
+	    <!-- Custom scripts for all pages-->
+	    <script src="/js/sb-admin-2.min.js"></script>
+	   	<!-- Page level plugins -->
+		<script src="/js/datatables/jquery.dataTables.min.js"></script>
+		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+		<script src="/js/demo/datatables-demo.js"></script>
+	   	<script src="/js/datepicker/moment.min.js"></script>
+	   	<script src="/js/datepicker/daterangepicker.js"></script>
+	   	<script src="/js/datatables/dataTables.buttons.min.js"></script>
+		<script src="/js/datatables/buttons.html5.min.js"></script>
+		<script src="/js/datatables/jszip.min.js"></script>
+		<script src="/js/datatables/buttons.print.min.js"></script>
+	</th:block>
+
+	
+</body>
+</html>

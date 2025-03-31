@@ -39,6 +39,7 @@ public class SellService {
 	public void registerOrder(@Valid OrderDTO orderDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		// MySQL DB에서 시퀀스 가져와서 document_number에 넣기
 		orderDTO.setDocumentNumber(commonService.getSeqOrderNumberfromMySQL());
 		sellMapper.insertOrder(orderDTO);
 	}
@@ -48,6 +49,19 @@ public class SellService {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		sellMapper.insertOrderDetail(orderDetailDTO);
 		
+	}
+
+	// ------------------------------------------------------------------------------------
+	// 주문서 상세 정보 조회 요청
+	public HashMap<String, Object> getOrder(String documentNumber) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return sellMapper.getOrder(documentNumber);
+	}
+
+	// 주문 정보 수정 요청
+	public void modifyOrder(OrderDTO orderDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		sellMapper.updateOrder(orderDTO);
 	}
 	
 	

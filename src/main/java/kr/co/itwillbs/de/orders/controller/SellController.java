@@ -9,11 +9,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.admin.dto.CodeDTO;
+import kr.co.itwillbs.de.admin.dto.CodeSearchDTO;
+import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientInfoDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
@@ -87,9 +91,37 @@ public class SellController {
 	    return "redirect:/orders/sell";
 	}
 
+	// 주문서 상세 및 수정 페이지 매핑(GET)
+	@GetMapping("/{documentNumber}") // "/orders/sell/100001"
+	public String getSellDetail(@PathVariable("documentNumber") String documentNumber, Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		System.out.println("documentNumber : "  + documentNumber);
+		
+		
+		HashMap<String, Object> sellDTO = sellService.getOrder(documentNumber);
+		System.out.println("sellDTO : " + sellDTO);
+		model.addAttribute("sellDTO", sellDTO);
+		
+		return "orders/sell_detail";
+	}
 	
-	
-	
+	// 주문서 수정(UPDATE) 요청하는 주소 매핑(POST)
+	// => 히든메서드 필터에 의해 PUT 으로 변해야하지만 일단 POST 방식 사용
+	@PostMapping("/modify") // "/orders/sell/modify"
+	public String updateClient(@ModelAttribute("orderDTO") OrderDTO orderDTO, @ModelAttribute("orderDetailDTO") OrderDetailDTO orderDetailDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+
+		System.out.println("orderDTO : " + orderDTO);
+		System.out.println("orderDetailDTO : " + orderDetailDTO);
+		
+		
+		// 주문 정보 수정
+		sellService.modifyOrder(orderDTO);
+		// 주문 상세 정보 수정
+//		sellService.modifyOrderDetail(orderDetailDTO);
+		
+		return "redirect:/orders/sell/" + orderDTO.getDocumentNumber();
+	}
 	
 	//------------------------------------------------------------------------------------------------
 }
