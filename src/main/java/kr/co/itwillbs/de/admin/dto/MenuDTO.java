@@ -2,7 +2,6 @@ package kr.co.itwillbs.de.admin.dto;
 
 import java.time.LocalDateTime;
 
-import kr.co.itwillbs.de.admin.constant.IsDeleted;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +20,7 @@ public class MenuDTO {
 	// 메뉴 ID 2뎁스 이상 있을 때 묶음? 근데 이 이름이 맞아?
 	private String menuId;
 	// 메뉴 정렬 순서
-	private String rank;
+	private String rankNumber;
 	// 메뉴 url
 	private String url;
 	// description 메뉴 설명
@@ -35,10 +34,10 @@ public class MenuDTO {
 	private String modId;
 	private LocalDateTime modDate;
 	
-	public MenuDTO(String menuType, String menuId, String rank, String url, String isDeleted) {
+	public MenuDTO(String menuType, String menuId, String rankNumber, String url, String isDeleted) {
 		this.menuType = menuType;
 		this.menuId = menuId;
-		this.rank = rank;
+		this.rankNumber = rankNumber;
 		this.url = url;
 		this.isDeleted = isDeleted;
 	}

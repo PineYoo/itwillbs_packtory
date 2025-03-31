@@ -10,83 +10,105 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">메뉴 관리</h1>
-			<!-- 리스트 출력 -->
-			<div class="card shadow mb-4">
-				<div class="card-body">
-					<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
-						<div class="row">
-							<div class="col-sm-12 col-md-3">
-								<label>AccessID:
-									<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<label>Search:
-								<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<label>Search2:
-								<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<button type="button" id="newBtn">메뉴 작성</button>
-							</div>
-						</div>
-						<div class="row">
-						</div>
-						<table class="table table-bordered">
-							<thead>
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-0 text-gray-800">메뉴 관리</h1>
+				<!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
+			</div>
+			<!-- Content Row -->
+			<div class="row">
+				<div class="card shadow col-xl-12 col-lg-12 mb-1">
+					<div class="card-body">
+						<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
+							<form th:action="@{/admin/menu/search}" method="get" th:object="${menuSearchDTO}">
+							<input type="hidden" name="menuId" valie="0">
+							<table class="table table-borderd">
 								<tr>
-									<th>번호</th>
-									<th>메뉴타입</th>
-									<!-- <th>메뉴아이디</th> -->
-									<th>메뉴순서</th>
-									<th>주소</th>
-									<th>삭제여부</th>
-									<th>작성자</th>
-									<th>작성일자</th>
-									<!-- <th>액션</th> -->
+									<td class="col-sm-12 col-md-2"><label for="menuType">메뉴 타입</label></td>
+									<td class="col-sm-12 col-md-3"><input type="text" id="menuType" th:field="*{menuType}"></td>
+									<td class="col-sm-12 col-md-2"><label for="isDeleted">삭제여부</label></td>
+									<td class="col-sm-12 col-md-3"><select name="isDeleted" id="isDeleted" class="form-select" aria-label="Default select example">
+																		<option value="">선택</option>
+																		<option value="Y">삭제</option>
+																		<option value="N">사용중</option>
+																	</select>
+									</td>
+									<td class="col-sm-12 col-md-1" rowspan="2">
+										<!-- <div class="d-grid col-2 gap-2 d-md-block"> -->
+										<div class="d-grid col-2 gap-2 mx-auto">
+											<button type="submit" class="btn btn-primary">검색</button>
+										</div>
+									</td>
+									<td class="col-sm-12 col-md-1" rowspan="2">
+										<div class="d-grid col-2 gap-2 mx-auto">
+											<button type="button" id="newBtn" class="btn btn-success">메뉴 작성</button>
+										</div>
+									</td>
 								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="item, status : ${menuDTOList}" th:data-id="${item.idx}" class="clickable-row">
-									<!-- <th:block th:object="${item}"> -->
-									<td th:text="${status.count}"></td>
-									<td th:text="${item.menuType}"></td>
-									<!-- <td th:text="${item.menuId}"></td> -->
-									<td th:text="${item.rank}"></td>
-									<td th:text="${item.url}"></td>
-									<td th:text="${item.isDeleted}"></td>
-									<td th:text="${item.regId}"></td>
-									<td th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
-									<!-- <td th:switch="${item.isDeleted}">
-										<button type="button" id="modfiyBtn" th:case="Y">보이기</button>
-										<button type="button" id="modfiyBtn" th:case="N">숨기기</button>
-										<span th:case="Y">삭제됨</span>
-										<span th:case="N">살아있음</span>
-									</td> -->
-<!-- 										<button type="button" id="modfiyBtn" th:if="${item.isDeleted == Y}">보이기</button>
-										<button type="button" id="modfiyBtn" th:unless="${item.isDeleted != Y}">숨기기</button> -->
+								<tr>
+									<td class="col-sm-12 col-md-2"><label for="url">URL</label></td>
+									<td class="col-sm-12 col-md-3"><input type="text" id="url" th:field="*{url}"></td>
+									<td class="col-sm-12 col-md-2"><label for="regId">작성자</label></td>
+									<td class="col-sm-12 col-md-3"><input type="text" id="regId" th:field="*{regId}"></td>
+									<!-- <td></td>
+									<td></td> 위 tr에서 rowspan 희생 td들-->
 								</tr>
-							</tbody>
-						</table>
+							</table>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
-			
+			<div class="row">
+			<!-- 리스트 출력 -->
+				<div class="card shadow col-xl-12 col-lg-12">
+				<!-- <div class="card shadow mb-4"> -->
+					<div class="card-body">
+						<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>번호</th>
+										<th>메뉴타입</th>
+										<!-- <th>메뉴아이디</th> -->
+										<th>메뉴순서</th>
+										<th>주소</th>
+										<th>삭제여부</th>
+										<th>작성자</th>
+										<th>작성일자</th>
+										<!-- <th>액션</th> -->
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="item, status : ${menuDTOList}" th:data-id="${item.idx}" class="clickable-row">
+										<!-- <th:block th:object="${item}"> -->
+										<td th:text="${status.count}"></td>
+										<td th:text="${item.menuType}"></td>
+										<!-- <td th:text="${item.menuId}"></td> -->
+										<td th:text="${item.rankNumber}"></td>
+										<td th:text="${item.url}"></td>
+										<td th:text="${item.isDeleted}"></td>
+										<td th:text="${item.regId}"></td>
+										<td th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(menuDTOList)}" class="clickable-row menu2depth_items" data-id="1">
+										<td colspan="7"><span>조회 된 데이터가 없습니다.</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
 			<script type="text/javascript">
 				$('#newBtn').on("click", function() {
 					location.href="/admin/menu/new";
-				});
+				}); // end of $('#newBtn').on("click", function() { 
 				
 				$('.clickable-row').on("click", function() {
 					const id = $(this).data("id");
 					console.log("click id is %s", id);
 					location.href=`/admin/menu/${id}`;
-				});
+				}); // end of $('.clickable-row').on("click", function() { 
 			</script>
 		</div>
 	</th:block>

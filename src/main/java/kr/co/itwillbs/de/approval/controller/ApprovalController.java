@@ -1,7 +1,5 @@
 package kr.co.itwillbs.de.approval.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,14 +9,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.approval.dto.ApprovalDTO;
 import kr.co.itwillbs.de.approval.dto.DraftDTO;
 import kr.co.itwillbs.de.approval.service.ApprovalService;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +36,9 @@ public class ApprovalController {
 //		String userId = (String) session.getAttribute("id");
 		
 		// 해당 회원의 전자결재 목록 가져오기
+//		ApprovalDTO approvalDTO = approvalService.getApprovalList(userId);
 		
+//		model.addAttribute("approvalDTO", approvalDTO);
 		return "approval/approval_list";
 	}
 	//------------------------------------------------------------------------------------------------
@@ -56,10 +54,11 @@ public class ApprovalController {
 	@GetMapping(value={"/register"})
 	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		System.out.println("기안자ID:" + userId); // e1001
+		System.out.println("기안자ID:" + userId);
 		
 		// 기안자ID 값으로 사원정보 가져오기
 		DraftDTO draftDTO = approvalService.getEmployeeInfo(userId);
+		System.out.println("draftDTO 가져왔음?" + draftDTO);
 		
 		model.addAttribute("draftDTO", draftDTO);
 		return "approval/approval_reg_form";
@@ -72,7 +71,7 @@ public class ApprovalController {
 			@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) throws JsonProcessingException {
 //			@RequestParam("itemImgFiles") List<MultipartFile> itemImgFiles) { 
 			//=> 파일 등록은 나중에!!
-//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		System.out.println("입력한 정보 : " +  draftDTO);
 		
 		// 유효성 체크
@@ -83,7 +82,7 @@ public class ApprovalController {
 		// 기안서 등록(저장)
 		int insertApproval = approvalService.registerApproval(draftDTO);
 		if(insertApproval> 0) {
-			return ""; // 성공했을 경우 새창 닫기
+			return "<script>alert('기안서가 등록되었습니다.'); window.close();</script>"; // 성공했을 경우 새창 닫기
 		}
 		
 		return ""; // 실패했을 경우 페이지 그대로
@@ -114,7 +113,7 @@ public class ApprovalController {
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 //		
 //		model.addAttribute("sampleDTO", new SampleDTO());
-//		
+//		t
 //		return "approval/sign";
 //	}
 //

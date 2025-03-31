@@ -14,7 +14,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @ToString
 public class ApprovalDTO {
-	private Long id;				// 결재번호
 	
 	private ApprovalStatus approvalStatus; // 진행상태 (일단 enum으로! 나중에 공통코드로 뺄지 고민)
 	
@@ -48,33 +47,6 @@ public class ApprovalDTO {
 //	private String approver1_signature;	// 결재자1 서명
 //	private String approver2_signature;	// 결재자2 서명
 //	private String approver3_signature;	// 결재자3 서명
-	
-	
-	
-	
-	
-	
-//	@Builder
-//	public DraftDTO(Long id, String drafter_id, String drafter_name, String drafter_position,
-//			String approval_type, String doc_code, String approver1, String approver2, String approver3,
-//			String title, String content, String file, MultipartFile file_get, Date draft_date, Date due_date) {
-//		this.id = id;
-//		this.drafter_id = drafter_id;
-//		this.drafter_name = drafter_name;
-//		this.drafter_position = drafter_position;
-//		this.approval_type = approval_type;
-//		this.doc_code = doc_code;
-//		this.approver1 = approver1;
-//		this.approver2 = approver2;
-//		this.approver3 = approver3;
-//		this.title = title;
-//		this.content = content;
-//		this.file = file;
-//		this.draft_date = draft_date;
-//		this.due_date = due_date;
-//	}
-	
-	// DrafterDTO 객체 > ApprovalEntity로 변환하여 리턴하는 메서드
 	
 	
 }

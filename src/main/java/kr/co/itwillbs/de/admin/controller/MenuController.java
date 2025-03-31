@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import kr.co.itwillbs.de.admin.dto.MenuDTO;
 import kr.co.itwillbs.de.admin.dto.MenuSearchDTO;
 import kr.co.itwillbs.de.admin.service.MenuService;
-import kr.co.itwillbs.de.common.util.CommonUtils;
+import kr.co.itwillbs.de.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -29,14 +28,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/admin/menu")
 public class MenuController {
 
+	private final MenuService menuService;
+	//@Autowired
+	public MenuController(MenuService menuService) {
+		this.menuService = menuService;
+	}
+	
 	// 계속 사용하게 될 클래스 RequestMapping 문자열 값
 	private final String MENU_PATH="/admin/menu";
-	
-	@Autowired
-	private MenuService menuService;
-	
-	@Autowired
-	private CommonUtils comUtils;
 	
 	/**
 	 * 어드민 > 메뉴 관리 > 메뉴 등록
@@ -61,7 +60,7 @@ public class MenuController {
 	public String menuRegister(@ModelAttribute("menuDTO") MenuDTO menuDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		log.info("requestData : {}", comUtils.ObjToString(menuDTO));
+		log.info("requestData : {}", StringUtil.objToString(menuDTO));
 		
 		if(menuService.registerMenu(menuDTO) < 1) {
 			return MENU_PATH+"/log_register_form";
@@ -71,7 +70,6 @@ public class MenuController {
 	
 	/**
 	 * 어드민 > 메뉴 관리 > 메뉴 리스트 (1depth)
-	 * <br>DB에서는 menuType 값을 보며 menuId는 항상 0이다.
 	 * @param model
 	 * @return
 	 */
@@ -79,12 +77,36 @@ public class MenuController {
 	public String getMenuTypeList(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		// 리스트 검색 DTO 빈 값 뷰에 전달
+		model.addAttribute("menuSearchDTO", new MenuSearchDTO());
+		// 리스트 결과 DTOlist 뷰에 전달
 		List<MenuDTO> menuDTOList = menuService.getMenuTypeList(new MenuSearchDTO());
-		
 		model.addAttribute("menuDTOList", menuDTOList);
 		
 		return MENU_PATH+"/menu_type_list";
 	}
+	
+	/**
+	 * 어드민 > 메뉴 관리 > 메뉴 검색 조건 조회(1depth)
+	 * @param menuSearchDTO
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/search")
+	public String sampleGetList(@ModelAttribute MenuSearchDTO menuSearchDTO, Model model) throws Exception {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info("request menuSearchDTO : {}", StringUtil.objToString(menuSearchDTO));
+		
+		// 리스트 검색 DTO 뷰에 전달
+		model.addAttribute("menuSearchDTO", menuSearchDTO);
+		// 리스트 결과 DTOlist 뷰에 전달
+		List<MenuDTO> menuDTOList = menuService.getMenuTypeList(menuSearchDTO);
+		model.addAttribute("menuDTOList", menuDTOList);
+		
+		return MENU_PATH+"/menu_type_list";
+	}	
 	
 	/**
 	 * 어드민 > 메뉴 관리 > 메뉴 상세리스트(2depth)
@@ -101,7 +123,7 @@ public class MenuController {
 		log.info("request param : {}, requestDTO", id, menuSearchDTO);
 		
 		// idx 값이 숫자가 아닐 때 리스트로 리다이렉트
-		if(!comUtils.isLongValue(id)) {
+		if(!StringUtil.isLongValue(id)) {
 			return "redirect:"+MENU_PATH;
 		}
 		
@@ -123,21 +145,6 @@ public class MenuController {
 		return MENU_PATH+"/menu_id_list";
 	}
 
-// 타임리프 폼안에서 리스트 데이터 받는게 잘 안되었다. 그래서 json으로 일단 되게 함 밑에 메소드 참고
-//	@PostMapping("/depthform")
-//	public String menuIdRegister(@ModelAttribute MenuDTOList menuDTOList, Model model) {
-//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-//		
-//		log.info("requestData : {}", menuDTOList);
-//		
-//		if(menuDTOList != null && menuDTOList.getMenuList().size() != 0) {
-//			for (Menu2ndDTO menu  : menuDTOList.getMenuList()) {
-//				log.info("{}", comUtils.ObjToString(menu));
-//			}
-//		}
-//		
-//		return MENU_PATH+"/menu_id_list";
-//	}
 	/**
 	 * 어드민 > 메뉴 목록 > 메뉴관리(1Depth) > 대메뉴 수정
 	 * <br> 만약, 2Depth 메뉴와 함께 수정하라고 하면.. 조금 머리가 아파질것 같다
@@ -156,11 +163,11 @@ public class MenuController {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			menuService.modifyMenu1Depth(menuDTO);
-			response.put("state", "success");
+			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
 			e.printStackTrace();
-			response.put("state", "fail");
+			response.put("status", "fail");
 			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
 		}
 		
@@ -186,11 +193,11 @@ public class MenuController {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			menuService.registerMenu2Depth(menuList);
-			response.put("state", "success");
+			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
 			e.printStackTrace();
-			response.put("state", "fail");
+			response.put("status", "fail");
 			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
 		}
 
@@ -216,7 +223,7 @@ public class MenuController {
 		log.info("{}", returnUrl);
 		
 		// idx 값이 숫자가 아닐 때 리스트로 리다이렉트
-		if(!comUtils.isLongValue(idx)) {
+		if(!StringUtil.isLongValue(idx)) {
 			return "redirect:"+MENU_PATH;
 		}
 		

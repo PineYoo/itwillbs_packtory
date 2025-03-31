@@ -45,7 +45,7 @@
 								<tr th:object="${menuDTO}">
 									<td><input type="text" th:field="*{menuType}" id="major_menuType" disabled></td>
 									<!-- <td><input type="text" th:field="*{menuId}" disabled></td> -->
-									<td><input type="text" th:field="*{rank}" disabled></td>
+									<td><input type="text" th:field="*{rankNumber}" disabled></td>
 									<td><input type="text" th:field="*{url}" disabled></td>
 									<td><input type="text" th:field="*{isDeleted}" disabled></td>
 								</tr>
@@ -68,29 +68,15 @@
 										<tr th:each="item, status : ${menuDTOIdList}" class="clickable-row menu2depth_items">
 											<td><input type="text" name="menuId" th:value="${item.menuId}" placeholder="메뉴 ID" /></td>
 											<td><input type="text" name="description" th:value="${item.description}" placeholder="메뉴 설명" /></td>
-											<td><input type="text" name="rank" th:value="${item.rank}" placeholder="순서" /></td>
+											<td><input type="text" name="rankNumber" th:value="${item.rankNumber}" placeholder="순서" /></td>
 											<td><input type="text" name="url" th:value="${item.url}" placeholder="URL" /></td>
 											<td><input type="text" name="isDeleted" th:value="${item.isDeleted}" placeholder="삭제 여부 (Y/N)" /></td>
-											<!-- <th:block th:object="${item}"> -->
-									<!--/*	<td th:text="${item.menuType}"></td>
-											<td th:text="${item.menuId}"></td>
-											<td th:text="${item.url}"></td>
-											<td><select id="isDeleted" th:field="${item.isDeleted}">
-												<option th:each="deleted : ${T(kr.co.itwillbs.de.admin.constant.IsDeleted).values()}"
-														th:value="${deleted}" th:text="${deleted}"></option>
-												</select>
-											</td> */-->
-<!-- 											<td><input type="text" id="menuType" th:field="${item[__${status.index}__].menuType}" placeholder="메뉴 타입" /></td>
-											<td><input type="text" id="menuId" th:field="${item[__${status.index}__].menuId}" placeholder="메뉴 ID" /></td>
-											<td><input type="text" id="rank" th:field="${item[__${status.index}__].rank}" placeholder="순위" /></td>
-											<td><input type="text" id="url" th:field="${item[__${status.index}__].url}" placeholder="URL" /></td>
-											<td><input type="text" id="isDeleted" th:field="${item[__${status.index}__].isDeleted}" placeholder="삭제 여부 (Y/N)" /></td> -->
 											<td><button type="button" class="remove2thMenu">삭제</button></td>
 										</tr>
 										<tr th:if="${#lists.isEmpty(menuDTOIdList)}" class="clickable-row menu2depth_items" data-id="1">
 											<td><input type="text" id="menuId" name="menuId" placeholder="메뉴 ID" /></td>
 											<td><input type="text" id="description" name="description" placeholder="메뉴 설명" /></td>
-											<td><input type="text" id="rank" name="rank" placeholder="순서" /></td>
+											<td><input type="text" id="rankNumber" name="rankNumber" placeholder="순서" /></td>
 											<td><input type="text" id="url" name="url" placeholder="URL" /></td>
 											<td><input type="text" id="isDeleted" name="isDeleted" placeholder="삭제 여부 (Y/N)" /></td>
 											<td><button type="button" class="remove2thMenu">삭제</button></td>
@@ -104,59 +90,49 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-/* 			$(".remove2thMenu").on("click", function() {
-				console.group('click! .remove2thMenu!');
+			$(function() {
 				
-				console.groupEnd();
-			}); */
-/* 			$("[id^='trRemove']").on("click", function() {
-				console.group('click! .trRemove!');
+				// 메뉴 추가 버튼 클릭 이벤트
+				$('#addRow').on("click", function() {
+					console.group('click! addRow!');
+					
+					let idx = $('#2depth_menu').children('tr').length+1;
+					console.log('idx is %s', idx);
+					
+					let tableRowHtml = '<tr class="clickable-row menu2depth_items" data-id='+idx+'>';
+					tableRowHtml += '<td><input type="text" name="menuId" value="" placeholder="메뉴 ID" /></td>';
+					tableRowHtml += '<td><input type="text" name="description" value="" placeholder="메뉴 설명" /></td>';
+					tableRowHtml += '<td><input type="text" name="rankNumber" value="" placeholder="순서" /></td>';
+					tableRowHtml += '<td><input type="text" name="url" value="" placeholder="URL" /></td>';
+					tableRowHtml += '<td><input type="text" name="isDeleted" value="" placeholder="삭제 여부 (Y/N)" /></td>';
+					tableRowHtml += '<td><button type="button" class="remove2thMenu">삭제</button></td>';
+					tableRowHtml += '</tr>';
+					
+					$('#2depth_menu').append(tableRowHtml);
+					
+					console.groupEnd();
+				}); // end of $('#addRow').on("click", function() {
 				
-				console.groupEnd();
-			}); */
-			
-			// 메뉴 추가 버튼 클릭 이벤트
-			$('#addRow').on("click", function() {
-				console.group('click! addRow!');
-				let idx = $('#2depth_menu').children('tr').length+1;
-				console.log('idx is %s', idx);
-				let tableRowHtml = '<tr class="clickable-row menu2depth_items" data-id='+idx+'>';
-				tableRowHtml += '<td><input type="text" name="menuId" value="" placeholder="메뉴 ID" /></td>';
-				tableRowHtml += '<td><input type="text" name="description" value="" placeholder="메뉴 설명" /></td>';
-				tableRowHtml += '<td><input type="text" name="rank" value="" placeholder="순서" /></td>';
-				tableRowHtml += '<td><input type="text" name="url" value="" placeholder="URL" /></td>';
-				tableRowHtml += '<td><input type="text" name="isDeleted" value="" placeholder="삭제 여부 (Y/N)" /></td>';
-/* 				tableRowHtml += '<td><input type="text" name="menuType['+(idx-1)+']" value="" placeholder="메뉴 타입" /></td>';
-				tableRowHtml += '<td><input type="text" name="menuId['+(idx-1)+']" value="" placeholder="메뉴 ID" /></td>';
-				tableRowHtml += '<td><input type="text" name="rank['+(idx-1)+']" value="" placeholder="순위" /></td>';
-				tableRowHtml += '<td><input type="text" name="url['+(idx-1)+']" value="" placeholder="URL" /></td>';
-				tableRowHtml += '<td><input type="text" name="isDeleted['+(idx-1)+']" value="" placeholder="삭제 여부 (Y/N)" /></td>'; */
-				//버튼 외의 디자인적 요소를 사용해야 할 경우 th:each와 th:if도 함께 손봐야 한다.
-				//tableRowHtml += '<td><a href="#none" id="trRemove-'+idx+'" class="remove2thMenu">삭제</a></td>';
-				tableRowHtml += '<td><button type="button" class="remove2thMenu">삭제</button></td>';
-				tableRowHtml += '</tr>';
-				$('#2depth_menu').append(tableRowHtml);
-				console.groupEnd();
-			});
-			
-			// 메뉴 저장 서브밋 처리
-			$('#menu2Submit').on("click", function() {
-				console.group('click! submitMenu!');
-				alert("서브밋 불가!");
-				return false;
-				$('#menuDTOListForm').submit();
-				console.groupEnd();
-			});
-			
-			$('#menu2Ajax').on("click", function() {
-				console.group('click! submitMenu!');
-				//function submitMenu() {
+				// 메뉴 저장 서브밋 처리
+				$('#menu2Submit').on("click", function() {
+					console.group('click! submitMenu!');
+					
+					alert("서브밋 불가!");
+					return false;
+					$('#menuDTOListForm').submit();
+					
+					console.groupEnd();
+				}); // end of $('#menu2Submit').on("click", function() {
+				
+				$('#menu2Ajax').on("click", function() {
+					console.group('click! submitMenu!');
+					
 					let _rowCnt = $('.menu2depth_items').length;
 					let _totalCnt = $('.menu2depth_items').find('input').length;
 					let _hasValueCnt = 0;
 					const _rankSet = new Set();
 					$('.menu2depth_items').find('input').each(function(idx, item) {
-						if(item.name == "rank") _rankSet.add(item.value);
+						if(item.name == "rankNumber") _rankSet.add(item.value);
 						if(item.value != "" || item.value.length > 0) _hasValueCnt += 1;
 					});
 					
@@ -170,7 +146,7 @@
 					console.log("_rankSet.size : %s", _rankSet.size);
 					console.log(typeof _rankSet.size); */
 					if(_rowCnt <= _rankSet) {
-						alert("순서는 중복될 수 없습니다.\n메뉴마다 다른 값을 입력해주세요.");
+						alert("순서는 중복될 수 없습니다.\n각각 다른 값을 입력해주세요.");
 						return false;
 					}
 					
@@ -181,7 +157,7 @@
 						const menu = {
 							menuType : document.querySelector('#major_menuType').value,
 							menuId: item.querySelector('[name="menuId"]').value,
-							rank: item.querySelector('[name="rank"]').value,
+							rankNumber: item.querySelector('[name="rankNumber"]').value,
 							url: item.querySelector('[name="url"]').value,
 							isDeleted: item.querySelector('[name="isDeleted"]').value,
 							description: item.querySelector('[name="description"]').value
@@ -206,106 +182,108 @@
 						if(data.state === "success") {
 							alert(data.message);
 							location.reload(); // 현재 페이지 새로 고침
+						} else {
+							
 						}
 						
 					})
 					.catch(error => {
-						console.error("전송 오류:", error);
+						console.error("서버 응답 오류:", error);
 						if(data.state === "fail") {
 							alert(data.message);
 						}
 					});
-				//}
-				console.groupEnd();
-			});
-			
-			// 2depth 메뉴들의 삭제 버튼에 이벤트
-			$('#2depth_menu').on("click", '.remove2thMenu', function() {
-				console.group('click! #2depth_menu > .remove2thMenu!');
-				//랜더링 이후 append로 들어간 dom에 이렇게 해야지 이벤트가 걸리다니?
-				console.log($(this));
-				//디자인을 위해 최소한? 1개는 가지고 있어야 할것 같다
-				if($('#2depth_menu').children('tr').length > 1) {
-					//클릭한 버튼의 부모 tr을 없애주세요
-					$(this).parents('tr').remove();
-				} else {
-					console.log("It's imposible");
-				}
-				console.groupEnd();
-			});
-			
-			// 1depth 메뉴 수정모드
-			$('#menu1depthToggle').on("click", function() {
-				console.group('click! #menu1depthToggle!');
-				let _isDisabled = document.querySelector('#major_menuType').disabled;
-				console.log("_isDisabled : " + _isDisabled);
-				if(_isDisabled) {
-					$('#menu1depthToggle').text("대메뉴 수정(닫기)");
-				} else {
-					$('#menu1depthToggle').text("대메뉴 수정(열기)");
-				}
-				let inputItems = $('#major_menuType').parents('tr').children('td').find('input');
-				//console.log(inputItems);
-				// 현재 disabled 값을 가져온다! 가져온것!
-				let _targetIsDisabled = !_isDisabled;
-				console.log("_targetIsDisabled : " + _targetIsDisabled);
-				for(let i=0; i<inputItems.length; i++) {
-					inputItems[i].disabled = _targetIsDisabled;
-				}
+					
+					console.groupEnd();
+				}); // end of $('#menu2Ajax').on("click", function() {
 				
-				console.groupEnd();
-			});
-			
-			$('#menu1Ajax').on("click", function() {
-				console.group('click! #menu1depthToggle!');
-				let _groupType = document.querySelector('#major_menuType').value;
-				if(!confirm("[ "+ _groupType + " ] 메뉴 정보를 수정 하시겠습니까?")){
-					return;
-				}
-				// 빈 객체 생성
-				let _jsonObj = {};
-				let _name, _value; // _이름과 값으로 쓸 변수 생성
-				// 반복 돌면서 데이터 가져오기
-				let _inputItems = $('#major_menuType').parents('tr').children('td').find('input');
-				$(_inputItems).each(function(idx) {
-					_name = $(this).attr('name');	// DTO 클래스 필드 값 가져오기
-					_value = $(this).val();	// DTO 클래스 필드에 들어갈 값 가져오기
-					_jsonObj[_name] = _value;
-				});
-				// 인덱스 넣기
-				_jsonObj['idx'] = $('#major_idx').val();
-				console.log(_jsonObj);
-				// JSON 데이터를 서버로 전송
-				fetch("/admin/menu/1depthjson", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify(_jsonObj)
-				})
-				.then(response => response.json())
-				.then(data => {
-					console.log("서버 응답:", data);
-					if(data.state === "success") {
-						alert(data.message);
-						location.reload(); // 현재 페이지 새로 고침
+				// 2depth 메뉴들의 삭제 버튼에 이벤트
+				$('#2depth_menu').on("click", '.remove2thMenu', function() {
+					console.group('click! #2depth_menu > .remove2thMenu!');
+					//랜더링 이후 append로 들어간 dom에 이렇게 해야지 이벤트가 걸리다니?
+							
+					console.log($(this));
+					//디자인을 위해 최소한? 1개는 가지고 있어야 할것 같다
+					if($('#2depth_menu').children('tr').length > 1) {
+						//클릭한 버튼의 부모 tr을 없애주세요
+						$(this).parents('tr').remove();
+					} else {
+						console.log("It's imposible");
 					}
 					
-				})
-				.catch(error => {
-					console.error("전송 오류:", error);
-					if(data.state === "fail") {
-						alert(data.message);
+					console.groupEnd();
+				}); // end of $('#2depth_menu').on("click", '.remove2thMenu', function() {
+				
+				// 1depth 메뉴 수정모드
+				$('#menu1depthToggle').on("click", function() {
+					console.group('click! #menu1depthToggle!');
+					let _isDisabled = document.querySelector('#major_menuType').disabled;
+					console.log("_isDisabled : " + _isDisabled);
+					if(_isDisabled) {
+						$('#menu1depthToggle').text("대메뉴 수정(닫기)");
+					} else {
+						$('#menu1depthToggle').text("대메뉴 수정(열기)");
 					}
-				});
+					let inputItems = $('#major_menuType').parents('tr').children('td').find('input');
+					//console.log(inputItems);
+					// 현재 disabled 값을 가져온다! 가져온것!
+					let _targetIsDisabled = !_isDisabled;
+					console.log("_targetIsDisabled : " + _targetIsDisabled);
+					for(let i=0; i<inputItems.length; i++) {
+						inputItems[i].disabled = _targetIsDisabled;
+					}
+					
+					console.groupEnd();
+				}); // end of $('#menu1depthToggle').on("click", function() {
 				
-				
-				console.groupEnd();
-			});
-			
-			function inputDisabledToggle() {
-				
-			}
+				$('#menu1Ajax').on("click", function() {
+					console.group('click! #menu1depthToggle!');
+					let _groupType = document.querySelector('#major_menuType').value;
+					if(!confirm("[ "+ _groupType + " ] 메뉴 정보를 수정 하시겠습니까?")){
+						return;
+					}
+					// 빈 객체 생성
+					let _jsonObj = {};
+					let _name, _value; // _이름과 값으로 쓸 변수 생성
+					// 반복 돌면서 데이터 가져오기
+					let _inputItems = $('#major_menuType').parents('tr').children('td').find('input');
+					$(_inputItems).each(function(idx) {
+						_name = $(this).attr('name');	// DTO 클래스 필드 값 가져오기
+						_value = $(this).val();	// DTO 클래스 필드에 들어갈 값 가져오기
+						_jsonObj[_name] = _value;
+					});
+					// 인덱스 넣기
+					_jsonObj['idx'] = $('#major_idx').val();
+					console.log(_jsonObj);
+					// JSON 데이터를 서버로 전송
+					fetch("/admin/menu/1depthjson", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(_jsonObj)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.state === "success") {
+							alert(data.message);
+							location.reload(); // 현재 페이지 새로 고침
+						}
+						
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						if(data.state === "fail") {
+							alert(data.message);
+						}
+					});
+					
+					
+					console.groupEnd();
+				}); // end of $('#menu1Ajax').on("click", function() {
+
+			}); // end of $(function() {
 		</script>
 	</th:block>
 </body>

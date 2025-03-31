@@ -39,10 +39,21 @@ public class CodeService {
 	 * SELECT t_commoncode 
 	 * @return List<CodeDTO>
 	 */
-	public List<CodeDTO> getCodeList() {
+	public List<CodeDTO> getCodes() {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		return codeMapper.getCodeList();
+		return codeMapper.getCodes();
+	}
+	
+	/**
+	 * SELECT t_commoncode 
+	 * @param codeSearchDTO
+	 * @return List<CodeDTO>
+	 */
+	public List<CodeDTO> getCodesBySearchDTO(CodeSearchDTO codeSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return codeMapper.getCodesBySearchDTO(codeSearchDTO);
 	}
 
 	/**

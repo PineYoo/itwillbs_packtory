@@ -37,7 +37,7 @@ public class CodeController {
 	private final String CODE_PATH="/admin/code";
 	
 	/**
-	 * 어드민 > 코드 관리 > 로그 등록
+	 * 어드민 > 코드 관리 > 공통코드 등록
 	 * @param model
 	 * @return
 	 */
@@ -56,7 +56,7 @@ public class CodeController {
 	 * @return
 	 */
 	@PostMapping(value={"","/"})
-	public String codeRegister(@ModelAttribute("codeDTO") CodeDTO codeDTO) {
+	public String registerCode(@ModelAttribute("codeDTO") CodeDTO codeDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestDTO : {}", codeDTO.toString());
@@ -73,11 +73,35 @@ public class CodeController {
 	 * @return
 	 */
 	@GetMapping(value={"","/"})
-	public String getCodeList(Model model) {
+	public String getCodes(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		List<CodeDTO> codeDTOList = codeService.getCodeList();
+		
+		model.addAttribute("codeSearchDTO", new CodeSearchDTO());
+		List<CodeDTO> codeDTOList = codeService.getCodes();
 		log.info("codeDTOList : {}", codeDTOList);
+		model.addAttribute("codeDTOList", codeDTOList);
+		
+		return CODE_PATH+"/code_list";
+	}
+	
+	/**
+	 * 어드민 > 코드 관리 > 코드리스트 검색 조건 조회
+	 * @param codeSearchDTO
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/search")
+	public String getCodesBySearchDTO(@ModelAttribute CodeSearchDTO codeSearchDTO, Model model) throws Exception {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info("request codeSearchDTO : {}", StringUtil.objToString(codeSearchDTO));
+		
+		// 리스트 검색 DTO 뷰에 전달
+		model.addAttribute("codeSearchDTO", codeSearchDTO);
+		// 리스트 결과 DTOlist 뷰에 전달
+		List<CodeDTO> codeDTOList = codeService.getCodesBySearchDTO(codeSearchDTO);
 		model.addAttribute("codeDTOList", codeDTOList);
 		
 		return CODE_PATH+"/code_list";
