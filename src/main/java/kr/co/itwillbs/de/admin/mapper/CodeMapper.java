@@ -23,15 +23,14 @@ public interface CodeMapper {
 	 * SELECT t_commonCode 
 	 * @return List<CodeDTO>
 	 */
-	List<CodeDTO> getCodeList();
-	
+	List<CodeDTO> getCodes();
+
 	/**
 	 * SELECT t_commonCode where codeSearchDTO
 	 * @param codeSearchDTO
-	 * @return List<CodeDTO>
+	 * @return
 	 */
-	List<CodeDTO> getCommonCodeList(CodeSearchDTO codeSearchDTO);
-
+	List<CodeDTO> getCodesBySearchDTO(CodeSearchDTO codeSearchDTO);
 
 	/**
 	 * SELECT t_commonCode where idx = codeSearchDTO.idx
@@ -72,4 +71,5 @@ public interface CodeMapper {
 	 * @return int => affectedRow
 	 */
 	int registerCodeItems(List<CodeItemDTO> itemList);
+
 }

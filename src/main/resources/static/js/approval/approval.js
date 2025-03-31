@@ -60,18 +60,6 @@ document.addEventListener("DOMContentLoaded", function(){
 			// defaultContent 는 기본값 설정, 데이터 없는 컬럼일 경우 오류나기 때문에 널스트링 처리 해주어야 함
 			// 등록시 유효성 체크를 한다면(null값 없다는 가정하에) defaultContent 값 설정 필요 없음!
             { title: "No.", data: "tableIdx", className : "dt-center", width: '30px', },
-//			{ 
-//				title: "ID", 
-//	            data : "REPORTER_ID", 
-//	            defaultContent: "",
-//	            width: '120px',
-//	            render: function (data, type, row) {
-//					if (!data) {
-//						return "";
-//					}
-//                	return `<a href="AdmMemberDetailForm?mem_id=${data}" target="_blank" title="새 창 열기">${data.replace(/(.{16})/g, '$1<br>')}</a>`;
-//           		}
-//            },
             { 
 				title: "요청구분", data:"requestType",	defaultContent: "", width: '100px', className : "dt-center",
 				render : function(data, type, row) {
@@ -191,9 +179,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#registerBtn").on('click', function() {
 		//로그인한 사용자 id 가져오기
 //		let userId = $("#userId").val();
-		let userId = "e1001"; //일단 하드코딩
+		let userId = "100008"; //일단 하드코딩
 		
-//		let url = `/approval/register`;
 		let url = `/approval/register?userId=` + userId;
 //		let url = `/approval/register?userId=` + encodeURIComponent(userId); //userId보안설정
 		

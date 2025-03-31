@@ -43,7 +43,7 @@
 		idx,
 		menu_type,
 		menu_id,
-		rank,
+		rank_number,
 		url,
 		description,
 		is_deleted,
@@ -59,13 +59,13 @@
 			<trim suffixOverrides=",">
 			menu_type,
 			menu_id,
-			rank,
+			rank_number,
 			url,
 			description,
 			is_deleted,
 			reg_id,
 			reg_date,
-			<if test='modId !=null and !modId.equals("")'>
+			<if test='modId !=null and !("".equals(modId))'>
 			mod_id,
 			mod_date,
 			</if>
@@ -74,13 +74,13 @@
 			<trim suffixOverrides=",">
 			#{menuType},
 			#{menuId},
-			#{rank},
+			#{rankNumber},
 			#{url},
 			#{description},
 			#{isDeleted},
 			#{regId},
 			#{regDate},
-			<if test='modId !=null and !modId.equals("")'>
+			<if test='modId !=null and !("".equals(modId))'>
 			#{modId},
 			#{modDate},
 			</if>
@@ -94,9 +94,12 @@
 			<include refid="t_menu_columns_forSelect" />
 		from t_menu
 			<where>
-				<if test="isDeleted != null">AND is_deleted = #{isDeleted} </if>
-				<if test="menuId != null">AND menu_id = #{menuId} </if>
-				<if test="idx != null">AND idx = #{idx} </if>
+				<if test='idx != null and !("".equals(idx))'>AND idx = #{idx} </if>
+				<if test='menuType != null and !("".equals(menuType))'>AND menu_type = #{menuType} </if>
+				<if test='menuId != null and !("".equals(menuId))'>AND menu_id = #{menuId} </if>
+				<if test='isDeleted != null and !("".equals(isDeleted))'>AND is_deleted = #{isDeleted} </if>
+				<if test='url != null and !("".equals(url))'>AND is_deleted = #{url} </if>
+				<if test='regId != null and !("".equals(regId))'>AND reg_id = #{regId} </if>
 			</where>
 	</select>
 	
@@ -109,18 +112,18 @@
 			menu_id != '0'
 			<if test="menuType != null">AND menu_type = #{menuType} </if>
 		</where>
-		order by rank asc
+		order by rank_number asc
 	</select>
 	
 	<update id="modifyMenu1Depth" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		update t_menu
 			<set>
 				<if test="menuType != null">menu_type = #{menuType},</if>
-				<if test="rank != null">rank = #{rank},</if>
+				<if test="rank_number != null">rank_number = #{rankNumber},</if>
 				<if test="url != null">url = #{url},</if>
 				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-				<if test='modId !=null and !modId.equals("")'>mod_id = #{modId},</if>
-				<if test='modId !=null and !modId.equals("")'>mod_date = now(),</if>
+				<if test='modId !=null and !("".equals(modId))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId))'>mod_date = now(),</if>
 			</set> 
 		where idx = #{idx}
 	</update>
@@ -129,8 +132,8 @@
 		update t_menu
 			<set>
 				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-				<if test='modId !=null and !modId.equals("")'>mod_id = #{modId},</if>
-				<if test='modId !=null and !modId.equals("")'>mod_date = now(),</if>
+				<if test='modId !=null and !("".equals(modId))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId))'>mod_date = now(),</if>
 			</set> 
 		where idx = #{idx}
 	</update>
@@ -147,7 +150,7 @@
 			<trim suffixOverrides=",">
 			menu_type,
 			menu_id,
-			rank,
+			rank_number,
 			url,
 			is_deleted,
 			description,
@@ -156,7 +159,7 @@
 			</trim>
 		) values 
 		<foreach item="item" index="index" collection="list" separator=",">
-			(#{item.menuType}, #{item.menuId}, #{item.rank}, #{item.url}, #{item.isDeleted}, #{item.description}, #{item.regId}, now())
+			(#{item.menuType}, #{item.menuId}, #{item.rankNumber}, #{item.url}, #{item.isDeleted}, #{item.description}, #{item.regId}, now())
 		</foreach>
 		
 	</insert>
