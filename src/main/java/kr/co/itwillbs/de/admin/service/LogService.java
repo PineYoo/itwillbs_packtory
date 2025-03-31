@@ -2,7 +2,6 @@ package kr.co.itwillbs.de.admin.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.itwillbs.de.admin.dto.LogDTO;
@@ -14,9 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LogService {
 
-	@Autowired
-	private LogMapper logMapper;
-	
+	private final LogMapper logMapper;
+	//@Autowired
+	public LogService(LogMapper logMapper) {
+		this.logMapper = logMapper;
+	}
 	/**
 	 * (개발테스트용)
 	 * @param logDTO

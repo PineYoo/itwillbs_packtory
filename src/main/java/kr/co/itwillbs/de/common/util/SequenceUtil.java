@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,25 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class SequenceUtils {
+public class SequenceUtil {
 
-	@Autowired
-	private CommonService commonService;
+	private final CommonService commonService;
 	
-	/**
-	 * DB에서 시퀀스 테이블 만들어서 사용하기 ver.JPA
-	 * <br> 사용 불가. 역시 JPA는 어렵다.
-	 * @return
-	 */
-//	public String getEmpSeqFromDBForJPA() {
-//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-//		
-//		EmpSeq empSeq = commonService.createSeq("");
-//		
-//		log.info("empSeq is {}", empSeq.getEmpSeq());
-//		
-//		return "";
-//	}
+	public SequenceUtil(CommonService commonService) {
+		this.commonService = commonService;
+	}
 	
 	@Value("${spring.datasource.hikari.driver-class-name}")
 	private String dbDriverClassName;
@@ -47,9 +34,9 @@ public class SequenceUtils {
 	 * @return
 	 */
 	public String getEmpSeqFromDB() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.debug("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		log.info("driverClassName is {}", dbDriverClassName);
+		log.debug("driverClassName is {}", dbDriverClassName);
 		
 		if(dbDriverClassName.toLowerCase().contains(H2_DATABASE)) {
 			return getEmpSeqFromDBverH2();
@@ -65,34 +52,35 @@ public class SequenceUtils {
 	 * @return
 	 */
 	public String getEmpSeqFromDBverMySQL() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.debug("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		String seqEmpId = commonService.createSeqEmpIdfromMysql();
-		log.info("MySQL database seq_emp_id is : {}", seqEmpId);
+		log.debug("MySQL database seq_emp_id is : {}", seqEmpId);
 		return seqEmpId;
 	}
 	
 	/**
 	 * H2 DB에서 시퀀스 테이블 만들어서 사용하기 ver.Mybatis
+	 * @deprecated
 	 * @return
 	 */
 	public String getEmpSeqFromDBverH2() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.debug("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		String seqEmpId = commonService.createSeqEmpIdfromH2();
-		log.info("H2 database seq_emp_id is : {}", seqEmpId);
+		log.debug("H2 database seq_emp_id is : {}", seqEmpId);
 		return seqEmpId;
 	}
 	
-	private final String NUMBERING_PROP_FILE = "./data/seq.properties";
+	private static final String NUMBERING_PROP_FILE = "./data/seq.properties";
 	
 	/**
 	 * 파일로 읽고/기록 하는 Seq 만드는 것
 	 * <br> 버전관리할때 프로퍼티 파일도 함께 공유해야되서 불편함이 있을 경우 Mybatis 버전을 사용하기 바람
 	 * @return String => 이번에 사용해야하는 seq
 	 */
-	public String getEmpSeqFromFile() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+	public static String getEmpSeqFromFile() {
+		log.debug("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		// 프로퍼티 파일 읽기
 		Properties properties = loadProperties(NUMBERING_PROP_FILE);
 
@@ -101,7 +89,7 @@ public class SequenceUtils {
 
 		String empSeq = properties.getProperty("emp-id", "100000");
 		empSeq = String.valueOf(Integer.parseInt(empSeq) + 1);
-		log.info("읽어온 프로퍼티 파일 {}, 사용가능한 empSeq : {}", NUMBERING_PROP_FILE, empSeq);
+		log.debug("읽어온 프로퍼티 파일 {}, 사용가능한 empSeq : {}", NUMBERING_PROP_FILE, empSeq);
 		// 프로퍼티 값 변경 및 저장
 		properties.setProperty("emp-id", empSeq);
 		saveProperties(properties, NUMBERING_PROP_FILE, "Updated properties file");
@@ -114,8 +102,8 @@ public class SequenceUtils {
 	 * @param filePath
 	 * @return
 	 */
-	private Properties loadProperties(String filePath) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+	private static Properties loadProperties(String filePath) {
+		log.debug("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		Properties properties = new Properties();
 		File file = new File(filePath);
 
@@ -123,7 +111,7 @@ public class SequenceUtils {
 		if (!file.exists()) {
 			try {
 				file.createNewFile();
-				log.info("새로운 properties 파일 생성: " + filePath);
+				log.debug("새로운 properties 파일 생성: " + filePath);
 			} catch (IOException e) {
 				log.error("파일을 생성할 수 없습니다: " + e.getMessage());
 			}
@@ -143,8 +131,8 @@ public class SequenceUtils {
 	 * @param filePath 저장할 경로
 	 * @param comments 코멘트(없어도 가능, null 가능)
 	 */
-	private void saveProperties(Properties properties, String filePath, String comments) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+	private static void saveProperties(Properties properties, String filePath, String comments) {
+		log.debug("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		try (OutputStream output = new FileOutputStream(filePath)) {
 			properties.store(output, comments);
 		} catch (IOException e) {

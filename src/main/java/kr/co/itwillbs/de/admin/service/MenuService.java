@@ -2,11 +2,9 @@ package kr.co.itwillbs.de.admin.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.co.itwillbs.de.admin.constant.IsDeleted;
 import kr.co.itwillbs.de.admin.dto.MenuDTO;
 import kr.co.itwillbs.de.admin.dto.MenuSearchDTO;
 import kr.co.itwillbs.de.admin.mapper.MenuMapper;
@@ -16,8 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class MenuService {
 
-	@Autowired
-	private MenuMapper menuMapper;
+	private final MenuMapper menuMapper;
+	//@Autowired
+	public MenuService(MenuMapper menuMapper) {
+		this.menuMapper = menuMapper;
+	}
 	
 	/**
 	 * 메뉴 등록(INSERT), 2depth 메뉴 등록 고민하기!
@@ -135,7 +136,9 @@ public class MenuService {
 			menuDTO.setRegId("superUser");
 		}
 		int affectedRow = menuMapper.registerMenu2Depth(menuList);
-		if(affectedRow < 1 && menuList.size() != affectedRow) {
+		log.info("itemList.size is {}, // affectedRow is {}", menuList.size(), affectedRow);
+		
+		if(affectedRow < 1 || menuList.size() != affectedRow) {
 			throw new Exception("데이터 등록에 실패 했습니다.");
 		}
 	}
