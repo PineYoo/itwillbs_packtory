@@ -2,7 +2,6 @@ package kr.co.itwillbs.de.admin.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import kr.co.itwillbs.de.admin.dto.LogDTO;
 import kr.co.itwillbs.de.admin.dto.LogSearchDTO;
 import kr.co.itwillbs.de.admin.service.LogService;
-import kr.co.itwillbs.de.common.util.CommonUtils;
+import kr.co.itwillbs.de.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -22,13 +21,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/admin/log")
 public class LogController {
 	
+	private final LogService logService;
+	//@Autowired
+	public LogController(LogService logService) {
+		this.logService = logService;
+	}
+	
 	// 계속 사용하게 될 클래스 RequestMapping 문자열 값
 	private final String LOG_PATH="/admin/log";
-	
-	@Autowired
-	private LogService logService;
-	@Autowired
-	private CommonUtils comUtils;
 	
 	/**
 	 * (개발테스트용)어드민 > 시스템 로그 > 로그 등록
@@ -53,7 +53,7 @@ public class LogController {
 	public String logRegister(@ModelAttribute("logDTO") LogDTO logDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		log.info("requestData : {}", comUtils.ObjToString(logDTO));
+		log.info("requestData : {}", StringUtil.objToString(logDTO));
 		
 		if(logService.registerLog(logDTO) < 1) {
 			return LOG_PATH+"/log_register_form";
@@ -89,7 +89,7 @@ public class LogController {
 	@GetMapping(value={"/search","/search/"})
 	public String getLogSearchList(@ModelAttribute LogSearchDTO logSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("requestData : {}", comUtils.ObjToString(logSearchDTO));
+		log.info("requestData : {}", StringUtil.objToString(logSearchDTO));
 		
 		List<LogDTO> logDTOList = logService.getLogSearchList(logSearchDTO);
 		log.info("logDTOList {}", logDTOList);
@@ -106,7 +106,7 @@ public class LogController {
 		log.info("requestData : {}", idx);
 		
 		// idx 값이 숫자가 아닐 때 리스트로 리다이렉트
-		if(!comUtils.isLongValue(idx)) {
+		if(!StringUtil.isLongValue(idx)) {
 			return "redirect:"+LOG_PATH;
 		}
 		LogDTO logDTO = logService.getLog(Long.parseLong(idx));

@@ -27,26 +27,8 @@
         LIMIT 1
 	</select>
 	
+	<!-- 기안서 저장 -->
 	<insert id="insertApproval">
-		INSERT INTO t_approval
-		VALUES (
-			#{approval_no}
-			, #{approval_type}
-			, #{doc_no}
-			, #{title}
-			, #{content}
-			, #{upload_file}
-			, #{progress_status}
-			, #{drafter_id}
-			, #{draft_date}
-			, #{due_date}
-			, #{approver1}
-			, #{approver2}
-			, #{approver3}
-		)
-		
-	
-	
 	</insert>
 	
 	

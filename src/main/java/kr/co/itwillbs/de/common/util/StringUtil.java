@@ -30,7 +30,7 @@ public class StringUtil {
 					sb.append(m.getName());
 					sb.append(" : ");
 					sb.append(m.invoke(obj));
-					sb.append("\n ");
+					sb.append("\n");
 				}
 			}
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
