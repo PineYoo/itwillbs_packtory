@@ -21,5 +21,11 @@ public interface SellMapper {
 	void insertOrder(@Valid OrderDTO orderDTO);
 	void insertOrderDetail(OrderDetailDTO orderDetailDTO);
 
+	// 주문서 상세 정보 조회
+	HashMap<String, Object> getOrder(String documentNumber);
+
+	// 주문 정보 수정
+	void updateOrder(OrderDTO orderDTO);
+
 	
 }
