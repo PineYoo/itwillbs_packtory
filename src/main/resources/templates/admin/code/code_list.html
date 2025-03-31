@@ -22,7 +22,16 @@
 							<table class="table table-borderd">
 								<tr>
 									<td class="col-sm-12 col-md-2"><label for="majorCode">공통코드</label></td>
-									<td class="col-sm-12 col-md-3"><input type="text" id="majorCode" th:field="*{majorCode}"></td>
+									<td class="col-sm-12 col-md-3"><!-- <input type="text" id="majorCode" th:field="*{majorCode}"></td> -->
+																	<th:block th:with="majorCode=*{majorCode}">
+																	<!-- <div th:text="${majorCode}"></div> -->
+																	<select name="majorCode" id="majorCode" th:value="*{majorCode}" class="form-select" aria-label="Default select example">
+																		<option value="">선택</option>
+																		<!-- <option th:each="item : *{codeList}" th:value="${item.majorCode}" th:text="${item.name}"></option> -->
+																		<option th:each="item : *{codeList}" th:value="${item.majorCode}" th:text="${item.name}" th:selected="${majorCode} == ${item.majorCode}"></option>
+																	</select>
+																	</th:block>
+									</td>
 									<td class="col-sm-12 col-md-2"><label for="isDeleted">삭제여부</label></td>
 									<td class="col-sm-12 col-md-3"><select name="isDeleted" id="isDeleted" th:value="*{isDeleted}" class="form-select" aria-label="Default select example">
 																		<option value="">선택</option>

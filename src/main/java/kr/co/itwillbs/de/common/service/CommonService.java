@@ -1,7 +1,12 @@
 package kr.co.itwillbs.de.common.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import kr.co.itwillbs.de.admin.dto.CodeDTO;
+import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
+import kr.co.itwillbs.de.admin.dto.CodeSearchDTO;
 import kr.co.itwillbs.de.common.mapper.CommonMapper;
 
 @Service
@@ -35,5 +40,25 @@ public class CommonService {
 	 */
 	public String getSeqOrderNumberfromMySQL() {
 		return commonMapper.getSeqOrderNumberfromMySQL(); 
+	}
+
+	/**
+	 * SELECT t_commoncode where is_deleted = 'N' 
+	 * @param majorCode
+	 * @return
+	 */
+	public List<CodeDTO> getCodes() {
+		
+		return commonMapper.getCodes();
+	}
+
+	/**
+	 * SELECT t_commoncode_item where is_deleted = 'N' and mojor_code = #{majorCode}
+	 * @param majorCode
+	 * @return
+	 */
+	public List<CodeItemDTO> getCodeItems(String majorCode) {
+		
+		return commonMapper.getCodeItems(majorCode);
 	}
 }

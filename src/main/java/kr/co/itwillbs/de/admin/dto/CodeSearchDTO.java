@@ -1,5 +1,7 @@
 package kr.co.itwillbs.de.admin.dto;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,4 +21,6 @@ public class CodeSearchDTO {
 	private String regId;
 	private String minDate;
 	private String maxDate;
+	
+	private List<CodeDTO> codeList;
 }
