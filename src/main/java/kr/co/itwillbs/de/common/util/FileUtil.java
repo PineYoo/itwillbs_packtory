@@ -10,19 +10,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.co.itwillbs.de.common.vo.FileVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Component
 public class FileUtil {
 
 	// 이 클래스 밖으로 알리고 싶지 않은 변수이기에 private 선언 -> 다른 common.util 패키지내에서 써야 할 경우 private 지우거나 package 선언
 	@Value("${spring.servlet.multipart.location}")
-	private static String uploadDir;
+	private String uploadDir;
 	
 	/**
 	 * 멀티파트 파일 받아서 처리하기
@@ -35,7 +39,7 @@ public class FileUtil {
 	 * @param mfile
 	 * @throws Exception 
 	 */
-	public static Map<String, String> setFile(MultipartFile mfile) throws Exception {
+	public FileVO setFile(MultipartFile mfile) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("uploadDir {}, separator {}, pathSeparator {}", uploadDir, File.separator, File.pathSeparator);
 		
@@ -53,7 +57,7 @@ public class FileUtil {
 		log.info("uploadPath {}, getOriginalFilename {}, dd {}", uploadPath, mfile.getOriginalFilename());
 		
 		//File filePath = new File(uploadPath); 뭐여 이거 1.0 이쟎아!?
-		Path uploadsPath = Paths.get(uploadPath);
+		Path uploadsPath = Paths.get(chekcFileSeparator(uploadPath));
 		
 		//디렉토리가 없으면 생성
 		if (!Files.exists(uploadsPath)) {
@@ -65,8 +69,7 @@ public class FileUtil {
 			}
 		}
 		//UUID로 파일명 저장
-		String fileName = UUID.randomUUID().toString() + getExtension(mfile);
-		//String fileName = UUID.randomUUID().toString() + getExtension(mfile.getOriginalFilename());
+		String fileName = UUID.randomUUID().toString() +"."+getExtension(mfile);
 		Path filePath = uploadsPath.resolve(fileName);
 		
 		// 파일 저장
@@ -82,12 +85,9 @@ public class FileUtil {
 		log.info("{} wrote success", mfile.getOriginalFilename());
 		//return new FilesVO(uploadsPath.toString(), fileName);
 		
-		Map<String, String> returnMap = new HashMap<>();
-		returnMap.put("FILE_PATH", uploadsPath.toString());
-		returnMap.put("FILE_NAME", fileName);
-		returnMap.put("FILE_SIZE", String.valueOf(mfile.getSize()));
-		
-		return returnMap;
+		FileVO fileVO = new FileVO(fileName, uploadsPath.toString(), String.valueOf(mfile.getSize()));
+		log.info("fileVO toString : {}", fileVO.toString());
+		return fileVO;
 	}
 	
 	/**
@@ -170,11 +170,31 @@ public class FileUtil {
 	}
 	
 	/**
+	 * 업로드/다운로드 작업 전 파일 경로 확인 메서드
+	 * <br> 현재 시스템에 맞춰서 (\|/)를 바꿔준다.
+	 * @param path
+	 * @return "" : path 파라미터가 null 또는 "" 일때 반환, 그 외엔 신뢰할 수 있는 경로 임
+	 */
+	public static String chekcFileSeparator(String path) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		if(!StringUtils.hasLength(path)) {
+			return "";
+		}
+		String regex = "[\\\\/]";
+		String replacedText = Matcher.quoteReplacement(File.separator);
+		String returnStr = path.replaceAll(regex, replacedText);
+		log.info("input path : {} -> changedPath : {}", path, returnStr);
+		return returnStr;
+	}
+	
+	/**
 	 * 어떡하냐, 너무 옛날 사람인가봐
 	 * @param args
 	 */
 	public static void main(String... args) {
 		String filename = "filename%zz";
+		String pathName = "/packtory/uploads\\yyyy\\mm\\dd";
 		System.out.println(isSpecial(filename));
+		System.out.println(chekcFileSeparator(pathName));
 	}
 }
