@@ -19,6 +19,7 @@ import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.admin.dto.CodeSearchDTO;
 import kr.co.itwillbs.de.admin.service.CodeService;
+import kr.co.itwillbs.de.common.util.CommoncodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,9 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 public class CodeController {
 
 	private final CodeService codeService;
+	private final CommoncodeUtil commonCodeUtil;
 	//@Autowired
-	public CodeController(CodeService codeService) {
+	public CodeController(CodeService codeService, CommoncodeUtil commonCodeUtil) {
 		this.codeService = codeService;
+		this.commonCodeUtil = commonCodeUtil;
 	}
 	
 	// 계속 사용하게 될 클래스 RequestMapping 문자열 값
@@ -75,11 +78,11 @@ public class CodeController {
 	@GetMapping(value={"","/"})
 	public String getCodes(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		
-		model.addAttribute("codeSearchDTO", new CodeSearchDTO());
+		CodeSearchDTO codeSearchDTO = new CodeSearchDTO();
+		codeSearchDTO.setCodeList(commonCodeUtil.getCodes());
+		model.addAttribute("codeSearchDTO", codeSearchDTO);
 		List<CodeDTO> codeDTOList = codeService.getCodes();
-		log.info("codeDTOList : {}", codeDTOList);
+		//log.info("codeDTOList : {}", codeDTOList);
 		model.addAttribute("codeDTOList", codeDTOList);
 		
 		return CODE_PATH+"/code_list";
@@ -97,7 +100,7 @@ public class CodeController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("request codeSearchDTO : {}", StringUtil.objToString(codeSearchDTO));
-		
+		codeSearchDTO.setCodeList(commonCodeUtil.getCodes());
 		// 리스트 검색 DTO 뷰에 전달
 		model.addAttribute("codeSearchDTO", codeSearchDTO);
 		// 리스트 결과 DTOlist 뷰에 전달
@@ -132,8 +135,12 @@ public class CodeController {
 			CodeDTO codeDTO = codeService.getCodeByIdx(codeSearchDTO);
 			if(codeDTO != null) { 
 				model.addAttribute("codeDTO", codeDTO);
+				// 공통 코드 가져오기(TEST) codeDTO.getMajorCode()
+				model.addAttribute("codeItems", commonCodeUtil.getCodeItems(codeDTO.getMajorCode()));
+				
 				// 조회된 결과 값에서 하위 공통코드 조회를 위해 majorCode 셋
 				codeSearchDTO.setMajorCode(codeDTO.getMajorCode());
+				log.info("codeDTO.getMajorCode() {}", codeDTO.getMajorCode());
 				// t_commoncode_item where major_code 조회 하기
 				model.addAttribute("codeItemDTOList", codeService.getCodeItemsByMajorCode(codeSearchDTO));
 			}
