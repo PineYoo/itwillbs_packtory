@@ -13,6 +13,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import kr.co.itwillbs.de.info.dto.DepartmentInfoDTO;
 import lombok.Builder;
@@ -44,11 +45,14 @@ public class DepartmentInfo {
 	@Column(length = 10, nullable = false)
 	private String childCode; // 하위부서코드
 	
+	@Column(length = 50, nullable = false)
+	private String childName; // 하위부서이름
+	
 	@Column(length = 10, nullable = false)
 	private String rankNumber; // 정렬순서
 	
-	@Column(length = 2, nullable = false)
-	private String isDeleted; // 삭제유무
+	@Column(length = 2)
+	private String isDeleted;
 	
 	@Column(length = 10, nullable = false)
 	private String locationIdx; // 장소참조
@@ -67,15 +71,23 @@ public class DepartmentInfo {
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") // 출력 시 사용할 포멧 지정
 	private LocalDateTime modDate; // 최종작성일자
 	
+	@PrePersist
+	public void prePersist() {
+	    if (this.isDeleted == null) {
+	        this.isDeleted = "N";
+	    }
+	}
+	
 	// 빌더 패턴(Builder Pattern)으로 객체 생성하기 위한 파라미터 생성자 정의(생성자에 @Builder 어노테이션 추가)
 	// => @Id 필드를 제외한 나머지 필드에 대한 정의
 	@Builder
-	public DepartmentInfo(String departmentCode, String parentCode, String childCode, String rankNumber,
-	                      String isDeleted, String locationIdx, String regId, LocalDateTime regDate,
-	                      String modId, LocalDateTime modDate) {
+	public DepartmentInfo(String departmentCode, String parentCode, String childCode, String childName, 
+						  String rankNumber, String isDeleted, String locationIdx, String regId,
+						  LocalDateTime regDate, String modId, LocalDateTime modDate) {
 	    this.departmentCode = departmentCode;
 	    this.parentCode = parentCode;
 	    this.childCode = childCode;
+	    this.childName = childName;
 	    this.rankNumber = rankNumber;
 	    this.isDeleted = isDeleted;
 	    this.locationIdx = locationIdx;
@@ -87,18 +99,19 @@ public class DepartmentInfo {
 	
 	// Item(엔티티) -> ItemDTO -> 변환하는 toDTO() 메서드 정의
 	public DepartmentInfoDTO toDto() {
-		return DepartmentInfoDTO.builder()
-				.idx(idx)
+	    return DepartmentInfoDTO.builder()
+	            .idx(idx)
 	            .departmentCode(departmentCode)
-	            .parentCode(parentCode)
+	            .parentCode(parentCode != null ? parentCode : "0") // ✅ null이면 "0"으로 처리
 	            .childCode(childCode)
-	            .rankNumber(rankNumber)
+	            .childName(childName != null ? childName : "이름 없음") // ✅ null이면 "이름 없음"으로 처리
+	            .rankNumber(rankNumber != null ? rankNumber : "0") // ✅ null이면 "0"으로 처리
 	            .isDeleted(isDeleted)
-	            .locationIdx(locationIdx)
+	            .locationIdx(locationIdx != null ? locationIdx : "0") // ✅ null이면 "0"으로 처리
 	            .regId(regId)
-	            .regDate(regDate)
+	            .regDate(regDate != null ? regDate : LocalDateTime.now()) // ✅ null이면 현재 시간으로 처리
 	            .modId(modId)
-	            .modDate(modDate)
+	            .modDate(modDate != null ? modDate : LocalDateTime.now()) // ✅ null이면 현재 시간으로 처리
 	            .build();
 	}
 
@@ -107,6 +120,7 @@ public class DepartmentInfo {
 		this.departmentCode = departmentInfoDTO.getDepartmentCode();
 	    this.parentCode = departmentInfoDTO.getParentCode();
 	    this.childCode = departmentInfoDTO.getChildCode();
+	    this.childName = departmentInfoDTO.getChildName();
 	    this.rankNumber = departmentInfoDTO.getRankNumber();
 	    this.isDeleted = departmentInfoDTO.getIsDeleted();
 	    this.locationIdx = departmentInfoDTO.getLocationIdx();
@@ -117,6 +131,6 @@ public class DepartmentInfo {
 	        this.regDate = departmentInfoDTO.getRegDate();
 	    }
 	    this.modId = departmentInfoDTO.getModId();
-	    this.modDate = departmentInfoDTO.getModDate();
+	    this.modDate = LocalDateTime.now();
 	   }
 }
