@@ -149,7 +149,7 @@
 					console.log(_rankSet);
 					console.log("_rankSet.size : %s", _rankSet.size);
 					console.log(typeof _rankSet.size);
-					if(_rowCnt <= _rankSet.size) {
+					if(_rowCnt != _rankSet.size) {
 						alert("순서는 중복될 수 없습니다.\n각각 다른 값을 입력해주세요.");
 						return false;
 					}
