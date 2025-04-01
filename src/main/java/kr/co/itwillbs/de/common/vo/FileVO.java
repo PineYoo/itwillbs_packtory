@@ -13,11 +13,13 @@ import lombok.ToString;
 @ToString
 public class FileVO {
 
+	private String idx;
 	private String type;
 	private String majorIdx;
 	private String filePath;
 	private String fileName;
 	private String fileSize;
+	private String fileOriginalName;
 	private String isDeleted;
 	private String rankNumber;
 	private String regId;
@@ -25,13 +27,15 @@ public class FileVO {
 	
 	/**
 	 * FileUtil.setFile return 필수 값 셋
-	 * @param fileName 업로드된/다운로드될 파일명
 	 * @param filePath 업로드된/다운로드될 파일경로
+	 * @param fileName 업로드된/다운로드될 파일명
+	 * @param fileOriginalName 업로드된/다운로드될 파일명
 	 * @param fileSize 업로드된/다운로드될 파일사이즈
 	 */
-	public FileVO(String fileName, String filePath, String fileSize) {
-		this.fileName = fileName;
+	public FileVO(String filePath, String fileName, String fileOriginalName, String fileSize) {
 		this.filePath = filePath;
+		this.fileName = fileName;
+		this.fileOriginalName = fileOriginalName;
 		this.fileSize = fileSize;
 	}
 }

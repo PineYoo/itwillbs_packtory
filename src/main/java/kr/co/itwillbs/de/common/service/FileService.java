@@ -35,8 +35,6 @@ public class FileService {
 	@Value("${spring.servlet.multipart.location}")
 	public String UPLOAD_DIR;
 	
-	
-	
 	public FileService(FileMapper fileMapper, FileUtil fileUtil) {
 		this.fileMapper = fileMapper;
 		this.fileUtil = fileUtil;
@@ -54,7 +52,7 @@ public class FileService {
 		FileVO fileVO = fileMapper.getFileByIdx(fileIdx);
 		log.info("fileVo is {}", fileVO);
 		// 다운로드 할 파일 정보를 서버 상의 업로드 디렉토리에 접근하여 가져오기
-		String strPath = UPLOAD_DIR+fileVO.getFilePath()+fileVO.getFileName();
+		String strPath = UPLOAD_DIR+fileVO.getFilePath();
 		log.info("strPath is {}", strPath);
 		// 업로드/다운로드 작업 전 파일 경로 검증 메서드
 		Path uploadPath = Paths.get(FileUtil.chekcFileSeparator(strPath));

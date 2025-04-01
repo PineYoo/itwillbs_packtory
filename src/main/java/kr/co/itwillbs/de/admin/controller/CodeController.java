@@ -35,7 +35,7 @@ public class CodeController {
 		this.codeService = codeService;
 		this.commonCodeUtil = commonCodeUtil;
 	}
-	
+
 	// 계속 사용하게 될 클래스 RequestMapping 문자열 값
 	private final String CODE_PATH="/admin/code";
 	
@@ -62,7 +62,7 @@ public class CodeController {
 	public String registerCode(@ModelAttribute("codeDTO") CodeDTO codeDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		log.info("requestDTO : {}", codeDTO.toString());
+		log.info("requestDTO : {}", StringUtil.objToString(codeDTO));
 		
 		if(codeService.registerCode(codeDTO) < 1) {
 			return CODE_PATH+"/log_register_form";

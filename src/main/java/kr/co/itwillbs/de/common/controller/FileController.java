@@ -34,7 +34,7 @@ public class FileController {
 	public ResponseEntity<Resource> getFileForView(@PathVariable("fileIdx") String fileIdx) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		if(!StringUtil.isLongValue(null)) {
+		if(!StringUtil.isLongValue(fileIdx)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다.");
 		}
 		

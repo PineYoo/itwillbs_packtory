@@ -24,8 +24,11 @@ public class FileUtil {
 
 	// 이 클래스 밖으로 알리고 싶지 않은 변수이기에 private 선언 -> 다른 common.util 패키지내에서 써야 할 경우 private 지우거나 package 선언
 	@Value("${spring.servlet.multipart.location}")
-	private String uploadDir;
+	public String UPLOAD_DIR;
 	
+//	public void setUPLOAD_DIR(String str) {
+//		UPLOAD_DIR = str;
+//	}
 	/**
 	 * 멀티파트 파일 받아서 처리하기
 	 * <pre>
@@ -39,20 +42,20 @@ public class FileUtil {
 	 */
 	public FileVO setFile(MultipartFile mfile) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("uploadDir {}, separator {}, pathSeparator {}", uploadDir, File.separator, File.pathSeparator);
+		log.info("uploadDir {}, separator {}, pathSeparator {}", UPLOAD_DIR, File.separator, File.pathSeparator);
 		
 		String yyyy = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy")).toString();
 		String mm = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM")).toString();
 		String dd = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd")).toString();
 		
-		log.info("yyyy {}, mm {}, dd {}", yyyy, mm, dd);
+		//log.info("yyyy {}, mm {}, dd {}", yyyy, mm, dd);
 		
-		String uploadPath = uploadDir+File.separator
+		String uploadPath = File.separator
 				+yyyy+File.separator
 				+mm+File.separator
 				+dd+File.separator;
 		
-		log.info("uploadPath {}, getOriginalFilename {}, dd {}", uploadPath, mfile.getOriginalFilename());
+		//log.info("uploadPath {}, getOriginalFilename {}, dd {}", uploadPath, mfile.getOriginalFilename());
 		
 		Path uploadsPath = Paths.get(chekcFileSeparator(uploadPath));
 		
@@ -66,7 +69,7 @@ public class FileUtil {
 			}
 		}
 		//UUID로 파일명 저장
-		String fileName = UUID.randomUUID().toString() +"."+getExtension(mfile);
+		String fileName = UUID.randomUUID().toString() +getExtension(mfile);
 		Path filePath = uploadsPath.resolve(fileName);
 		
 		// 파일 저장
@@ -82,7 +85,7 @@ public class FileUtil {
 		log.info("{} wrote success", mfile.getOriginalFilename());
 		//return new FilesVO(fileName, uploadsPath.toString(), String.valueOf(mfile.getSize()));
 		
-		FileVO fileVO = new FileVO(fileName, uploadsPath.toString(), String.valueOf(mfile.getSize()));
+		FileVO fileVO = new FileVO(uploadPath, fileName, mfile.getOriginalFilename(), String.valueOf(mfile.getSize()));
 		log.info("fileVO toString : {}", fileVO.toString());
 		return fileVO;
 	}
@@ -106,7 +109,7 @@ public class FileUtil {
 	private static String getExtension(MultipartFile multipartFile) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		String extension = StringUtils.getFilenameExtension(multipartFile.getOriginalFilename());
-		return extension;
+		return "."+extension;
 	}
 	
 	/**
@@ -189,9 +192,10 @@ public class FileUtil {
 	 * @param args
 	 */
 	public static void main(String... args) {
-		String filename = "filename%zz";
+		String filename = "filename%zz.dhjaksd.jpg";
 		String pathName = "/packtory/uploads\\yyyy\\mm\\dd";
 		System.out.println(isSpecial(filename));
 		System.out.println(chekcFileSeparator(pathName));
+		System.out.println(getExtension(filename));
 	}
 }
