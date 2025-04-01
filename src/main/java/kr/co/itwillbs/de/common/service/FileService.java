@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,10 @@ public class FileService {
 	private final FileMapper fileMapper;
 	private final FileUtil fileUtil;
 	
+	@Value("${spring.servlet.multipart.location}")
+	public String UPLOAD_DIR;
+	
+	
 	public FileService(FileMapper fileMapper, FileUtil fileUtil) {
 		this.fileMapper = fileMapper;
 		this.fileUtil = fileUtil;
@@ -45,7 +50,7 @@ public class FileService {
 		FileVO fileVO = fileMapper.getFileByIdx(fileIdx);
 		
 		// 다운로드 할 파일 정보를 서버 상의 업로드 디렉토리에 접근하여 가져오기
-		String strPath = FileUtil.UPLOAD_DIR+fileVO.getFilePath()+fileVO.getFileName();
+		String strPath = UPLOAD_DIR+fileVO.getFilePath()+fileVO.getFileName();
 		
 		// 업로드/다운로드 작업 전 파일 경로 검증 메서드
 		Path uploadPath = Paths.get(FileUtil.chekcFileSeparator(strPath));
