@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
-<mapper namespace="kr.co.itwillbs.de.common.mapper.CommonMapper">
-
+  
+<mapper namespace="kr.co.itwillbs.de.approval.mapper.NoticeMapper">
+	
 	<!-- href: https://mybatis.org/mybatis-3/ko/dynamic-sql.html -->
 	<sql id="templates" >
 		<![CDATA[]]><!-- Character DATA(CDATA) 는 <![CDATA[문자열]]> 파싱되지 않고 그대로 출력을 위함, 쿼리에서 이스케이프 문자를 사용하지 않기 위해 썼음 -->
@@ -39,15 +39,74 @@
 		 -->
 	</sql>
 	
-	<select id="getSeqEmpIdfromH2" resultType="string">
-		SELECT NEXT VALUE FOR seq_emp_id
+	<sql id="t_notice_columns_forSelect">
+		idx,
+		type,
+		title,
+		contents,
+		is_banner,
+		is_deleted,
+		read_count,
+		file_idxs,
+		reg_id,
+		reg_date,
+		mod_id,
+		mod_date
+	</sql>
+	
+	<select id="getNoticeList" resultType="kr.co.itwillbs.de.approval.dto.NoticeDTO">
+		SELECT
+			<include refid="t_notice_columns_forSelect"></include>
+		  FROM t_notice
 	</select>
 	
-	<select id="getSeqEmpIdfromMySQL" resultType="string">
-		SELECT nextVal('seq_emp_id')
+	<insert id="registerNotice">
+		INSERT
+		  INTO t_notice (
+	  	<trim suffixOverrides=",">
+		  	   type,
+			   title,
+			   contents,
+			   is_banner,
+			   is_deleted,
+			   read_count,
+<!-- 			   file_idxs, -->
+			   reg_id,
+			   reg_date,
+	  	</trim>
+			 )
+		VALUES (
+		<trim suffixOverrides=",">
+			  #{type},
+			  #{title},
+			  #{contents},
+			  #{isBanner},
+			  #{isDeleted},
+			  0,	-- 조회수 기본값 0
+<!-- 			  #{fileIdxs}, -->
+			  NULL, -- 임시로 NULL()
+			  NOW(),
+		</trim>
+			 )
+	</insert>
+	
+	<select id="getNotice" resultType="kr.co.itwillbs.de.approval.dto.NoticeDTO">
+		SELECT
+			<include refid="t_notice_columns_forSelect"></include>
+		  FROM t_notice
+		 WHERE idx = #{idx}
 	</select>
 	
-	<select id="getSeqOrderNumberfromMySQL" resultType="string">
-		SELECT nextVal('seq_order_number')
-	</select>
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+

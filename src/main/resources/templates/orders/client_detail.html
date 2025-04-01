@@ -74,7 +74,7 @@
 						</div>
 						<div class="col-md-6">
 							<label for="isDeleted" class="form-label">삭제유무</label>
-							<select id="isDeleted" name="isDeleted">
+							<select id="isDeleted" class="form-select" name="isDeleted">
 								<option th:selected="${client['is_deleted'] == 'N'}" th:value="N">활성화</option>
 								<option th:selected="${client['is_deleted'] == 'Y'}" th:value="Y">비활성화</option>
 							</select>

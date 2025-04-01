@@ -3,79 +3,52 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.co.itwillbs.de.orders.mapper.SellMapper">
-	<sql id="t_order_columns_forSelect">
-		idx,
-		document_number,
-		trade_code,
-		status_code,
-		company_name,
-		company_number,
-		request_date,
-		expected_date,
-		due_date,
-		destination_name,
-		reciver,
-		phone1,
-		phone2,
-		post_code,
-		address1,
-		address2,
-		special_issue,
-		is_deleted,
-		reg_id,
-		reg_date,
-		mod_id,
-		mod_date
-	</sql>
-	<sql id="t_order_detail_columns_forSelect">
-		idx,
-		document_number,
-		department_code,
-		client_name,
-		client_phone,
-		lot_number,
-		invoice_issue,
-		payment_status,
-		unissued_status,
-		supply_amount,
-		vat_amount,
-		total_amount,
-		issue_code,
-		issue_remaks,
-		is_deleted,
-		reg_id,
-		reg_date,
-		mod_id,
-		mod_date
-	</sql>
-
+	<!-- 수주관리 리스트 컬럼 -->
 	<sql id="sell_list_columns_forSelect">
-		d.idx,
-		d.document_number,
-		o.request_date,
-		o.company_name,
-		d.supply_amount,
-		d.vat_amount,
-		d.total_amount,
-		o.expected_date,
-		d.client_name
+		o.idx,
+		o.document_number,	-- 주문번호
+		o.reg_date,			-- 주문일자
+		o.company_name,		-- 거래처명
+		d.supply_amount,	-- 공급가액
+		d.vat_amount,		-- 부가세액
+		d.total_amount,		-- 합계금액
+		o.expected_date,	-- 출고예정일
+		d.client_name		-- 담당사원명
 	</sql>
 	
-	<!-- 전체 수주 관리 목록 조회(SELECT) -->
-<!-- 	<select id="getSellList" resultType="kr.co.itwillbs.de.orders.dto.OrderDTO"> -->
-<!-- 		SELECT  -->
-<!-- 			<include refid="t_order_columns_forSelect"></include> -->
-<!-- 		FROM t_order -->
-<!-- 	</select> -->
+	<!-- 전체 수주 관리 목록 조회 -->
 	<select id="getSellList" resultType="java.util.HashMap">
 		SELECT 
 			<include refid="sell_list_columns_forSelect"></include>
 	 	  FROM t_order o
-		  JOIN t_order_detail d
+		  LEFT JOIN t_order_detail d
 		    ON d.document_number = o.document_number
-	     WHERE o.trade_code = '수주'
+	     WHERE o.trade_code = '수주'	-- (임시 - 나중에 코드로 넣어야 함)
+	     
+		    <!-- 주문 상태 검색 -->
+<!-- 			<if test="orderStatus != null and orderStatus != '' and orderStatus != '0'"> -->
+<!-- 			    AND o.status_code = #{orderStatus} -->
+<!-- 			</if> -->
+			
+			<!-- 주문일자 검색 -->
+			<if test="searchDateStart != null and searchDateStart != '' and searchDateEnd != null and searchDateEnd != ''">
+		        AND DATE(o.reg_date) BETWEEN #{searchDateStart} AND #{searchDateEnd}
+		    </if>
+			
+			<!-- 키워드 검색 (품번, 품명, 거래처명) -->
+			<if test="searchKeyword != null and searchKeyword != ''">
+			    AND (
+			        o.document_number LIKE CONCAT('%', #{searchKeyword}, '%') OR
+			        o.company_name LIKE CONCAT('%', #{searchKeyword}, '%') OR
+			        d.client_name LIKE CONCAT('%', #{searchKeyword}, '%')
+			    )
+			</if>
+		
+	     ORDER BY o.reg_date DESC
+	     	
 	</select>
 	
+	<!-- 주문서 등록(order) -->
 	<insert id="insertOrder">
 		INSERT INTO t_order
 		VALUES (null				-- idx(auto_increment)
@@ -95,13 +68,14 @@
 			 , #{address1}			-- address1
 			 , #{address2}			-- address2
 			 , null					-- special_issue
-			 , null					-- is_deleted
+			 , 'Y'					-- is_deleted(default)
 			 , null					-- reg_id(임시 - 나중에 session에서 가져올것)
 			 , now()				-- reg_date
 			 , null					-- mod_id(임시 - 나중에 session에서 가져올것)
 			 , now()				-- mod_date
 			 )
 	</insert>
+	<!-- 주문서 등록(order_detail) -->
 	<insert id="insertOrderDetail">
 		INSERT INTO t_order_detail
 		VALUES (null			-- idx(auto_increment)
@@ -126,4 +100,74 @@
 			 )
 	
 	</insert>
+	
+	<!-- ============================================================= -->
+	<!-- 수주 주문서 상세 컬럼 -->
+	<sql id="sell_detail_columns_forSelect">
+		o.idx,				-- 테이블 _인덱스
+		o.document_number,	-- 주문번호(문서번호)
+		o.trade_code,		-- 거래종류_코드
+		o.status_code,		-- 주문상태_코드
+		o.company_name,		-- 거래처명
+		o.company_number,	-- 사업자번호
+		o.request_date,		-- 요청일자
+		o.expected_date,	-- 예정일
+		o.due_date,			-- 마감일자
+		o.destination_name,	-- 목적지명
+		o.receiver,			-- 받는사람
+		o.phone1,			-- 전화번호1
+		o.phone2,			-- 전화번호2
+		o.post_code,		-- 우편번호
+		o.address1,			-- 목적지주소1
+		o.address2,			-- 목적지주소2
+		o.special_issue,	-- 특이사항
+		o.is_deleted,		-- 삭제유무
+		d.department_code,	-- 담당부서_코드
+		d.client_name,		-- 담당자_이름
+		d.client_phone,		-- 담당자 연락처
+		d.lot_number,		-- LOT
+		d.invoice_issue,	-- 세금계산서발행
+		d.payment_status,	-- 수금처리
+		d.unissued_status,	-- 미발행
+		d.supply_amount,	-- 공급가액
+		d.vat_amount,		-- 부가세액
+		d.total_amount,		-- 합계금액
+		d.issue_code,		-- 이슈_코드
+		d.issue_remaks,		-- 이슈_비고		
+		d.is_deleted		-- 삭제유무
+	</sql>
+	
+	<!-- 주문서 상세 정보 조회 -->
+	<select id="getOrder" resultType="java.util.HashMap">
+		SELECT
+			<include refid="sell_detail_columns_forSelect"></include>
+		  FROM t_order o
+     LEFT JOIN t_order_detail d
+		    ON d.document_number = o.document_number
+	 	 WHERE o.document_number = #{documentNumber}
+	</select>
+	
+	<!-- 주문 정보 수정 -->
+	<update id="updateOrder">
+		UPDATE t_order
+			<set>
+				status_code = #{statusCode},			-- 주문상태_코드
+				company_name = #{companyName},			-- 거래처명
+				request_date = #{requestDate},			-- 요청일자
+				expected_date = #{expectedDate},		-- 예정일
+				due_date = #{dueDate},					-- 마감일자
+				destination_name = #{destinationName},	-- 목적지명
+				receiver = #{receiver},					-- 받는사람
+				phone1 = #{phone1},						-- 전화번호1
+				phone2 = #{phone2},						-- 전화번호2
+				post_code = #{postCode},				-- 우편번호
+				address1 = #{address1},					-- 목적지주소1
+				address2 = #{address2},					-- 목적지주소2
+				special_issue = #{specialIssue},		-- 특이사항
+				is_deleted = #{isDeleted},				-- 삭제유무
+				mod_id = '',							-- 최종 작성자(임시 - 나중에 session에서 가져올것)
+				mod_date = now()						-- 최종작성일자
+			</set>
+		 WHERE document_number = #{documentNumber}
+	</update>
 </mapper>

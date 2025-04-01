@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/bs_layout}">
+<head>
+<title>Tables</title>
+<!-- 부트스트랩 icons 가져오기 -->
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+<!-- dataTables 가져오기 -->
+<th:block layout:fragment="css">
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+</th:block>
+<style type="text/css">
+	.btnCommand {
+		text-align: right;
+		margin-right: 20px;
+		margin-bottom: 10px;
+	}
+	
+	.table th, td {
+		text-align: center;
+	}
+	
+	.table .notice-title {
+		text-align: left;
+		padding-left: 30px;
+	}
+	
+</style>
+</head>
+<body id="page-top">
+	<div layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">공지사항</h1>
+			<!-- btnCommand Area -->
+			<div class="btnCommand">
+				<button type="button" id="newBtn" class="btn btn-primary">공지사항 등록</button>
+			</div>
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" th:object="${clientDTOList}">
+							<thead>
+								<tr>
+									<th class="checkHead">#</th>
+									<th class="w-50">제목</th>
+									<th>분류</th>
+									<th>작성자</th>
+									<th>등록일</th>
+									<th>조회수</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item, status : ${noticeDTOlist}" th:data-id="${item.idx}" class="clickable-row">
+									<td><input type="checkbox"></td>
+									<td th:text="${item.title}" class="notice-title"></td>
+									<td th:text="${item.type}"></td>
+									<td th:text="${item.regId}"></td>
+									<td th:text="${item.regDate}"></td>
+									<td th:text="${item.readCount}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(function() {
+				$("#newBtn").on("click", function() {
+					location.href = "/groupware/notice/new";
+				});
+				
+				$(".clickable-row").on("click", function() {
+					let idx = $(this).data("id");
+					location.href=`/groupware/notice/${idx}`;
+				});
+				
+			})
+		</script>
+	</div>
+	<th:block layout:fragment="script">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+		<script src="/js/datatables/jquery.dataTables.min.js"></script>
+		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+		<script src="/js/demo/datatables-demo.js"></script>
+	</th:block>
+</body>
+
+</html>

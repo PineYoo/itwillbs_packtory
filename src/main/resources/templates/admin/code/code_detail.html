@@ -27,6 +27,10 @@
 								<button type="button" id="addRow">코드 추가</button>
 								<!-- <button type="button" id="codeItemsSubmit">코드 저장</button> -->
 								<button type="button" id="codeItemsAjax">코드 저장Ajax</button>
+								<select name="minorCode" id="minorCode">
+									<option value="">선택</option>
+									<option th:each="item : ${codeItems}" th:value="${item.minorCode}" th:text="${item.minorName}" ></option>
+								</select>
 							</div>
 						</div>
 						<div class="row">
@@ -140,12 +144,12 @@
 						alert("하위코드는 빈 값을 허용하지 않습니다.\n값을 입력하거나, 비어있는 메뉴 행을 삭제 후 저장해주세요.");
 						return false;
 					}
-/* 					console.log("_rowCnt : %s", _rowCnt);
+ 					console.log("_rowCnt : %s", _rowCnt);
 					console.log(typeof _rowCnt);
 					console.log(_rankSet);
 					console.log("_rankSet.size : %s", _rankSet.size);
-					console.log(typeof _rankSet.size); */
-					if(_rowCnt <= _rankSet) {
+					console.log(typeof _rankSet.size);
+					if(_rowCnt <= _rankSet.size) {
 						alert("순서는 중복될 수 없습니다.\n각각 다른 값을 입력해주세요.");
 						return false;
 					}

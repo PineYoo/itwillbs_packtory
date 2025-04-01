@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
-import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
 import kr.co.itwillbs.de.orders.mapper.SellMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,20 +24,18 @@ public class SellService {
 
 
 	// 전체 수주 관리 목록 조회 요청
-//	public List<OrderDTO> getSellList() {
-//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-//		return sellMapper.getSellList();
-//	}
 	public List<HashMap<String, Object>> getSellList() {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return sellMapper.getSellList();
-	}
+
+        return sellMapper.getSellList();
+    }
 
 	// ------------------------------------------------------------------------------------
 	// 주문서 등록 요청
 	public void registerOrder(@Valid OrderDTO orderDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		// MySQL DB에서 시퀀스 가져와서 document_number에 넣기
 		orderDTO.setDocumentNumber(commonService.getSeqOrderNumberfromMySQL());
 		sellMapper.insertOrder(orderDTO);
 	}
@@ -48,6 +45,19 @@ public class SellService {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		sellMapper.insertOrderDetail(orderDetailDTO);
 		
+	}
+
+	// ------------------------------------------------------------------------------------
+	// 주문서 상세 정보 조회 요청
+	public HashMap<String, Object> getOrder(String documentNumber) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return sellMapper.getOrder(documentNumber);
+	}
+
+	// 주문 정보 수정 요청
+	public void modifyOrder(OrderDTO orderDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		sellMapper.updateOrder(orderDTO);
 	}
 	
 	
