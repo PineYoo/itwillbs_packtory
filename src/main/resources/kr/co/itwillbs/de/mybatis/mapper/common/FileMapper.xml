@@ -114,7 +114,8 @@
 		select 
 			<include refid="t_files_columns_forSelect" />
 		from t_files
-		where major_idx = #{majorIdx}
+		where type = #{type}
+		  and major_idx = #{majorIdx}
 	</select>
 	
 </mapper>
