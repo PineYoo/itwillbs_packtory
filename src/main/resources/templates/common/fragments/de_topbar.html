@@ -6,7 +6,7 @@
 	</button>
 	
 	<!-- Title -->
-	<h4 class="m-0 text-gray-900">PACKTORY 대시보드(여기 시계 넣어주세요)</h4>
+	<h4 id="clock" class="m-0 text-gray-900"></h4>
 		
 	<!-- Topbar Navbar -->
 	<ul class="navbar-nav ml-auto">
@@ -24,6 +24,18 @@
 			</div>
 		</li>
 	</ul>
+	
+	<script>
+		$(function() {
+		    setInterval(updateClock, 1000);
+		    updateClock();
+		    
+		    function updateClock() {
+		        const now = new Date();
+		        $("#clock").text(now.toLocaleTimeString()); // jQuery 방식으로 수정
+		    }
+		});
+	</script>
 	
 	<!-- Topbar Search -->
 	<!-- <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
