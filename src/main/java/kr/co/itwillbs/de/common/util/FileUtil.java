@@ -54,7 +54,6 @@ public class FileUtil {
 		
 		log.info("uploadPath {}, getOriginalFilename {}, dd {}", uploadPath, mfile.getOriginalFilename());
 		
-		//File filePath = new File(uploadPath); 뭐여 이거 1.0 이쟎아!?
 		Path uploadsPath = Paths.get(chekcFileSeparator(uploadPath));
 		
 		//디렉토리가 없으면 생성
@@ -81,7 +80,7 @@ public class FileUtil {
 		}
 		
 		log.info("{} wrote success", mfile.getOriginalFilename());
-		//return new FilesVO(uploadsPath.toString(), fileName);
+		//return new FilesVO(fileName, uploadsPath.toString(), String.valueOf(mfile.getSize()));
 		
 		FileVO fileVO = new FileVO(fileName, uploadsPath.toString(), String.valueOf(mfile.getSize()));
 		log.info("fileVO toString : {}", fileVO.toString());

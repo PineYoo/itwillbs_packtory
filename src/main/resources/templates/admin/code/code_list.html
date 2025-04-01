@@ -34,9 +34,9 @@
 									</td>
 									<td class="col-sm-12 col-md-2"><label for="isDeleted">삭제여부</label></td>
 									<td class="col-sm-12 col-md-3"><select name="isDeleted" id="isDeleted" th:value="*{isDeleted}" class="form-select" aria-label="Default select example">
-																		<option value="">선택</option>
-																		<option value="Y">삭제</option>
-																		<option value="N">사용중</option>
+																		<option value="" th:selected="*{isDeleted} eq '' ">선택</option>
+																		<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
+																		<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
 																	</select>
 									</td>
 									<td class="col-sm-12 col-md-1" rowspan="2">

@@ -7,17 +7,16 @@ import org.springframework.util.StringUtils;
 
 import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
-import kr.co.itwillbs.de.admin.dto.CodeSearchDTO;
 import kr.co.itwillbs.de.common.service.CommonService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class CommoncodeUtil {
+public class CommonCodeUtil {
 
 	private final CommonService commonService;
 	
-	public CommoncodeUtil(CommonService commonService) {
+	public CommonCodeUtil(CommonService commonService) {
 		this.commonService = commonService;
 	}
 	
