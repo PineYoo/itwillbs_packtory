@@ -29,8 +29,12 @@ public class FileService {
 	private final FileMapper fileMapper;
 	private final FileUtil fileUtil;
 	
+	// view에서 파일리소스 주소 prefix 값
+	public static final String DOWNLOADS_PATH="/file/view";
+	
 	@Value("${spring.servlet.multipart.location}")
 	public String UPLOAD_DIR;
+	
 	
 	
 	public FileService(FileMapper fileMapper, FileUtil fileUtil) {
@@ -48,16 +52,17 @@ public class FileService {
 		
 		// fileIdx로 파일 정보 가져오기
 		FileVO fileVO = fileMapper.getFileByIdx(fileIdx);
-		
+		log.info("fileVo is {}", fileVO);
 		// 다운로드 할 파일 정보를 서버 상의 업로드 디렉토리에 접근하여 가져오기
 		String strPath = UPLOAD_DIR+fileVO.getFilePath()+fileVO.getFileName();
-		
+		log.info("strPath is {}", strPath);
 		// 업로드/다운로드 작업 전 파일 경로 검증 메서드
 		Path uploadPath = Paths.get(FileUtil.chekcFileSeparator(strPath));
-		
+		log.info("uploadPath is {}", uploadPath);
 		// 파일 경로 + 파일 명 더하기!
 		Path path = Paths.get(uploadPath.toString())
 					.resolve(fileVO.getFileName()).normalize();
+		log.info("path is {}", path);
 		// UrlResource 객체를 생성하여 이미지 파일에 대한 리소스 객체 생성 => Resource 타입으로 업캐스팅
 		try {
 			Resource resource = new UrlResource(path.toUri());
