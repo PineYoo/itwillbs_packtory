@@ -39,7 +39,7 @@
 						    <div class="card-text" th:utext="${noticeDTO.contents}" style="white-space: pre-line;"></div>
 						</div>
 						<div class="card-body">
-							<div class="mb-3">
+							<div class="mb-3" th:if="${fileList != null and not #lists.isEmpty(fileList)}">
 								<h5 class="card-title">첨부파일 목록</h5>
 								<div class="list-group">
 									<a th:each="file : ${fileList}"
@@ -52,11 +52,21 @@
 							</div>
 						</div>
 						<div class="card-footer text-end">
+							<button type="button" id="noticeModify" class="btn btn-primary" th:data-id="${noticeDTO.idx}">수정하기</button>
 						    <a href="/groupware/notice" class="btn btn-secondary">목록으로</a>
 						</div>
 					</div>
 				</div>
 			</div>
+			<script type="text/javascript">
+				$(function() {
+					$("#noticeModify").on("click", function() {
+						let idx = $(this).data("id");
+						console.log(idx);
+						location.href=`/groupware/notice/modify/${idx}`;
+					});
+				});
+			</script>
 		</div>
 	</div>
 	<th:block layout:fragment="script">

@@ -12,19 +12,34 @@
 <th:block layout:fragment="css">
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 </th:block>
+<style type="text/css">
+	.custom-div {
+		margin-top: 20px;
+	}
 	
+	.custom-ul {
+		max-width: 500px;
+		width: fit-content;
+	}
+	
+	.custom-button-area {
+		margin-top: 30px;
+	}
+	
+</style>
 </head>
 <body id="page-top">
 	<div layout:fragment="contents">
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">공지사항 등록</h1>
+			<h1 class="h3 mb-2 text-gray-800">공지사항 수정</h1>
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<form th:action="@{/groupware/notice}" method="post" th:object="${noticeDTO}"
+						<form th:action="@{/groupware/notice/{idx}(idx=${noticeDTO.idx})}" method="post" th:object="${noticeDTO}"
 							enctype="multipart/form-data">
+							<input type="hidden" name="_method" value="put">
 							<div class="mb-3">
 								<label class="small mb-1" for="regId">작성자 ID</label>
 								<input class="form-control" id="regId" th:field="*{regId}" readonly>
@@ -38,12 +53,13 @@
 									<label for="type" class="form-label">구분</label>
 									<select id="type" class="form-select" th:field="*{type}">
 										<option value="">선택</option>
-										<option th:each="type : ${codeType}" th:value="${type.minorCode}" th:text="${type.minorName}"></option>
+										<option th:each="type : ${codeType}"
+												th:value="${type.minorCode}"
+												th:text="${type.minorName}">
+										</option>
 									</select>
 								</div>
 							</div>
-<!-- 							<div class="mb-3"> -->
-<!-- 							</div> -->
 							<div class="mb-3">
 								<label class="small mb-1" for="contents">내용</label>
 								<textarea class="form-control" id="contents" th:field="*{contents}" rows="15" cols="40" placeholder="내용 입력"></textarea>
@@ -66,17 +82,35 @@
 									</select>
 								</div>
 							</div>
+							<div class="mb-3 custom-div" th:if="${fileList != null and not #lists.isEmpty(fileList)}">
+								<h6 class="card-title">첨부파일 목록</h6>
+								<ul class="list-group custom-ul">
+								    <li th:each="file : ${fileList}" class="list-group-item d-flex justify-content-between align-items-center">
+							            <span th:text="${file.fileOriginalName}"></span>
+							            <button type="button" class="btn btn-danger btn-sm fileDeleteButton" th:data-id="${file.idx}">삭제</button>
+							        </li>
+								</ul>
+							</div>
 							<div class="mb-3">
-								<label class="small mb-1" for="file">파일첨부</label>
+								<label class="mb-1" for="file">파일첨부</label>
 								<input type="file" class="form-control" name="noticeFiles" multiple>
 							</div>
-							<div class="row align-items-center justify-content-center">
-								<button type="submit" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2">등록</button>
+							<div class="row align-items-center justify-content-center custom-button-area">
+								<button type="submit" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2">수정</button>
+								<button type="button" id="btnExitForm" class="btn btn-danger btn-lg d-block col-3 ml-2">취소</button>
 							</div>
 						</form>
 					</div>
 				</div>
 			</div>
+			<script type="text/javascript">
+				$(function() {
+					$(".fileDeleteButton").on("click", function() {
+						let idx = $(this).data("id");
+						console.log(idx);
+					});
+				});
+			</script>
 		</div>
 	</div>
 	<th:block layout:fragment="script">

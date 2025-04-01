@@ -200,6 +200,16 @@ public class NoticeController {
 		return "approval/notice/notice_detail";
 	}
 	
+	@GetMapping("/modify/{idx}")
+	public String modifyNotice(@PathVariable(name = "idx") String idx, Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info(idx);
+		model.addAttribute("noticeDTO", noticeService.getNotice(idx));
+		model.addAttribute("fileList", fileService.getFilesByMajorIdx("t_notice", Long.parseLong(idx)));
+		model.addAttribute("codeType", commonService.getCodeItems(major_code));
+		return "approval/notice/notice_modify_form";
+	}
+	
 	/**
 	 * 샘플 수정(UPDATE)를 요청하는 "/groupware/notice/{idx}" 주소 매핑(PUT)
 	 * <br> 히든 메서드 필터에 의해 PUT으로 변경헤서 서브밋함

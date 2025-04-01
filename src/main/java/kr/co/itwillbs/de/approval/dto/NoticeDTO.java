@@ -30,8 +30,6 @@ public class NoticeDTO {
 	
 	private String readCount;
 	
-//	private String fileIdxs;
-	
 	private String regId;
 	
 	private String regDate;
