@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
+import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 import kr.co.itwillbs.de.orders.mapper.SellMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,6 +65,29 @@ public class SellService {
 	public void modifyOrder(OrderDTO orderDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		sellMapper.updateOrder(orderDTO);
+	}
+	
+	
+	/**
+	 * 수주 정보 조건 검색 가져오기
+	 * @param orderSearchDTO
+	 * @return
+	 */
+	public List<OrderDTO> getOrdersInTradeSell(OrderSearchDTO orderSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return sellMapper.getOrdersInTradeSell(orderSearchDTO);
+	}
+
+	/**
+	 * 수주 상세 정보 가져오기
+	 * @param documentNumber
+	 * @return
+	 */
+	public OrderDTO getOrderByDocumentNumber(String documentNumber) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return sellMapper.getOrderByDocumentNumber(documentNumber);
 	}
 
 	

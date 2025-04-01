@@ -1,9 +1,11 @@
 package kr.co.itwillbs.de.orders.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,9 +36,25 @@ public class OrderDTO {
     private String specialIssue; 	// 특이사항
     private String isDeleted; 		// 삭제유무
     private String regId; 			// 작성자
-    
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime regDate; 	// 작성일자시간
     private String modId; 			// 최종 작성자
     private LocalDateTime modDate;	// 최종작성일자
+    
+    //OderDetail
+    private String departmentCode;	// 담당자 부서코드
+    private String clientName;		// 담당자 이름
+    private String clientPhone;		// 담당자 연락처
+    private String lotNumber;		// LOT
+    private String invoiceIssue;	// 세금계산서 발행
+    private String paymentStatus;	// 수금처리
+    private String unissuedStatus;	// 미발행
+    private String supplyAmount;	// 공급가액
+    private String vatAmount;		// 부가세액
+    private String totalAmount;		// 합계금액
+    private String issueCode;		// 이슈코드
+    private String issueRemaks;		// 이슈비고
+    
+    // 진짜 이게 맞나 모르겠다 타임리프 form 안에 object를 쓰기 위해..
+    private List<CodeItemDTO> codeItemList;
 }
