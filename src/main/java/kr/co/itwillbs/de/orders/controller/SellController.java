@@ -1,5 +1,7 @@
 package kr.co.itwillbs.de.orders.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,9 +14,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
@@ -29,32 +34,69 @@ public class SellController {
 	@Autowired
 	private SellService sellService;
 	
+	@Autowired
+	private CommonCodeUtil commonCodeUtil;
+	
 	// 수주 관리 목록 조회(SELECT) 요청(GET)
 	@GetMapping(value = {"", "/"})  // "/orders/sell"
 	public String getSellList(Model model, HttpSession session) {
-
 	    log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 	    
 	    // 수주 관리 목록 리스트 조회 요청(SELECT)
 	    List<HashMap<String, Object>> sellDTOList = sellService.getSellList();
 	    model.addAttribute("sellDTOList", sellDTOList);
-
+	    System.out.println("sellDTOList : " + sellDTOList);
 	    return "orders/sell_management";
 	}
 	
-	
-//	@PostMapping(value = {"", "/"})  // "/orders/sell"
-//	public String getSearchItem(OrderSearchDTO orderSearchDTO, Model model) {
-//		System.out.println("검색 대상 : " + orderSearchDTO);
-//		
-//		// 수주 관리 목록 리스트 조회 요청(SELECT)
-//		// => 메서드명은 동일하나 파라미터를 다르게 수행하도록 오버로딩
-//		List<HashMap<String, Object>> sellDTOList = sellService.getSellList(orderSearchDTO);
-//		model.addAttribute("sellDTOList", sellDTOList);
-//		model.addAttribute("orderSearchDTO", orderSearchDTO);
-//		
-//		return "item/item_list.html";
-//	}
+	// 검색 조건에 맞는 수주 관리 목록 조회 요청(POST)
+	@PostMapping(value = {"", "/"})  // "/orders/sell"
+	@ResponseBody
+	public List<HashMap<String, Object>> getSearchItem(
+					@RequestParam("orderStatus") String orderStatus,
+			        @RequestParam("searchKeyword") String searchKeyword,
+			        @RequestParam("startDate") String startDate,
+			        @RequestParam("endDate") String endDate) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info(">>>> 받은 파라미터");
+		log.info("orderStatus: " + (orderStatus == null ? "null" : "'" + orderStatus + "'"));
+		log.info("startDate: " + (startDate == null ? "null" : "'" + startDate + "'"));
+		log.info("endDate: " + (endDate == null ? "null" : "'" + endDate + "'"));
+		log.info("searchKeyword: " + (searchKeyword == null ? "null" : "'" + searchKeyword + "'"));		
+		
+		// 검색 조건에 맞는 수주 관리 목록 리스트 조회 요청(SELECT)
+		List<HashMap<String, Object>> sellDTOList = sellService.getSearchSell(orderStatus, searchKeyword, startDate, endDate);
+		
+		for (HashMap<String, Object> sell : sellDTOList) {
+		    Object regDate = sell.get("reg_date");  // reg_date 값 가져오기
+
+		    // 로그로 데이터 타입 확인
+		    if (regDate == null) {
+		        log.info("reg_date is NULL");
+		    } else {
+		        log.info("reg_date: " + regDate + ", type: " + regDate.getClass().getName());
+		    }
+
+		    // reg_date가 List<Integer> 형태일 경우 변환
+		    if (regDate instanceof List) {
+		        List<Integer> dateArray = (List<Integer>) regDate;
+		        if (dateArray.size() >= 3) {  // 최소한 연, 월, 일이 있어야 함
+		            int year = dateArray.get(0);
+		            int month = dateArray.get(1);
+		            int day = dateArray.get(2);
+
+		            // yyyy-MM-dd 형식으로 변환
+		            String formattedDate = String.format("%04d-%02d-%02d", year, month, day);
+		            sell.put("reg_date", formattedDate);
+		            log.info("Formatted reg_date: " + formattedDate);
+		        }
+		    }
+		}
+		
+		System.out.println("sellDTOList22 : " + sellDTOList);
+		return sellDTOList;
+	}
 	//------------------------------------------------------------------------------------------------
 
 	// 주문서등록(수주) 페이지로 이동(GET)

@@ -30,6 +30,12 @@ public class SellService {
         return sellMapper.getSellList();
     }
 
+	// 검색 조건에 맞는 수주 관리 목록 리스트 조회 요청
+	public List<HashMap<String, Object>> getSearchSell(String orderStatus, String searchKeyword, String startDate,
+			String endDate) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return sellMapper.getSearchSell(orderStatus, searchKeyword, startDate, endDate);
+	}
 	// ------------------------------------------------------------------------------------
 	// 주문서 등록 요청
 	public void registerOrder(@Valid OrderDTO orderDTO) {
@@ -59,6 +65,7 @@ public class SellService {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		sellMapper.updateOrder(orderDTO);
 	}
+
 	
 	
 }
