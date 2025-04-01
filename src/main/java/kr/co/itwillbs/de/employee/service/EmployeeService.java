@@ -1,7 +1,6 @@
 package kr.co.itwillbs.de.employee.service;
 
 import kr.co.itwillbs.de.common.service.CommonService;
-import kr.co.itwillbs.de.employee.controller.EmployeeController;
 import kr.co.itwillbs.de.employee.dto.EmployeeDTO;
 import kr.co.itwillbs.de.employee.dto.EmployeeDetailDTO;
 import kr.co.itwillbs.de.employee.dto.EmployeeSearchDTO;
@@ -105,7 +104,7 @@ public class EmployeeService {
     	employeeRepository.deleteById(id); // 기본정보 삭제
     }
 
- // 사원 상세정보 조회 (사원번호(id)로 조회)
+    // 사원 상세정보 조회 (사원번호(id)로 조회)
     public EmployeeDetailDTO getEmployeeDetail(String id) {
         // 사원 기본 정보 조회
         Employee employee = employeeRepository.findById(id)
