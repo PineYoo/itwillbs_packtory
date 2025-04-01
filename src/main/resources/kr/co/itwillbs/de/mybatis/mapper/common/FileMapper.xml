@@ -109,12 +109,12 @@
 		where idx = #{idx}
 	</select>
 	
-	<select id="getFilesByMajorIdx" parameterType="long"
-									resultType="kr.co.itwillbs.de.common.vo.FileVO">
+	<select id="getFilesByMajorIdx" resultType="kr.co.itwillbs.de.common.vo.FileVO">
 		select 
 			<include refid="t_files_columns_forSelect" />
 		from t_files
-		where major_idx = #{majorIdx}
+		where type = #{type}
+		  and major_idx = #{majorIdx}
 	</select>
 	
 </mapper>

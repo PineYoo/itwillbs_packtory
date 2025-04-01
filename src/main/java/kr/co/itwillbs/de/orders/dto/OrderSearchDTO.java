@@ -11,8 +11,10 @@ import lombok.ToString;
 @NoArgsConstructor
 public class OrderSearchDTO {
     private String statusCode;		// 주문상태_코드
-    private String regDate;			// 작성일자
+    private String startDate;		// 작성일자(시작일)
+    private String endDate;			// 작성일자(종료일)
     
     // 검색 키워드
     private String searchKeyword;	// 키워드
+    
 }

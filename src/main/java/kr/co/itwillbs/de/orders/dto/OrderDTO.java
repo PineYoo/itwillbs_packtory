@@ -2,7 +2,8 @@ package kr.co.itwillbs.de.orders.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,6 +34,8 @@ public class OrderDTO {
     private String specialIssue; 	// 특이사항
     private String isDeleted; 		// 삭제유무
     private String regId; 			// 작성자
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime regDate; 	// 작성일자시간
     private String modId; 			// 최종 작성자
     private LocalDateTime modDate;	// 최종작성일자

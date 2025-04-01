@@ -13,7 +13,8 @@
 		d.vat_amount,		-- 부가세액
 		d.total_amount,		-- 합계금액
 		o.expected_date,	-- 출고예정일
-		d.client_name		-- 담당사원명
+		d.client_name,		-- 담당사원명
+		o.trade_code		-- 주문상태_코드
 	</sql>
 	
 	<!-- 전체 수주 관리 목록 조회 -->
@@ -24,28 +25,31 @@
 		  LEFT JOIN t_order_detail d
 		    ON d.document_number = o.document_number
 	     WHERE o.trade_code = '수주'	-- (임시 - 나중에 코드로 넣어야 함)
-	     
-		    <!-- 주문 상태 검색 -->
-<!-- 			<if test="orderStatus != null and orderStatus != '' and orderStatus != '0'"> -->
-<!-- 			    AND o.status_code = #{orderStatus} -->
-<!-- 			</if> -->
-			
-			<!-- 주문일자 검색 -->
-			<if test="searchDateStart != null and searchDateStart != '' and searchDateEnd != null and searchDateEnd != ''">
-		        AND DATE(o.reg_date) BETWEEN #{searchDateStart} AND #{searchDateEnd}
-		    </if>
-			
-			<!-- 키워드 검색 (품번, 품명, 거래처명) -->
-			<if test="searchKeyword != null and searchKeyword != ''">
-			    AND (
-			        o.document_number LIKE CONCAT('%', #{searchKeyword}, '%') OR
-			        o.company_name LIKE CONCAT('%', #{searchKeyword}, '%') OR
-			        d.client_name LIKE CONCAT('%', #{searchKeyword}, '%')
-			    )
-			</if>
-		
 	     ORDER BY o.reg_date DESC
-	     	
+	</select>
+	
+	<!-- 검색 조건에 맞는 수주 관리 목록 리스트 조회 -->
+	<select id="getSearchSell" resultType="java.util.HashMap">
+		SELECT 
+			<include refid="sell_list_columns_forSelect"></include>
+	 	  FROM t_order o
+		  LEFT JOIN t_order_detail d
+		    ON d.document_number = o.document_number
+	     WHERE o.trade_code = '수주'	-- (임시 - 나중에 코드로 넣어야 함)
+			<if test="orderStatus != null and orderStatus.trim() != ''"> <!-- 주문 상태 검색 -->
+			    AND o.status_code = #{orderStatus}
+			</if>
+			<if test="startDate != null and startDate.trim() != '' and endDate != null and endDate.trim() != ''"> <!-- 주문일자 검색 -->
+		        AND o.reg_date BETWEEN #{startDate} AND #{endDate}
+		    </if>
+			<if test="searchKeyword != null and searchKeyword.trim() != ''"> <!-- 키워드 검색 (품번, 품명, 거래처명) -->
+			    AND (
+			    	o.document_number LIKE CONCAT('%', #{searchKeyword}, '%') 
+                 OR o.company_name LIKE CONCAT('%', #{searchKeyword}, '%')
+                 OR d.client_name LIKE CONCAT('%', #{searchKeyword}, '%')
+                )
+			</if>
+	     ORDER BY o.reg_date DESC
 	</select>
 	
 	<!-- 주문서 등록(order) -->
@@ -54,7 +58,7 @@
 		VALUES (null				-- idx(auto_increment)
 			 , #{documentNumber}	-- document_number
 			 , '수주'				-- trade_code(임시 - 나중에 코드로 가져올거임)
-			 , '미출고'				-- status_code(임시 - 나중에 코드로 가져올거임)
+			 , '1'					-- status_code(임시 - 나중에 코드로 가져올거임)
 			 , ''					-- company_name(임시 - t_client.company_name 에서 가져올거임)
 			 , ''					-- company_number(임시 - t_client.business_number 에서 가져올거임)
 			 , #{requestDate}		-- request_date

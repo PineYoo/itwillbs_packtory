@@ -61,7 +61,7 @@
 									<div class="search-ttl">주문상태별</div>
 									<div class="category-filter input-group">
 										<div class="form-check">
-											<input class="form-check-input" id="reset" type="radio" name="orderStatus"  value="0" checked>
+											<input class="form-check-input" id="reset" type="radio" name="orderStatus"  value="" checked>
 											<label class="form-check-label" for="reset">전체</label>
 										</div>
 										<div class="form-check ml-3">
@@ -129,7 +129,8 @@
 								<tr th:each="sell, status : ${sellDTOList}" th:data-id="${sell['document_number']}" class="clickable-row">
 								    <td><input type="checkbox"></td>
 								    <td th:text="${sell['document_number'] != null ? sell['document_number'] : '-'}"></td>
-								    <td th:text="${sell['reg_date'] != null ? #temporals.format(sell['reg_date'], 'yyyy-MM-dd') : '-'}"></td>	<!-- java.time.LocalDateTime -->
+ 								    <td th:text="${sell['reg_date'] != null ? #temporals.format(sell['reg_date'], 'yyyy-MM-dd') : '-'}"></td>
+<!-- 								    <td th:text="${sell['reg_date'] != null ? sell['reg_date'] : '-'}"></td>	HashMap으로 가져오면서 String으로 들고와짐(java.lang.String) -->
 								    <td th:text="${sell['company_name'] != null ? sell['company_name'] : '-'}"></td>
 								    <td th:text="${sell['supply_amount'] != null ? sell['supply_amount'] : '-'}"></td>
 								    <td th:text="${sell['vat_amount'] != null ? sell['vat_amount'] : '-'}"></td>
@@ -165,14 +166,20 @@
 				// --------------------------------------------------
 				
 				// 필터 변경 시 데이터 테이블 다시 로드
-			    $('input[name="status"]').on('change', () => productReport.draw());
+			    $('input[name="orderStatus"]').on('change', () => productReport.draw());
 
 			    // 검색 버튼 클릭 시 테이블 다시 로드
-			    $('#searchBtn').on('click', () => productReport.draw());
+			    $('#searchBtn').on('click', function(e) {
+			        e.preventDefault(); // 폼 기본 제출 방지
+			        productReport.draw();
+			    });
 			    
 			    // 엔터키 입력으로 검색 실행
-			    $('#searchKeyword').on('keypress', (e) => {
-			        if (e.which == 13)  productReport.draw();
+			    $('#searchKeyword').on('keypress', function(e) {
+			        if (e.which === 13) {
+			            e.preventDefault(); // 기본 엔터 제출 방지
+			            productReport.draw();
+			        }
 			    });
 			    
 				// ---------------------------------------------------
@@ -217,7 +224,7 @@
 			    
 				// 날짜 검색 초기화
 				$("#initDateBtn").on('click', function() {
-					$('#searchDate').val('');
+					$('#searchDate').val(''); // 날짜 필터 초기화
 					productReport.draw();
 				});
 				
@@ -227,6 +234,57 @@
 				});
 				
 				// ---------------------------------------------------
+				// 검색조건에 맞는 데이터 조회
+				let productReport = $('#dataTable').DataTable({
+					lengthChange : true, 	// 건수
+					searching : true, 		// 검색
+					info : true, 			// 정보
+					ordering : true, 		// 정렬
+					paging : true,			// 페이징
+					responsive: true, 		// 반응형
+					destroy: true,
+					scrollX: true, 
+					autoWidth: false,
+					ajax: {
+						url: "/orders/sell",
+						type: "POST", 
+						data: function (d) { // Ajax 요청 시 추가할 데이터
+				            d.orderStatus = $('input[name="orderStatus"]:checked').val(); // 주문 상태
+				            d.searchKeyword = $('#searchKeyword').val(); // 검색 키워드
+
+				            let searchDate = $('#searchDate').val(); // 날짜 검색 (YYYY-MM-DD ~ YYYY-MM-DD)
+				            if (searchDate) {
+				                let dates = searchDate.split(' ~ ');
+				                d.startDate = dates[0]; // 시작일
+				                d.endDate = dates[1];   // 종료일
+				            } else {
+			                    d.startDate = ""; // 기본값 비워두기 또는 다른 기본값 설정
+			                    d.endDate = "";   // 기본값 비워두기 또는 다른 기본값 설정
+			                }
+						}, 
+						dataSrc: "",  
+						success: function(response) {
+					        console.log(response);  // 서버에서 반환한 데이터 확인
+					    },
+						columns: [
+					        { data: null, render: function() { return '<input type="checkbox">'; } },
+					        { data: "document_number", defaultContent: "-" },
+					        { data: "reg_date", defaultContent: "-" },
+					        { data: "company_name", defaultContent: "-" },
+					        { data: "supply_amount", defaultContent: "-" },
+					        { data: "vat_amount", defaultContent: "-" },
+					        { data: "total_amount", defaultContent: "-" },
+					        { data: "expected_date", defaultContent: "-" },
+					        { data: "client_name", defaultContent: "회의 전" }
+					    ]
+					}
+					
+				});
+				
+				// ---------------------------------------------------
+				
+				
+				
 				
 			});
 		</script>
