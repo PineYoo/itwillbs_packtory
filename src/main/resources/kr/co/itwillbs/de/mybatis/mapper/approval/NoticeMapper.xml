@@ -40,27 +40,29 @@
 	</sql>
 	
 	<sql id="t_notice_columns_forSelect">
-		idx,
-		type,
-		title,
-		contents,
-		is_banner,
-		is_deleted,
-		read_count,
-		file_idxs,
-		reg_id,
-		reg_date,
-		mod_id,
-		mod_date
+		n.idx,
+		n.type,
+		n.title,
+		n.contents,
+		n.is_banner,
+		n.is_deleted,
+		n.read_count,
+		n.reg_id,
+		n.reg_date,
+		n.mod_id,
+		n.mod_date
 	</sql>
 	
 	<select id="getNoticeList" resultType="kr.co.itwillbs.de.approval.dto.NoticeDTO">
 		SELECT
-			<include refid="t_notice_columns_forSelect"></include>
-		  FROM t_notice
+			<include refid="t_notice_columns_forSelect"></include>,
+			   c.minor_name AS codeName
+		  FROM t_notice n JOIN t_commoncode_item c
+		    ON n.type = c.minor_code
+		 WHERE c.major_code = #{major_code}
 	</select>
 	
-	<insert id="registerNotice">
+	<insert id="registerNotice" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.approval.dto.NoticeDTO">
 		INSERT
 		  INTO t_notice (
 	  	<trim suffixOverrides=",">
@@ -70,7 +72,6 @@
 			   is_banner,
 			   is_deleted,
 			   read_count,
-<!-- 			   file_idxs, -->
 			   reg_id,
 			   reg_date,
 	  	</trim>
@@ -83,8 +84,7 @@
 			  #{isBanner},
 			  #{isDeleted},
 			  0,	-- 조회수 기본값 0
-<!-- 			  #{fileIdxs}, -->
-			  NULL, -- 임시로 NULL()
+			  #{regId},
 			  NOW(),
 		</trim>
 			 )
@@ -93,9 +93,26 @@
 	<select id="getNotice" resultType="kr.co.itwillbs.de.approval.dto.NoticeDTO">
 		SELECT
 			<include refid="t_notice_columns_forSelect"></include>
-		  FROM t_notice
+		  FROM t_notice n
 		 WHERE idx = #{idx}
 	</select>
+	
+	<update id="modifyNotice" parameterType="kr.co.itwillbs.de.approval.dto.NoticeDTO">
+		update t_notice
+			<set>
+				<if test="type != null">type = #{type},</if>
+				<if test="title != null">title = #{title},</if>
+				<if test="contents != null">contents = #{name},</if>
+				<if test="isBanner != null">is_banner = #{isBanner},</if>
+				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+				<if test="modId != null">mod_id = #{modId},</if>
+				<if test="modId != null">mod_date = now(),</if>
+				<if test="idx != null">read_count = IFNULL(read_count,0) + 1,</if>
+			</set>
+		where idx = #{idx}
+	</update>
+	
+	
 	
 </mapper>
 

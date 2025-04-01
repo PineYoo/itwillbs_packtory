@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,11 +21,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.co.itwillbs.de.admin.dto.CodeDTO;
+import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.approval.dto.NoticeDTO;
 import kr.co.itwillbs.de.approval.dto.NoticeSearchDTO;
 import kr.co.itwillbs.de.approval.service.NoticeService;
+import kr.co.itwillbs.de.common.service.CommonService;
+import kr.co.itwillbs.de.common.service.FileService;
 import kr.co.itwillbs.de.common.util.FileUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
+import kr.co.itwillbs.de.common.vo.FileVO;
 import kr.co.itwillbs.de.sample.dto.SampleDTO;
 import kr.co.itwillbs.de.sample.dto.SampleSearchDTO;
 import kr.co.itwillbs.de.sample.service.SampleService;
@@ -36,12 +42,20 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeController {
 	@Autowired
 	private NoticeService noticeService;
-	@Autowired
-	private FileUtil fileUtil;
 	
+	@Autowired
+	private CommonService commonService;
+	
+	@Autowired
+	private FileService fileService;
+	
+	@Autowired FileUtil fileUtil;
+	
+	//	공지사항 공통코드
+	private String major_code = "notice_type";
 	
 	/**
-	 * 샘플 등록 페이지(view)를 요청하는 "/sample/new" 연결
+	 * 샘플 등록 페이지(view)를 요청하는 "/groupware/notice/new" 연결
 	 * @param model
 	 * @return
 	 */
@@ -50,47 +64,76 @@ public class NoticeController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		model.addAttribute("noticeDTO", new NoticeDTO());
+		//	공통코드 가져오기
+		model.addAttribute("codeType", commonService.getCodeItems(major_code));
 		
 		return "approval/notice/notice_register_form";
 	}
 
 	/**
-	 * 샘플 등록(INSERT)을 하는 "/sample" 연결 POST!
+	 * 샘플 등록(INSERT)을 하는 "/groupware/notice" 연결 POST!
 	 * <br>http.header.Content-Type: 'application/x-www-form-urlencoded (이게 기본 값임)
 	 * <br>이 경우 @ModelAttribute 어노테이션으로 받으면 매핑되는 DTO의 필드와 이름이 같고 setter가 존재하면 DTO에 필드 값이 채워 짐
 	 * @return
 	 */
 	@PostMapping(value={"","/"})
 	public String noticeRegister(@ModelAttribute("noticeDTO") NoticeDTO noticeDTO,
-//								 @RequestParam("noticeFiles") List<MultipartFile> noticeFiles,
+								 @RequestParam("noticeFiles") List<MultipartFile> noticeFiles,
 								 Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
 		log.info("requestData : " + noticeDTO.toString());
 		
-		//	TODO 파일 업로드 처리
-//		for(MultipartFile file : noticeFiles) {
-//			try {
-//				fileList.add(fileUtil.setFile(file));
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
+		//	t_files 테이블에 넣기위한 idx 값 가져오기
+		String idx = noticeService.registerNotice(noticeDTO);
 		
-		noticeService.registerNotice(noticeDTO);
-		return "";
-//		return "redirect:/groupware/notice";
+		//	noticeFiles 안에 들어있는 값을 넣기위한 List 객체 선언
+		List<FileVO> fileList = new ArrayList<>();
+		
+		//	파일 업로드 작업
+		for(MultipartFile file : noticeFiles) {
+			log.info("들어오는거 확인 " + file.getOriginalFilename());
+			
+			//	파일을 첨부하지 않았을 때 파일 업로드 작업 중지
+			if(!StringUtils.hasLength(file.getOriginalFilename())) {
+				break;
+			}
+			
+			try {
+				//	setFile 메서드 호출하여 FileVO 리턴 받아 List에 저장
+				fileList.add(fileUtil.setFile(file));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			//	t_files 테이블에 저장 작업
+			
+		}
+		
+		for(FileVO fileVO : fileList) {
+			//	idx 세팅
+			fileVO.setMajorIdx(idx);
+			//	type 세팅
+			fileVO.setType("t_notice");
+			//	삭제유무 기본값 N
+			fileVO.setIsDeleted("N");
+			//	랭크넘버 추가예정
+			
+			fileService.registerFile(fileVO);
+		}
+		
+		return "redirect:/groupware/notice";
+		
 	}
 	
 	/**
-	 * 샘플 목록 조회(SELECT)를 요청하는 "/sample" 연결 GET!
+	 * 공지사항 목록 조회(SELECT)를 요청하는 "/groupware/notice" 연결 GET!
 	 * @return
 	 */
 	@GetMapping(value={"","/"})
 	public String getNoticeList(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		List<NoticeDTO> noticeDTOlist = noticeService.getNoticeList();
+		List<NoticeDTO> noticeDTOlist = noticeService.getNoticeList(major_code);
 		model.addAttribute("noticeDTOlist", noticeDTOlist);
 		
 //		NoticeSearchDTO noticeSearchDTO = new NoticeSearchDTO();
@@ -120,7 +163,7 @@ public class NoticeController {
 	}
 	
 	/**
-	 * 단일 샘플 조회(SELECT) "/sample/{idx}" 주소 매핑(GET)
+	 * 단일 샘플 조회(SELECT) "/groupware/notice/{idx}" 주소 매핑(GET)
 	 * @param idx 샘플 테이블 PK값
 	 * @param model sampleDTO
 	 * @return
@@ -131,33 +174,34 @@ public class NoticeController {
 		
 		log.info("requestData : {} ", idx);
 		
-//		if(StringUtil.isLongValue(idx)) {
+		if(StringUtil.isLongValue(idx)) {
 			// 정수일 경우 조회 가능
-//			model.addAttribute("noticeDTO", noticeService.getNotice(idx));
+			model.addAttribute("noticeDTO", noticeService.getNotice(idx));
+			model.addAttribute("fileList", fileService.getFilesByMajorIdx("t_notice", Long.parseLong(idx)));
 			// 조회 수도 있기 때문에 업데이트 하자!
-//			NoticeDTO noticeDTO = new NoticeDTO();
+			NoticeDTO noticeDTO = new NoticeDTO();
 			// Idx만 update 쿼리에 보낼 경우 readCnt를 증가시키게 작성해두었다.
-//			noticeDTO.setIdx(idx);
+			noticeDTO.setIdx(idx);
 			
 			//	DTO에서 idx를 String 으로 선언해둠
 //			noticeDTO.setIdx(Long.parseLong(idx));
-//			try {
-//				noticeService.modifyNotice(noticeDTO);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				return "redirect:/notice";
-//			}
+			try {
+				noticeService.modifyNotice(noticeDTO);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "redirect:/groupware/notice";
+			}
 			
-//		} else {
-			// 정수가 아닐 경우 다시 리스트로 리다이렉트
-//			return "redirect:/notice";
-//		}
+		} else {
+			//	정수가 아닐 경우 다시 리스트로 리다이렉트
+			return "redirect:/groupware/notice";
+		}
 		
 		return "approval/notice/notice_detail";
 	}
 	
 	/**
-	 * 샘플 수정(UPDATE)를 요청하는 "/sample/{idx}" 주소 매핑(PUT)
+	 * 샘플 수정(UPDATE)를 요청하는 "/groupware/notice/{idx}" 주소 매핑(PUT)
 	 * <br> 히든 메서드 필터에 의해 PUT으로 변경헤서 서브밋함
 	 * @param idx 샘플 테이블 PK값
 	 * @param sampleDTO 샘플DTO
@@ -172,7 +216,7 @@ public class NoticeController {
 		try {
 			if(StringUtil.isLongValue(idx)) {
 				//정수일 경우 업데이트 가능
-				noticeDTO.setIdx(idx);
+//				noticeDTO.setIdx(idx);
 				
 				//	DTO에서 idx를 String 으로 선언해둠
 //				noticeDTO.setIdx(Long.parseLong(idx));

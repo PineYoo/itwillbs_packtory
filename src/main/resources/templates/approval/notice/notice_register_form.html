@@ -35,14 +35,10 @@
 									<input class="form-control" id="title" th:field="*{title}" placeholder="제목 입력">
 								</div>
 								<div class="col">
-									<label for="isDeleted" class="form-label">구분</label>
-									<select id="isDeleted" class="form-select" th:field="*{type}">
+									<label for="type" class="form-label">구분</label>
+									<select id="type" class="form-select" th:field="*{type}">
 										<option value="">선택</option>
-										<option value="1">전체공지</option>
-										<option value="2">긴급공지</option>
-										<option value="3">부서공지</option>
-										<option value="4">팀공지</option>
-										<option value="5">개인공지</option>
+										<option th:each="type : ${codeType}" th:value="${type.minorCode}" th:text="${type.minorName}"></option>
 									</select>
 								</div>
 							</div>
@@ -54,7 +50,7 @@
 							</div>
 							<div class="row">
 								<div class="col">
-									<label for="isDeleted" class="form-label">삭제유무</label>
+									<label for="isDeleted" class="small form-label">삭제유무</label>
 									<select id="isDeleted" class="form-select" th:field="*{isDeleted}">
 										<option value="">선택</option>
 										<option value="N">활성화</option>
@@ -62,7 +58,7 @@
 									</select>
 								</div>
 								<div class="col">
-									<label for="isDeleted" class="form-label">메인배너등록여부</label>
+									<label for="isDeleted" class="small form-label">메인배너등록여부</label>
 									<select id="isDeleted" class="form-select" th:field="*{isBanner}">
 										<option value="">선택</option>
 										<option value="Y">등록</option>

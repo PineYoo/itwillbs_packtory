@@ -9,7 +9,7 @@ import kr.co.itwillbs.de.approval.dto.NoticeSearchDTO;
 
 @Mapper
 public interface NoticeMapper {
-	List<NoticeDTO> getNoticeList();
+	List<NoticeDTO> getNoticeList(String major_code);
 	
 	NoticeDTO getNotice(String idx);
 	
