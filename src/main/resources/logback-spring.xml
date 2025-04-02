@@ -31,11 +31,6 @@
         </encoder>
     </appender>
 
-    <logger name="jdbc" level="OFF" additive="false">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ROLLING_LOG_FILE"/>
-    </logger>
-    <!-- 쿼리문 -->
     <logger name="org.hibernate.SQL" level="DEBUG" additive="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="ROLLING_LOG_FILE"/>
@@ -53,23 +48,19 @@
     <logger name="org.apache.ibatis.logging.jdbc" level="DEBUG" additive="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
-    <logger name="org.mybatis" level="DEBUG" additive="false">
+    <!-- 쿼리문 로그를 더 보기 위한 설정 -->
+    <logger name="org.mybatis.spring.SqlSession" level="DEBUG" additive="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
-<!--
-    <logger name="kr.co.itwillbs.de.controller" level="INFO" additive="true" >
+    <!-- MyBatis 로그를 더 자세히 보기 위해 추가 -->
+    <logger name="org.apache.ibatis" level="DEBUG" additive="false">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ROLLING_LOG_FILE"/>
     </logger>
-    <logger name="kr.co.itwillbs.de.service" level="DEBUG" additive="false" >
+    <!-- SLF4J 로거 설정 -->
+    <logger name="org.apache.ibatis.logging.slf4j.Slf4JImpl" level="DEBUG" additive="false">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ROLLING_LOG_FILE"/>
     </logger>
-    <logger name="kr.co.itwillbs.domain" level="DEBUG" additive="false" >
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ROLLING_LOG_FILE"/>
-    </logger>
- -->
+    
     <!-- 전체 로그 레벨 설정 (기본값 DEBUG) -->
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>

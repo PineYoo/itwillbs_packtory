@@ -48,6 +48,24 @@
     .postCode_1, .postCode_2 {
     	width:106px;
     }
+    
+    
+    
+    /* ----------------- */
+    .data-tables {
+	    width: 750px;
+	    border-collapse: collapse;
+	}
+    @media (max-width: 768px) {
+	    .data-tables td {
+	      display: block;
+	      width: 100%;
+	    }
+	
+	    .data-tables td table {
+	      display: block;
+	    }
+	}
 </style>
 <!-- 다음 우편번호 API -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -61,22 +79,22 @@
 			<h1 class="h3 mb-2 text-gray-800">주문서상세(수주)</h1>
 
 			<!-- ---------- 본문 컨테이너 ---------- -->
-			<div class="card shadow mb-4" style="min-width: 760px;">
-			    <div class="card-body">
+			<div class="card shadow mb-4" style="min-width: 800px; align-items: center;">
+			    <div class="card-body" style="margin: 0 10px;">
 			        <form th:action="@{/orders/sell/modify}" method="post" th:object="${orderDTO}">
 						<!-- hidden -->
 						<input type="hidden" th:field="*{documentNumber}" >
 						<!-- -------------------------------------------------------------- -->
-						<table style="border-collapse: collapse; min-width: 750px;">
+						<table class="data-tables">
 			                <tr>
-			                	<td style="width: 50%; vertical-align: top;">
+			                	<td>
 			                        <table style="width: 100%;">
 			                        	<!--/* <tr>
 						                	<th width="130px">거래종류</th>
 						                	<td><input type="text" id="tradeCode" th:value="*{tradeCode}" name="tradeCode" disabled></td>
 				                        </tr>  */-->
 				                        <tr>
-						                	<th>주문상태</th>
+						                	<th width="130px">주문상태</th>
 						                	<td><!-- <input type="text" id="statusCode" th:value="*{statusCode}" name="statusCode"> -->
 						                		<th:block th:with="statusCode=*{statusCode}">
 													<select name="statusCode" id="statusCode" th:value="*{statusCode}" >
@@ -89,9 +107,13 @@
 						                	<th>예정일</th>
 						                	<td><input type="text" th:field="*{expectedDate}"></td>
 				                        </tr>
+				                        <tr>
+				                            <th>특이사항</th>
+				                            <td><input type="text" th:field="*{specialIssue}"><br></td>
+				                        </tr>
 			                        </table>
 			                    </td>
-			                    <td style="width: 50%; vertical-align: top;">
+			                    <td>
 			                        <table style="width: 100%;">
 			                            <tr>
 				                            <th width="130px">거래처명</th>
@@ -102,15 +124,11 @@
 				                            <td><input type="text" th:field="*{companyNumber}" disabled><br></td>
 				                        </tr>
 				                        <tr>
-				                            <th>특이사항</th>
-				                            <td><input type="text" th:field="*{specialIssue}"><br></td>
-				                        </tr>
-				                        <tr>
 				                            <th>삭제유무</th>
 				                            <td>
 											    <select id="isDeleted" name="isDeleted">
 											        <option th:value="N" th:selected="*{isDeleted} == 'N'">사용</option>
-											        <option th:value="Y" th:selected="*{isDeleted} == 'Y'">미사용</option>
+											        <option th:value="Y" th:selected="*{isDeleted} == 'Y'">삭제</option>
 											    </select>
 											</td>
 				                        </tr>
@@ -121,9 +139,9 @@
 						
 	                       <!-- -------------------------------------------------- -->
 			            <hr>
-			            <table style="border-collapse: collapse; min-width: 750px;">
+			            <table class="data-tables">
 			                <tr>
-			                	<td style="width: 50%; vertical-align: top;">
+			                	<td>
 			                        <table style="width: 100%;">
 			                        	<tr>
 				                            <th width="130px">요청예정일자</th>
@@ -139,7 +157,7 @@
 				                        </tr>
 			                        </table>
 			                    </td>
-			                    <td style="width: 50%; vertical-align: top;">
+			                    <td>
 			                        <table style="width: 100%;">
 			                            <tr>
 				                            <th width="130px">담당자</th>
@@ -156,9 +174,9 @@
 			            
 	                       <!-- -------------------------------------------------- -->
 			            <hr>
-			            <table style="border-collapse: collapse; min-width: 750px;">
+			            <table class="data-tables">
 		         			<tr>
-			                	<td style="width: 50%; vertical-align: top;">
+			                	<td>
 			                        <table style="width: 100%;">
 			                        	<tr>
 				                            <th width="130px">목적지명</th>
@@ -178,7 +196,7 @@
 				                        </tr>
 			                        </table>
 			                    </td>
-			                    <td style="width: 50%; vertical-align: top;">
+			                    <td>
 			                        <table style="width: 100%;">
 			                            <tr>
 				                            <th style="vertical-align: top; width: 130px;">납품주소</th>
@@ -196,9 +214,9 @@
 			            
 	<!-- 	                        -------------------------------------------------- -->
 			            <hr>
-			            <table style="border-collapse: collapse; min-width: 750px;">
+			            <table class="data-tables">
 			                <tr>
-			                    <td style="width: 50%; vertical-align: top;">
+			                    <td>
 			                        <table style="width: 100%;">
 			                            <tr>
 			                                <th width="130px">사업자 등록 번호</th>
@@ -209,35 +227,44 @@
 			                            </tr>
 			                            <tr>
 			                                <th>상호명</th>
+			                                	<td><input type="text" disabled></td>
 	<!-- 				                                <td><input type="text" id="companyName" th:value="*{company_name}" name="companyName" disabled></td> -->
 			                            </tr>
 			                            <tr>
 			                                <th>대표자명</th>
+			                                	<td><input type="text" disabled></td>
 	<!-- 				                                <td><input type="text" id="ownerName" th:value="*{owner_name}" name="ownerName" disabled></td> -->
 			                            </tr>
 			                            <tr>
 			                                <th>전화번호</th>
+			                                	<td><input type="text" disabled></td>
 	<!-- 				                                <td><input type="text" id="phoneNumber" th:value="*{phone_number}" maxlength="13" name="phoneNumber" disabled></td> -->
 			                            </tr>
 			                            <tr>
 			                                <th>팩스번호</th>
+			                                	<td><input type="text" disabled></td>
 	<!-- 				                                <td><input type="text" id="faxNumber" th:value="*{fax_number}" maxlength="10" name="faxNumber" disabled></td> -->
 			                            </tr>
 			                            <tr>
 			                                <th>이메일</th>
+			                                	<td><input type="text" disabled></td>
 	<!-- 				                                <td><input type="text" id="eMail" th:value="*{e_mail}" name="eMail" disabled></td> -->
 			                            </tr>
 			                        </table>
 			                    </td>
-			                    <td style="width: 50%; vertical-align: top;">
+			                    <td>
 			                        <table style="width: 100%;">
 			                            <tr>
 			                                <th style="vertical-align: top; width: 130px;">주소</th>
 			                                <td>
-	<!-- 				                                    <input type="text" id="postCode" class="postCode_2" th:value="*{clientDTO.postCode}" maxlength="5"> -->
-	<!-- 				                                    <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2">주소찾기</button><br> -->
-	<!-- 				                                    <input type="text" id="address1" class="address1_2" th:value="*{clientDTO.address1}" placeholder="기본주소 입력"><br> -->
-	<!-- 				                                    <input type="text" id="address2" class="address2_2" th:value="*{clientDTO.address2}" placeholder="상세주소 입력"> -->
+	                                            <input type="text" id="postCode" class="postCode_2" maxlength="5" disabled>
+			                                    <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2" disabled>주소찾기</button><br>
+			                                    <input type="text" id="address1" class="address1_2" placeholder="기본주소 입력" disabled><br>
+			                                    <input type="text" id="address2" class="address2_2" placeholder="상세주소 입력" disabled>
+<!-- 					                                    <input type="text" id="postCode" class="postCode_2" th:value="*{clientDTO.postCode}" maxlength="5"> -->
+<!-- 					                                    <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2">주소찾기</button><br> -->
+<!-- 					                                    <input type="text" id="address1" class="address1_2" th:value="*{clientDTO.address1}" placeholder="기본주소 입력"><br> -->
+<!-- 					                                    <input type="text" id="address2" class="address2_2" th:value="*{clientDTO.address2}" placeholder="상세주소 입력"> -->
 			                                </td>
 			                            </tr>
 			                        </table>
@@ -248,7 +275,8 @@
 			            <hr>
 		                <!-- ---------- 상품 리스트 출력 영역 ---------- -->
 		                <div class="table-responsive">
-		                	<table class="table table-bordered" id="sellManagement" width="100%" cellspacing="0">
+       						<table class="table table-bordered" id="dataTables" width="100%" cellspacing="0">
+<!-- 		                	<table class="table table-bordered" id="sellManagement" width="100%" cellspacing="0"> -->
 								<thead>
 									<tr>
 										<th>No</th>
