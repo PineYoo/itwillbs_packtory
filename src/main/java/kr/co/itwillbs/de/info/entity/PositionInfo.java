@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.persistence.*;
 import kr.co.itwillbs.de.info.dto.PositionInfoDTO;
 import lombok.*;
@@ -39,15 +38,35 @@ public class PositionInfo {
     private String regId; // 작성자
 
     @CreatedDate
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime regDate; // 작성일자시간
+    private LocalDateTime regDate; // 작성일자시간 (자동 생성)
 
     @Column(name = "mod_id", length = 50, nullable = false)
     private String modId; // 최종작성자
 
     @LastModifiedDate
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime modDate; // 최종작성일자시간
+    private LocalDateTime modDate; // 최종작성일자시간 (자동 수정)
+    
+    @PrePersist
+    public void prePersist() {
+        this.regId = (this.regId == null || this.regId.isEmpty()) ? "-" : this.regId;
+        this.modId = (this.modId == null || this.modId.isEmpty()) ? "-" : this.modId;
+        this.isDeleted = (this.isDeleted == null || this.isDeleted.isEmpty()) ? "N" : this.isDeleted;
+        this.regDate = (this.regDate == null) ? LocalDateTime.now() : this.regDate;
+        this.modDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.modDate = LocalDateTime.now(); // 수정 시 최종 수정 날짜 갱신
+        
+        // null 값 방지 로직 추가
+        if (this.isDeleted == null || this.isDeleted.isEmpty()) {
+            this.isDeleted = "N";
+        }
+        if (this.modId == null || this.modId.isEmpty()) {
+            this.modId = "-";
+        }
+    }
 
     @Builder
     public PositionInfo(String positionCode, String rankNumber, String isManager, String isDeleted,
@@ -74,5 +93,16 @@ public class PositionInfo {
                 .modId(modId)
                 .modDate(modDate)
                 .build();
+    }
+
+    // 직급 수정 메서드 (DTO로부터 데이터 반영)
+    public void updateFromDTO(PositionInfoDTO dto) {
+        this.positionCode = dto.getPositionCode();
+        this.rankNumber = dto.getRankNumber();
+        this.isManager = dto.getIsManager();
+        // regId와 regDate는 수정하지 않음
+        this.isDeleted = dto.getIsDeleted();
+        this.modId = dto.getModId();
+        this.modDate = LocalDateTime.now(); // 최종 수정일자는 항상 현재시간으로 갱신
     }
 }

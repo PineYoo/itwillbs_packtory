@@ -28,12 +28,12 @@ public class PositionInfoDTO {
     @NotEmpty(message = "작성자는 필수 입력 값입니다.")
     private String regId;
 
-    private LocalDateTime regDate;
+    private LocalDateTime regDate;  // 작성일자 (자동 생성됨)
 
     @NotEmpty(message = "최종작성자는 필수 입력 값입니다.")
     private String modId;
 
-    private LocalDateTime modDate;
+    private LocalDateTime modDate;  // 최종 수정일자 (자동 수정됨)
 
     @Builder
     public PositionInfoDTO(Long idx, String positionCode, String rankNumber, String isManager, 
@@ -57,9 +57,24 @@ public class PositionInfoDTO {
                 .isManager(isManager)
                 .isDeleted(isDeleted)
                 .regId(regId)
-                .regDate(regDate)
+                .regDate(regDate != null ? regDate : LocalDateTime.now())  // regDate가 null이면 현재 시간으로 설정
                 .modId(modId)
-                .modDate(modDate)
+                .modDate(modDate != null ? modDate : LocalDateTime.now())  // modDate가 null이면 현재 시간으로 설정
+                .build();
+    }
+
+    // 엔티티에서 DTO를 생성하는 메서드
+    public static PositionInfoDTO fromEntity(PositionInfo positionInfo) {
+        return PositionInfoDTO.builder()
+                .idx(positionInfo.getIdx())
+                .positionCode(positionInfo.getPositionCode())
+                .rankNumber(positionInfo.getRankNumber())
+                .isManager(positionInfo.getIsManager())
+                .isDeleted(positionInfo.getIsDeleted())
+                .regId(positionInfo.getRegId())
+                .regDate(positionInfo.getRegDate())
+                .modId(positionInfo.getModId())
+                .modDate(positionInfo.getModDate())
                 .build();
     }
 }
