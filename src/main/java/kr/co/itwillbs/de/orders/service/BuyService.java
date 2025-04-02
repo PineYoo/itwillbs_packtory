@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
+import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 import kr.co.itwillbs.de.orders.mapper.BuyMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,12 +24,22 @@ public class BuyService {
 	private CommonService commonService;
 
 
-	// 전체 수주 관리 목록 조회 요청
+	// 전체 발주 관리 목록 조회 요청
 	public List<HashMap<String, Object>> getBuyList(String code) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
         return buyMapper.getBuyList(code);
     }
+
+	/**
+	 * 발주 정보 조건 검색 가져오기
+	 * @param orderSearchDTO
+	 * @return
+	 */
+	public List<OrderDTO> getOrdersInTradeBuy(OrderSearchDTO orderSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return buyMapper.getOrdersInTradeBuy(orderSearchDTO);
+	}
 
 	// 검색 조건에 맞는 수주 관리 목록 리스트 조회 요청
 //	public List<HashMap<String, Object>> getSearchBuy(String orderStatus, String searchKeyword, String startDate,

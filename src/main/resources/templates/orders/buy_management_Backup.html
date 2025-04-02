@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 발주관리</title>
+<!-- 부트스트랩 icons 가져오기 -->
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+
+<!-- CSS -->
+<th:block layout:fragment="css">
+	<!-- dataTables 가져오기 -->
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<link href="/css/datatables/datatables.min.css" rel="stylesheet">
+	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
+	<!-- 폰트어썸 가져오기 -->
+	<link href="/css/fontawesome/all.min.css" rel="stylesheet">
+	<script src="/css/fontawesome/all.min.js"></script>
+	<!-- CSS for Page -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+	<!-- 개별 CSS-->
+	<link href="/css/common.css" rel="stylesheet">
+</th:block>
+<style type="text/css">
+	.clickable-row td:hover {
+		background-color: #edfbfc;
+	}
+</style>
+
+</head>
+
+<body id="page-top">
+	<div layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">발주관리</h1>
+			</div>
+
+			<!-- ---------- 검색바 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					
+					<!-- 주문서 등록 버튼 -->
+					<div class="regist-wrap">
+						<!-- 로그인한 사용자 ID 저장 -->
+<!-- 						<input type="hidden" id="userId" th:value="${#httpSession.getAttribute('userId')}"> -->
+						<button class="btn btn-success ml-2" id="registerBtn" type="button">등록</button>
+					</div>
+					<!-- ---------- 검색바 ---------- -->
+		            <div class="search-wrap border">
+						<section class="d-flex search-inner">
+							<!-- 주문상태별 검색-->
+							<div class="col pl-4 search-box">
+								<form th:action="@{/orders/buy/search}" method="get" th:object="${orderSearchDTO}">
+									<input type="hidden" name="tradeCode" value="2" />
+									<table class="table table-borderd">
+										<tr>
+											<td class="col-sm-12 col-md-2"><label for="statusCode">주문상태 코드</label></td>
+											<td class="col-sm-12 col-md-3"><th:block th:with="statusCode=*{statusCode}">
+																				<select name="statusCode" id="statusCode" th:value="*{statusCode}" class="form-select" aria-label="Default select example">
+																					<option value="" th:selected="${statusCode} eq '' ">전체</option>
+																					<option th:each="item : *{codeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}" th:selected="${statusCode} == ${item.minorCode}"></option>
+																				</select>
+																			</th:block>
+											</td>
+											<td class="col-sm-12 col-md-2"><label for="documentNumber">문서번호</label></td>
+											<td class="col-sm-12 col-md-3"><input type="text" id="documentNumber" th:field="*{documentNumber}" class="form-control rounded-sm mr-2" placeholder="문서번호">
+											</td>
+											<td class="col-sm-12 col-md-1" rowspan="2">
+												<!-- <div class="d-grid col-2 gap-2 d-md-block"> -->
+												<div class="d-grid col-2 gap-2 mx-auto">
+													<button type="submit" id="searchBtn" class="btn btn-primary">검색</button>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="col-sm-12 col-md-2"><label for="companyName">거래처명</label></td>
+											<td class="col-sm-12 col-md-3"><input type="text" id="companyName" th:field="*{companyName}" class="form-control"></td>
+											<td class="col-sm-12 col-md-2"><label for="isDeleted">삭제유무</label></td>
+											<td class="col-sm-12 col-md-3"><select name="isDeleted" id="isDeleted" th:value="*{isDeleted}" class="form-select" aria-label="Default select example">
+																		<option value="" th:selected="*{isDeleted} eq '' ">전체</option>
+																		<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
+																		<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
+																	</select>
+											</td>
+											<!-- <td></td> 위 tr에서 rowspan 희생 td들-->
+										</tr>
+										<tr>
+											<td class="col-sm-12 col-md-2"><label for="requestStartDate">요청일자</label></td>
+											<td class="col-sm-12 col-md-3"><div class="input-group mb-3">
+																			<input type="text" id="requestStartDate" th:field="*{requestStartDate}" class="form-control">⁓
+																			<input type="text" id="requestEndDate" th:field="*{requestEndDate}" class="form-control">
+																		</div>
+											</td>
+											<td class="col-sm-12 col-md-2"><label for="dueStartDate">마감일자</label></td>
+											<td class="col-sm-12 col-md-3"><div class="input-group mb-3">
+																			<input type="text" id="dueStartDate" th:field="*{dueStartDate}" class="form-control">⁓
+																			<input type="text" id="dueEndDate" th:field="*{dueEndDate}" class="form-control">
+																		</div>
+											</td>
+											<!-- <td></td>
+											<td></td> 위 tr에서 rowspan 희생 td들-->
+										</tr>
+									</table>
+								</form>
+							</div>
+						</section>
+					</div>
+					<!-- ---------- 검색바 끝 ---------- -->
+                 </div>
+            </div>
+			<!-- ---------- 검색바 컨테이너 끝 ---------- -->
+					
+			<!-- ---------- 본문 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive">
+<!-- 						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"> -->
+						<table class="table table-bordered" id="dataTables" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+<!-- 									<th>■</th> -->
+									<th>주문번호</th>
+									<th>주문일자</th>
+									<th>거래처명</th>
+									<th>공급가액</th>
+									<th>부가세액</th>
+									<th>합계금액</th>
+									<th>출고예정일</th>
+									<th>담당사원명</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item, status : ${buyDTOList}" th:data-id="${item.documentNumber}" class="clickable-row">
+									<!-- <td><input type="checkbox"></td> -->
+									<td th:text="${item.documentNumber != null ? item.documentNumber : '-'}"></td>
+									<td th:text="${item.regDate != null ? #temporals.format(item.regDate, 'yyyy-MM-dd') : '-'}"></td>
+									<td th:text="${item.companyName != null ? item.companyName : '-'}"></td>
+									<td th:text="${item.supplyAmount != null ? item.supplyAmount : '-'}"></td>
+									<td th:text="${item.vatAmount != null ? item.vatAmount : '-'}"></td>
+									<td th:text="${item.totalAmount != null ? item.totalAmount : '-'}"></td>
+									<td th:text="${item.expectedDate != null ? item.expectedDate : '-'}"></td>	<!-- HashMap으로 가져오면서 String으로 들고와짐(java.lang.String) -->
+									<td th:text="${item.clientName != null ? item.clientName : '회의 전'}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- ---------- 본문 컨테이너 끝 ---------- -->			
+		</div>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				console.log("document ready!");
+				// init DataTable
+				$('#dataTables').DataTable({
+					lengthChange: false,
+					searching: false,
+					paging: false,
+					info: false
+				}); // end of $('#dataTables').DataTable({
+			});
+			$(function() {
+				// 등록 버튼(registerBtn) 클릭 시 이벤트(새창 안가!)
+				$('#registerBtn').on("click", function() {
+					console.log("registerBtn click!!!");
+					location.href="/orders/buy/regist";
+					//window.open("/orders/buy/regist", "_blank", "width=810,height=1200,scrollbars=yes,resizable=yes");
+				});
+				// ---------------------------------------------------
+				// 발주 리스트 각 행 클릭 시 주문 상세 클릭 시 이벤트(새창 열기)
+				$("#dataTables tbody").on('click', 'tr', function() {
+					console.log("dataTables tbody click!!");
+					var documentNumber = $(this).data('id');
+					location.href="/orders/buy/"+documentNumber;
+					//window.open("/orders/buy/" + documentNumber, "_blank", "width=810,height=1200,scrollbars=yes,resizable=yes");
+				});
+				   
+				// ---------------------------------------------------
+				// 기간별 검색 필터링 제이쿼리 (datepicker)
+			    $('#searchDate').daterangepicker({
+//			        startDate: moment().subtract(29, 'days'),
+//			        startDate: false,
+//			        endDate: moment(),
+			        maxDate: moment(),
+			        locale: {
+						start: '시작일시',
+						end: '종료일시',
+					    separator: " ~ ", // 시작일시와 종료일시 구분자
+					    format: 'YYYY-MM-DD', // 일시 노출 포맷
+					    applyLabel: "확인", // 확인 버튼 텍스트
+					    cancelLabel: "취소", // 취소 버튼 텍스트
+					    daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+					    monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+						customRangeLabel: '기간 지정',
+					 },
+					autoUpdateInput: false,
+				    timePicker: false, // 시간 노출 여부
+				    showDropdowns: true, // 년월 수동 설정 여부
+				    autoApply: false, // 확인/취소 버튼 사용여부
+					ranges: {
+			            '오늘': [moment()], // 오늘
+			            '이번 달': [moment().startOf('month'), moment().endOf('month')], // 이번 달 전체
+			            '지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')], // 지난 달 전체
+			            '지난 7일': [moment().subtract(6, 'days'), moment()], // 최근 7일
+			            '지난 14일': [moment().subtract(13, 'days'), moment()], // 최근 14일
+			            '지난 30일': [moment().subtract(29, 'days'), moment()], // 최근 30일
+			            '지난 3개월': [moment().subtract(3, 'months').startOf('month'), moment().endOf('month')], // 최근 3개월
+			        },
+			    }).on('show.daterangepicker', function (ev, picker) {
+// 			        picker.container.addClass('goodbuyCustomPicker');                            
+			    }); // end of $('#searchDate').daterangepicker({
+			    
+			    // 날짜 선택 후에도 placeholder 유지
+			    $('#searchDate').on('apply.daterangepicker', function(ev, picker) {
+			        $(this).val(`${picker.startDate.format('YYYY-MM-DD')} ~ ${picker.endDate.format('YYYY-MM-DD')}`);
+			    });
+			    
+				// 날짜 검색 초기화
+				$("#initDateBtn").on('click', function() {
+					$('#searchDate').val(''); // 날짜 필터 초기화
+					//productReport.draw();
+				});
+				
+			    // 기간별 검색 후 테이블 다시 로드
+			    $("#searchDateBtn").on('click', function() {
+					//productReport.draw();
+				});
+				
+				// ---------------------------------------------------
+				
+				
+			});
+		</script>
+	</div>
+	<!-- --------------------------------------------------------------------------------------------- -->
+	
+	<!-- JS -->
+	<th:block layout:fragment="script">
+		<!-- Bootstrap core JavaScript-->
+		<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
+		<script src="/js/jquery-3.7.1.js"></script>
+	    <!-- Core plugin JavaScript-->
+	    <script src="/js/jquery-easing/jquery.easing.min.js"></script>
+	    <!-- Custom scripts for all pages-->
+	    <script src="/js/sb-admin-2.min.js"></script>
+	   	<!-- Page level plugins -->
+		<script src="/js/datatables/jquery.dataTables.min.js"></script>
+		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+		<script src="/js/demo/datatables-demo.js"></script>
+	<!-- 	<script src="/js/datatables/datatables.min.js"></script> --> <!-- 반응형 -->
+	   	<script src="/js/datepicker/moment.min.js"></script>
+	   	<script src="/js/datepicker/daterangepicker.js"></script>
+	   	<script src="/js/datatables/dataTables.buttons.min.js"></script>
+		<script src="/js/datatables/buttons.html5.min.js"></script>
+		<script src="/js/datatables/jszip.min.js"></script>
+		<script src="/js/datatables/buttons.print.min.js"></script>
+	</th:block>
+	
+</body>
+</html>
