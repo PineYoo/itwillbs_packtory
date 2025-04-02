@@ -288,14 +288,21 @@ public class SellController {
 		System.out.println("documentNumber : "  + documentNumber);
 		
 		// 공통코드 가져오기
-		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems("ORDER_TRADE_CODE");
-		List<CodeItemDTO> statusCode = commonCodeUtil.getCodeItems("ORDER_STATUS_CODE");
-		model.addAttribute("tradeCode", tradeCode);
-		model.addAttribute("statusCode", statusCode);
+//		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems("ORDER_TRADE_CODE");
+//		List<CodeItemDTO> statusCode = commonCodeUtil.getCodeItems("ORDER_STATUS_CODE");
+//		model.addAttribute("tradeCode", tradeCode);
+//		model.addAttribute("statusCode", statusCode);
+//		
+//		HashMap<String, Object> buyDTO = sellService.getOrder(documentNumber);
+//		System.out.println("buyDTO : " + buyDTO);
+//		model.addAttribute("buyDTO", buyDTO);
 		
-		HashMap<String, Object> buyDTO = sellService.getOrder(documentNumber);
-		System.out.println("buyDTO : " + buyDTO);
-		model.addAttribute("buyDTO", buyDTO);
+		OrderDTO orderDTO = sellService.getOrderByDocumentNumber(documentNumber);
+		// 발주만 남은 codeItemList를 화면 DTO 객체에 셋! 진짜 이거 맞아?
+		orderDTO.setCodeItemList(this.getBuyItems());
+		
+		log.info("orderDTO : " + orderDTO);
+		model.addAttribute("orderDTO", orderDTO);
 		return "orders/buy_detail";
 	}
 	
