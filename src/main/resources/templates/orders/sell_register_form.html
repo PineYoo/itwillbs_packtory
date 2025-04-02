@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<!-- 		layout:decorate="~{common/layouts/de_layout}"> -->
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>팩토리(PackTory) - 수주등록</title>
 
 <!-- layout:decorate="~{common/layouts/de_layout}" 빼면서 datepicker 적용 안되는 문제 -->
-<th:block th:insert="~{common/fragments/de_common::headContents}"></th:block>
+<!-- <th:block th:insert="~{common/fragments/de_common::headContents}"></th:block> -->
 
 <!-- 부트스트랩 icons 가져오기 -->
 <th:block layout:fragment="headContents">
@@ -59,12 +59,16 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid" style="margin-top: 20px;">
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">주문서등록(수주)</h1>
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">주문서등록(수주)</h1>
+			</div>
 
 			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4" style="min-width: 760px;">
 			    <div class="card-body">
 			        <form th:action="@{/orders/sell/regist}" method="post" th:object="${orderFormDTO}">
+						<input type="hidden" th:field="*{orderDTO.tradeCode}" value="1" alt="수주 코드" />
+						<input type="hidden" th:field="*{orderDTO.statusCode}" value="1" alt="수주_미출고" />
 			            <table style="border-collapse: collapse; min-width: 750px;">
 			                <tr>
 			                	<td style="width: 50%; vertical-align: top;">
@@ -196,7 +200,7 @@
 		                     <div class="input-group">
 		                         <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="상품 조회" aria-label="Search" aria-describedby="basic-addon2">
 		                         <div class="input-group-append">
-		                             <button class="btn btn-primary" id="searchBtn" type="button">조회</button>
+		                             <button class="btn btn-primary" id="searchBtn" type="button" onclick="alert('준비중입니다.'); return false;">조회</button>
 		                         </div>
 		                     </div>
 		                </div>
@@ -232,10 +236,6 @@
 		                	
 		                </div>
 		                
-		                <!-- hidden -->
-<!-- 		                <input type="hidden" id="tradeCode" th:field="*{orderDTO.tradeCode}" th:value="'수주'"> -->
-		                
-			            <!-- -------------------------------------------------------------- -->
 			            <div style="text-align: center; margin-top: 10px;">
 			                <button type="submit" class="btn btn-primary">등록</button>
 			                <button type="button" id="cancelBtn" class="btn btn-secondary ml-2">취소</button>
@@ -253,7 +253,6 @@
 			        // 숫자만 남기기
 			        let value = $(this).val().replace(/\D/g, '');
 			        let formattedValue = '';
-
 			        // 포맷팅 로직
 			        if (value.length > 0) {
 			            if (value.length <= 10) {
@@ -342,7 +341,8 @@
 		     	//---------------------------------------------------
 				// 취소버튼
 				$('#cancelBtn').on("click", function() {
-				    window.close();
+					//window.close(); // 250401 부모창에서 페이지 이동으로 변경됨
+					location.href="/orders/sell";
 				});
 				
 				

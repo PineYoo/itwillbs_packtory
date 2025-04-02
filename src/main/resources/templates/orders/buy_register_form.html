@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-		layout:decorate="~{common/layouts/de_layout}">
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- 		layout:decorate="~{common/layouts/de_layout}"> -->
 <head>
-<title>팩토리(PackTory) - 수주등록</title>
+<title>팩토리(PackTory) - 발주등록</title>
 
 <!-- layout:decorate="~{common/layouts/de_layout}" 빼면서 datepicker 적용 안되는 문제 -->
-<!-- <th:block th:insert="~{common/fragments/de_common::headContents}"></th:block> -->
+<th:block th:insert="~{common/fragments/de_common::headContents}"></th:block>
 
 <!-- 부트스트랩 icons 가져오기 -->
 <th:block layout:fragment="headContents">
@@ -31,7 +31,7 @@
 	<link href="/css/common.css" rel="stylesheet">
 </th:block>
 <style type="text/css">
-	input, select {
+	input {
         border: 1px solid #ccc;
         padding: 5px;
         margin: 2px;
@@ -42,11 +42,12 @@
     .filled {
         background-color: white;
     }
-    select {
-    	width: 198px;
-    }
     .postCode_1, .postCode_2 {
     	width:106px;
+    }
+    
+    #companyNumber {
+    	width: 132px;
     }
 </style>
 <!-- 다음 우편번호 API -->
@@ -58,69 +59,12 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid" style="margin-top: 20px;">
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">주문서상세(수주)</h1>
+			<h1 class="h3 mb-2 text-gray-800">주문서등록(발주)</h1>
 
 			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4" style="min-width: 760px;">
 			    <div class="card-body">
-			        <form th:action="@{/orders/sell/modify}" method="post" th:object="${orderDTO}">
-						<!-- hidden -->
-						<input type="hidden" th:field="*{documentNumber}" >
-						<!-- -------------------------------------------------------------- -->
-						<table style="border-collapse: collapse; min-width: 750px;">
-			                <tr>
-			                	<td style="width: 50%; vertical-align: top;">
-			                        <table style="width: 100%;">
-			                        	<!--/* <tr>
-						                	<th width="130px">거래종류</th>
-						                	<td><input type="text" id="tradeCode" th:value="*{tradeCode}" name="tradeCode" disabled></td>
-				                        </tr>  */-->
-				                        <tr>
-						                	<th>주문상태</th>
-						                	<td><!-- <input type="text" id="statusCode" th:value="*{statusCode}" name="statusCode"> -->
-						                		<th:block th:with="statusCode=*{statusCode}">
-													<select name="statusCode" id="statusCode" th:value="*{statusCode}" >
-														<option th:each="item : *{codeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}" th:selected="${statusCode} == ${item.minorCode}"></option>
-													</select>
-												</th:block>
-						                	</td>
-				                        </tr>
-				                        <tr>
-						                	<th>예정일</th>
-						                	<td><input type="text" th:field="*{expectedDate}"></td>
-				                        </tr>
-			                        </table>
-			                    </td>
-			                    <td style="width: 50%; vertical-align: top;">
-			                        <table style="width: 100%;">
-			                            <tr>
-				                            <th width="130px">거래처명</th>
-				                            <td><input type="text" th:field="*{companyName}" disabled></td>
-				                        </tr>
-				                        <tr>
-				                            <th>사업자번호</th>
-				                            <td><input type="text" th:field="*{companyNumber}" disabled><br></td>
-				                        </tr>
-				                        <tr>
-				                            <th>특이사항</th>
-				                            <td><input type="text" th:field="*{specialIssue}"><br></td>
-				                        </tr>
-				                        <tr>
-				                            <th>삭제유무</th>
-				                            <td>
-											    <select id="isDeleted" name="isDeleted">
-											        <option th:value="N" th:selected="*{isDeleted} == 'N'">사용</option>
-											        <option th:value="Y" th:selected="*{isDeleted} == 'Y'">미사용</option>
-											    </select>
-											</td>
-				                        </tr>
-			         			   </table>
-			         			</td>
-		         			</tr>
-						</table>
-						
-	                       <!-- -------------------------------------------------- -->
-			            <hr>
+			        <form th:action="@{/orders/buy/regist}" method="post" th:object="${orderFormDTO}">
 			            <table style="border-collapse: collapse; min-width: 750px;">
 			                <tr>
 			                	<td style="width: 50%; vertical-align: top;">
@@ -128,13 +72,14 @@
 			                        	<tr>
 				                            <th width="130px">요청예정일자</th>
 				                            <td>
-				                            	<input type="text" class="rounded-sm mr-2 essential" th:field="*{requestDate}">
+				                            	<input type="text" id="requestDate" class="rounded-sm mr-2 essential" th:field="*{orderDTO.requestDate}" placeholder="날짜 선택" autocomplete="off">
 				                            </td>
 				                        </tr>
 				                        <tr>
 				                            <th>요청마감일자</th>
 				                            <td>
-				                            	<input type="text" class="rounded-sm mr-2 essential" th:field="*{dueDate}">
+<!-- 				                            	<input type="text" id="dueDate" class="rounded-sm mr-2 essential" th:field="*{orderDTO.dueDate}" placeholder="날짜 선택" autocomplete="off" disabled> -->
+				                            	<input type="text" id="dueDate" class="rounded-sm mr-2 essential" th:field="*{orderDTO.dueDate}" placeholder="날짜 선택" autocomplete="off">
 				                            </td>
 				                        </tr>
 			                        </table>
@@ -143,18 +88,18 @@
 			                        <table style="width: 100%;">
 			                            <tr>
 				                            <th width="130px">담당자</th>
-				                            <td><input type="text" th:field="*{clientName}"></td>
+				                            <td><input type="text" id="clientName" th:field="*{orderDetailDTO.clientName}"></td>
 				                        </tr>
 				                        <tr>
 				                            <th>담당자 전화번호</th>
-				                            <td><input type="text" th:field="*{clientPhone}" maxlength="13"><br></td>
+				                            <td><input type="text" id="clientPhone" th:field="*{orderDetailDTO.clientPhone}" maxlength="13" placeholder="010-1234-5678"><br></td>
 				                        </tr>
 			         			   </table>
 			         			</td>
 		         			</tr>
 		         		</table>
 			            
-	                       <!-- -------------------------------------------------- -->
+                        <!-- -------------------------------------------------- -->
 			            <hr>
 			            <table style="border-collapse: collapse; min-width: 750px;">
 		         			<tr>
@@ -162,19 +107,19 @@
 			                        <table style="width: 100%;">
 			                        	<tr>
 				                            <th width="130px">목적지명</th>
-				                            <td><input type="text" class="essential" th:field="*{destinationName}"></td>
+				                            <td><input type="text" id="destinationName" class="essential" th:field="*{orderDTO.destinationName}"></td>
 				                        </tr>
 				                        <tr>
 				                            <th>받는사람</th>
-				                            <td><input type="text" class="essential" th:field="*{receiver}"></td>
+				                            <td><input type="text" id="receiver" class="essential" th:field="*{orderDTO.receiver}"></td>
 				                        </tr>
 				                        <tr>
 				                            <th>전화번호1</th>
-				                            <td><input type="text" class="essential" th:field="*{phone1}" maxlength="13"></td>
+				                            <td><input type="text" id="phone1" class="essential" th:field="*{orderDTO.phone1}" maxlength="13" placeholder="010-1234-5678"></td>
 				                        </tr>
 				                        <tr>
 				                            <th>전화번호2</th>
-				                            <td><input type="text" th:field="*{phone2}" maxlength="13"></td>
+				                            <td><input type="text" id="phone2" th:field="*{orderDTO.phone2}" maxlength="13" placeholder="010-1234-5678"></td>
 				                        </tr>
 			                        </table>
 			                    </td>
@@ -183,10 +128,10 @@
 			                            <tr>
 				                            <th style="vertical-align: top; width: 130px;">납품주소</th>
 				                            <td>
-			                                    <input type="text" class="postCode_1 essential" th:field="*{postCode}" maxlength="5">
+			                                    <input type="text" id="postCode" class="postCode_1 essential" th:field="*{orderDTO.postCode}" maxlength="5">
 			                                    <button type="button" id="searchAddressBtn_1" class="btn btn-outline-primary ml-2">주소찾기</button><br>
-			                                    <input type="text" class="address1_1 essential" th:field="*{address1}" ><br>
-			                                    <input type="text" class="address2_1 essential" th:field="*{address2}" >
+			                                    <input type="text" id="address1" class="address1_1 essential" th:field="*{orderDTO.address1}" placeholder="기본주소 입력"><br>
+			                                    <input type="text" id="address2" class="address2_1 essential" th:field="*{orderDTO.address2}" placeholder="상세주소 입력">
 											</td>
 				                        </tr>
 			         			   </table>
@@ -194,7 +139,7 @@
 		         			</tr>
 			            </table>
 			            
-	<!-- 	                        -------------------------------------------------- -->
+                        <!-- -------------------------------------------------- -->
 			            <hr>
 			            <table style="border-collapse: collapse; min-width: 750px;">
 			                <tr>
@@ -203,29 +148,29 @@
 			                            <tr>
 			                                <th width="130px">사업자 등록 번호</th>
 			                                <td>
-			                                	<input type="text" th:field="*{companyNumber}" disabled>
-	<!-- 				                                	<button type="button"  class="btn btn-outline-primary ml-2">조회</button> -->
+			                                	<input type="text" id="companyNumber" th:field="*{orderDTO.companyNumber}" placeholder="123-45-67890">
+			                                	<button type="button"  class="btn btn-outline-primary ml-2">조회</button>
 			                                </td>
 			                            </tr>
 			                            <tr>
 			                                <th>상호명</th>
-	<!-- 				                                <td><input type="text" id="companyName" th:value="*{company_name}" name="companyName" disabled></td> -->
+			                                <td><input type="text" id="companyName" th:field="*{clientDTO.companyName}"></td>
 			                            </tr>
 			                            <tr>
 			                                <th>대표자명</th>
-	<!-- 				                                <td><input type="text" id="ownerName" th:value="*{owner_name}" name="ownerName" disabled></td> -->
+			                                <td><input type="text" id="ownerName" th:field="*{clientDTO.ownerName}"></td>
 			                            </tr>
 			                            <tr>
 			                                <th>전화번호</th>
-	<!-- 				                                <td><input type="text" id="phoneNumber" th:value="*{phone_number}" maxlength="13" name="phoneNumber" disabled></td> -->
+			                                <td><input type="text" id="phoneNumber" th:field="*{clientDTO.phoneNumber}" maxlength="13" placeholder="010-1234-5678"></td>
 			                            </tr>
 			                            <tr>
 			                                <th>팩스번호</th>
-	<!-- 				                                <td><input type="text" id="faxNumber" th:value="*{fax_number}" maxlength="10" name="faxNumber" disabled></td> -->
+			                                <td><input type="text" id="faxNumber" th:field="*{clientDTO.faxNumber}" maxlength="10" placeholder="02-000-0000"></td>
 			                            </tr>
 			                            <tr>
 			                                <th>이메일</th>
-	<!-- 				                                <td><input type="text" id="eMail" th:value="*{e_mail}" name="eMail" disabled></td> -->
+			                                <td><input type="text" id="eMail" th:field="*{clientDTO.eMail}" placeholder="email@example.com"></td>
 			                            </tr>
 			                        </table>
 			                    </td>
@@ -234,18 +179,28 @@
 			                            <tr>
 			                                <th style="vertical-align: top; width: 130px;">주소</th>
 			                                <td>
-	<!-- 				                                    <input type="text" id="postCode" class="postCode_2" th:value="*{clientDTO.postCode}" maxlength="5"> -->
-	<!-- 				                                    <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2">주소찾기</button><br> -->
-	<!-- 				                                    <input type="text" id="address1" class="address1_2" th:value="*{clientDTO.address1}" placeholder="기본주소 입력"><br> -->
-	<!-- 				                                    <input type="text" id="address2" class="address2_2" th:value="*{clientDTO.address2}" placeholder="상세주소 입력"> -->
+			                                    <input type="text" id="postCode" class="postCode_2" th:field="*{clientDTO.postCode}" maxlength="5">
+			                                    <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2">주소찾기</button><br>
+			                                    <input type="text" id="address1" class="address1_2" th:field="*{clientDTO.address1}" placeholder="기본주소 입력"><br>
+			                                    <input type="text" id="address2" class="address2_2" th:field="*{clientDTO.address2}" placeholder="상세주소 입력">
 			                                </td>
 			                            </tr>
 			                        </table>
 			                    </td>
 			                </tr>
 			            </table>
-	
+			            
 			            <hr>
+			            <!-- ---------- 상품검색 영역 ---------- -->
+			            <div class="col-4 search-box">
+		                     <div class="input-group">
+		                         <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="상품 조회" aria-label="Search" aria-describedby="basic-addon2">
+		                         <div class="input-group-append">
+		                             <button class="btn btn-primary" id="searchBtn" type="button">조회</button>
+		                         </div>
+		                     </div>
+		                </div>
+		                <br>
 		                <!-- ---------- 상품 리스트 출력 영역 ---------- -->
 		                <div class="table-responsive">
 		                	<table class="table table-bordered" id="sellManagement" width="100%" cellspacing="0">
@@ -261,25 +216,29 @@
 									</tr>
 								</thead>
 								<tbody>
-	<!-- 									<tr th:each="item, status : ${sellDTOList}" th:data-id="${sell['idx']}"> -->
-	<!-- 									    <td><input type="checkbox"></td> -->
-	<!-- 									    <td th:text="${sell['document_number']}"></td> -->
+<!-- 									<tr th:each="item, status : ${sellDTOList}" th:data-id="${sell['idx']}"> -->
+<!-- 									    <td><input type="checkbox"></td> -->
+<!-- 									    <td th:text="${sell['document_number']}"></td> -->
 	<!-- 								    <td th:text="${sell['request_date'] != null ? #temporals.format(sell['request_date'], 'yyyy-MM-dd') : 'No Date'}"></td> -->
-	<!-- 									    <td th:text="${sell['request_date']}"></td>		HashMap으로 가져오면서 String으로 들고와짐 -->
-	<!-- 									    <td th:text="${sell['company_name']}"></td> -->
-	<!-- 									    <td th:text="${sell['supply_amount']}"></td> -->
-	<!-- 									    <td th:text="${sell['vat_amount']}"></td> -->
-	<!-- 									    <td th:text="${sell['total_amount']}"></td> -->
-	<!-- 									</tr> -->
+<!-- 									    <td th:text="${sell['request_date']}"></td>		HashMap으로 가져오면서 String으로 들고와짐 -->
+<!-- 									    <td th:text="${sell['company_name']}"></td> -->
+<!-- 									    <td th:text="${sell['supply_amount']}"></td> -->
+<!-- 									    <td th:text="${sell['vat_amount']}"></td> -->
+<!-- 									    <td th:text="${sell['total_amount']}"></td> -->
+<!-- 									</tr> -->
 	
 								</tbody>
 							</table>
+		                	
 		                </div>
-	
+		                
+		                <!-- hidden -->
+<!-- 		                <input type="hidden" id="tradeCode" th:field="*{orderDTO.tradeCode}" th:value="'발주'"> -->
+		                
+			            <!-- -------------------------------------------------------------- -->
 			            <div style="text-align: center; margin-top: 10px;">
-			                <button type="submit" id="modifyBtn" class="btn btn-primary">수정</button>
-	<!-- 				                <button type="button" id="removeBtn" class="btn btn-success ml-2" th:data-id="${document_number}">삭제</button> -->
-							<button type="button" id="cancelBtn" class="btn btn-secondary ml-2" >돌아가기</button>
+			                <button type="submit" class="btn btn-primary">등록</button>
+			                <button type="button" id="cancelBtn" class="btn btn-secondary ml-2">취소</button>
 			            </div>
 			        </form>
 			    </div>
@@ -383,11 +342,9 @@
 		     	//---------------------------------------------------
 				// 취소버튼
 				$('#cancelBtn').on("click", function() {
-				    //window.close();
-					//window.opener.location.reload(); // 부모 창 새로고침
-					//250401 팝업에서 페이지 이동으로 변경!
-					location.href="/orders/sell";
+				    window.close();
 				});
+				
 				
 		     	//---------------------------------------------------
 				// 필수입력요소
@@ -407,7 +364,7 @@
 		        
 		     	// ===== 캘린더 ===============================================
 				// 요청 예정일자 선택 (datepicker)
-			    $('#requestDate, #expectedDate').daterangepicker({
+			    $('#requestDate').daterangepicker({
 			        singleDatePicker: true, // 단일 날짜 선택 모드
 			        showDropdowns: true, // 년월 수동 선택 가능
 			        autoApply: true, // 확인/취소 버튼 없이 즉시 반영

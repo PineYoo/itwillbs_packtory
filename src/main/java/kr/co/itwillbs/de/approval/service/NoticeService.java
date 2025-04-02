@@ -21,14 +21,14 @@ public class NoticeService {
 	private NoticeMapper noticeMapper;
 	
 	/**
-	 * 매퍼에서 샘플 리스트 가져오기
+	 * 매퍼에서 공지사항 리스트 가져오기
 	 * @return
 	 * @throws Exception
 	 */
-	public List<NoticeDTO> getNoticeList() {
+	public List<NoticeDTO> getNoticeList(String major_code) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		return noticeMapper.getNoticeList();
+		return noticeMapper.getNoticeList(major_code);
 	}
 	
 	/**
@@ -43,17 +43,18 @@ public class NoticeService {
 	}
 
 	/**
-	 * 샘플 Insert
+	 * 공지사항 Insert
 	 * @param sampleVO
 	 */
-	public void registerNotice(NoticeDTO noticeDTO) {
+	public String registerNotice(NoticeDTO noticeDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// 나중엔 regId와 modId를 세션에서 가져와 작업할 예정이기에 지금은 하드코딩처리함
 		noticeDTO.setRegId("testUser");
 		
 		int generatedIdx = noticeMapper.registerNotice(noticeDTO);
-		log.info("generated Idx value : {}", generatedIdx);
+		log.info("generated Idx value : {}", generatedIdx, noticeDTO.getIdx());
+		return noticeDTO.getIdx();
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class NoticeService {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		NoticeDTO noticeDTO = new NoticeDTO();
-		noticeDTO.setIdx(idx);
+//		noticeDTO.setIdx(idx);
 		// 나중엔 regId와 modId를 세션에서 가져와 작업할 예정이기에 지금은 하드코딩처리함
 		noticeDTO.setModId("testUser");
 		//	ENUM 대신 임시로 N값 하드코딩
@@ -108,4 +109,5 @@ public class NoticeService {
 			throw new Exception("업데이트할 샘플 데이터가 존재하지 않습니다.");
 		}
 	}
+
 }

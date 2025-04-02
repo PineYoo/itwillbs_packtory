@@ -18,7 +18,6 @@
 		margin-right: 20px;
 		margin-bottom: 10px;
 	}
-	
 </style>
 </head>
 <body id="page-top">
@@ -27,19 +26,51 @@
 		<div class="container-fluid">
 			<!-- Page Heading -->
 			<h1 class="h3 mb-2 text-gray-800">공지사항</h1>
-			<!-- btnCommand Area -->
-<!-- 			<div class="btnCommand"> -->
-<!-- 				<button type="button" id="newBtn" class="btn btn-primary">공지사항 등록</button> -->
-<!-- 			</div> -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
-					
+					<div class="card">
+						<div class="card-body">
+						    <h4 class="card-title" th:text="${noticeDTO.title}">공지사항 제목 예시</h4>
+							<p class="text-muted">작성일: <span th:text="${noticeDTO.regDate}"></span>
+							| 작성자: <span th:text="${noticeDTO.regId}"></span>
+							| 조회수: <span th:text="${noticeDTO.readCount}"></span>
+							</p>
+						    <hr>
+						    <div class="card-text" th:utext="${noticeDTO.contents}" style="white-space: pre-line;"></div>
+						</div>
+						<div class="card-body">
+							<div class="mb-3" th:if="${fileList != null and not #lists.isEmpty(fileList)}">
+								<h5 class="card-title">첨부파일 목록</h5>
+								<div class="list-group">
+									<a th:each="file : ${fileList}"
+									   class="list-group-item list-group-item-action"
+									   th:href="@{'/file/view/' + ${file.idx}}"
+									   th:text="${file.fileOriginalName}"
+									   th:download="${file.fileOriginalName}">
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="card-footer text-end">
+							<button type="button" id="noticeModify" class="btn btn-primary" th:data-id="${noticeDTO.idx}">수정하기</button>
+						    <a href="/groupware/notice" class="btn btn-secondary">목록으로</a>
+						</div>
+					</div>
 				</div>
 			</div>
+			<script type="text/javascript">
+				$(function() {
+					$("#noticeModify").on("click", function() {
+						let idx = $(this).data("id");
+						console.log(idx);
+						location.href=`/groupware/notice/modify/${idx}`;
+					});
+				});
+			</script>
 		</div>
 	</div>
 	<th:block layout:fragment="script">
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="/js/datatables/jquery.dataTables.min.js"></script>
 		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
 		<script src="/js/demo/datatables-demo.js"></script>

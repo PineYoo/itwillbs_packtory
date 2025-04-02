@@ -2,6 +2,7 @@ package kr.co.itwillbs.de.common.service;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,8 +36,6 @@ public class FileService {
 	@Value("${spring.servlet.multipart.location}")
 	public String UPLOAD_DIR;
 	
-	
-	
 	public FileService(FileMapper fileMapper, FileUtil fileUtil) {
 		this.fileMapper = fileMapper;
 		this.fileUtil = fileUtil;
@@ -54,7 +53,7 @@ public class FileService {
 		FileVO fileVO = fileMapper.getFileByIdx(fileIdx);
 		log.info("fileVo is {}", fileVO);
 		// 다운로드 할 파일 정보를 서버 상의 업로드 디렉토리에 접근하여 가져오기
-		String strPath = UPLOAD_DIR+fileVO.getFilePath()+fileVO.getFileName();
+		String strPath = UPLOAD_DIR+fileVO.getFilePath();
 		log.info("strPath is {}", strPath);
 		// 업로드/다운로드 작업 전 파일 경로 검증 메서드
 		Path uploadPath = Paths.get(FileUtil.chekcFileSeparator(strPath));
@@ -82,11 +81,13 @@ public class FileService {
 				contentType = "application/octet-stream";
 			}
 			
+			String encodedFileName = new String(fileVO.getFileOriginalName().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
+			
 			// 응답 데이터(ResponseEntity(Resource> 타입) 리턴
 			return ResponseEntity.ok() // 정상적인 응답(HTTP_OK = 200)으로 설정
 					.contentType(MediaType.parseMediaType(contentType)) // 자동으로 설정된 컨텐츠 타입으로 설정 이미지 파일은 브라우저에서 직접 열리고, 그 외의 대부분의 파일은 다운로드 창 열림
 					//.contentType(MediaType.APPLICATION_OCTET_STREAM) // 자동으로 설정된 컨텐츠 타입으로 설정 이미지 파일은 브라우저에서 직접 열리고, 그 외의 대부분의 파일은 다운로드 창 열림
-					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ fileVO.getFileName() + "\"")
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ encodedFileName + "\"")
 					.body(resource);
 		} catch (MalformedURLException e) { 
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 다운로드 실패");

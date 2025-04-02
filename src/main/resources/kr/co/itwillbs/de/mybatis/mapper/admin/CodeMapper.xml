@@ -75,20 +75,20 @@
 			is_deleted,
 			reg_id,
 			reg_date,
-			<if test='modId !=null and !("".equals(modId))'>
+			<if test='modId !=null and !("".equals(modId.trim()))'>
 			mod_id,
 			mod_date,
 			</if>
 			</trim>
 		) values (
 			<trim suffixOverrides=",">
-			#{majorCode},
+			UPPER(#{majorCode}),
 			#{name},
 			#{description},
 			#{isDeleted},
 			#{regId},
 			now(),
-			<if test='modId !=null and !("".equals(modId))'>
+			<if test='modId !=null and !("".equals(modId.trim()))'>
 			#{modId},
 			now()
 			</if>
@@ -108,10 +108,10 @@
 			<include refid="t_commonCode_columns_forSelect" />
 		from t_commoncode
 		<where>
-			<if test='majorCode !=null and !("".equals(majorCode))'>and major_code = #{majorCode}</if>
-			<if test='name !=null and !("".equals(name))'>and name LIKE CONCAT('%',#{name},'%')</if>
-			<if test='isDeleted !=null and !("".equals(isDeleted))'>and is_deleted = #{isDeleted}</if>
-			<if test='regId !=null and !("".equals(regId))'>and reg_id = #{regId}</if>
+			<if test='majorCode !=null and !("".equals(majorCode.trim()))'>and major_code = #{majorCode}</if>
+			<if test='name !=null and !("".equals(name.trim()))'>and name LIKE CONCAT('%',#{name},'%')</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>and is_deleted = #{isDeleted}</if>
+			<if test='regId !=null and !("".equals(regId.trim()))'>and reg_id = #{regId}</if>
 		</where>
 	</select>
 	
@@ -142,8 +142,8 @@
 				<if test="name != null">name = #{name},</if>
 				<if test="description != null">description = #{description},</if>
 				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-				<if test='modId !=null and !("".equals(modId))'>mod_id = #{modId},</if>
-				<if test='modId !=null and !("".equals(modId))'>mod_date = now(),</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 			</set> 
 		where idx = #{idx}
 	</update>
@@ -167,7 +167,7 @@
 		</trim>
 		) values 
 		<foreach item="item" index="index" collection="list" separator=",">
-			(#{item.majorCode}, #{item.minorCode}, #{item.minorName}, #{item.description}, #{item.isDeleted}, #{item.rankNumber}, #{item.regId}, now())
+			(UPPER(#{item.majorCode}), #{item.minorCode}, #{item.minorName}, #{item.description}, #{item.isDeleted}, #{item.rankNumber}, #{item.regId}, now())
 		</foreach>
 	</insert>
 </mapper>

@@ -45,6 +45,7 @@
 		major_idx,
 		file_path,
 		file_name,
+		file_original_name,
 		file_size,
 		is_deleted,
 		rank_number,
@@ -60,6 +61,7 @@
 			major_idx,
 			file_path,
 			file_name,
+			file_original_name,
 			file_size,
 			is_deleted,
 			rank_number,
@@ -72,6 +74,7 @@
 			#{majorIdx},
 			#{filePath},
 			#{fileName},
+			#{fileOriginalName},
 			#{fileSize},
 			#{isDeleted},
 			#{rankNumber},
@@ -89,6 +92,7 @@
 			major_idx,
 			file_path,
 			file_name,
+			file_original_name,
 			file_size,
 			is_deleted,
 			rank_number,
@@ -97,12 +101,12 @@
 			</trim>
 		) values 
 		<foreach item="item" index="index" collection="list" separator=",">
-			(#{item.type}, #{item.majorIdx}, #{item.filePath}, #{item.fileName}, #{item.fileSize}, #{item.isDeleted}, #{item.rankNumber}, #{item.regId}, now())
+			(#{item.type}, #{item.majorIdx}, #{item.filePath}, #{item.fileName}, #{item.fileOriginalName}, #{item.fileSize}, #{item.isDeleted}, #{item.rankNumber}, #{item.regId}, now())
 		</foreach>
 	</insert>
 	
 	<select id="getFileByIdx" parameterType="long"
-									resultType="kr.co.itwillbs.de.common.vo.FileVO">
+								resultType="kr.co.itwillbs.de.common.vo.FileVO">
 		select 
 			<include refid="t_files_columns_forSelect" />
 		from t_files

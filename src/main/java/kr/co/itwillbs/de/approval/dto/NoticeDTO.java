@@ -30,8 +30,6 @@ public class NoticeDTO {
 	
 	private String readCount;
 	
-	private String fileIdxs;
-	
 	private String regId;
 	
 	private String regDate;
@@ -39,4 +37,7 @@ public class NoticeDTO {
 	private String modId;
 	
 	private String modDate;
+	
+	//	공통코드 타입으로 조회한 코드이름 저장용
+	private String codeName;
 }

@@ -36,11 +36,13 @@
 </head>
 
 <body id="page-top">
-	<div layout:fragment="contents">
+	<th:block layout:fragment="contents">
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">수주관리</h1>
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">수주관리</h1>
+			</div>
 
 			<!-- ---------- 검색바 컨테이너 ---------- -->
 			<div class="card shadow mb-4">
@@ -53,68 +55,79 @@
 						<button class="btn btn-success ml-2" id="registerBtn" type="button">등록</button>
 					</div>
 					<!-- ---------- 검색바 ---------- -->
-		            <form action="/orders/sell" method="POST">
-						<div class="search-wrap border">
-							<section class="d-flex search-inner">
-								<!-- 주문상태별 검색-->
-								<div class="col pl-4 search-box">
-									<div class="search-ttl">주문상태별</div>
-									<div class="category-filter input-group">
-										<div class="form-check">
-											<input class="form-check-input" id="reset" type="radio" name="orderStatus"  value="" checked>
-											<label class="form-check-label" for="reset">전체</label>
-										</div>
-										<div class="form-check ml-3">
-											<input class="form-check-input" id="notRelease" type="radio" name="orderStatus" value="1">
-											<label class="form-check-label" for="notRelease">미출고</label>
-										</div>
-										<div class="form-check ml-3">
-											<input class="form-check-input" id="complete" type="radio" name="orderStatus" value="2">
-											<label class="form-check-label" for="complete">출고완료</label>
-										</div>
-										<div class="form-check ml-3">
-											<input class="form-check-input" id="cancel" type="radio" name="orderStatus" value="3">
-											<label class="form-check-label" for="cancel">취소</label>
-										</div>
-									</div>
-					    		</div>
-			
-					    		<!-- 주문일자선택조회 -->
-					    		<div class="col-5 px-4 search-box">
-					    			<div class="search-ttl">주문일자</div>
-					    			<div class="input-group align-items-center justify-content-center schDate-wrap">
-				    					<input type="text" class="form-control rounded-sm mr-2" placeholder="날짜 선택" value="" name="searchDate" id="searchDate"  autocomplete="off"/>
-<!-- 										<button class="btn btn-primary" id="searchDateBtn" type="button"><i class="fa-solid fa-magnifying-glass"></i></button> -->
-										<button class="btn btn-success ml-2" id="initDateBtn" type="button"><i class="fa-solid fa-rotate"></i></button>
-									</div>
-					    		</div>
-					    		
-					    		<!-- 키워드검색 -->
-					    		<div class="col-4 search-box">
-					    			<div class="search-ttl">검색</div>
-				                     <div class="input-group">
-				                        <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="품번, 품명, 거래처명 검색" aria-label="Search" aria-describedby="basic-addon2">
-				                        <div class="input-group-append">
-											<button class="btn btn-primary" id="searchBtn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-				                        </div>
-				                     </div>
-				                </div>
-				  			</section>
-						</div>
-					</form>
+					<div class="search-wrap border">
+						<section class="d-flex search-inner">
+							<!-- 주문상태별 검색-->
+							<div class="col pl-4 search-box">
+							<form th:action="@{/orders/sell/search}" method="get" th:object="${orderSearchDTO}">
+								<input type="hidden" name="tradeCode" value="1" />
+								<table class="table table-borderd">
+									<tr>
+										<td class="col-sm-12 col-md-2"><label for="statusCode">주문상태 코드</label></td>
+										<td class="col-sm-12 col-md-3"><th:block th:with="statusCode=*{statusCode}">
+																			<select name="statusCode" id="statusCode" th:value="*{statusCode}" class="form-select" aria-label="Default select example">
+																				<option value="" th:selected="${statusCode} eq '' ">전체</option>
+																				<option th:each="item : *{codeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}" th:selected="${statusCode} == ${item.minorCode}"></option>
+																			</select>
+																		</th:block>
+										</td>
+										<td class="col-sm-12 col-md-2"><label for="documentNumber">문서번호</label></td>
+										<td class="col-sm-12 col-md-3"><input type="text" id="documentNumber" th:field="*{documentNumber}" class="form-control rounded-sm mr-2" placeholder="문서번호">
+										</td>
+										<td class="col-sm-12 col-md-1" rowspan="2">
+											<!-- <div class="d-grid col-2 gap-2 d-md-block"> -->
+											<div class="d-grid col-2 gap-2 mx-auto">
+												<button type="submit" id="searchBtn" class="btn btn-primary">검색</button>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="col-sm-12 col-md-2"><label for="companyName">거래처명</label></td>
+										<td class="col-sm-12 col-md-3"><input type="text" id="companyName" th:field="*{companyName}" class="form-control"></td>
+										<td class="col-sm-12 col-md-2"><label for="isDeleted">삭제유무</label></td>
+										<td class="col-sm-12 col-md-3"><select name="isDeleted" id="isDeleted" th:value="*{isDeleted}" class="form-select" aria-label="Default select example">
+																	<option value="" th:selected="*{isDeleted} eq '' ">전체</option>
+																	<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
+																	<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
+																</select>
+										</td>
+										<!-- <td></td> 위 tr에서 rowspan 희생 td들-->
+									</tr>
+									<tr>
+										<td class="col-sm-12 col-md-2"><label for="requestStartDate">요청일자</label></td>
+										<td class="col-sm-12 col-md-3"><div class="input-group mb-3">
+																		<input type="text" id="requestStartDate" th:field="*{requestStartDate}" class="form-control">⁓
+																		<input type="text" id="requestEndDate" th:field="*{requestEndDate}" class="form-control">
+																	</div>
+										</td>
+										<td class="col-sm-12 col-md-2"><label for="dueStartDate">마감일자</label></td>
+										<td class="col-sm-12 col-md-3"><div class="input-group mb-3">
+																		<input type="text" id="dueStartDate" th:field="*{dueStartDate}" class="form-control">⁓
+																		<input type="text" id="dueEndDate" th:field="*{dueEndDate}" class="form-control">
+																	</div>
+										</td>
+										<!-- <td></td>
+										<td></td> 위 tr에서 rowspan 희생 td들-->
+									</tr>
+								</table>
+							</form>
+							</div>
+						</section>
+					</div>
 					<!-- ---------- 검색바 끝 ---------- -->
-                 </div>
-            </div>
+				</div>
+			</div>
 			<!-- ---------- 검색바 컨테이너 끝 ---------- -->
 					
 			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+						<!--/* <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"> */-->
+						<table class="table table-bordered" id="dataTables" width="100%" cellspacing="0">
 							<thead>
 								<tr>
-									<th>■</th>
+									<!-- <th>■</th> -->
 									<th>주문번호</th>
 									<th>주문일자</th>
 									<th>거래처명</th>
@@ -126,18 +139,16 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="sell, status : ${sellDTOList}" th:data-id="${sell['document_number']}" class="clickable-row">
-								    <td><input type="checkbox"></td>
-								    <td th:text="${sell['document_number'] != null ? sell['document_number'] : '-'}"></td>
- 								    <td th:text="${sell['reg_date'] != null ? #temporals.format(sell['reg_date'], 'yyyy-MM-dd') : '-'}"></td>
-<!-- 								    <td th:text="${sell['reg_date'] != null ? sell['reg_date'] : '-'}"></td>	HashMap으로 가져오면서 String으로 들고와짐(java.lang.String) -->
-								    <td th:text="${sell['company_name'] != null ? sell['company_name'] : '-'}"></td>
-								    <td th:text="${sell['supply_amount'] != null ? sell['supply_amount'] : '-'}"></td>
-								    <td th:text="${sell['vat_amount'] != null ? sell['vat_amount'] : '-'}"></td>
-								    <td th:text="${sell['total_amount'] != null ? sell['total_amount'] : '-'}"></td>
-<!-- 								    <td th:text="${sell['expected_date'] != null ? #temporals.format(sell['expected_date'], 'yyyy-MM-dd') : '-'}"></td> -->
-								    <td th:text="${sell['expected_date'] != null ? sell['expected_date'] : '-'}"></td>	<!-- HashMap으로 가져오면서 String으로 들고와짐(java.lang.String) -->
-								    <td th:text="${sell['client_name'] != null ? sell['client_name'] : '회의 전'}"></td>
+								<tr th:each="item, status : ${sellDTOList}" th:data-id="${item.documentNumber}" class="clickable-row">
+									<!-- <td><input type="checkbox"></td> -->
+									<td th:text="${item.documentNumber != null ? item.documentNumber : '-'}"></td>
+									<td th:text="${item.regDate != null ? #temporals.format(item.regDate, 'yyyy-MM-dd') : '-'}"></td>
+									<td th:text="${item.companyName != null ? item.companyName : '-'}"></td>
+									<td th:text="${item.supplyAmount != null ? item.supplyAmount : '-'}"></td>
+									<td th:text="${item.vatAmount != null ? item.vatAmount : '-'}"></td>
+									<td th:text="${item.totalAmount != null ? item.totalAmount : '-'}"></td>
+									<td th:text="${item.expectedDate != null ? item.expectedDate : '-'}"></td>	<!-- HashMap으로 가져오면서 String으로 들고와짐(java.lang.String) -->
+									<td th:text="${item.clientName != null ? item.clientName : '회의 전'}"></td>
 								</tr>
 
 							</tbody>
@@ -149,38 +160,39 @@
 		</div>
 
 		<script type="text/javascript">
+			$(document).ready(function() {
+				console.log("document ready!");
+				// init DataTable
+				$('#dataTables').DataTable({
+					lengthChange: false,
+					searching: false,
+					paging: false,
+					info: false
+				}); // end of $('#dataTables').DataTable({
+			});
 			$(function() {
-				// 등록 버튼(registerBtn) 클릭 시 이벤트(새창 열기)
+				// 등록 버튼(registerBtn) 클릭 시 이벤트(새창 안가!)
 				$('#registerBtn').on("click", function() {
-// 					location.href="/orders/sell/regist";
-					window.open("/orders/sell/regist", "_blank", "width=810,height=1200,scrollbars=yes,resizable=yes");
+					console.log("registerBtn click!!!");
+					location.href="/orders/sell/regist";
+					//window.open("/orders/sell/regist", "_blank", "width=810,height=1200,scrollbars=yes,resizable=yes");
 				});
-			    
 				// ---------------------------------------------------
 				// 수주 리스트 각 행 클릭 시 주문 상세 클릭 시 이벤트(새창 열기)
-				$("#dataTable tbody").on('click', 'tr', function() {
+				$("#dataTables tbody").on('click', 'tr', function() {
+					console.log("dataTables tbody click!!");
 					var documentNumber = $(this).data('id');
-					window.open("/orders/sell/" + documentNumber, "_blank", "width=810,height=1200,scrollbars=yes,resizable=yes");
+					location.href="/orders/sell/"+documentNumber;
+					//window.open("/orders/sell/" + documentNumber, "_blank", "width=810,height=1200,scrollbars=yes,resizable=yes");
 				});
 
-				// --------------------------------------------------
-				
-				// 필터 변경 시 데이터 테이블 다시 로드
-			    $('input[name="orderStatus"]').on('change', () => productReport.draw());
-
-			    // 검색 버튼 클릭 시 테이블 다시 로드
-			    $('#searchBtn').on('click', function(e) {
-			        e.preventDefault(); // 폼 기본 제출 방지
-			        productReport.draw();
-			    });
-			    
 			    // 엔터키 입력으로 검색 실행
-			    $('#searchKeyword').on('keypress', function(e) {
+/* 			    $('#searchKeyword').on('keypress', function(e) {
 			        if (e.which === 13) {
 			            e.preventDefault(); // 기본 엔터 제출 방지
 			            productReport.draw();
 			        }
-			    });
+			    }); */
 			    
 				// ---------------------------------------------------
 				// 기간별 검색 필터링 제이쿼리 (datepicker)
@@ -215,7 +227,7 @@
 			        },
 			    }).on('show.daterangepicker', function (ev, picker) {
 // 			        picker.container.addClass('goodbuyCustomPicker');                            
-			    });
+			    }); // end of $('#searchDate').daterangepicker({
 			    
 			    // 날짜 선택 후에도 placeholder 유지
 			    $('#searchDate').on('apply.daterangepicker', function(ev, picker) {
@@ -225,16 +237,17 @@
 				// 날짜 검색 초기화
 				$("#initDateBtn").on('click', function() {
 					$('#searchDate').val(''); // 날짜 필터 초기화
-					productReport.draw();
+					//productReport.draw();
 				});
 				
 			    // 기간별 검색 후 테이블 다시 로드
 			    $("#searchDateBtn").on('click', function() {
-					productReport.draw();
+					//productReport.draw();
 				});
 				
 				// ---------------------------------------------------
 				// 검색조건에 맞는 데이터 조회
+				/*
 				let productReport = $('#dataTable').DataTable({
 					lengthChange : true, 	// 건수
 					searching : true, 		// 검색
@@ -246,7 +259,7 @@
 					scrollX: true, 
 					autoWidth: false,
 					ajax: {
-						url: "/orders/sell",
+						url: "/orders/sell/search",
 						type: "POST", 
 						data: function (d) { // Ajax 요청 시 추가할 데이터
 				            d.orderStatus = $('input[name="orderStatus"]:checked').val(); // 주문 상태
@@ -277,10 +290,10 @@
 					        { data: "expected_date", defaultContent: "-" },
 					        { data: "client_name", defaultContent: "회의 전" }
 					    ]
-					}
+					} // end of ajax: {
 					
-				});
-				
+				}); // end of let productReport = $('#dataTable').DataTable({
+				*/
 				// ---------------------------------------------------
 				
 				
@@ -288,7 +301,7 @@
 				
 			});
 		</script>
-	</div>
+	</th:block>
 	<!-- --------------------------------------------------------------------------------------------- -->
 	
 	<!-- JS -->

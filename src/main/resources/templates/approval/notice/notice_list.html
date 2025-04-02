@@ -58,7 +58,7 @@
 								<tr th:each="item, status : ${noticeDTOlist}" th:data-id="${item.idx}" class="clickable-row">
 									<td><input type="checkbox"></td>
 									<td th:text="${item.title}" class="notice-title"></td>
-									<td th:text="${item.type}"></td>
+									<td th:text="${item.codeName}"></td>
 									<td th:text="${item.regId}"></td>
 									<td th:text="${item.regDate}"></td>
 									<td th:text="${item.readCount}"></td>
