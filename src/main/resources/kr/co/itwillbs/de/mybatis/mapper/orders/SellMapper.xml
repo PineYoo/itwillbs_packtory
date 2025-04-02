@@ -49,15 +49,16 @@
 			<choose>
 				<when test="(requestStartDate != null and requestStartDate.trim() != '')
 							and (requestEndDate != null and requestEndDate.trim() != '')">
-					and o.request_date BETWEEN STR_TO_DATE(#{requestStartDate},'%Y%m%d') AND STR_TO_DATE(#{requestEndDate},'%Y%m%d')
+					and o.request_date BETWEEN STR_TO_DATE(CONCAT(#{requestStartDate},'000000'),'%Y-%m-%d%H%i%S') 
+											AND STR_TO_DATE(CONCAT(#{requestEndDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(requestStartDate != null and requestStartDate.trim() != '')
 							and (requestEndDate == null or requestEndDate.trim() == '')">
-					and o.request_date <![CDATA[>=]]> STR_TO_DATE(#{requestStartDate},'%Y%m%d')
+					and o.request_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{requestStartDate},'000000'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(requestStartDate == null or requestStartDate.trim() == '')
 							and (requestEndDate != null and requestEndDate.trim() != '')">
-					and o.request_date <![CDATA[<=]]> STR_TO_DATE(#{requestEndDate},'%Y%m%d')
+					and o.request_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{requestEndDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 			<if test="isDeleted != null and isDeleted.trim() != ''">
@@ -66,15 +67,16 @@
 			<choose>
 				<when test="(dueStartDate != null and dueStartDate.trim() != '')
 							and (dueEndDate != null and dueEndDate.trim() != '')">
-					and o.due_date BETWEEN STR_TO_DATE(#{dueStartDate},'%Y%m%d') AND STR_TO_DATE(#{dueEndDate},'%Y%m%d')
+					and o.due_date BETWEEN STR_TO_DATE(CONCAT(#{dueStartDate},'000000'),'%Y-%m-%d%H%i%S') 
+										AND STR_TO_DATE(CONCAT(#{dueEndDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(dueStartDate != null and dueStartDate.trim() != '')
 							and (dueEndDate == null or dueEndDate.trim() == '')">
-					and o.due_date <![CDATA[>=]]> STR_TO_DATE(#{dueStartDate},'%Y%m%d')
+					and o.due_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{dueStartDate},'000000'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(dueStartDate == null or dueStartDate.trim() == '')
 							and (dueEndDate != null and dueEndDate.trim() != '')">
-					and o.due_date <![CDATA[<=]]> STR_TO_DATE(#{dueEndDate},'%Y%m%d')
+					and o.due_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{dueEndDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 		</where>
