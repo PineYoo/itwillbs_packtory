@@ -43,9 +43,10 @@
 								<h5 class="card-title">첨부파일 목록</h5>
 								<div class="list-group">
 									<a th:each="file : ${fileList}"
-									   class="list-group-item list-group-item-action"
+									   th:if="${file.isDeleted == 'N'}"
 									   th:href="@{'/file/view/' + ${file.idx}}"
 									   th:text="${file.fileOriginalName}"
+									   class="list-group-item list-group-item-action"
 									   th:download="${file.fileOriginalName}">
 									</a>
 								</div>

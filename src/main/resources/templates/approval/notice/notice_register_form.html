@@ -35,7 +35,7 @@
 									<input class="form-control" id="title" th:field="*{title}" placeholder="제목 입력">
 								</div>
 								<div class="col">
-									<label for="type" class="form-label">구분</label>
+									<label for="type" class="form-label">분류</label>
 									<select id="type" class="form-select" th:field="*{type}">
 										<option value="">선택</option>
 										<option th:each="type : ${codeType}" th:value="${type.minorCode}" th:text="${type.minorName}"></option>

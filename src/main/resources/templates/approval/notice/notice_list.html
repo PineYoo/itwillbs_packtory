@@ -12,11 +12,19 @@
 <th:block layout:fragment="css">
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 </th:block>
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	
 <style type="text/css">
 	.btnCommand {
 		text-align: right;
 		margin-right: 20px;
 		margin-bottom: 10px;
+	}
+	
+	.form-control[readonly] {
+		background-color: white;
 	}
 	
 	.table th, td {
@@ -28,22 +36,92 @@
 		padding-left: 30px;
 	}
 	
+	.clickable-row td:hover {
+		background-color: #edfbfc;
+	}
+	
 </style>
 </head>
 <body id="page-top">
-	<div layout:fragment="contents">
+	<th:block layout:fragment="contents">
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">공지사항</h1>
-			<!-- btnCommand Area -->
-			<div class="btnCommand">
-				<button type="button" id="newBtn" class="btn btn-primary">공지사항 등록</button>
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">공지사항</h1>
 			</div>
+			<!-- btnCommand Area -->
+			
+			<!-- ---------- 검색바 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					
+					<!-- 주문서 등록 버튼 -->
+					<div class="btnCommand">
+						<button type="button" id="newBtn" class="btn btn-primary">공지사항 등록</button>
+					</div>
+					<!-- ---------- 검색바 ---------- -->
+					<div class="search-wrap border">
+						<section class="d-flex search-inner">
+							<!-- 주문상태별 검색-->
+							<div class="col pl-4 search-box">
+							<form th:action="@{/groupware/notice/search}" method="get" th:object="${noticeSearchDTO}" id="noticeSearchForm">
+								<table class="table table-borderd">
+									<tr>
+										<td class="col-sm-12 col-md-2"><label for="type">분류</label></td>
+										<td class="col-sm-12 col-md-3"><th:block th:with="type=*{type}">
+																			<select name="type" id="type" th:value="*{type}" class="form-select" aria-label="Default select example">
+																				<option value="" th:selected="${type} eq '' ">전체</option>
+																				<option th:each="item : *{codeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}"></option>
+																			</select>
+																		</th:block>
+										</td>
+										<td class="col-sm-12 col-md-2"><label for="title">제목</label></td>
+										<td class="col-sm-12 col-md-3"><input type="text" id="title" th:field="*{title}" class="form-control rounded-sm mr-2" placeholder="공지사항 제목">
+										</td>
+									</tr>
+									<tr>
+										<td class="col-sm-12 col-md-2"><label for="isDeleted">삭제유무</label></td>
+										<td class="col-sm-12 col-md-3"><select name="isDeleted" id="isDeleted" th:value="*{isDeleted}" class="form-select" aria-label="Default select example">
+																	<option value="" th:selected="*{isDeleted} eq '' ">전체</option>
+																	<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
+																	<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
+																</select>
+										</td>
+										<td class="col-sm-12 col-md-2"><label for="regStartDate">등록일</label></td>
+										<td class="col-sm-12 col-md-3"><div class="input-group mb-3">
+																		<input type="text" id="regStartDate" th:field="*{regStartDate}" class="form-control">
+																		<span class="input-group-text calendar-icon" data-target="#regStartDate">
+															                <i class="fa fa-calendar"></i>
+															            </span>
+															            
+																		~
+																		
+																		<input type="text" id="regEndDate" th:field="*{regEndDate}" class="form-control">
+																		<span class="input-group-text calendar-icon" data-target="#regEndDate">
+															                <i class="fa fa-calendar"></i>
+															            </span>
+																	</div>
+										</td>
+									</tr>
+								</table>
+								<div class="btnCommand">
+									<button type="submit" id="searchBtn" class="btn btn-primary">검색</button>
+								</div>
+							</form>
+							</div>
+						
+						</section>
+					</div>
+					<!-- ---------- 검색바 끝 ---------- -->
+				</div>
+			</div>
+			<!-- ---------- 검색바 컨테이너 끝 ---------- -->
+			
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" th:object="${clientDTOList}">
+						<table class="table table-bordered" id="dataTables" width="100%" cellspacing="0">
 							<thead>
 								<tr>
 									<th class="checkHead">#</th>
@@ -55,7 +133,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item, status : ${noticeDTOlist}" th:data-id="${item.idx}" class="clickable-row">
+								<tr th:each="item, status : ${noticeDTOlist}" th:if="${item.isDeleted == 'N'}" th:data-id="${item.idx}" class="clickable-row">
 									<td><input type="checkbox"></td>
 									<td th:text="${item.title}" class="notice-title"></td>
 									<td th:text="${item.codeName}"></td>
@@ -68,8 +146,41 @@
 					</div>
 				</div>
 			</div>
+			<!-- ------------- 본문 컨테이너 끝 ---------- -->
 		</div>
+		
 		<script type="text/javascript">
+			$(document).ready(function() {
+				// init DataTable
+				$('#dataTables').DataTable({
+					lengthChange: false,
+					searching: false,
+					paging: false,
+					info: false
+// 					destroy: true
+				}); // end of $('#dataTables').DataTable({
+				
+				$("#regStartDate, #regEndDate").flatpickr({
+	                dateFormat: "Y-m-d",
+	                allowInput: true, // input 창 readOnly 해제
+	                clickOpens: false // input 창 눌렀을 때 달력 출력 해제
+	            });
+				
+				$(".calendar-icon").on("click", function() {
+	                let targetInput = $(this).data("target"); // 해당 아이콘의 data-target 속성 값 가져오기
+	                $(targetInput).flatpickr().open(); // 해당 input의 달력 열기
+	            });
+				
+				$("#noticeSearchForm").on("submit", function(event) {
+		            $("#regStartDate, #regEndDate").each(function() {
+		            	let originalDate = $(this).val();
+// 		            	let cleanDate = $(this).val().replace(/[.\-\/]/g, ""); // 기호 제거
+		                $(this).val(cleanDate); // 정리된 값으로 변경
+		            });
+		        });
+				
+			});
+				
 			$(function() {
 				$("#newBtn").on("click", function() {
 					location.href = "/groupware/notice/new";
@@ -82,7 +193,10 @@
 				
 			})
 		</script>
-	</div>
+	</th:block>
+	<!-- ------------------------------------------------------------------------------- -->
+	
+	<!-- JS -->
 	<th:block layout:fragment="script">
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 		<script src="/js/datatables/jquery.dataTables.min.js"></script>

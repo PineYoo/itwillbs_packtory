@@ -38,7 +38,7 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<form th:action="@{/groupware/notice/{idx}(idx=${noticeDTO.idx})}" method="post" th:object="${noticeDTO}"
-							enctype="multipart/form-data">
+							  enctype="multipart/form-data">
 							<input type="hidden" name="_method" value="put">
 							<div class="mb-3">
 								<label class="small mb-1" for="regId">작성자 ID</label>
@@ -85,7 +85,10 @@
 							<div class="mb-3 custom-div" th:if="${fileList != null and not #lists.isEmpty(fileList)}">
 								<h6 class="card-title">첨부파일 목록</h6>
 								<ul class="list-group custom-ul">
-								    <li th:each="file : ${fileList}" class="list-group-item d-flex justify-content-between align-items-center">
+								    <li th:each="file : ${fileList}"
+								    	th:if="${file.isDeleted == 'N'}"
+								    	th:id="'file-' + ${file.idx}"
+								    	class="list-group-item d-flex justify-content-between align-items-center">
 							            <span th:text="${file.fileOriginalName}"></span>
 							            <button type="button" class="btn btn-danger btn-sm fileDeleteButton" th:data-id="${file.idx}">삭제</button>
 							        </li>
@@ -107,7 +110,24 @@
 				$(function() {
 					$(".fileDeleteButton").on("click", function() {
 						let idx = $(this).data("id");
-						console.log(idx);
+						let listItem = $("#file-" + idx);
+						
+						if(confirm("삭제하시겠습니까?")){
+							$.ajax({
+								url: `/groupware/notice/fileDelete/${idx}`,
+								type: "POST",
+								success : function(result) {
+									alert(result.message);
+									listItem.fadeOut(300, function() {
+										$(this).remove();
+									})
+								},
+								fail : function(response) {
+									alert(response.message);
+								}
+								
+							});
+						}
 					});
 				});
 			</script>

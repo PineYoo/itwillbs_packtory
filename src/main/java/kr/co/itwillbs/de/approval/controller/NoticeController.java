@@ -28,6 +28,7 @@ import kr.co.itwillbs.de.approval.dto.NoticeSearchDTO;
 import kr.co.itwillbs.de.approval.service.NoticeService;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.common.service.FileService;
+import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.FileUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.common.vo.FileVO;
@@ -49,10 +50,13 @@ public class NoticeController {
 	@Autowired
 	private FileService fileService;
 	
+	@Autowired
+	private CommonCodeUtil commonCodeUtil;
+	
 	@Autowired FileUtil fileUtil;
 	
 	//	공지사항 공통코드
-	private String major_code = "notice_type";
+	private final String MAJOR_CODE = "NOTICE_TYPE";
 	
 	/**
 	 * 샘플 등록 페이지(view)를 요청하는 "/groupware/notice/new" 연결
@@ -65,7 +69,7 @@ public class NoticeController {
 		
 		model.addAttribute("noticeDTO", new NoticeDTO());
 		//	공통코드 가져오기
-		model.addAttribute("codeType", commonService.getCodeItems(major_code));
+		model.addAttribute("codeType", commonService.getCodeItems(MAJOR_CODE));
 		
 		return "approval/notice/notice_register_form";
 	}
@@ -105,8 +109,6 @@ public class NoticeController {
 				e.printStackTrace();
 			}
 			
-			//	t_files 테이블에 저장 작업
-			
 		}
 		
 		for(FileVO fileVO : fileList) {
@@ -133,11 +135,12 @@ public class NoticeController {
 	public String getNoticeList(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		List<NoticeDTO> noticeDTOlist = noticeService.getNoticeList(major_code);
+		List<NoticeDTO> noticeDTOlist = noticeService.getNoticeList(MAJOR_CODE);
 		model.addAttribute("noticeDTOlist", noticeDTOlist);
 		
-//		NoticeSearchDTO noticeSearchDTO = new NoticeSearchDTO();
-//		model.addAttribute("noticeSearchDTO", noticeSearchDTO);
+		NoticeSearchDTO noticeSearchDTO = new NoticeSearchDTO();
+		noticeSearchDTO.setCodeItemList(commonCodeUtil.getCodeItems(MAJOR_CODE));
+		model.addAttribute("noticeSearchDTO", noticeSearchDTO);
 		
 		return "approval/notice/notice_list";
 	}
@@ -154,12 +157,18 @@ public class NoticeController {
 		
 		log.info("requestData : {} ", noticeSearchDTO.toString());
 		
+		List<NoticeDTO> noticeDTOList = noticeService.getNoticeSearchList(MAJOR_CODE, noticeSearchDTO);
+		log.info("noticeDTOList : {} ", noticeDTOList.toString());
+		
 		// 조회 결과 값 뷰에 전달
-		model.addAttribute("noticeDTOList", noticeService.getNoticeSearchList(noticeSearchDTO));
+		model.addAttribute("noticeDTOlist", noticeDTOList);
+		
 		// 검색 조건 값 뷰에 전달
+		noticeSearchDTO.setCodeItemList(commonCodeUtil.getCodeItems(MAJOR_CODE));
+		log.info("noticeDTOList : {} ", noticeSearchDTO.toString());
 		model.addAttribute("noticeSearchDTO", noticeSearchDTO);
 		
-		return "notice/list";
+		return "approval/notice/notice_list";
 	}
 	
 	/**
@@ -200,13 +209,19 @@ public class NoticeController {
 		return "approval/notice/notice_detail";
 	}
 	
+	/**
+	 * 공지사항 수정폼을 요청하는 "/groupware/notice/modify/{idx}" 주소 매핑(GET)
+	 * @param idx
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/modify/{idx}")
 	public String modifyNotice(@PathVariable(name = "idx") String idx, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info(idx);
 		model.addAttribute("noticeDTO", noticeService.getNotice(idx));
 		model.addAttribute("fileList", fileService.getFilesByMajorIdx("t_notice", Long.parseLong(idx)));
-		model.addAttribute("codeType", commonService.getCodeItems(major_code));
+		model.addAttribute("codeType", commonService.getCodeItems(MAJOR_CODE));
 		return "approval/notice/notice_modify_form";
 	}
 	
@@ -218,30 +233,67 @@ public class NoticeController {
 	 * @return
 	 */
 	@PutMapping("/{idx}")
-	public String putNotice(@PathVariable(name = "idx") String idx, @ModelAttribute("noticeDTO") NoticeDTO noticeDTO) {
+	public String putNotice(@PathVariable(name = "idx") String idx,
+							@ModelAttribute("noticeDTO") NoticeDTO noticeDTO,
+							@RequestParam("noticeFiles") List<MultipartFile> noticeFiles) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		log.info("requestData : param = {}, dto = {} ", idx, noticeDTO);
+		log.info("requestData : param = {}, dto = {}, file[0] = {} ", idx, noticeDTO, noticeFiles.get(0));
 		
 		try {
 			if(StringUtil.isLongValue(idx)) {
 				//정수일 경우 업데이트 가능
-//				noticeDTO.setIdx(idx);
-				
-				//	DTO에서 idx를 String 으로 선언해둠
-//				noticeDTO.setIdx(Long.parseLong(idx));
+				noticeDTO.setIdx(idx);
+				noticeDTO.setModId("testUser");
 				noticeService.modifyNotice(noticeDTO);
 			} else {
 				// 정수가 아닐 경우 다시 정보 페이지로
-				return "notice/notice_detail";
+				return "approval/notice/notice_detail";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "notice/notice_detail";
+			return "approval/notice/notice_detail";
+		}
+		
+		//	noticeFiles 안에 들어있는 값을 넣기위한 List 객체 선언
+		List<FileVO> fileList = new ArrayList<>();
+		
+		//	파일 업로드 작업
+		for(MultipartFile file : noticeFiles) {
+			log.info("noticeFiles -> file 값이 있는지 확인 : " + file.getOriginalFilename());
+			//	파일을 첨부하지 않았을 때 파일 업로드 작업 중지
+			if(!StringUtils.hasLength(file.getOriginalFilename())) {
+				break;
+			}
+			
+			try {
+				//	setFile 메서드 호출하여 FileVO 리턴 받아 List에 저장
+				fileList.add(fileUtil.setFile(file));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		for(FileVO fileVO : fileList) {
+			log.info("fileList -> fileVO 값이 있는지 확인 : " + fileVO.getFileOriginalName());
+			
+			if(!StringUtils.hasLength(fileVO.getFileOriginalName())) {
+				break;
+			}
+			//	idx 세팅
+			fileVO.setMajorIdx(idx);
+			//	type 세팅
+			fileVO.setType("t_notice");
+			//	삭제유무 기본값 N
+			fileVO.setIsDeleted("N");
+			//	랭크넘버 추가예정
+			
+			fileService.registerFile(fileVO);
 		}
 		
 		// 샘플 정보 페이지 리다이렉트 (GET)방식 
-		return "redirect:/notice/"+idx;
+		return "redirect:/groupware/notice/"+idx;
 	}
 	
 	/**
@@ -264,8 +316,6 @@ public class NoticeController {
 			if(StringUtil.isLongValue(idx)) {
 				noticeService.removeItem(idx);
 				
-				//	DTO에 idx 를 String으로 해놓음
-//				noticeService.removeItem(Long.parseLong(idx));
 				response.put("status", "success");
 				response.put("message", "정상적으로 수정 되었습니다.");
 			} else {
@@ -280,4 +330,36 @@ public class NoticeController {
 		
 		return ResponseEntity.ok(response);
 	}
+	
+	/**
+	 * 공지사항 수정폼에서 파일 개별 삭제 요청(AJAX)
+	 * @param idx
+	 * @return
+	 */
+	@PostMapping("/fileDelete/{idx}")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> removeNoticeFile(@PathVariable(name = "idx") String idx) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		Map<String, Object> response = new HashMap<>();
+		try {
+			if(StringUtil.isLongValue(idx)) {
+				noticeService.removeFile(idx);
+				
+				response.put("status", "success");
+				response.put("message", "삭제 되었습니다.");
+			} else {
+				throw new Exception("해당 파일이 존재하지 않습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 해당 상품 조회 실패 시 삭제가 불가능하므로 AJAX 응답을 실패로 전송
+			response.put("status", "error");
+			response.put("message", e.getMessage());
+		}
+		
+		return ResponseEntity.ok(response);
+		
+	}
+	
 }

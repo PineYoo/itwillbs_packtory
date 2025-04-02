@@ -39,5 +39,6 @@ public class NoticeDTO {
 	private String modDate;
 	
 	//	공통코드 타입으로 조회한 코드이름 저장용
+	//	Mapper에서 Alias 써서 codeName 을 가져옴
 	private String codeName;
 }

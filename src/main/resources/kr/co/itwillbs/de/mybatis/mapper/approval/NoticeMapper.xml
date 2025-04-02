@@ -53,13 +53,72 @@
 		n.mod_date
 	</sql>
 	
+	<sql id="t_commoncode_item_columns_forSelect">
+		idx,
+		major_code,
+		minor_code,
+		minor_name,
+		description,
+		is_deleted,
+		rank_number,
+		reg_id,
+		reg_date,
+		mod_id,
+		mod_date
+	</sql>
+	
+	
 	<select id="getNoticeList" resultType="kr.co.itwillbs.de.approval.dto.NoticeDTO">
 		SELECT
-			<include refid="t_notice_columns_forSelect"></include>,
-			   c.minor_name AS codeName
-		  FROM t_notice n JOIN t_commoncode_item c
+			<include refid="t_notice_columns_forSelect"></include>
+			 , c.minor_name AS codeName
+		  FROM t_notice n JOIN
+		  	 ( SELECT
+			<include refid="t_commoncode_item_columns_forSelect"></include>
+				 FROM t_commoncode_item
+				WHERE major_code = #{major_code}
+			 ) c
 		    ON n.type = c.minor_code
-		 WHERE c.major_code = #{major_code}
+	</select>
+	
+	<select id="getNoticeSearchList" parameterType="kr.co.itwillbs.de.approval.dto.NoticeSearchDTO"
+									resultType="kr.co.itwillbs.de.approval.dto.NoticeDTO">
+		SELECT
+			<include refid="t_notice_columns_forSelect"></include>
+			 , c.minor_name AS codeName
+		  FROM t_notice n JOIN
+		  	 ( SELECT
+			<include refid="t_commoncode_item_columns_forSelect"></include>
+				 FROM t_commoncode_item
+				WHERE major_code = #{major_code}
+			 ) c
+		    ON n.type = c.minor_code
+		<where>
+			<if test="noticeSearchDTO.type != null and noticeSearchDTO.type.trim() != ''">
+		   AND n.type = #{noticeSearchDTO.type}
+			</if>
+			<if test="noticeSearchDTO.title != null and noticeSearchDTO.title.trim() != ''">
+		   AND n.title LIKE CONCAT('%', #{noticeSearchDTO.title}, '%') 
+			</if>
+			<if test="noticeSearchDTO.isDeleted != null and noticeSearchDTO.isDeleted.trim() != ''">
+		   AND n.is_deleted = #{noticeSearchDTO.isDeleted}
+			</if>
+			<choose>
+				<when test="(noticeSearchDTO.regStartDate != null and noticeSearchDTO.regStartDate.trim() != '')
+							and (noticeSearchDTO.regEndDate != null and noticeSearchDTO.regEndDate.trim() != '')">
+					AND n.reg_date BETWEEN STR_TO_DATE(CONCAT(#{noticeSearchDTO.regStartDate}, '000000'),'%Y-%m-%d%H%i%S') 
+										AND STR_TO_DATE(CONCAT(#{noticeSearchDTO.regEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(noticeSearchDTO.regStartDate != null and noticeSearchDTO.regStartDate.trim() != '')
+							and (noticeSearchDTO.regEndDate == null or noticeSearchDTO.regEndDate.trim() == '')">
+					AND n.reg_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{noticeSearchDTO.regStartDate}, '000000'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(noticeSearchDTO.regStartDate == null or noticeSearchDTO.regStartDate.trim() == '')
+							and (noticeSearchDTO.regEndDate != null and noticeSearchDTO.regEndDate.trim() != '')">
+					AND n.reg_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{noticeSearchDTO.regEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+			</choose>
+		</where>
 	</select>
 	
 	<insert id="registerNotice" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.approval.dto.NoticeDTO">
@@ -102,7 +161,7 @@
 			<set>
 				<if test="type != null">type = #{type},</if>
 				<if test="title != null">title = #{title},</if>
-				<if test="contents != null">contents = #{name},</if>
+				<if test="contents != null">contents = #{contents},</if>
 				<if test="isBanner != null">is_banner = #{isBanner},</if>
 				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
 				<if test="modId != null">mod_id = #{modId},</if>
@@ -112,6 +171,21 @@
 		where idx = #{idx}
 	</update>
 	
+	<update id="removeNotice" parameterType="kr.co.itwillbs.de.approval.dto.NoticeDTO">
+		update t_demo
+			<set>
+				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+			</set>
+		where idx = #{idx}
+	</update>
+	
+	<update id="removeFile" parameterType="kr.co.itwillbs.de.common.vo.FileVO">
+		update t_files
+			<set>
+				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+			</set>
+		where idx = #{idx}
+	</update>
 	
 	
 </mapper>
