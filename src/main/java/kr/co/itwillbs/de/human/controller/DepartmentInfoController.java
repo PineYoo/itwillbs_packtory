@@ -42,7 +42,7 @@ public class DepartmentInfoController {
         List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("DEPARTMENT_CODE");
         model.addAttribute("codeItems", codeItems);
 
-        return "info/department/form"; // form.html 뷰 페이지로 이동
+        return "human/info/department/form"; // form.html 뷰 페이지로 이동
     }
     
     // 부서 등록 처리
@@ -70,7 +70,7 @@ public class DepartmentInfoController {
         model.addAttribute("codeItems", codeItems);
 
         // list.html 뷰 페이지로 이동
-        return "info/department/list";
+        return "human/info/department/list";
     }
 
     // 부서 검색 기능 (POST 방식으로 처리)
@@ -90,7 +90,7 @@ public class DepartmentInfoController {
         model.addAttribute("codeItems", codeItems);
 
         // list.html 뷰 페이지로 이동
-        return "info/department/list";
+        return "human/info/department/list";
     }
     
     // 단일 부서 조회 (idx로 조회)
@@ -108,7 +108,7 @@ public class DepartmentInfoController {
         model.addAttribute("departmentInfoDTO", departmentInfoDTO);
         model.addAttribute("codeItems", codeItems);
         
-        return "info/department/detail"; // detail.html 뷰 페이지로 이동
+        return "human/info/department/detail"; // detail.html 뷰 페이지로 이동
     }
 
     // 부서 수정 요청 (디테일 페이지에서 처리)
@@ -147,4 +147,3 @@ public class DepartmentInfoController {
         }
     }
 }
-

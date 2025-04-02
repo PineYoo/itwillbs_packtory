@@ -18,17 +18,10 @@
         <link href="/css/common.css" rel="stylesheet">
     </th:block>
 
-    <style type="text/css">
-        /* 부드러운 효과 및 hover 시 배경색 변경 */
-        .clickable-row {
-            transition: background-color 0.2s ease;
-        }
-        .clickable-row:hover {
-            background-color: #e0e0e0;
-        }
-        /* 스타일을 명확히 지정하여 클릭 시 배경색이 변경되도록 */
+    <style>
         .table tbody tr.clickable-row:hover {
-            background-color: #f0f0f0;
+            background-color: #e0e0e0 !important;
+            cursor: pointer;
         }
     </style>
 </head>

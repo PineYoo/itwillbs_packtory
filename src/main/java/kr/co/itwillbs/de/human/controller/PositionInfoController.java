@@ -38,7 +38,7 @@ public class PositionInfoController {
         log.info("positionRegisterForm --- start");
         model.addAttribute("positionInfoDTO", new PositionInfoDTO());
         model.addAttribute("codeItems", commonCodeUtil.getCodeItems("POSITION_CODE"));
-        return "info/position/form";
+        return "human/info/position/form";
     }
 
     // 직급 등록 처리
@@ -69,7 +69,7 @@ public class PositionInfoController {
         model.addAttribute("codeItems", codeItems);
         model.addAttribute("selectedCode", positionCode); // 검색 시 선택된 코드 유지
 
-        return "info/position/list";
+        return "human/info/position/list";
     }
 
     // 단일 직급 조회
@@ -78,7 +78,7 @@ public class PositionInfoController {
         log.info("getPosition --- start");
         model.addAttribute("positionInfoDTO", positionInfoService.getPositionByIdx(idx));
         model.addAttribute("codeItems", commonCodeUtil.getCodeItems("POSITION_CODE"));
-        return "info/position/detail";
+        return "human/info/position/detail";
     }
 
     // 직급 수정
