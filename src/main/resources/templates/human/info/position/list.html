@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/de_layout}">
+
+<head>
+    <title>팩토리(PackTory) - 직급 목록</title>
+    
+    <th:block layout:fragment="headContents">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    </th:block>
+    
+    <th:block layout:fragment="css">
+        <link href="/css/fontawesome/all.min.css" rel="stylesheet">
+        <link href="/css/sb-admin-2.css" rel="stylesheet">
+        <link href="/css/common.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    </th:block>
+
+    <style>
+        .table tbody tr.position-row:hover {
+            background-color: #e0e0e0 !important;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body id="page-top">
+    <div layout:fragment="contents">
+        <div class="container mt-5">
+            <h2 class="h3 mb-4 text-gray-800">직급 목록</h2>
+
+             <!-- 검색 폼 -->
+            <form th:action="@{/position}" method="get">
+                <div class="form-row mb-3">
+                    <div class="col-md-4">
+                        <select name="positionCode" class="form-control" th:value="${selectedCode}">
+                            <option value="">직급 코드 선택</option>
+                            <option th:each="code : ${codeItems}" th:value="${code.minorName}" th:text="${code.minorName}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select name="isManager" class="form-control" th:value="${isManager}">
+                            <option value="">관리자 여부 선택</option>
+                            <option value="Y">Y</option>
+                            <option value="N">N</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-end">
+    					<button type="submit" class="btn btn-primary">검색</button>
+					</div>
+                </div>
+            </form>
+
+            <!-- 직급 목록 테이블 -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>인덱스</th>
+                        <th>직급 코드</th>
+                        <th>정렬 순서</th>
+                        <th>관리자 여부</th>
+                        <th>삭제 여부</th>
+                        <th>작성자</th>
+                        <th>최종 작성자</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="position : ${positionInfoDTOList}" th:data-id="${position.idx}" class="position-row">
+                        <td th:text="${position.idx}"></td>
+                        <td th:text="${position.positionCode}"></td>
+                        <td th:text="${position.rankNumber}"></td>
+                        <td th:text="${position.isManager}"></td>
+                        <td th:text="${position.isDeleted}"></td>
+                        <td th:text="${position.regId}"></td>
+                        <td th:text="${position.modId}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(positionInfoDTOList)}">
+                        <td colspan="8" class="text-center">조회된 데이터가 없습니다.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 직급 등록 버튼 -->
+            <a href="/position/new" class="btn btn-primary">직급 등록</a>
+        </div>
+    </div>
+
+    <!-- 공통 스크립트 -->
+    <th:block layout:fragment="script">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // 각 직급 목록 행 클릭 시 상세 페이지로 이동
+                const rows = document.querySelectorAll('.position-row');
+                
+                rows.forEach(row => {
+                    row.addEventListener('click', function() {
+                        const positionId = this.getAttribute('data-id');
+                        if (positionId) {
+                            // 해당 직급의 디테일 페이지로 리디렉션
+                            window.location.href = '/position/detail/' + positionId;
+                        }
+                    });
+                });
+            });
+        </script>
+    </th:block>
+
+</body>
+</html>
