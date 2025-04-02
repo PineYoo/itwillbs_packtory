@@ -227,22 +227,27 @@
 			                            </tr>
 			                            <tr>
 			                                <th>상호명</th>
+			                                	<td><input type="text" disabled></td>
 	<!-- 				                                <td><input type="text" id="companyName" th:value="*{company_name}" name="companyName" disabled></td> -->
 			                            </tr>
 			                            <tr>
 			                                <th>대표자명</th>
+			                                	<td><input type="text" disabled></td>
 	<!-- 				                                <td><input type="text" id="ownerName" th:value="*{owner_name}" name="ownerName" disabled></td> -->
 			                            </tr>
 			                            <tr>
 			                                <th>전화번호</th>
+			                                	<td><input type="text" disabled></td>
 	<!-- 				                                <td><input type="text" id="phoneNumber" th:value="*{phone_number}" maxlength="13" name="phoneNumber" disabled></td> -->
 			                            </tr>
 			                            <tr>
 			                                <th>팩스번호</th>
+			                                	<td><input type="text" disabled></td>
 	<!-- 				                                <td><input type="text" id="faxNumber" th:value="*{fax_number}" maxlength="10" name="faxNumber" disabled></td> -->
 			                            </tr>
 			                            <tr>
 			                                <th>이메일</th>
+			                                	<td><input type="text" disabled></td>
 	<!-- 				                                <td><input type="text" id="eMail" th:value="*{e_mail}" name="eMail" disabled></td> -->
 			                            </tr>
 			                        </table>
@@ -252,10 +257,14 @@
 			                            <tr>
 			                                <th style="vertical-align: top; width: 130px;">주소</th>
 			                                <td>
-	<!-- 				                                    <input type="text" id="postCode" class="postCode_2" th:value="*{clientDTO.postCode}" maxlength="5"> -->
-	<!-- 				                                    <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2">주소찾기</button><br> -->
-	<!-- 				                                    <input type="text" id="address1" class="address1_2" th:value="*{clientDTO.address1}" placeholder="기본주소 입력"><br> -->
-	<!-- 				                                    <input type="text" id="address2" class="address2_2" th:value="*{clientDTO.address2}" placeholder="상세주소 입력"> -->
+	                                            <input type="text" id="postCode" class="postCode_2" maxlength="5" disabled>
+			                                    <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2" disabled>주소찾기</button><br>
+			                                    <input type="text" id="address1" class="address1_2" placeholder="기본주소 입력" disabled><br>
+			                                    <input type="text" id="address2" class="address2_2" placeholder="상세주소 입력" disabled>
+<!-- 					                                    <input type="text" id="postCode" class="postCode_2" th:value="*{clientDTO.postCode}" maxlength="5"> -->
+<!-- 					                                    <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2">주소찾기</button><br> -->
+<!-- 					                                    <input type="text" id="address1" class="address1_2" th:value="*{clientDTO.address1}" placeholder="기본주소 입력"><br> -->
+<!-- 					                                    <input type="text" id="address2" class="address2_2" th:value="*{clientDTO.address2}" placeholder="상세주소 입력"> -->
 			                                </td>
 			                            </tr>
 			                        </table>
