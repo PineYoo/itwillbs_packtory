@@ -38,13 +38,13 @@
 		<where>
 			o.trade_code = #{tradeCode}
 			<if test="documentNumber != null and documentNumber.trim() != ''">
-			and o.document_number = #{documentNumber}
+				and o.document_number = #{documentNumber}
 			</if>
 			<if test="statusCode != null and statusCode.trim() != ''">
-			and o.status_code = #{statusCode}
+				and o.status_code = #{statusCode}
 			</if>
 			<if test="companyName != null and companyName.trim() != ''">
-			and o.company_name = #{companyName}
+				and o.company_name = #{companyName}
 			</if>
 			<choose>
 				<when test="(requestStartDate != null and requestStartDate.trim() != '')
@@ -61,7 +61,7 @@
 				</when>
 			</choose>
 			<if test="isDeleted != null and isDeleted.trim() != ''">
-			and o.is_deleted = #{isDeleted}
+				and o.is_deleted = #{isDeleted}
 			</if>
 			<choose>
 				<when test="(dueStartDate != null and dueStartDate.trim() != '')
