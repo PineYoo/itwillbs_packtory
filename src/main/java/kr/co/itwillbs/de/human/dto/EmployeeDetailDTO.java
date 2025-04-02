@@ -1,16 +1,16 @@
-package kr.co.itwillbs.de.employee.dto;
+package kr.co.itwillbs.de.human.dto;
 
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import kr.co.itwillbs.de.human.entity.Employee;
+import kr.co.itwillbs.de.human.entity.EmployeeDetail;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import kr.co.itwillbs.de.employee.entity.Employee;
-import kr.co.itwillbs.de.employee.entity.EmployeeDetail;
 
 @Getter
 @Setter

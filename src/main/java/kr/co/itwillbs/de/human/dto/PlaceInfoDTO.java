@@ -1,8 +1,8 @@
-package kr.co.itwillbs.de.info.dto;
+package kr.co.itwillbs.de.human.dto;
 
 import java.time.LocalDateTime;
 import jakarta.validation.constraints.NotEmpty;
-import kr.co.itwillbs.de.info.entity.PlaceInfo;
+import kr.co.itwillbs.de.human.entity.PlaceInfo;
 import lombok.*;
 
 @Getter

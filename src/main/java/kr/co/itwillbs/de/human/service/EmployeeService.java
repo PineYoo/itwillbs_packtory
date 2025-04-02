@@ -1,13 +1,13 @@
-package kr.co.itwillbs.de.employee.service;
+package kr.co.itwillbs.de.human.service;
 
 import kr.co.itwillbs.de.common.service.CommonService;
-import kr.co.itwillbs.de.employee.dto.EmployeeDTO;
-import kr.co.itwillbs.de.employee.dto.EmployeeDetailDTO;
-import kr.co.itwillbs.de.employee.dto.EmployeeSearchDTO;
-import kr.co.itwillbs.de.employee.entity.Employee;
-import kr.co.itwillbs.de.employee.entity.EmployeeDetail;
-import kr.co.itwillbs.de.employee.repository.EmployeeDetailRepository;
-import kr.co.itwillbs.de.employee.repository.EmployeeRepository;
+import kr.co.itwillbs.de.human.dto.EmployeeDTO;
+import kr.co.itwillbs.de.human.dto.EmployeeDetailDTO;
+import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
+import kr.co.itwillbs.de.human.entity.Employee;
+import kr.co.itwillbs.de.human.entity.EmployeeDetail;
+import kr.co.itwillbs.de.human.repository.EmployeeDetailRepository;
+import kr.co.itwillbs.de.human.repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;

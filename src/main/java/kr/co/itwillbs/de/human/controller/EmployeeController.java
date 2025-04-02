@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.employee.controller;
+package kr.co.itwillbs.de.human.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import kr.co.itwillbs.de.employee.dto.EmployeeDTO;
-import kr.co.itwillbs.de.employee.dto.EmployeeDetailDTO;
-import kr.co.itwillbs.de.employee.dto.EmployeeSearchDTO;
-import kr.co.itwillbs.de.employee.service.EmployeeService;
+import kr.co.itwillbs.de.human.dto.EmployeeDTO;
+import kr.co.itwillbs.de.human.dto.EmployeeDetailDTO;
+import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
+import kr.co.itwillbs.de.human.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

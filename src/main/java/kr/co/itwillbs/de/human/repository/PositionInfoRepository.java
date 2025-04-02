@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.info.repository;
+package kr.co.itwillbs.de.human.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.co.itwillbs.de.info.entity.PositionInfo;
+import kr.co.itwillbs.de.human.entity.PositionInfo;
 
 import org.springframework.data.repository.query.Param;
 

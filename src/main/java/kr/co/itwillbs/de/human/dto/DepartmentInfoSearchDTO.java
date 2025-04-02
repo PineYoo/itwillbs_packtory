@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.info.dto;
+package kr.co.itwillbs.de.human.dto;
 
 import lombok.Builder;
 import lombok.Getter;

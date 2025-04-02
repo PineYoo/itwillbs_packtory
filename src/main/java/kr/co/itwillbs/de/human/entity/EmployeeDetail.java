@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.employee.entity;
+package kr.co.itwillbs.de.human.entity;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import kr.co.itwillbs.de.employee.dto.EmployeeDetailDTO;
+import kr.co.itwillbs.de.human.dto.EmployeeDetailDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

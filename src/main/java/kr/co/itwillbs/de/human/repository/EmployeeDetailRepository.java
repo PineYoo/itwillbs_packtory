@@ -1,11 +1,11 @@
-package kr.co.itwillbs.de.employee.repository;
+package kr.co.itwillbs.de.human.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import kr.co.itwillbs.de.employee.entity.EmployeeDetail;
+import kr.co.itwillbs.de.human.entity.EmployeeDetail;
 
 @Repository
 public interface EmployeeDetailRepository extends JpaRepository<EmployeeDetail, Long> {

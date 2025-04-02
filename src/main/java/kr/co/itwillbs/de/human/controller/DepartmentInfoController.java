@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.info.controller;
+package kr.co.itwillbs.de.human.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
-import kr.co.itwillbs.de.info.dto.DepartmentInfoDTO;
-import kr.co.itwillbs.de.info.dto.DepartmentInfoSearchDTO;
-import kr.co.itwillbs.de.info.service.DepartmentInfoService;
+import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
+import kr.co.itwillbs.de.human.dto.DepartmentInfoSearchDTO;
+import kr.co.itwillbs.de.human.service.DepartmentInfoService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

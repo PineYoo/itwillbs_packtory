@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.employee.dto;
+package kr.co.itwillbs.de.human.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,11 +1,11 @@
-package kr.co.itwillbs.de.info.entity;
+package kr.co.itwillbs.de.human.entity;
 
 import java.time.LocalDateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.*;
-import kr.co.itwillbs.de.info.dto.PositionInfoDTO;
+import kr.co.itwillbs.de.human.dto.PositionInfoDTO;
 import lombok.*;
 
 @Entity

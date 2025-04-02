@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.info.service;
+package kr.co.itwillbs.de.human.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
-import kr.co.itwillbs.de.info.dto.PositionInfoDTO;
-import kr.co.itwillbs.de.info.entity.PositionInfo;
-import kr.co.itwillbs.de.info.repository.PositionInfoRepository;
+import kr.co.itwillbs.de.human.dto.PositionInfoDTO;
+import kr.co.itwillbs.de.human.entity.PositionInfo;
+import kr.co.itwillbs.de.human.repository.PositionInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

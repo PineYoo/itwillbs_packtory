@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.info.service;
+package kr.co.itwillbs.de.human.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.co.itwillbs.de.info.dto.DepartmentInfoDTO;
-import kr.co.itwillbs.de.info.dto.DepartmentInfoSearchDTO;
-import kr.co.itwillbs.de.info.entity.DepartmentInfo;
-import kr.co.itwillbs.de.info.repository.DepartmentInfoRepository;
+import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
+import kr.co.itwillbs.de.human.dto.DepartmentInfoSearchDTO;
+import kr.co.itwillbs.de.human.entity.DepartmentInfo;
+import kr.co.itwillbs.de.human.repository.DepartmentInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

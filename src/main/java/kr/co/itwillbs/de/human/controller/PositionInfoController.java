@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.info.controller;
+package kr.co.itwillbs.de.human.controller;
 
 import java.util.List;
 
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import jakarta.persistence.EntityNotFoundException;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
-import kr.co.itwillbs.de.info.dto.PositionInfoDTO;
-import kr.co.itwillbs.de.info.service.PositionInfoService;
+import kr.co.itwillbs.de.human.dto.PositionInfoDTO;
+import kr.co.itwillbs.de.human.service.PositionInfoService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
