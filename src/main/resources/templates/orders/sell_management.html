@@ -28,7 +28,40 @@
 	<link href="/css/common.css" rel="stylesheet">
 </th:block>
 <style type="text/css">
+/* ======================================================================== */
+/* ---------------- 검색바 CSS(반응형 포함) ------------------------------- */
+.clickable-row td:hover {
+	background-color: #edfbfc;
+}
+ /* 기본 테이블 스타일 */
+#search-table {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    border-collapse: collapse;
+}
 
+#search-table table td {
+	padding-bottom: 7px;
+}
+
+/* 작은 화면에서 한 줄로 표시되도록 설정 */
+@media (max-width: 768px) {
+    #search-table tr {
+      display: block;
+    }
+
+    #search-table td {
+      display: block;
+      width: 100%;
+    }
+
+    #search-table td table {
+      display: block;
+    }
+}
+/* ---------------- 검색바 CSS(반응형 포함) 끝 ---------------------------- */
+/* ======================================================================== */
 </style>
 
 </head>
@@ -84,7 +117,9 @@
 									                </tr>
 									            </table>
 									        </td>
-									        
+									        <td class="col-sm-12 col-md-1"></td>
+									        <td style="border-left: 1px solid #e3e6f0;"></td>
+									        <td class="col-sm-12 col-md-1"></td>
 									        <td>
 									            <table style="width: 100%;">
 									                <tr>

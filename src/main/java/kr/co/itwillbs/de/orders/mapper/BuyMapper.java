@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
+import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 
 @Mapper
 public interface BuyMapper {
@@ -21,6 +22,13 @@ public interface BuyMapper {
     											@Param("searchKeyword") String searchKeyword, 
     											@Param("startDate") String startDate, 
     											@Param("endDate") String endDate);
+
+    /**
+     * SELECT FROM t_order inner join t_order_detail where orderSearchDTO
+     * @param orderSearchDTO 리스트 화면 검색필드 DTO
+     * @return
+     */
+	List<OrderDTO> getOrdersInTradeBuy(OrderSearchDTO orderSearchDTO);
 	
 	// 주문서 등록
 //	void insertOrder(@Valid OrderDTO orderDTO);

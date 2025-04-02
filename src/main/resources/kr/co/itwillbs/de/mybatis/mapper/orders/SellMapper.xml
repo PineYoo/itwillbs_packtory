@@ -237,4 +237,83 @@
 			</set>
 		 WHERE document_number = #{documentNumber}
 	</update>
+	
+	<!-- ================================================================================= -->
+		<!-- 발주관리 리스트 컬럼 -->
+	<sql id="buy_list_columns_forSelect">
+		o.idx,
+		o.document_number,	-- 주문번호
+		o.reg_date,			-- 주문일자
+		o.company_name,		-- 거래처명
+		d.supply_amount,	-- 공급가액
+		d.vat_amount,		-- 부가세액
+		d.total_amount,		-- 합계금액
+		o.expected_date,	-- 출고예정일
+		d.client_name,		-- 담당사원명
+		o.trade_code		-- 주문상태_코드
+	</sql>
+	
+	<!-- 전체 발주 관리 목록 조회 -->
+	<select id="getBuyList" resultType="java.util.HashMap">
+		SELECT 
+			<include refid="buy_list_columns_forSelect"></include>
+	 	  FROM t_order o
+		  LEFT JOIN t_order_detail d
+		    ON d.document_number = o.document_number
+	     WHERE o.trade_code = #{code}
+	     ORDER BY o.reg_date DESC
+	</select>
+	
+	<select id="getOrdersInTradeBuy" parameterType="kr.co.itwillbs.de.orders.dto.OrderSearchDTO"
+									resultType="kr.co.itwillbs.de.orders.dto.OrderDTO">
+		SELECT 
+			<include refid="buy_list_columns_forSelect"></include>
+		  FROM t_order o
+		  LEFT JOIN t_order_detail d
+		    ON o.document_number = d.document_number
+		<where>
+			o.trade_code = #{tradeCode}
+			<if test="documentNumber != null and documentNumber.trim() != ''">
+				and o.document_number = #{documentNumber}
+			</if>
+			<if test="statusCode != null and statusCode.trim() != ''">
+				and o.status_code = #{statusCode}
+			</if>
+			<if test="companyName != null and companyName.trim() != ''">
+				and o.company_name = #{companyName}
+			</if>
+			<choose>
+				<when test="(requestStartDate != null and requestStartDate.trim() != '')
+							and (requestEndDate != null and requestEndDate.trim() != '')">
+					and o.request_date BETWEEN STR_TO_DATE(#{requestStartDate},'%Y%m%d') AND STR_TO_DATE(#{requestEndDate},'%Y%m%d')
+				</when>
+				<when test="(requestStartDate != null and requestStartDate.trim() != '')
+							and (requestEndDate == null or requestEndDate.trim() == '')">
+					and o.request_date <![CDATA[>=]]> STR_TO_DATE(#{requestStartDate},'%Y%m%d')
+				</when>
+				<when test="(requestStartDate == null or requestStartDate.trim() == '')
+							and (requestEndDate != null and requestEndDate.trim() != '')">
+					and o.request_date <![CDATA[<=]]> STR_TO_DATE(#{requestEndDate},'%Y%m%d')
+				</when>
+			</choose>
+			<if test="isDeleted != null and isDeleted.trim() != ''">
+				and o.is_deleted = #{isDeleted}
+			</if>
+			<choose>
+				<when test="(dueStartDate != null and dueStartDate.trim() != '')
+							and (dueEndDate != null and dueEndDate.trim() != '')">
+					and o.due_date BETWEEN STR_TO_DATE(#{dueStartDate},'%Y%m%d') AND STR_TO_DATE(#{dueEndDate},'%Y%m%d')
+				</when>
+				<when test="(dueStartDate != null and dueStartDate.trim() != '')
+							and (dueEndDate == null or dueEndDate.trim() == '')">
+					and o.due_date <![CDATA[>=]]> STR_TO_DATE(#{dueStartDate},'%Y%m%d')
+				</when>
+				<when test="(dueStartDate == null or dueStartDate.trim() == '')
+							and (dueEndDate != null and dueEndDate.trim() != '')">
+					and o.due_date <![CDATA[<=]]> STR_TO_DATE(#{dueEndDate},'%Y%m%d')
+				</when>
+			</choose>
+		</where>
+		ORDER BY o.reg_date DESC
+	</select>
 </mapper>

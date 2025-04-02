@@ -90,6 +90,23 @@ public class SellService {
 		return sellMapper.getOrderByDocumentNumber(documentNumber);
 	}
 
-	
+	// ===============================================================================================
+	// ----------------------------------- 여기부터 발주 ---------------------------------------------
+	// 전체 발주 관리 목록 조회 요청
+	public List<HashMap<String, Object>> getBuyList(String code) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+
+        return sellMapper.getBuyList(code);
+    }
+
+	/**
+	 * 발주 정보 조건 검색 가져오기
+	 * @param orderSearchDTO
+	 * @return
+	 */
+	public List<OrderDTO> getOrdersInTradeBuy(OrderSearchDTO orderSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return sellMapper.getOrdersInTradeBuy(orderSearchDTO);
+	}
 	
 }
