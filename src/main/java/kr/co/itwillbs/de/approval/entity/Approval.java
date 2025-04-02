@@ -2,8 +2,6 @@ package kr.co.itwillbs.de.approval.entity;
 
 import java.sql.Date;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import kr.co.itwillbs.de.approval.constant.ApprovalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
