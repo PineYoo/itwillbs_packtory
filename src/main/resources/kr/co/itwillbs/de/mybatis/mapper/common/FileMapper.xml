@@ -121,4 +121,11 @@
 		  and major_idx = #{majorIdx}
 	</select>
 	
+	<update id="removeFile" parameterType="kr.co.itwillbs.de.common.vo.FileVO">
+		update t_files
+			<set>
+				<if test="isDeleted != null and isDeleted.trim() != ''">is_deleted = #{isDeleted},</if>
+			</set>
+		where idx = #{idx}
+	</update>
 </mapper>

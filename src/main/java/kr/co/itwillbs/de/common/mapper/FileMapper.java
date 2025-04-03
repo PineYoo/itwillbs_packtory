@@ -19,5 +19,5 @@ public interface FileMapper {
 	List<FileVO> getFilesByMajorIdx(@Param("type")String type, 
 									@Param("majorIdx")long majorIdx);
 
-
+	int removeFile(FileVO fileVO);
 }

@@ -145,4 +145,15 @@ public class FileService {
 		
 		return fileList;
 	}
+	
+	/**
+	 * UPDATE FROM t_files set is_deleted = #{fileVO.isDeleted} where idx = #{fileVO.idx}
+	 * @param fileVO
+	 * @return
+	 */
+	public int removeFile(FileVO fileVO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return fileMapper.removeFile(fileVO);
+	}
 }
