@@ -57,7 +57,7 @@ public class FileUtil {
 		
 		//log.info("uploadPath {}, getOriginalFilename {}, dd {}", uploadPath, mfile.getOriginalFilename());
 		
-		Path uploadsPath = Paths.get(chekcFileSeparator(uploadPath));
+		Path uploadsPath = Paths.get(chekcFileSeparator(UPLOAD_DIR+uploadPath));
 		
 		//디렉토리가 없으면 생성
 		if (!Files.exists(uploadsPath)) {
