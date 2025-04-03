@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<!-- 		layout:decorate="~{common/layouts/de_layout}"> -->
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>기안서 작성</title>
 <!-- 부트스트랩 icons 가져오기 -->
@@ -44,33 +44,32 @@
 				<form action="/approval/regist" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${draftDTO}" >
 			        <div class="form-div">
 			            <label th:for="drafterId">사원번호</label>
-			            <input type="text" id="draftId" th:field="*{drafter_id}" class="form-control" readonly>
+			            <input type="text" id="draftId" th:field="*{drafterId}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
 			            <label th:for="drafterName">작성자</label>
-			            <input type="text" id="draftName" th:field="*{drafter_name}" class="form-control" readonly>
+			            <input type="text" id="draftName" th:field="*{drafterName}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
 			            <label th:for="drafterDepartment">부서</label>
-			            <input type="text" id="drafterDepartment" th:field="*{drafter_department}" class="form-control" readonly>
+			            <input type="text" id="drafterDepartment" th:field="*{drafterDepartment}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
 			            <label th:for="drapfterPositon">직급</label>
-			            <input type="text" id="drapfterPositon" th:field="*{drafter_position}" class="form-control" readonly>
+			            <input type="text" id="drapfterPositon" th:field="*{drafterPosition}" class="form-control" readonly>
 			        </div>
 			        
 			        <div class="form-div">
 			            <label th:for="approvalType">결재유형</label>
-			            <select id="approvalType" th:field="*{approval_type}" class="form-control" >
-			            	<!-- 공통코드 approval_type 가져오기 -->
-<!-- 			            	<option th:each="sellStatus : ${itemSellStatusList}" -->
-<!-- 									th:value="${sellStatus.commonCode}" th:text="${sellStatus.commonCodeName}"></option> -->
+			            <select id="approvalType" class="form-control" th:field="*{approvalType}">
+			            	<option value="">선택</option>
+			            	<option th:each="item : ${approvalTypeList}" th:value="${item.minorCode}" th:text="${item.minorName}"></option>
 			            </select>
 			        </div>
 			        
 			        <div class="form-div">
 			            <label th:for="docNo">기안서 양식</label>
-			            <input type="text" id="docNo" th:field="*{doc_no}" class="form-control" placeholder="양식을 선택해주세요." readonly>
+			            <input type="text" id="docNo" th:field="*{docNo}" class="form-control" placeholder="양식을 선택해주세요." readonly>
 			        	<button class="btn btn-primary" id="searchDocumentBtn" type="button">검색 <i class="fa-solid fa-magnifying-glass"></i></button>
 			        </div>
 			        
@@ -86,7 +85,7 @@
 					<!-- datepicker 사용 -->
 					<div class="form-div">
 					    <label for="dueDate">결재기간</label>
-					    <input type="text" id="dueDate" th:field="*{due_date}" class="form-control" placeholder="결재 기간을 선택하세요.">
+					    <input type="text" id="dueDate" th:field="*{dueDate}" class="form-control" placeholder="결재 기간을 선택하세요.">
 						<button class="btn btn-success ml-2" id="initDateBtn" type="button"><i class="fa-solid fa-rotate"></i></button>
 					</div>
 					
@@ -111,7 +110,6 @@
 			        <div style="text-align: center">
 						<button type="submit" class="btn btn-primary" id="submitBtn">기안하기</button>
 			        </div>
-									
 				</form>
 			
 			

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import kr.co.itwillbs.de.approval.dto.NoticeDTO;
 import kr.co.itwillbs.de.approval.dto.NoticeSearchDTO;
 import kr.co.itwillbs.de.approval.mapper.NoticeMapper;
+import kr.co.itwillbs.de.common.service.FileService;
 import kr.co.itwillbs.de.common.vo.FileVO;
 import kr.co.itwillbs.de.sample.constant.IsDeleted;
 import kr.co.itwillbs.de.sample.dto.FileDTO;
@@ -21,6 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeService {
 	@Autowired
 	private NoticeMapper noticeMapper;
+	
+	@Autowired
+	private FileService fileService;
+	
 	
 	/**
 	 * 매퍼에서 공지사항 리스트 가져오기
@@ -128,7 +133,7 @@ public class NoticeService {
 		//	ENUM 대신 임시로 Y값 하드코딩
 		fileVO.setIsDeleted("Y");
 		
-		int affectedRow = noticeMapper.removeFile(fileVO);
+		int affectedRow = fileService.removeFile(fileVO);
 		log.info("affectedRow is {}", affectedRow);
 		if(affectedRow < 1) {
 			throw new Exception("업데이트할 샘플 데이터가 존재하지 않습니다.");

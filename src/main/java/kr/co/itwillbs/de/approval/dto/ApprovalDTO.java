@@ -15,38 +15,76 @@ import lombok.Setter;
 @ToString
 public class ApprovalDTO {
 	
-	private ApprovalStatus approvalStatus; // 진행상태 (일단 enum으로! 나중에 공통코드로 뺄지 고민)
+	//	일단 임시로 String(방세현)
+//	private String approvalStatus; // 진행상태 (일단 enum으로! 나중에 공통코드로 뺄지 고민)
+//	
+//	private String drafterId;		// 기안자ID(사원번호)
+//	private String drafterName;	// 기안자명(작성자)
+//	private String drafterDepartment;// 기안자 부서
+//	private String drafterPosition;// 기안자 직급
+//
+//	private String approval_type;	// 결재유형 (일단 enum으로! 나중에 공통코드로 빼기)
+//	
+//	private String docNo;			// 문서양식번호	(공통코드)
+//	private String title;			// 제목		
+//	private String content;			// 내용
+//	private String uploadFile;		// 첨부파일
+//	
+//	private String draftDate;		// 기안일자
+//	private String dueDate;			// 마감일자
 	
-	private String drafter_id;		// 기안자ID(사원번호)
-	private String drafter_name;	// 기안자명(작성자)
-	private String drafter_department;// 기안자 부서
-	private String drafter_position;// 기안자 직급
-
-	private ApprovalType approval_type;	// 결재유형 (일단 enum으로! 나중에 공통코드로 빼기)
+	//	결재 번호
+	private String approvalNo;
+	//	결재 유형
+	private String approvalType;
+	//	문서양식번호
+	private String docNo;
+	//	제목
+	private String title;
+	//	내용
+	private String content;
+	//	첨부파일(?)
+	private String uploadFile;
+	//	진행상태
+	private String progressStatus;
+	//	기안자
+	private String drafterId;
+	//	기안일자
+	private String draftDate;
+	//	마감일자
+	private String dueDate;
+	//	최종 작성자
+	private String modId;
+	//	최종 작성 일자
+	private String modDate;
 	
-	private String doc_no;			// 문서양식번호	(공통코드)
-	private String title;			// 제목		
-	private String content;			// 내용
-//	private String file;			// 첨부파일
+	//	결재자1
+	private String approver1;
+	//	결재자2
+	private String approver2;
+	//	결재자3
+	private String approver3;
 	
-	private Date draft_date;		// 기안일자
-	private Date due_date;			// 마감일자
+ 	//	결재자1 승인여부
+	private String approver1Status;
+ 	//	결재자2 승인여부
+	private String approver2Status;
+ 	//	결재자3 승인여부
+	private String approver3Status;
 	
-	private String approver1;		// 결재자1
-	private String approver2;		// 결재자2
-	private String approver3;		// 결재자3
+	//	결재자1 승인날짜
+	private String approver1Date;
+ 	//	결재자2 승인날짜
+	private String approver2Date;
+	//	결재자3 승인날짜
+	private String approver3Date;
 	
-	private String approver1_status; 	// 결재자1 승인여부
-	private String approver2_status; 	// 결재자2 승인여부
-	private String approver3_status; 	// 결재자3 승인여부
-	
-	private Date approver1_date; 		// 결재자1 승인날짜
-	private Date approver2_date;	 	// 결재자2 승인날짜
-	private Date approver3_date; 		// 결재자3 승인날짜
-	
-//	private String approver1_signature;	// 결재자1 서명
-//	private String approver2_signature;	// 결재자2 서명
-//	private String approver3_signature;	// 결재자3 서명
+	//	결재자1 서명
+	private String approver1_signature;
+	//	결재자2 서명
+	private String approver2_signature;
+	//	결재자3 서명
+	private String approver3_signature;
 	
 	
 }

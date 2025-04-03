@@ -53,32 +53,13 @@
 		n.mod_date
 	</sql>
 	
-	<sql id="t_commoncode_item_columns_forSelect">
-		idx,
-		major_code,
-		minor_code,
-		minor_name,
-		description,
-		is_deleted,
-		rank_number,
-		reg_id,
-		reg_date,
-		mod_id,
-		mod_date
-	</sql>
-	
-	
 	<select id="getNoticeList" resultType="kr.co.itwillbs.de.approval.dto.NoticeDTO">
 		SELECT
 			<include refid="t_notice_columns_forSelect"></include>
 			 , c.minor_name AS codeName
-		  FROM t_notice n JOIN
-		  	 ( SELECT
-			<include refid="t_commoncode_item_columns_forSelect"></include>
-				 FROM t_commoncode_item
-				WHERE major_code = #{major_code}
-			 ) c
+		  FROM t_notice n JOIN t_commoncode_item c
 		    ON n.type = c.minor_code
+		   AND c.major_code = #{major_code}
 	</select>
 	
 	<select id="getNoticeSearchList" parameterType="kr.co.itwillbs.de.approval.dto.NoticeSearchDTO"
@@ -86,13 +67,9 @@
 		SELECT
 			<include refid="t_notice_columns_forSelect"></include>
 			 , c.minor_name AS codeName
-		  FROM t_notice n JOIN
-		  	 ( SELECT
-			<include refid="t_commoncode_item_columns_forSelect"></include>
-				 FROM t_commoncode_item
-				WHERE major_code = #{major_code}
-			 ) c
+		  FROM t_notice n JOIN t_commoncode_item c
 		    ON n.type = c.minor_code
+		   AND c.major_code = #{major_code}
 		<where>
 			<if test="noticeSearchDTO.type != null and noticeSearchDTO.type.trim() != ''">
 		   AND n.type = #{noticeSearchDTO.type}
@@ -137,14 +114,14 @@
 			 )
 		VALUES (
 		<trim suffixOverrides=",">
-			  #{type},
-			  #{title},
-			  #{contents},
-			  #{isBanner},
-			  #{isDeleted},
-			  0,	-- 조회수 기본값 0
-			  #{regId},
-			  NOW(),
+			   #{type},
+			   #{title},
+			   #{contents},
+			   #{isBanner},
+			   #{isDeleted},
+			   0,	-- 조회수 기본값 0
+			   #{regId},
+			   NOW(),
 		</trim>
 			 )
 	</insert>
@@ -186,7 +163,6 @@
 			</set>
 		where idx = #{idx}
 	</update>
-	
 	
 </mapper>
 
