@@ -82,7 +82,7 @@
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="statusCode">주문상태</label>
 								                <select name="statusCode" id="statusCode" class="col-sm-12 col-md-6 rounded-sm mr-2">
-								                    <option th:each="item : *{codeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}" th:selected="${statusCode} == ${item.minorCode}"></option>
+								                    <option th:each="item : *{codeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}" th:selected="${item.minorCode.equals(orderDTO.statusCode)}"></option>
 								                </select>
 								            </div>
 								            <div>
@@ -245,10 +245,10 @@
 		
 				            <hr>
 			                <!-- ---------- 상품 리스트 출력 영역 ---------- -->
-			                <div class="table-responsive text-center">
-	       						<table class="table table-bordered" id="dataTables" width="100%" cellspacing="0">
+			                <div class="table-responsive">
+	       						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 	<!-- 		                	<table class="table table-bordered" id="buyManagement" width="100%" cellspacing="0"> -->
-									<thead>
+									<thead class="table-light">
 										<tr>
 											<th>No</th>
 											<th>상품번호</th>
