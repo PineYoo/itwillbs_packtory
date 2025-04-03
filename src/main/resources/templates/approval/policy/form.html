@@ -21,7 +21,7 @@
     <div layout:fragment="contents">
         <div class="container mt-5">
             <h2 class="h3 mb-4 text-gray-800">규정 등록</h2>
-            <form th:action="@{/policy/new}" th:object="${policyDTO}" method="post">
+            <form th:action="@{/policy/new}" th:object="${policyDTO}" method="post" enctype="multipart/form-data">
                 <!-- 규정 유형 -->
                 <div class="mb-3">
                     <label for="type" class="form-label">규정 유형</label>
@@ -52,11 +52,11 @@
                     </select>
                 </div>
 
-                <!-- 파일 업로드 (선택사항) -->
-                <div class="mb-3">
-                    <label for="fileIdxs" class="form-label">첨부 파일</label>
-                    <input type="text" class="form-control" id="fileIdxs" th:field="*{fileIdxs}" placeholder="파일 ID 입력 (추후 업로드 기능 연동)">
-                </div>
+                <!-- 파일 업로드 (여러 개 가능) -->
+				<div class="mb-3">
+				    <label for="policyFiles" class="form-label">첨부 파일</label>
+				    <input type="file" class="form-control" id="policyFiles" name="policyFiles" multiple>
+				</div>
 
                 <!-- 등록 버튼 -->
                 <button type="submit" class="btn btn-success">등록</button>
