@@ -30,9 +30,6 @@
 <style type="text/css">
 /* ======================================================================== */
 /* ---------------- 검색바 CSS(반응형 포함) ------------------------------- */
-.clickable-row td:hover {
-	background-color: #edfbfc;
-}
  /* 기본 테이블 스타일 */
 #search-table {
     width: 100%;
@@ -59,6 +56,15 @@
     #search-table td table {
       display: block;
     }
+    
+    .regist-wrap {
+    	display: block;
+    }
+    .regist-wrap button {
+    	width: 100%;
+    	margin-bottom: 7px;
+    }
+    
 }
 /* ---------------- 검색바 CSS(반응형 포함) 끝 ---------------------------- */
 /* ======================================================================== */
@@ -188,8 +194,8 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<!--/* <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"> */-->
-						<table class="table table-bordered" id="dataTables" width="100%" cellspacing="0">
-							<thead>
+						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
+							<thead class="table-light">
 								<tr>
 									<!-- <th>■</th> -->
 									<th>주문번호</th>
@@ -203,7 +209,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item, status : ${sellDTOList}" th:data-id="${item.documentNumber}" class="clickable-row">
+								<tr th:each="item, status : ${sellDTOList}" th:data-id="${item.documentNumber}">
 									<!-- <td><input type="checkbox"></td> -->
 									<td th:text="${item.documentNumber != null ? item.documentNumber : '-'}"></td>
 									<td th:text="${item.regDate != null ? #temporals.format(item.regDate, 'yyyy-MM-dd') : '-'}"></td>

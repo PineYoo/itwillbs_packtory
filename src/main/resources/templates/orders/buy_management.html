@@ -30,9 +30,6 @@
 <style type="text/css">
 /* ======================================================================== */
 /* ---------------- 검색바 CSS(반응형 포함) ------------------------------- */
-.clickable-row td:hover {
-	background-color: #edfbfc;
-}
  /* 기본 테이블 스타일 */
 #search-table {
     width: 100%;
@@ -58,6 +55,13 @@
 
     #search-table td table {
       display: block;
+    }
+    .regist-wrap {
+    	display: block;
+    }
+    .regist-wrap button {
+    	width: 100%;
+    	margin-bottom: 7px;
     }
 }
 /* ---------------- 검색바 CSS(반응형 포함) 끝 ---------------------------- */
@@ -110,8 +114,15 @@
 									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="requestStartDate">요청일자</label></th>
 									                    <td class="col-sm-12 col-md-3">
 									                        <div class="input-group mb-3">
-									                            <input type="text" id="requestStartDate" th:field="*{requestStartDate}" class="form-control" autocomplete='off'>&nbsp;&nbsp;⁓&nbsp;&nbsp;
+									                            <input type="text" id="requestStartDate" th:field="*{requestStartDate}" class="form-control" autocomplete='off'>
+									                            <span class="input-group-text calendar-icon" data-target="#requestStartDate">
+													                <i class="fa fa-calendar"></i>
+													            </span>
+									                            &nbsp;&nbsp;⁓&nbsp;&nbsp;
 									                            <input type="text" id="requestEndDate" th:field="*{requestEndDate}" class="form-control" autocomplete='off'>
+									                            <span class="input-group-text calendar-icon" data-target="#requestEndDate">
+													                <i class="fa fa-calendar"></i>
+													            </span>
 									                        </div>
 									                    </td>
 									                </tr>
@@ -142,8 +153,15 @@
 									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="dueStartDate">마감일자</label></th>
 									                    <td class="col-sm-12 col-md-3">
 									                        <div class="input-group mb-3">
-									                            <input type="text" id="dueStartDate" th:field="*{dueStartDate}" class="form-control" autocomplete='off'>&nbsp;&nbsp;⁓&nbsp;&nbsp;
+									                            <input type="text" id="dueStartDate" th:field="*{dueStartDate}" class="form-control" autocomplete='off'>
+									                            <span class="input-group-text calendar-icon" data-target="#dueStartDate">
+													                <i class="fa fa-calendar"></i>
+													            </span>
+									                            &nbsp;&nbsp;⁓&nbsp;&nbsp;
 									                            <input type="text" id="dueEndDate" th:field="*{dueEndDate}" class="form-control" autocomplete='off'>
+									                            <span class="input-group-text calendar-icon" data-target="#dueEndDate">
+													                <i class="fa fa-calendar"></i>
+													            </span>
 									                        </div>
 									                    </td>
 									                </tr>
@@ -174,8 +192,8 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<!--/* <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"> */-->
-						<table class="table table-bordered" id="dataTables" width="100%" cellspacing="0">
-							<thead>
+						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
+							<thead class="table-light">
 								<tr>
 									<!-- <th>■</th> -->
 									<th>주문번호</th>
@@ -189,7 +207,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item, status : ${buyDTOList}" th:data-id="${item.documentNumber}" class="clickable-row">
+								<tr th:each="item, status : ${buyDTOList}" th:data-id="${item.documentNumber}">
 									<!-- <td><input type="checkbox"></td> -->
 									<td th:text="${item.documentNumber != null ? item.documentNumber : '-'}"></td>
 									<td th:text="${item.regDate != null ? #temporals.format(item.regDate, 'yyyy-MM-dd') : '-'}"></td>
@@ -246,8 +264,12 @@
 				// ---------------------------------------------------
 				// 기간별 검색 필터링 제이쿼리 (datepicker)
 			    function initializeDateRangePicker(startInputId, endInputId) {
-			        $('#' + startInputId).daterangepicker({
-// 			            maxDate: moment(),
+			        var $startInput = $('#' + startInputId);
+			        var $endInput = $('#' + endInputId);
+			        var $iconStart = $('[data-target="#' + startInputId + '"]');
+			        var $iconEnd = $('[data-target="#' + endInputId + '"]');
+
+			        $startInput.daterangepicker({
 			            locale: {
 			                separator: " ~ ",
 			                format: 'YYYY-MM-DD',
@@ -262,15 +284,20 @@
 			            showDropdowns: true,
 			            autoApply: false,
 			            ranges: {
-				            '오늘': [moment()], // 오늘
+			                '오늘': [moment()], // 오늘
 			                '이번 주': [moment().startOf('week'), moment().endOf('week')],
 			                '이번 달': [moment().startOf('month'), moment().endOf('month')],
 			                '지난 주': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 			                '지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
 			            }
 			        }, function(start, end) {
-			            $('#' + startInputId).val(start.format('YYYY-MM-DD'));
-			            $('#' + endInputId).val(end.format('YYYY-MM-DD'));
+			            $startInput.val(start.format('YYYY-MM-DD'));
+			            $endInput.val(end.format('YYYY-MM-DD'));
+			        });
+
+			        // 아이콘과 requestEndDate를 클릭해도 캘린더 열리도록 설정
+			        $iconStart.add($iconEnd).add($endInput).on('click', function() {
+			            $startInput.trigger('click');
 			        });
 			    }
 
