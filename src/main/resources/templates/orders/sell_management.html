@@ -232,8 +232,7 @@
 					paging: false,
 					info: false
 				}); // end of $('#dataTables').DataTable({
-			});
-			$(function() {
+					
 				// 등록 버튼(btnRegister) 클릭 시 이벤트(새창 안가!)
 				$('#btnRegister').on("click", function() {
 					console.log("btnRegister click!!!");
@@ -260,8 +259,12 @@
 				// ---------------------------------------------------
 				// 기간별 검색 필터링 제이쿼리 (datepicker)
 			    function initializeDateRangePicker(startInputId, endInputId) {
-			        $('#' + startInputId).daterangepicker({
-// 			            maxDate: moment(),
+			        var $startInput = $('#' + startInputId);
+			        var $endInput = $('#' + endInputId);
+			        var $iconStart = $('[data-target="#' + startInputId + '"]');
+			        var $iconEnd = $('[data-target="#' + endInputId + '"]');
+
+			        $startInput.daterangepicker({
 			            locale: {
 			                separator: " ~ ",
 			                format: 'YYYY-MM-DD',
@@ -276,15 +279,20 @@
 			            showDropdowns: true,
 			            autoApply: false,
 			            ranges: {
-				            '오늘': [moment()], // 오늘
+			                '오늘': [moment()], // 오늘
 			                '이번 주': [moment().startOf('week'), moment().endOf('week')],
 			                '이번 달': [moment().startOf('month'), moment().endOf('month')],
 			                '지난 주': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 			                '지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
 			            }
 			        }, function(start, end) {
-			            $('#' + startInputId).val(start.format('YYYY-MM-DD'));
-			            $('#' + endInputId).val(end.format('YYYY-MM-DD'));
+			            $startInput.val(start.format('YYYY-MM-DD'));
+			            $endInput.val(end.format('YYYY-MM-DD'));
+			        });
+
+			        // 아이콘과 requestEndDate를 클릭해도 캘린더 열리도록 설정
+			        $iconStart.add($iconEnd).add($endInput).on('click', function() {
+			            $startInput.trigger('click');
 			        });
 			    }
 
@@ -295,105 +303,6 @@
 			    initializeDateRangePicker('dueStartDate', 'dueEndDate');
 			    // ------------------------------------------------------------
 			    
-// 			    $('#searchDate').daterangepicker({
-// //			        startDate: moment().subtract(29, 'days'),
-// //			        startDate: false,
-// //			        endDate: moment(),
-// 			        maxDate: moment(),
-// 			        locale: {
-// 						start: '시작일시',
-// 						end: '종료일시',
-// 					    separator: " ~ ", // 시작일시와 종료일시 구분자
-// 					    format: 'YYYY-MM-DD', // 일시 노출 포맷
-// 					    applyLabel: "확인", // 확인 버튼 텍스트
-// 					    cancelLabel: "취소", // 취소 버튼 텍스트
-// 					    daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
-// 					    monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-// 						customRangeLabel: '기간 지정',
-// 					 },
-// 					autoUpdateInput: false,
-// 				    timePicker: false, // 시간 노출 여부
-// 				    showDropdowns: true, // 년월 수동 설정 여부
-// 				    autoApply: false, // 확인/취소 버튼 사용여부
-// 					ranges: {
-// 			            '오늘': [moment()], // 오늘
-// 			            '이번 달': [moment().startOf('month'), moment().endOf('month')], // 이번 달 전체
-// 			            '지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')], // 지난 달 전체
-// 			            '지난 7일': [moment().subtract(6, 'days'), moment()], // 최근 7일
-// 			            '지난 14일': [moment().subtract(13, 'days'), moment()], // 최근 14일
-// 			            '지난 30일': [moment().subtract(29, 'days'), moment()], // 최근 30일
-// 			            '지난 3개월': [moment().subtract(3, 'months').startOf('month'), moment().endOf('month')], // 최근 3개월
-// 			        },
-// 			    }).on('show.daterangepicker', function (ev, picker) {
-// // 			        picker.container.addClass('goodbuyCustomPicker');                            
-// 			    }); // end of $('#searchDate').daterangepicker({
-			    
-// 			    // 날짜 선택 후에도 placeholder 유지
-// 			    $('#searchDate').on('apply.daterangepicker', function(ev, picker) {
-// 			        $(this).val(`${picker.startDate.format('YYYY-MM-DD')} ~ ${picker.endDate.format('YYYY-MM-DD')}`);
-// 			    });
-			    
-// 				// 날짜 검색 초기화
-// 				$("#initDateBtn").on('click', function() {
-// 					$('#searchDate').val(''); // 날짜 필터 초기화
-// 					//productReport.draw();
-// 				});
-				
-// 			    // 기간별 검색 후 테이블 다시 로드
-// 			    $("#searchDateBtn").on('click', function() {
-// 					//productReport.draw();
-// 				});
-				
-				// ---------------------------------------------------
-				// 검색조건에 맞는 데이터 조회
-				/*
-				let productReport = $('#dataTable').DataTable({
-					lengthChange : true, 	// 건수
-					searching : true, 		// 검색
-					info : true, 			// 정보
-					ordering : true, 		// 정렬
-					paging : true,			// 페이징
-					responsive: true, 		// 반응형
-					destroy: true,
-					scrollX: true, 
-					autoWidth: false,
-					ajax: {
-						url: "/orders/sell/search",
-						type: "POST", 
-						data: function (d) { // Ajax 요청 시 추가할 데이터
-				            d.orderStatus = $('input[name="orderStatus"]:checked').val(); // 주문 상태
-				            d.searchKeyword = $('#searchKeyword').val(); // 검색 키워드
-
-				            let searchDate = $('#searchDate').val(); // 날짜 검색 (YYYY-MM-DD ~ YYYY-MM-DD)
-				            if (searchDate) {
-				                let dates = searchDate.split(' ~ ');
-				                d.startDate = dates[0]; // 시작일
-				                d.endDate = dates[1];   // 종료일
-				            } else {
-			                    d.startDate = ""; // 기본값 비워두기 또는 다른 기본값 설정
-			                    d.endDate = "";   // 기본값 비워두기 또는 다른 기본값 설정
-			                }
-						}, 
-						dataSrc: "",  
-						success: function(response) {
-					        console.log(response);  // 서버에서 반환한 데이터 확인
-					    },
-						columns: [
-					        { data: null, render: function() { return '<input type="checkbox">'; } },
-					        { data: "document_number", defaultContent: "-" },
-					        { data: "reg_date", defaultContent: "-" },
-					        { data: "company_name", defaultContent: "-" },
-					        { data: "supply_amount", defaultContent: "-" },
-					        { data: "vat_amount", defaultContent: "-" },
-					        { data: "total_amount", defaultContent: "-" },
-					        { data: "expected_date", defaultContent: "-" },
-					        { data: "client_name", defaultContent: "회의 전" }
-					    ]
-					} // end of ajax: {
-					
-				}); // end of let productReport = $('#dataTable').DataTable({
-				*/
-				// ---------------------------------------------------
 				
 				
 				

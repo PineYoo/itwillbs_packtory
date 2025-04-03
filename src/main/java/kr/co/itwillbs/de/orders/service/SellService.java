@@ -66,6 +66,10 @@ public class SellService {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		sellMapper.updateOrder(orderDTO);
 	}
+	public void modifyOrderDetail(OrderDetailDTO orderDetailDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		sellMapper.updateOrderDetail(orderDetailDTO);
+	}
 	
 	
 	/**
