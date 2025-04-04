@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,28 +27,19 @@ public class MessageService {
     }
 
     // 메시지 전체 목록
-    public List<MessageDTO> getMessageList() {
-        log.info("getMessageList --- start");
+    public List<MessageDTO> getMessageList(MessageSearchDTO searchDTO) {
+        log.info("getMessageList --- searchDTO: {}", searchDTO);
 
-        return messageRepository.findAll().stream()
-                .map(Message::toDto)
-                .collect(Collectors.toList());
-    }
-
-    // 메시지 검색
-    public List<MessageDTO> searchMessages(MessageSearchDTO searchDTO) {
-        log.info("searchMessages --- start: {}", searchDTO);
-
-        LocalDateTime start = searchDTO.getStartDate() != null ? searchDTO.getStartDate().atStartOfDay() : LocalDateTime.MIN;
-        LocalDateTime end = searchDTO.getEndDate() != null ? searchDTO.getEndDate().atTime(23, 59, 59) : LocalDateTime.MAX;
-        String keyword = searchDTO.getKeyword(); 
-        String type = searchDTO.getType();
-
-        return messageRepository.searchMessages(start, end, keyword, type).stream()
-                .filter(m -> !"Y".equals(m.getIsDeleted()))
-                .filter(m -> type == null || type.isBlank() || type.equals(m.getType()))
-                .map(Message::toDto)
-                .collect(Collectors.toList());
+        return messageRepository.searchMessages(
+        		searchDTO.getStartDate(),
+        		searchDTO.getEndDate(),
+        		searchDTO.getType(),
+                searchDTO.getReceiverId(),
+                searchDTO.getSenderId()
+            )
+        	.stream()
+            .map(Message::toDto)
+            .collect(Collectors.toList());
     }
 
     // 상세 조회

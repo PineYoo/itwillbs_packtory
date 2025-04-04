@@ -1,21 +1,26 @@
 package kr.co.itwillbs.de.approval.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class MessageSearchDTO {
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startDate;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate endDate;
-
-    private String keyword;  // 발신자 or 수신자명 (선택)
-    private String type;
+    private LocalDateTime startDate;   // 시작일
+    private LocalDateTime endDate;     // 종료일
+    private String senderId;           // 발신자 ID
+    private String receiverId;         // 수신자 ID
+    private String type;               // 알림 유형
+    
+    @Builder
+    public MessageSearchDTO(LocalDateTime startDate, LocalDateTime endDate, String senderId, String receiverId, String type) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.type = type;
+    }
 }
+

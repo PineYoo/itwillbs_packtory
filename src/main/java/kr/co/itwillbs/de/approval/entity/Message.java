@@ -3,6 +3,8 @@ package kr.co.itwillbs.de.approval.entity;
 import jakarta.persistence.*;
 import kr.co.itwillbs.de.approval.dto.MessageDTO;
 import lombok.*;
+
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -41,8 +43,9 @@ public class Message {
 
     @Column(name = "sender_id", length = 50, nullable = false)
     private String senderId; // 발신자 ID
-
-    @Column(name = "send_date")
+    
+    @CreatedDate
+    @Column(name = "send_date", updatable = false)
     private LocalDateTime sendDate; // 발신일
 
     @Column(name = "receiver_id", length = 50, nullable = false)
@@ -57,6 +60,8 @@ public class Message {
         this.fileIdxs = (this.fileIdxs == null || this.fileIdxs.isEmpty()) ? "-" : this.fileIdxs;
         this.isDeleted = (this.isDeleted == null || this.isDeleted.isEmpty()) ? "N" : this.isDeleted;
         this.sendDate = (this.sendDate == null) ? LocalDateTime.now() : this.sendDate;
+        this.senderId = (this.senderId == null || this.senderId.isEmpty()) ? "-" : this.senderId;
+        this.receiverId = (this.receiverId == null || this.receiverId.isEmpty()) ? "-" : this.receiverId;
     }
 
     @PreUpdate

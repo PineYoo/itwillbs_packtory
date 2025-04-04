@@ -11,8 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -26,8 +24,8 @@ public class MessageController {
     @GetMapping("/new")
     public String MessageRegisterForm(Model model) {
         log.info("MessageRegisterForm --- start");
-        model.addAttribute("MessageDTO", new MessageDTO());
-        model.addAttribute("MessageTypes", commonCodeUtil.getCodeItems("MESSAGE_TYPE"));
+        model.addAttribute("messageDTO", new MessageDTO());
+        model.addAttribute("messageTypes", commonCodeUtil.getCodeItems("MESSAGE_TYPE"));
         return "approval/message/form";
     }
 
@@ -39,13 +37,14 @@ public class MessageController {
         return "redirect:/message";
     }
 
-    // 메시지 목록 + 검색
+    // 메시지 목록 조회 (검색 기능 추가)
     @GetMapping("")
-    public String getMessageList(@ModelAttribute("search") MessageSearchDTO searchDTO, Model model) {
+    public String getMessageList(@ModelAttribute MessageSearchDTO searchDTO, Model model) {
         log.info("getMessageList --- search: {}", searchDTO);
-        List<MessageDTO> messages = messageService.searchMessages(searchDTO);
-        model.addAttribute("messageList", messages);
-        return "approval/message";
+        model.addAttribute("messageDTOList", messageService.getMessageList(searchDTO));
+        model.addAttribute("messageTypes", commonCodeUtil.getCodeItems("MESSAGE_TYPE"));
+        model.addAttribute("searchDTO", searchDTO);
+        return "approval/message/list";
     }
 
     // 상세 조회

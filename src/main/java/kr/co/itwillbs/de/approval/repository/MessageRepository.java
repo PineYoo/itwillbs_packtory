@@ -12,16 +12,18 @@ import java.util.List;
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
 	// 기간 + (발신자 or 수신자) 이름 + 알림 유형으로 검색
-    @Query("SELECT m FROM Message m " +
-               "WHERE m.isDeleted = 'N' " +
-               "AND m.sendDate BETWEEN :startDate AND :endDate " +
-               "AND (:keyword IS NULL OR m.senderId LIKE %:keyword% OR m.receiverId LIKE %:keyword%) " +
-               "AND (:type IS NULL OR m.type = :type) " +
-               "ORDER BY m.sendDate DESC")
-    List<Message> searchMessages(
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate,
-            @Param("keyword") String keyword,
-            @Param("type") String type
-    );
+	@Query("SELECT m FROM Message m " +
+	           "WHERE m.isDeleted = 'N' " +  // 삭제되지 않은 메시지
+	           "AND m.sendDate BETWEEN :startDate AND :endDate " +  // 기간 필터
+	           "AND (:senderId IS NULL OR :senderId = '' OR m.senderId LIKE %:senderId%) " +  // 발신자 ID 필터
+	           "AND (:receiverId IS NULL OR :receiverId = '' OR m.receiverId LIKE %:receiverId%) " +  // 수신자 ID 필터
+	           "AND (:type IS NULL OR :type = '' OR m.type = :type) " +  // 알림 유형 필터
+	           "ORDER BY m.sendDate DESC")
+	List<Message> searchMessages(
+	        @Param("startDate") LocalDateTime startDate,
+	        @Param("endDate") LocalDateTime endDate,
+	        @Param("senderId") String senderId,
+	        @Param("receiverId") String receiverId,
+	        @Param("type") String type
+	);
 }
