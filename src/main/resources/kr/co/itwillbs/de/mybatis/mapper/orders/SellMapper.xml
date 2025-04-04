@@ -3,8 +3,8 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.co.itwillbs.de.orders.mapper.SellMapper">
-	<!-- 수주관리 리스트 컬럼 -->
-	<sql id="sell_list_columns_forSelect">
+	<!-- 수주/발주 관리 리스트 컬럼 -->
+	<sql id="order_list_columns_forSelect">
 		o.idx,
 		o.document_number,	-- 주문번호
 		o.reg_date,			-- 주문일자
@@ -17,21 +17,11 @@
 		o.trade_code		-- 주문상태_코드
 	</sql>
 	
-	<!-- 전체 수주 관리 목록 조회 -->
-	<select id="getSellList" resultType="java.util.HashMap">
-		SELECT 
-			<include refid="sell_list_columns_forSelect"></include>
-	 	  FROM t_order o
-		  LEFT JOIN t_order_detail d
-		    ON d.document_number = o.document_number
-	     WHERE o.trade_code = '1'	-- (임시 - 나중에 코드로 넣어야 함)
-	     ORDER BY o.reg_date DESC
-	</select>
-	
-	<select id="getOrdersInTradeSell" parameterType="kr.co.itwillbs.de.orders.dto.OrderSearchDTO"
+	<!-- 수주/발주 정보 조건 검색 가져오기(SELECT) -->
+	<select id="getOrderList" parameterType="kr.co.itwillbs.de.orders.dto.OrderSearchDTO"
 									resultType="kr.co.itwillbs.de.orders.dto.OrderDTO">
 		SELECT 
-			<include refid="sell_list_columns_forSelect"></include>
+			<include refid="order_list_columns_forSelect"></include>
 		  FROM t_order o
 		  LEFT JOIN t_order_detail d
 		    ON o.document_number = d.document_number
@@ -83,30 +73,7 @@
 		ORDER BY o.reg_date DESC
 	</select>
 	
-	<!-- 검색 조건에 맞는 수주 관리 목록 리스트 조회 -->
-	<select id="getSearchSell" resultType="java.util.HashMap">
-		SELECT 
-			<include refid="sell_list_columns_forSelect"></include>
-	 	  FROM t_order o
-		  LEFT JOIN t_order_detail d
-		    ON d.document_number = o.document_number
-	     WHERE o.trade_code = '수주'	-- (임시 - 나중에 코드로 넣어야 함)
-			<if test="orderStatus != null and orderStatus.trim() != ''"> <!-- 주문 상태 검색 -->
-			    AND o.status_code = #{orderStatus}
-			</if>
-			<if test="startDate != null and startDate.trim() != '' and endDate != null and endDate.trim() != ''"> <!-- 주문일자 검색 -->
-		        AND o.reg_date BETWEEN #{startDate} AND #{endDate}
-		    </if>
-			<if test="searchKeyword != null and searchKeyword.trim() != ''"> <!-- 키워드 검색 (품번, 품명, 거래처명) -->
-			    AND (
-			    	o.document_number LIKE CONCAT('%', #{searchKeyword}, '%') 
-                 OR o.company_name LIKE CONCAT('%', #{searchKeyword}, '%')
-                 OR d.client_name LIKE CONCAT('%', #{searchKeyword}, '%')
-                )
-			</if>
-	     ORDER BY o.reg_date DESC
-	</select>
-	
+	<!-- ============================================================= -->
 	<!-- 주문서 등록(order) -->
 	<insert id="insertOrder">
 		INSERT INTO t_order
@@ -134,6 +101,7 @@
 			 , now()				-- mod_date
 			 )
 	</insert>
+	
 	<!-- 주문서 등록(order_detail) -->
 	<insert id="insertOrderDetail">
 		INSERT INTO t_order_detail
@@ -157,12 +125,11 @@
 			 , null					-- mod_id(임시 - 나중에 session에서 가져올것)
 			 , now()				-- mod_date
 			 )
-	
 	</insert>
 	
 	<!-- ============================================================= -->
-	<!-- 수주 주문서 상세 컬럼 -->
-	<sql id="sell_detail_columns_forSelect">
+	<!-- 수주/발주 주문서 상세 컬럼 -->
+	<sql id="order_detail_columns_forSelect">
 		o.idx,				-- 테이블 _인덱스
 		o.document_number,	-- 주문번호(문서번호)
 		o.trade_code,		-- 거래종류_코드
@@ -197,27 +164,17 @@
 	</sql>
 	
 	<!-- 주문서 상세 정보 조회 -->
-	<select id="getOrder" resultType="java.util.HashMap">
-		SELECT
-			<include refid="sell_detail_columns_forSelect"></include>
-		  FROM t_order o
-     LEFT JOIN t_order_detail d
-		    ON d.document_number = o.document_number
-	 	 WHERE o.document_number = #{documentNumber}
-	</select>
-	
-	<!-- 주문서 상세 정보 조회 -->
 	<select id="getOrderByDocumentNumber" resultType="kr.co.itwillbs.de.orders.dto.OrderDTO">
 		SELECT
-			<include refid="sell_detail_columns_forSelect"></include>
-		FROM t_order o
-			LEFT JOIN t_order_detail d
+			<include refid="order_detail_columns_forSelect"></include>
+		  FROM t_order o
+     LEFT JOIN t_order_detail d
 			ON d.document_number = o.document_number
-		WHERE o.document_number = #{documentNumber}
+		 WHERE o.document_number = #{documentNumber}
 	</select>
 	
-	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-	<!-- 주문 정보 수정 -->
+	<!-- ============================================================= -->
+	<!-- 주문 정보 수정(order) -->
 	<update id="updateOrder">
 		UPDATE t_order
 			<set>
@@ -241,6 +198,7 @@
 		 WHERE document_number = #{documentNumber}
 	</update>
 	
+	<!-- 주문 정보 수정(order_detail) -->
 	<update id="updateOrderDetail">
 		UPDATE t_order_detail
 			<set>
@@ -249,82 +207,5 @@
 			</set>
 		 WHERE document_number = #{documentNumber}
 	</update>
-	<!-- ================================================================================= -->
-		<!-- 발주관리 리스트 컬럼 -->
-	<sql id="buy_list_columns_forSelect">
-		o.idx,
-		o.document_number,	-- 주문번호
-		o.reg_date,			-- 주문일자
-		o.company_name,		-- 거래처명
-		d.supply_amount,	-- 공급가액
-		d.vat_amount,		-- 부가세액
-		d.total_amount,		-- 합계금액
-		o.expected_date,	-- 출고예정일
-		d.client_name,		-- 담당사원명
-		o.trade_code		-- 주문상태_코드
-	</sql>
 	
-	<!-- 전체 발주 관리 목록 조회 -->
-	<select id="getBuyList" resultType="java.util.HashMap">
-		SELECT 
-			<include refid="buy_list_columns_forSelect"></include>
-	 	  FROM t_order o
-		  LEFT JOIN t_order_detail d
-		    ON d.document_number = o.document_number
-	     WHERE o.trade_code = #{code}
-	     ORDER BY o.reg_date DESC
-	</select>
-	
-	<select id="getOrdersInTradeBuy" parameterType="kr.co.itwillbs.de.orders.dto.OrderSearchDTO"
-									resultType="kr.co.itwillbs.de.orders.dto.OrderDTO">
-		SELECT 
-			<include refid="buy_list_columns_forSelect"></include>
-		  FROM t_order o
-		  LEFT JOIN t_order_detail d
-		    ON o.document_number = d.document_number
-		<where>
-			o.trade_code = #{tradeCode}
-			<if test="documentNumber != null and documentNumber.trim() != ''">
-				and o.document_number = #{documentNumber}
-			</if>
-			<if test="statusCode != null and statusCode.trim() != ''">
-				and o.status_code = #{statusCode}
-			</if>
-			<if test="companyName != null and companyName.trim() != ''">
-				and o.company_name = #{companyName}
-			</if>
-			<choose>
-				<when test="(requestStartDate != null and requestStartDate.trim() != '')
-							and (requestEndDate != null and requestEndDate.trim() != '')">
-					and o.request_date BETWEEN STR_TO_DATE(#{requestStartDate},'%Y%m%d') AND STR_TO_DATE(#{requestEndDate},'%Y%m%d')
-				</when>
-				<when test="(requestStartDate != null and requestStartDate.trim() != '')
-							and (requestEndDate == null or requestEndDate.trim() == '')">
-					and o.request_date <![CDATA[>=]]> STR_TO_DATE(#{requestStartDate},'%Y%m%d')
-				</when>
-				<when test="(requestStartDate == null or requestStartDate.trim() == '')
-							and (requestEndDate != null and requestEndDate.trim() != '')">
-					and o.request_date <![CDATA[<=]]> STR_TO_DATE(#{requestEndDate},'%Y%m%d')
-				</when>
-			</choose>
-			<if test="isDeleted != null and isDeleted.trim() != ''">
-				and o.is_deleted = #{isDeleted}
-			</if>
-			<choose>
-				<when test="(dueStartDate != null and dueStartDate.trim() != '')
-							and (dueEndDate != null and dueEndDate.trim() != '')">
-					and o.due_date BETWEEN STR_TO_DATE(#{dueStartDate},'%Y%m%d') AND STR_TO_DATE(#{dueEndDate},'%Y%m%d')
-				</when>
-				<when test="(dueStartDate != null and dueStartDate.trim() != '')
-							and (dueEndDate == null or dueEndDate.trim() == '')">
-					and o.due_date <![CDATA[>=]]> STR_TO_DATE(#{dueStartDate},'%Y%m%d')
-				</when>
-				<when test="(dueStartDate == null or dueStartDate.trim() == '')
-							and (dueEndDate != null and dueEndDate.trim() != '')">
-					and o.due_date <![CDATA[<=]]> STR_TO_DATE(#{dueEndDate},'%Y%m%d')
-				</when>
-			</choose>
-		</where>
-		ORDER BY o.reg_date DESC
-	</select>
 </mapper>
