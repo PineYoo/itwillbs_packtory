@@ -31,6 +31,10 @@
 	<link href="/css/common.css" rel="stylesheet">
 </th:block>
 <style type="text/css">
+	.form {
+		max-width: 800px;
+		margin: 0 auto;
+	}
 	input {
         border: 1px solid #ccc;
         padding: 5px;
@@ -70,7 +74,7 @@
 			<div class="card shadow mb-4">
 			    <div class="card-body">
    			    	<div class="table-responsive">
-				        <form th:action="@{/orders/sell/regist}" method="post" th:object="${orderFormDTO}">
+				        <form th:action="@{/orders/sell/regist}" method="post" th:object="${orderFormDTO}" class="form">
 				        	<!-- hidden -->
 <!-- 							<input type="hidden" th:field="*{orderDTO.tradeCode}" value="1" alt="수주 코드" /> -->
 <!-- 							<input type="hidden" th:field="*{orderDTO.statusCode}" value="1" alt="수주_미출고" /> -->

@@ -23,22 +23,23 @@ public class SellService {
 	@Autowired
 	private CommonService commonService;
 
-
-	// 전체 수주 관리 목록 조회 요청
-	public List<HashMap<String, Object>> getSellList() {
+	/**
+	 * 수주/발주 정보 조건 검색 가져오기
+	 * @param orderSearchDTO
+	 * @return List<OrderDTO>
+	 */
+	public List<OrderDTO> getOrderList(OrderSearchDTO orderSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-
-        return sellMapper.getSellList();
-    }
-
-	// 검색 조건에 맞는 수주 관리 목록 리스트 조회 요청
-	public List<HashMap<String, Object>> getSearchSell(String orderStatus, String searchKeyword, String startDate,
-			String endDate) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return sellMapper.getSearchSell(orderStatus, searchKeyword, startDate, endDate);
+		
+		return sellMapper.getOrderList(orderSearchDTO);
 	}
+	
 	// ------------------------------------------------------------------------------------
-	// 주문서 등록 요청
+	/**
+	 * 수주/발주 주문 정보 등록(INSERT) >> orderDTO
+	 * @param orderDTO
+	 * @return 
+	 */
 	public void registerOrder(@Valid OrderDTO orderDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -47,7 +48,11 @@ public class SellService {
 		sellMapper.insertOrder(orderDTO);
 	}
 
-
+	/**
+	 * 수주/발주 주문 정보 등록(INSERT) >> orderDetailDTO
+	 * @param orderDetailDTO
+	 * @return 
+	 */
 	public void registerOrderDetail(OrderDetailDTO orderDetailDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		sellMapper.insertOrderDetail(orderDetailDTO);
@@ -55,38 +60,10 @@ public class SellService {
 	}
 
 	// ------------------------------------------------------------------------------------
-	// 주문서 상세 정보 조회 요청
-	public HashMap<String, Object> getOrder(String documentNumber) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return sellMapper.getOrder(documentNumber);
-	}
-
-	// 주문 정보 수정 요청
-	public void modifyOrder(OrderDTO orderDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		sellMapper.updateOrder(orderDTO);
-	}
-	public void modifyOrderDetail(OrderDetailDTO orderDetailDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		sellMapper.updateOrderDetail(orderDetailDTO);
-	}
-	
-	
 	/**
-	 * 수주 정보 조건 검색 가져오기
-	 * @param orderSearchDTO
-	 * @return
-	 */
-	public List<OrderDTO> getOrdersInTradeSell(OrderSearchDTO orderSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		return sellMapper.getOrdersInTradeSell(orderSearchDTO);
-	}
-
-	/**
-	 * 수주 상세 정보 가져오기
+	 * 수주/발주 상세 정보 가져오기
 	 * @param documentNumber
-	 * @return
+	 * @return OrderDTO
 	 */
 	public OrderDTO getOrderByDocumentNumber(String documentNumber) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -94,23 +71,28 @@ public class SellService {
 		return sellMapper.getOrderByDocumentNumber(documentNumber);
 	}
 
-	// ===============================================================================================
-	// ----------------------------------- 여기부터 발주 ---------------------------------------------
-	// 전체 발주 관리 목록 조회 요청
-	public List<HashMap<String, Object>> getBuyList(String code) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-
-        return sellMapper.getBuyList(code);
-    }
-
+	// ------------------------------------------------------------------------------------
 	/**
-	 * 발주 정보 조건 검색 가져오기
-	 * @param orderSearchDTO
-	 * @return
+	 * 수주/발주 주문 정보 수정(UPDATE) >> orderDTO
+	 * @param orderDTO
+	 * @return 
 	 */
-	public List<OrderDTO> getOrdersInTradeBuy(OrderSearchDTO orderSearchDTO) {
+	public void modifyOrder(OrderDTO orderDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return sellMapper.getOrdersInTradeBuy(orderSearchDTO);
+		sellMapper.updateOrder(orderDTO);
 	}
+	
+	/**
+	 * 수주/발주 주문 정보 수정(UPDATE) >> orderDetailDTO
+	 * @param orderDetailDTO
+	 * @return 
+	 */
+	public void modifyOrderDetail(OrderDetailDTO orderDetailDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		sellMapper.updateOrderDetail(orderDetailDTO);
+	}
+	
+	
+
 	
 }

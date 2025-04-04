@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/bs_layout}">
+	  layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>Tables</title>
+<title>팩토리(PackTory) - 공지사항</title>
 <!-- 부트스트랩 icons 가져오기 -->
 <th:block layout:fragment="headContents">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -25,15 +25,19 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">공지사항</h1>
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">공지사항</h1>
+			</div>
+			
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="card">
 						<div class="card-body">
 						    <h4 class="card-title" th:text="${noticeDTO.title}">공지사항 제목 예시</h4>
-							<p class="text-muted">작성일: <span th:text="${noticeDTO.regDate}"></span>
-							| 작성자: <span th:text="${noticeDTO.regId}"></span>
-							| 조회수: <span th:text="${noticeDTO.readCount}"></span>
+							<p class="text-muted">
+								작성일: <span th:text="${noticeDTO.regDate}"></span>
+							  | 작성자: <span th:text="${noticeDTO.regId}"></span>
+							  | 조회수: <span th:text="${noticeDTO.readCount}"></span>
 							</p>
 						    <hr>
 						    <div class="card-text" th:utext="${noticeDTO.contents}" style="white-space: pre-line;"></div>

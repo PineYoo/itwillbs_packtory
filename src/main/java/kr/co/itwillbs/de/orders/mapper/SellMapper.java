@@ -14,61 +14,50 @@ import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 @Mapper
 public interface SellMapper {
 
-	// 전체 수주 관리 목록 조회
-    List<HashMap<String, Object>> getSellList();
-    
     /**
+     * 수주/발주 정보 조건 검색 가져오기
      * SELECT FROM t_order inner join t_order_detail where orderSearchDTO
      * @param orderSearchDTO 리스트 화면 검색필드 DTO
-     * @return
+     * @return List<OrderDTO>
      */
-    List<OrderDTO> getOrdersInTradeSell(OrderSearchDTO orderSearchDTO);
+    List<OrderDTO> getOrderList(OrderSearchDTO orderSearchDTO);
     
-	// 검색 조건에 맞는 수주 관리 목록 리스트 조회
-    List<HashMap<String, Object>> getSearchSell(@Param("orderStatus") String orderStatus, 
-    											@Param("searchKeyword") String searchKeyword, 
-    											@Param("startDate") String startDate, 
-    											@Param("endDate") String endDate);
-	
-	// 주문서 등록
+    // -------------------------------------------------------------------
+    /**
+	 * 수주/발주 주문 정보 등록(INSERT) >> orderDTO
+	 * @param orderDTO
+	 * @return 
+	 */
 	void insertOrder(@Valid OrderDTO orderDTO);
+	
+	/**
+	 * 수주/발주 주문 정보 등록(INSERT) >> orderDetailDTO
+	 * @param orderDetailDTO
+	 * @return 
+	 */
 	void insertOrderDetail(OrderDetailDTO orderDetailDTO);
 
-	// 주문서 상세 정보 조회
-	HashMap<String, Object> getOrder(String documentNumber);
-
+	// -------------------------------------------------------------------
 	/**
 	 * SELECT FROM t_order inner join t_order_detail where documentNumber
 	 * @param documentNumber
-	 * @return
+	 * @return OrderDTO
 	 */
 	OrderDTO getOrderByDocumentNumber(String documentNumber);
 	
-	// 주문 정보 수정
+	// -------------------------------------------------------------------
+	/**
+	 * 수주/발주 주문 정보 수정(UPDATE) >> orderDTO
+	 * @param orderDTO
+	 * @return 
+	 */
 	void updateOrder(OrderDTO orderDTO);
+	
+	/**
+	 * 수주/발주 주문 정보 수정(UPDATE) >> orderDetailDTO
+	 * @param orderDetailDTO
+	 * @return 
+	 */
 	void updateOrderDetail(OrderDetailDTO orderDetailDTO);
 
-	// ===============================================================================================
-	// ----------------------------------- 여기부터 발주 ---------------------------------------------
-	// 전체 발주 관리 목록 조회
-    List<HashMap<String, Object>> getBuyList(String code);
-    
-	// 검색 조건에 맞는 발주 관리 목록 리스트 조회
-    List<HashMap<String, Object>> getSearchBuy(@Param("orderStatus") String orderStatus, 
-    											@Param("searchKeyword") String searchKeyword, 
-    											@Param("startDate") String startDate, 
-    											@Param("endDate") String endDate);
-
-    /**
-     * SELECT FROM t_order inner join t_order_detail where orderSearchDTO
-     * @param orderSearchDTO 리스트 화면 검색필드 DTO
-     * @return
-     */
-	List<OrderDTO> getOrdersInTradeBuy(OrderSearchDTO orderSearchDTO);
-
-	
-
-
-
-	
 }
