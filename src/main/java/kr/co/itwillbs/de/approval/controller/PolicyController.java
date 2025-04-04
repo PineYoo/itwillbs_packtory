@@ -132,38 +132,6 @@ public class PolicyController {
     	}
     }
     
-//    // 규정 파일 추가
-//    @PostMapping("/detail/{idx}/file")
-//    public String updatePolicyFiles(@PathVariable("idx") String idx,
-//                                    @RequestParam("policyFiles") List<MultipartFile> policyFiles) {
-//        log.info("updatePolicyFiles --- start");
-//        log.info("target policy idx : {}", idx);
-//
-//        List<FileVO> fileList = policyFiles.stream()
-//                .filter(file -> StringUtils.hasLength(file.getOriginalFilename()))
-//                .map(file -> {
-//                    try {
-//                        FileVO fileVO = fileUtil.setFile(file);
-//                        fileVO.setMajorIdx(idx);        // 규정 번호 설정
-//                        fileVO.setType("t_policy");     // 테이블명 또는 유형 설정
-//                        fileVO.setIsDeleted("N");       // 삭제 여부
-//                        return fileVO;
-//                    } catch (Exception e) {
-//                        log.error("파일 처리 중 오류 발생", e);
-//                        return null;
-//                    }
-//                })
-//                .filter(Objects::nonNull)
-//                .toList();
-//
-//        if (!fileList.isEmpty()) {
-//            fileService.registerFiles(fileList);
-//            log.info("파일 {}건 저장 완료", fileList.size());
-//        }
-//
-//        return "redirect:/policy/detail/" + idx;
-//    }
-    
     // 파일 삭제
     @PostMapping("/detail/{idx}/file/delete/{fileId}")
     @ResponseBody
