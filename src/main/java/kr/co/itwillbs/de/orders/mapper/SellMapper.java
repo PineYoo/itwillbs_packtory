@@ -46,6 +46,7 @@ public interface SellMapper {
 	
 	// 주문 정보 수정
 	void updateOrder(OrderDTO orderDTO);
+	void updateOrderDetail(OrderDetailDTO orderDetailDTO);
 
 	// ===============================================================================================
 	// ----------------------------------- 여기부터 발주 ---------------------------------------------
@@ -64,6 +65,7 @@ public interface SellMapper {
      * @return
      */
 	List<OrderDTO> getOrdersInTradeBuy(OrderSearchDTO orderSearchDTO);
+
 	
 
 

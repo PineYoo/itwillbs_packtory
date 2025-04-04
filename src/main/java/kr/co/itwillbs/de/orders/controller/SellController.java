@@ -124,17 +124,23 @@ public class SellController {
 		}
 		
 		System.out.println(">>>>>>>>>" + orderFormDTO.getOrderDTO());
+		System.out.println(">>>>>>>>>" + orderFormDTO.getOrderDetailDTO());
 		
 		// 주문서 등록 요청(INSERT)
 		// >>>>>>>>>>> 작성자 등록 위한 id 가져가야함
 		sellService.registerOrder(orderFormDTO.getOrderDTO());
+		
+		// t_order에 insert한 document_number 들고와서 t_order_detail 테이블에도 넣어야함
+		// document_number만 들어간 컬럼이라도 만들어놔야 나중에 update만 하면된다 !
+		String documentNumber = orderFormDTO.getOrderDTO().getDocumentNumber();
+		orderFormDTO.getOrderDetailDTO().setDocumentNumber(documentNumber);
 		// >>>>>>>>>>> 작성자 등록 위한 id 가져가야함
-//		sellService.registerOrderDetail(orderFormDTO.getOrderDetailDTO());
+		sellService.registerOrderDetail(orderFormDTO.getOrderDetailDTO());
 
 		// ----- 상품 선택 및 등록은 나중에 -----
 
 		// 주문서 등록 후 주문서 상세 페이지로 이동
-		return "redirect:/orders/sell/" + orderFormDTO.getOrderDTO().getDocumentNumber();
+		return "redirect:/orders/sell/" + documentNumber;
 	}
 
 	// 주문서 상세 및 수정 페이지 매핑(GET)
@@ -172,7 +178,7 @@ public class SellController {
 		sellService.modifyOrder(orderDTO);
 		// 주문 상세 정보 수정
 		// >>>>>>>>>>> 최종 작성자 수정 위한 id 가져가야함
-//		sellService.modifyOrderDetail(orderDetailDTO);
+		sellService.modifyOrderDetail(orderDetailDTO);
 		
 		return "redirect:/orders/sell/" + orderDTO.getDocumentNumber();
 	}
@@ -272,8 +278,13 @@ public class SellController {
 		// 주문서 등록 요청(INSERT)
 		// >>>>>>>>>>> 작성자 등록 위한 id 가져가야함
 		sellService.registerOrder(orderFormDTO.getOrderDTO());
+
+		// t_order에 insert한 document_number 들고와서 t_order_detail 테이블에도 넣어야함
+		// document_number만 들어간 컬럼이라도 만들어놔야 나중에 update만 하면된다 !
+		String documentNumber = orderFormDTO.getOrderDTO().getDocumentNumber();
+		orderFormDTO.getOrderDetailDTO().setDocumentNumber(documentNumber);
 		// >>>>>>>>>>> 작성자 등록 위한 id 가져가야함
-//		sellService.registerOrderDetail(orderFormDTO.getOrderDetailDTO());
+		sellService.registerOrderDetail(orderFormDTO.getOrderDetailDTO());
 		
 	    // ----- 상품 선택 및 등록은 나중에 -----
 	    
@@ -321,7 +332,7 @@ public class SellController {
 		sellService.modifyOrder(orderDTO);
 		// 주문 상세 정보 수정
 		// >>>>>>>>>>> 최종 작성자 수정 위한 id 가져가야함
-//		sellService.modifyOrderDetail(orderDetailDTO);
+		sellService.modifyOrderDetail(orderDetailDTO);
 		
 		return "redirect:/orders/buy/" + orderDTO.getDocumentNumber();
 	}

@@ -29,119 +29,100 @@
 </head>
 
 <body id="page-top">
+	<!-- 기안서 작성 버튼 킵 -->
+
 	<div layout:fragment="contents">
+		<div class="container-fluid">
 			<!-- Page Heading -->
-			<h1 class="h3 mb-4 text-gray-800">전자결재</h1>
-			<!-- 이후 작성 -->
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">전자결재</h1>
+			</div>
+			<div class="regist-wrap">
+<!-- 				<input type="hidden" id="userId" th:value="${#httpSession.getAttribute('userId')}"> -->
+				<button class="btn btn-success ml-2" id="registerBtn" type="button">기안서 작성</button>
+			</div>
+			<!-- ---------- 검색바 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<!-- ---------- 검색바 ---------- -->
+					<div class="search-wrap border">
+						<section class="d-flex search-inner">
+						
+							<div class="col pl-4 search-box">
+<!-- 								<form th:action="@{/approval/search}" method="get" th:object="${orderSearchDTO}"> -->
+									
+<!-- 								</form> -->
+							</div>
+						</section>
+					</div>
+				</div>
+			</div>
 			
 			<!-- 본문 컨테이너 -->
-			<div class="card-body">
-			
-				<!-- 기안서 작성 버튼 -->
-				<div class="regist-wrap">
-					<!-- 로그인한 사용자 ID 저장 -->
-	<!--				<input type="hidden" id="userId" th:value="${#httpSession.getAttribute('userId')}">-->
-					<button class="btn btn-success ml-2" id="registerBtn" type="button">기안서 작성</button>
-				</div>
-				
-				<!-- 검색바 -->
-				<div class="search-wrap border">
-					<section class="d-flex search-inner">
-						<!-- 요청구분별 검색-->
-						<div class="col pl-4 search-box">
-							<div class="search-ttl">요청구분별</div>
-							<div class="category-filter input-group">
-								<div class="form-check">
-									<input class="form-check-input" id="reset" type="radio" name="requestType"  value="0" checked>
-									<label class="form-check-label" for="reset">전체</label>
-								</div>
-								<div class="form-check ml-3">
-									<input class="form-check-input" id="sending" type="radio" name="requestType" value="1">
-									<label class="form-check-label" for="sending">보낸요청</label>
-								</div>
-								<div class="form-check ml-3">
-									<input class="form-check-input" id="Receiving" type="radio" name="requestType" value="2">
-									<label class="form-check-label" for="Receiving">받은요청</label>
-								</div>
-							</div>
-			    		</div>
-						<!-- 진행상태별 검색 -->
-						<div class="col pl-4 search-box">
-							<div class="search-ttl">진행상태별</div>
-							<div class="category-filter input-group">
-								<div class="form-check">
-									<input class="form-check-input" id="reset" type="radio" name="approval_status"  value="0" checked>
-									<label class="form-check-label" for="reset">전체</label>
-								</div>
-								<div class="form-check ml-3">
-									<input class="form-check-input" id="signStatus1" type="radio" name="approvalStatus" value="1">
-									<label class="form-check-label" for="signStatus1">진행중</label>
-								</div>
-								<div class="form-check ml-3">
-									<input class="form-check-input" id="signStatus2" type="radio" name="approvalStatus" value="2">
-									<label class="form-check-label" for="signStatus2">반려</label>
-								</div>
-								<div class="form-check ml-3">
-									<input class="form-check-input" id="signStatus3" type="radio" name="approvalStatus" value="3">
-									<label class="form-check-label" for="signStatus3">결재요청</label>
-								</div>
-								<div class="form-check ml-3">
-								    <input class="form-check-input" id="signStatus4" type="radio" name="approvalStatus" value="4">
-								    <label class="form-check-label" for="signStatus4">결재완료</label>
-								</div>
-							</div>
-			    		</div>
-			    		<!-- 날짜조회 -->
-			    		<div class="col-4 px-4 search-box">
-			    			<div class="search-ttl">기간별</div>
-			    			<div class="input-group align-items-center justify-content-center searchDate-wrap">
-			    				<input type="text" class="form-control rounded-sm mr-2" placeholder="날짜 선택" value="" name="searchDate" id="searchDate"  autocomplete="off"/>
-								<button class="btn btn-primary" id="searchDateBtn" type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
-								<button class="btn btn-success ml-2" id="initDateBtn" type="button"><i class="fa-solid fa-rotate"></i></button>
-							</div>
-			    		</div>
-			    		<!-- 키워드검색 -->
-			    		<div class="col-5 search-box">
-		                     <div class="input-group">
-		                         <input type="text" id="searchKeyword" class="form-control bg-light border small" name="keyword_search" placeholder="제목/내용/사원명 검색" aria-label="Search" aria-describedby="basic-addon2">
-		                         <div class="input-group-append">
-		                             <button class="btn btn-primary" id="searchBtn" type="button">검색</button>
-		                         </div>
-		                     </div>
-		                </div>
-		  			</section>
-				</div>
-				<!-- 검색바 끝 -->
-				
-				
-				<!-- 그리드(테이블) -->
-				<div class="table-responsive">
-					<table class="table table-bordered compact" id="approvalList" width="100%" cellspacing="0">
-						<thead>
-						</thead>
-						<tbody>
-	<!-- 						<tr th:each="item, status : ${clientDTOList}" th:data-id="${item.idx}"> -->
-	<!-- 							<td th:text="${item.code}"></td> -->
-	<!-- 							<td th:text="${item.companyName}"></td> -->
-	<!-- 							<td th:text="${item.ownerName}"></td> -->
-	<!-- 							<td th:text="${item.regId}"></td> -->
-	<!-- 							<td th:text="${item.companyCategory}"></td> -->
-	<!-- 							<td th:text="${item.companySubject}"></td> -->
-	<!-- 							<td th:text="${item.creditLimit}"></td> -->
-	<!-- 						</tr> -->
-						</tbody>
-					</table>
-				</div>
-		
-		
-			 </div>
-			
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<!-- 그리드(테이블) -->
+					<div class="table-responsive">
+						<table class="table table-bordered compact" id="approvalList" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>문서번호</th>
+									<th>제목</th>
+									<th>진행상태</th>
+									<th>기안자</th>
+									<th>기안일자</th>
+									<th>마감일자</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item, status : ${approvalDTOList}" th:data-id="${item.approvalNo}">
+									<td th:text="${item.approvalNo != null ? item.approvalNo : '-'}"></td>
+									<td th:text="${item.title != null ? item.title : '-'}"></td>
+									<td th:text="${item.progressStatus != null ? item.progressStatus : '-'}"></td>
+									<td th:text="${item.drafterId != null ? item.drafterId : '-'}"></td>
+									<td th:text="${item.draftDate != null ? item.draftDate : '-'}"></td>
+									<td th:text="${item.dueDate != null ? item.dueDate : '-'}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				 </div>
+			</div>
 			<!-- 본문 컨테이너 끝 -->
+			
 			<!-- Scroll to Top Button-->
 		    <a class="scroll-to-top rounded" href="#page-top">
 		    	<i class="fas fa-angle-up"></i>
 		    </a>
+		</div>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				console.log("document ready!");
+				// init DataTable
+				$('#approvalList').DataTable({
+					lengthChange: false,
+					searching: false,
+					paging: false,
+					info: false
+				}); // end of $('#dataTables').DataTable({
+				
+				// 기안서 작성 버튼 클릭 이벤트(새창 열기)
+				$("#registerBtn").on('click', function() {
+					//로그인한 사용자 id 가져오기
+// 					let userId = $("#userId").val();
+					let userId = "100008"; //일단 하드코딩
+					
+// 					let url = `/approval/register?userId=` + userId;
+//					let url = `/approval/register?userId=` + encodeURIComponent(userId); //userId보안설정
+					
+// 					window.open(url, '_blank', 'width=800,height=1200,scrollbars=yes,resizable=yes');
+					location.href = `/approval/regist/${userId}`;
+				
+				});
 			
+			}); // document.ready 끝
+		</script>
 	</div>
 	<!-- /.container-fluid -->
 
@@ -166,7 +147,7 @@
 	<script src="/js/datatables/jszip.min.js"></script>
 	<script src="/js/datatables/buttons.print.min.js"></script>
 	<!-- 개별 js -->
-    <script src="/js/approval/approval.js"></script>
+<!--     <script src="/js/approval/approval.js"></script> -->
 </th:block>
 </body>
 </html>

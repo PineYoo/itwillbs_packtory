@@ -137,25 +137,25 @@
 	<!-- 주문서 등록(order_detail) -->
 	<insert id="insertOrderDetail">
 		INSERT INTO t_order_detail
-		VALUES (null			-- idx(auto_increment)
-			 , null				-- document_number(임시)
-			 , null				-- department_code(임시)
-			 , #{clientName}	-- client_name
-			 , #{clientPhone}	-- client_phone
-		 	 , null				-- lot_number(임시)
-			 , null				-- invoice_issue(임시)
-			 , null				-- payment_status(임시)
-			 , null				-- unissued_status(임시)
-			 , null				-- supply_amount(임시)
-			 , null				-- vat_amount(임시)
-			 , null				-- total_amount(임시)
-			 , null				-- issue_code(임시)
-			 , null				-- issue_remaks(임시)
-			 , null				-- is_deleted
-			 , null				-- reg_id(임시 - 나중에 session에서 가져올것)
-			 , now()			-- reg_date
-			 , null				-- mod_id(임시 - 나중에 session에서 가져올것)
-			 , now()			-- mod_date
+		VALUES (null				-- idx(auto_increment)
+			 , #{documentNumber}	-- document_number
+			 , null					-- department_code(임시)
+			 , #{clientName}		-- client_name
+			 , #{clientPhone}		-- client_phone
+		 	 , null					-- lot_number(임시)
+			 , null					-- invoice_issue(임시)
+			 , null					-- payment_status(임시)
+			 , null					-- unissued_status(임시)
+			 , null					-- supply_amount(임시)
+			 , null					-- vat_amount(임시)
+			 , null					-- total_amount(임시)
+			 , null					-- issue_code(임시)
+			 , null					-- issue_remaks(임시)
+			 , null					-- is_deleted
+			 , null					-- reg_id(임시 - 나중에 session에서 가져올것)
+			 , now()				-- reg_date
+			 , null					-- mod_id(임시 - 나중에 session에서 가져올것)
+			 , now()				-- mod_date
 			 )
 	
 	</insert>
@@ -216,6 +216,7 @@
 		WHERE o.document_number = #{documentNumber}
 	</select>
 	
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	<!-- 주문 정보 수정 -->
 	<update id="updateOrder">
 		UPDATE t_order
@@ -240,6 +241,14 @@
 		 WHERE document_number = #{documentNumber}
 	</update>
 	
+	<update id="updateOrderDetail">
+		UPDATE t_order_detail
+			<set>
+				client_name = #{clientName},		-- 담당자_이름
+				client_phone = #{clientPhone}		-- 담당자_연락처
+			</set>
+		 WHERE document_number = #{documentNumber}
+	</update>
 	<!-- ================================================================================= -->
 		<!-- 발주관리 리스트 컬럼 -->
 	<sql id="buy_list_columns_forSelect">

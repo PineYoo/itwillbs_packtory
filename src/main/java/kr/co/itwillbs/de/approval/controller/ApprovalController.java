@@ -1,11 +1,14 @@
 package kr.co.itwillbs.de.approval.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,9 +17,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.approval.dto.ApprovalDTO;
 import kr.co.itwillbs.de.approval.dto.DraftDTO;
 import kr.co.itwillbs.de.approval.service.ApprovalService;
+import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /* 전자결재 */
@@ -26,6 +31,10 @@ import lombok.extern.slf4j.Slf4j;
 public class ApprovalController {
 	@Autowired
 	private ApprovalService approvalService;
+	@Autowired
+	private CommonCodeUtil commonCodeUtil;
+	
+	private final String COMMON_APPROVAL_TYPE = "APPROVAL_TYPE";
 	
 	//------------------------------------------------------------------------------------------------
 	// 전자결재 페이지 매핑
@@ -39,6 +48,10 @@ public class ApprovalController {
 //		ApprovalDTO approvalDTO = approvalService.getApprovalList(userId);
 		
 //		model.addAttribute("approvalDTO", approvalDTO);
+		
+		List<ApprovalDTO> approvalDTOList = approvalService.getApprovalList();
+		model.addAttribute("approvalDTOList", approvalDTOList);
+		
 		return "approval/approval_list";
 	}
 	//------------------------------------------------------------------------------------------------
@@ -51,16 +64,22 @@ public class ApprovalController {
 	
 	//------------------------------------------------------------------------------------------------
 	// 기안서 작성 페이지 매핑 (GET)
-	@GetMapping(value={"/register"})
-	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
-//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		System.out.println("기안자ID:" + userId);
+	@GetMapping(value={"/regist/{userId}"})
+	public String apporvalRegisterForm(@PathVariable("userId") String userId, Model model) {
+//	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("기안자ID : " + userId);
 		
 		// 기안자ID 값으로 사원정보 가져오기
 		DraftDTO draftDTO = approvalService.getEmployeeInfo(userId);
-		System.out.println("draftDTO 가져왔음?" + draftDTO);
+		log.info("draftDTO : " + draftDTO);
+		
+		//	공통코드 가져와서 approval_type 넣기
+		List<CodeItemDTO> approvalTypeList = commonCodeUtil.getCodeItems(COMMON_APPROVAL_TYPE);
+		log.info("approvalType : " + approvalTypeList.toString());
 		
 		model.addAttribute("draftDTO", draftDTO);
+		model.addAttribute("approvalTypeList", approvalTypeList);
 		return "approval/approval_reg_form";
 	}
 	
@@ -82,7 +101,7 @@ public class ApprovalController {
 		// 기안서 등록(저장)
 		int insertApproval = approvalService.registerApproval(draftDTO);
 		if(insertApproval> 0) {
-			return "<script>alert('기안서가 등록되었습니다.'); window.close();</script>"; // 성공했을 경우 새창 닫기
+			return "redirect:/approval"; // 성공했을 경우 새창 닫기
 		}
 		
 		return ""; // 실패했을 경우 페이지 그대로
