@@ -5,6 +5,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import kr.co.itwillbs.de.approval.entity.Policy;
 import kr.co.itwillbs.de.common.vo.FileVO;
 
@@ -39,6 +41,12 @@ public class PolicyDTO {
     private LocalDateTime modDate; // 최종 수정일자 (자동 수정됨)
     
     private List<FileVO> fileList;
+    
+    private List<MultipartFile> policyFiles;
+    
+    public List<MultipartFile> getUploadFiles() {
+        return this.policyFiles;
+    }
 
     @Builder
     public PolicyDTO(Long idx, String type, String title, String contents, String status, 
