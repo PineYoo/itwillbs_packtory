@@ -21,10 +21,10 @@
 	margin-top: 20px;
 }
 
-.custom-ul {
-	max-width: 500px;
-	width: fit-content;
-}
+/* .custom-ul { */
+/* 	max-width: 500px; */
+/* 	width: fit-content; */
+/* } */
 
 .custom-button-area {
 	margin-top: 30px;
@@ -45,7 +45,7 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<form th:action="@{/groupware/notice/{idx}(idx=${noticeDTO.idx})}" method="post" th:object="${noticeDTO}"
-							  enctype="multipart/form-data" class="form">
+							  enctype="multipart/form-data" class="form row g-3">
 							<input type="hidden" name="_method" value="put">
 							<div class="col-md-12">
 								<label class="mb-1" for="regId">작성자 ID</label>
@@ -58,7 +58,7 @@
 									<input class="form-control" id="title" th:field="*{title}" placeholder="제목 입력">
 								</div>
 								<div class="col-md-6">
-									<label for="type" class="form-label">구분</label>
+									<label for="type" class="form-label mb-1">구분</label>
 									<select id="type" class="form-select" th:field="*{type}">
 										<option value="">선택</option>
 										<option th:each="type : ${codeType}"
@@ -76,7 +76,7 @@
 							<!-- ------------------- -->
 <!-- 							<div class="row"> -->
 								<div class="col-md-6">
-									<label for="isDeleted" class="small form-label">삭제유무</label>
+									<label for="isDeleted" class="form-label">삭제유무</label>
 									<select id="isDeleted" class="form-select" th:field="*{isDeleted}">
 										<option value="">전체</option>
 										<option value="N">활성화</option>
@@ -84,7 +84,7 @@
 									</select>
 								</div>
 								<div class="col-md-6">
-									<label for="isDeleted" class="small form-label">메인배너등록여부</label>
+									<label for="isDeleted" class="form-label">메인배너등록여부</label>
 									<select id="isDeleted" class="form-select" th:field="*{isBanner}">
 										<option value="">선택</option>
 										<option value="Y">등록</option>
@@ -95,7 +95,8 @@
 							<!-- ------------------- -->
 							<div class="col-md-12 custom-div" th:if="${fileList != null and not #lists.isEmpty(fileList)}">
 								<h6 class="card-title">첨부파일 목록</h6>
-								<ul class="list-group custom-ul">
+<!-- 								<ul class="list-group custom-ul"> -->
+								<ul class="list-group">
 								    <li th:each="file : ${fileList}"
 								    	th:if="${file.isDeleted == 'N'}"
 								    	th:id="'file-' + ${file.idx}"

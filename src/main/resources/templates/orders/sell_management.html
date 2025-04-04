@@ -211,14 +211,14 @@
 							<tbody>
 								<tr th:each="item, status : ${sellDTOList}" th:data-id="${item.documentNumber}">
 									<!-- <td><input type="checkbox"></td> -->
-									<td th:text="${item.documentNumber != null ? item.documentNumber : '-'}"></td>
-									<td th:text="${item.regDate != null ? #temporals.format(item.regDate, 'yyyy-MM-dd') : '-'}"></td>
-									<td th:text="${item.companyName != null ? item.companyName : '-'}"></td>
-									<td th:text="${item.supplyAmount != null ? item.supplyAmount : '-'}"></td>
-									<td th:text="${item.vatAmount != null ? item.vatAmount : '-'}"></td>
-									<td th:text="${item.totalAmount != null ? item.totalAmount : '-'}"></td>
-									<td th:text="${item.expectedDate != null ? item.expectedDate : '-'}"></td>	<!-- HashMap으로 가져오면서 String으로 들고와짐(java.lang.String) -->
-									<td th:text="${item.clientName != null ? item.clientName : '회의 전'}"></td>
+									<td th:text="${item.documentNumber != null and item.documentNumber != '' ? item.documentNumber : '-'}"></td>
+									<td th:text="${item.regDate != null and item.regDate != '' ? #temporals.format(item.regDate, 'yyyy-MM-dd') : '-'}"></td>
+									<td th:text="${item.companyName != null and item.companyName != '' ? item.companyName : '-'}"></td>
+									<td th:text="${item.supplyAmount != null and item.supplyAmount != '' ? item.supplyAmount : '-'}"></td>
+									<td th:text="${item.vatAmount != null and item.vatAmount != '' ? item.vatAmount : '-'}"></td>
+									<td th:text="${item.totalAmount != null and item.totalAmount != '' ? item.totalAmount : '-'}"></td>
+									<td th:text="${item.expectedDate != null and item.expectedDate != '' ? item.expectedDate : '-'}"></td>
+									<td th:text="${item.clientName != null and item.clientName != '' ? item.clientName : '회의 전'}"></td>
 								</tr>
 							</tbody>
 						</table>
