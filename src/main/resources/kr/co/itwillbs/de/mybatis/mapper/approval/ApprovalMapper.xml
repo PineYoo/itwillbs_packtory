@@ -70,9 +70,9 @@
 	    <result property="drafterId" column="id"/>
 	    <result property="drafterName" column="name"/>
 	    <result property="drafterDepartment" column="department_name"/>
-	    <result property="drafterPosition" column="position_name"/>
+<!-- 	    <result property="drafterPosition" column="position_name"/> -->
 	    <result property="drafterDepartment" column="department_code"/>
-<!-- 	    <result property="drafterPosition" column="position_code"/> -->
+	    <result property="drafterPosition" column="position_code"/>
 	</resultMap>
 	
 	<select id="selectEmployeeInfo" parameterType="String" resultMap="draftResultMap">
@@ -92,12 +92,38 @@
 	
 	
 	<!-- ==================================================================== -->
+	
 	<!-- 전자결재 목록 조회 -->
 	<select id="getApprovalList" resultType="kr.co.itwillbs.de.approval.dto.ApprovalDTO">
 		SELECT 
 			<include refid="t_approval_columns_forSelect"></include>
 		  FROM t_approval
 	</select>
+	
+	<!-- ==================================================================== -->
+	<select id="getAllEmployeeInfo" resultMap="draftResultMap">
+		SELECT id
+			 , name
+			 , department_code
+			 , position_code
+		  FROM t_employee
+	</select>
+	
+	<select id="getSearchEmployeeInfo" resultMap="draftResultMap">
+		SELECT id
+			 , name
+			 , department_code
+			 , position_code
+		  FROM t_employee
+		<where>
+			<if test='keyword != null and !("".equals(keyword.trim()))'>OR name LIKE CONCAT("%", #{keyword}, "%")</if>
+			<if test='keyword != null and !("".equals(keyword.trim()))'>OR department_code LIKE CONCAT("%", #{keyword}, "%")</if>
+			<if test='keyword != null and !("".equals(keyword.trim()))'>OR position_code LIKE CONCAT("%", #{keyword}, "%")</if>
+		</where>
+	</select>
+	
+	<!-- ==================================================================== -->
+	
 	
 	<!-- 기안서 저장 -->
 	<insert id="insertApproval" parameterType="kr.co.itwillbs.de.approval.dto.DraftDTO">
@@ -136,7 +162,6 @@
 			   #{approver3},
 		</trim>
 			 )
-	
 	</insert>
 	
 </mapper>

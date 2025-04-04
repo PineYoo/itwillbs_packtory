@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", function(){
 	//---------------------------------------------------
+	//	결재라인 추가 시 사용할 변수 선언
+	let approverCount = 0;
+	const maxApprovers = 3;
+	//---------------------------------------------------
 	// 기간별 검색 필터링 제이쿼리 (datepicker)
     $('#dueDate').daterangepicker({
         minDate: moment(),		// 오늘 이전 날짜 선택 불가
@@ -37,7 +41,96 @@ document.addEventListener("DOMContentLoaded", function(){
 		$('#dueDate').val('');
 		productReport.draw();
 	});
+	
 	//---------------------------------------------------
-
-
+	//	결재라인
+	$("#addApproverLineBtn").on("click", function() {
+		if(approverCount >= maxApprovers) {
+			alert("최대" + maxApprovers + "명까지 추가할 수 있습니다.")
+			return;
+		}
+		
+		approverCount++;
+		
+		let approverInput = `
+			<div class="approver-group" id="approver-${approverCount}">
+				<input type="hidden" class="approver-id" name="approver${approverCount}" value="">
+                <input type="text"
+						class="form-control approver-input"
+						data-index="${approverCount}"
+						placeholder="결재자 ${approverCount}"
+						value=""
+						readonly>
+				<button type="button" class="btn btn-primary search-approver"
+						id="searchApproverBtn${approverCount}" data-index="${approverCount}">
+						검색 <i class="fa-solid fa-magnifying-glass"></i>
+				</button>
+                <button type="button" class="btn btn-danger remove-approver"
+						data-id="${approverCount}" data-index="${approverCount}">
+						삭제
+				</button>
+            </div>
+		`
+		//	th:field는 JavaScript에서 변경해도 반영되지 않음
+		//	approver1, approver2, approver3이 있는 상황에서 결재자2를 지웠을때
+		//	approver1, approver3 으로 남아버림
+		//	이 문제를 해결하기 위해 th:field대신 name 으로 설정함
+		$(".approver-line").append(approverInput);
+	});
+	
+	
+	$(document).on("click", "[id^=searchApproverBtn]", function() {  // id가 searchApproverBtn로 시작하는것들 모두 선택
+	    let approverIndex = $(this).attr("id").replace("searchApproverBtn", ""); // ID에서 숫자 부분 추출
+	    let url = `/approval/line/${approverIndex}`; 
+	    window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+	});
+	
+	$(document).on("click", ".remove-approver", function() {
+		$(this).parent().remove();  // 해당 결재자 입력칸 삭제
+	    reorderApprovers();         // 삭제 후 번호 재정렬
+    });
+	
+	
+	function reorderApprovers() {
+		approverCount = 0;
+		
+	    $(".approver-group").each(function() {
+			//	1부터 다시 카운트
+	        approverCount++;
+			
+			//	div의 id 값 변경
+			$(this).attr("id", `approver-${approverCount}`);
+			
+			//	해당 그룹 안의 input 태그 번호 재설정
+			let input = $(this).find(".approver-input");
+			let inputHidden = $(this).find(".approver-id");
+	        input.attr("data-index", approverCount);
+	        input.attr("placeholder", "결재자 " + approverCount);
+	        inputHidden.attr("name", `approver${approverCount}`);
+			
+			//	검색 및 삭제 버튼의 data-index 값 변경
+			$(this).find(".search-approver").attr("id", `searchApproverBtn${approverCount}`).attr("data-index", approverCount);
+	        $(this).find(".remove-approver").attr("data-id", approverCount).attr("data-index", approverCount);
+	    });
+	}
+	//---------------------------------------------------
+	
+	
+	
+	
+	
 }); // DOMContentLoaded 끝
+
+//	결재라인 자식창에서 호출 될 함수
+function setApprover(index, id, name) {
+	let approverGroup = $(`#approver-${index}`);
+	
+	approverGroup.find(".approver-id").val(id);
+	approverGroup.find(".approver-input").val(name);
+	
+}
+
+
+
+
+

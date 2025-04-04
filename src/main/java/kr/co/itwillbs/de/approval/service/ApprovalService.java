@@ -62,8 +62,6 @@ public class ApprovalService {
 		// approval_type=null, doc_no=, approver1=, approver2=, approver3=, title=ㅇㅇㄹㄴ, content=ㅇㄴㄹㅇ, due_date=null, approvalStatus=null)
 		//	-------------------------------------------------------------
 		//	기안서 저장
-//		return 0; // 테스트
-//		int affectedRow = approvalMapper.insertApproval(draftDTO);
 		return approvalMapper.insertApproval(draftDTO); // DB 비즈니스 로직 처리
 		
 	}
@@ -76,6 +74,18 @@ public class ApprovalService {
 		
 		return approvalMapper.getApprovalList();
 	}
+
+	//	=====================================================================================
+	//	결재라인을 위한 모든 회원 목록 조회
+	public List<DraftDTO> getAllEmployeeInfo() {
+		return approvalMapper.getAllEmployeeInfo();
+	}
+	//	결재라인 AJAX로 검색어 조회
+	public List<DraftDTO> getSearchEmployeeInfo(String keyword) {
+		return approvalMapper.getSearchEmployeeInfo(keyword);
+	}
+
+	
 	
 	
 	
