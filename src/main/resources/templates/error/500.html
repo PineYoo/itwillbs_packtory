@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+	<title>Packtory - Error</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	<link href="/css/sb-admin-2.min.css" rel="stylesheet" type="text/css">
+	<script src="/js/sb-admin-2.min.js"></script>
+	<script src="/js/bootstrap/bootstrap.bundle.min.js"></script>
+	<script src="/js/jquery-3.7.1.js"></script>
+</head>
+<body class="bg-gradient-primary">
+	<div class="container">
+
+		<div class="container-fluid">
+
+			<!-- 404 Error Text -->
+			<div class="text-center">
+				<div class="error mx-auto" data-text="500">500</div>
+				<p class="lead text-gray-800 mb-5">내부 서버 오류</p>
+				<p class="text-gray-500 mb-0">서버에 오류가 발생하여 요청을 수행할 수 없습니다.</p>
+				<a href="#" id="backBtn">← 이전 페이지로 돌아가기</a>
+			</div>
+		</div>
+
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				console.log("document ready!");
+			});
+
+			$(function() {
+
+				// 뒤로 가기
+				$('#backBtn').on("click", function() {
+					console.log("backBtn click!");
+					history.back();
+				});
+
+			}); // end of $(function() {
+		</script>
+	</div>
+</body>
+</html>

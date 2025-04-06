@@ -17,7 +17,8 @@
 			</a>
 			<!-- Dropdown - User Information -->
 			<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-				<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+				<!-- <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"> -->
+				<a class="dropdown-item" href="#" id="logoutAnker">
 					<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
 					로그아웃
 				</a>
@@ -27,14 +28,37 @@
 	
 	<script>
 		$(function() {
-		    setInterval(updateClock, 1000);
-		    updateClock();
-		    
-		    function updateClock() {
-		        const now = new Date();
-		        $("#clock").text(now.toLocaleTimeString()); // jQuery 방식으로 수정
-		    }
-		});
+			setInterval(updateClock, 1000);
+			updateClock();
+			
+			function updateClock() {
+				const now = new Date();
+				$("#clock").text(now.toLocaleTimeString()); // jQuery 방식으로 수정
+			}
+			
+			$('#logoutAnker').on("click", function() {
+				console.log("logoutAnker click!");
+				if(!confirm("로그아웃 하시겠습니까?")) {
+					return false;
+				}
+				
+			
+				$.ajax({
+					url : '/logout',
+					type : 'POST',
+					success : function(response) {
+						// 로그아웃 성공 시 처리
+						location.href = '/'; // 메인 페이지로 이동
+					},
+					error : function(xhr, status, error) {
+						// 에러 처리
+						console.error('로그아웃 실패:', error);
+						alert("로그아웃에 실패했습니다. 잠시 후 다시 시도해주세요.");
+					}
+				});
+
+			}); // end of $('#logoutAnker').on("click", function() {
+		}); // end of $(function() {
 	</script>
 	
 	<!-- Topbar Search -->
