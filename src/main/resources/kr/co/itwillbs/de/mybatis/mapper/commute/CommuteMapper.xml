@@ -11,8 +11,8 @@
 		    e.department_code AS department,   	-- 부서
 	        e.position_code AS position,       	-- 직책
 	        e.name,								-- 이름
-		    MIN(CASE WHEN ci.minor_name = '출근' THEN c.reg_date END) AS checkIn,	-- 출근시간
-		    MAX(CASE WHEN ci.minor_name = '퇴근' THEN c.reg_date END) AS checkOut,	-- 퇴근시간
+		    MIN(CASE WHEN ci.minor_name IN ('출근', '지각') THEN c.reg_date END) AS checkIn,	-- 출근시간
+		    MAX(CASE WHEN ci.minor_name = '퇴근' THEN c.reg_date END) AS checkOut,				-- 퇴근시간
 		    -- GROUP_CONCAT을 사용하여 work_status_code를 하나로 합친 후, 마지막 값만 추출
       		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT c.work_status_code ORDER BY c.reg_date SEPARATOR ', '), ', ', -1) AS workStatus
 		FROM t_commute c

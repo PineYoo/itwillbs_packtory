@@ -56,7 +56,7 @@
 			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
-					<!-- 숨겨진 input으로 데이터 전달 -->
+					<!-- hidden ! -->
 					<input type="hidden" id="modelCheckInTime" th:value="${checkInTime}">
 					<input type="hidden" id="modelCheckOutTime" th:value="${checkOutTime}">
 					<input type="hidden" id="modelLastStatus" th:value="${lastCommuteRecord != null ? lastCommuteRecord.workStatusCode : ''}">
@@ -190,8 +190,8 @@
 			    // 버튼 클릭 이벤트
 			    $('.work-btn').on('click', function () {
 			        const $btn = $(this);
-			        const workStatusCode = $btn.data('code');
-			        const workStatusName = $btn.data('name');
+			        let workStatusCode = $btn.data('code');
+			        let workStatusName = $btn.data('name');
 	
 			        const now = new Date();
 			        if (workStatusName === '출근') {
@@ -205,7 +205,16 @@
 			            case '출근':
 			                checkInBtn.prop("disabled", true);
 			                outSideBtn.prop("disabled", false);
-	
+							
+			                const referenceTime = new Date();	// 기준 시간
+			                referenceTime.setHours(20, 10, 0, 0); // 오전 9시 10분 기준
+			                if (now > referenceTime) {
+			                    workStatusCode = "5";  	// 지각 코드
+			                    workStatusName = "지각";
+			                    
+			                    alert("지각!");
+			                }
+			                
 			             	// 테스트용: 10초 뒤 퇴근 버튼 활성화
 			                const futureTime = new Date(now.getTime() + 10 * 1000);	// 9시간 : 9 * 60 * 60 * 1000
 			                const delay = futureTime.getTime() - now.getTime();

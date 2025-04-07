@@ -59,12 +59,11 @@
 						<section class="d-flex search-inner">
 						
 							<div class="col pl-4 search-box">
-								<form th:action="@{/orders/sell/search}" method="get" th:object="${orderSearchDTO}">
-								    <input type="hidden" name="tradeCode" value="1" />
+								<form th:action="@{/orders/buy/search}" method="get" th:object="${orderSearchDTO}">
 								    <div class="container-fluid px-5 mt-3">
 								        <div class="row">
 								            <!-- 왼쪽 컬럼 -->
-								            <div class="col-md-6">
+								            <div class="col-md-6 left-form">
 								                <!-- 주문상태 코드 -->
 								                <div class="form-group row mb-3">
 								                    <label for="statusCode" class="col-sm-3 col-form-label">주문상태 코드</label>
