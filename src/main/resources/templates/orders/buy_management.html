@@ -28,44 +28,16 @@
 	<link href="/css/common.css" rel="stylesheet">
 </th:block>
 <style type="text/css">
-/* ======================================================================== */
-/* ---------------- 검색바 CSS(반응형 포함) ------------------------------- */
- /* 기본 테이블 스타일 */
-#search-table {
-    width: 100%;
-    max-width: 1200px;
-    margin: auto;
-    border-collapse: collapse;
+/* 검색바 중앙에 세로줄 */
+.left-form {
+	border-right: 1px solid #e3e6f0;
 }
 
-#search-table table td {
-	padding-bottom: 7px;
-}
-
-/* 작은 화면에서 한 줄로 표시되도록 설정 */
 @media (max-width: 768px) {
-    #search-table tr {
-      display: block;
-    }
-
-    #search-table td {
-      display: block;
-      width: 100%;
-    }
-
-    #search-table td table {
-      display: block;
-    }
-    .regist-wrap {
-    	display: block;
-    }
-    .regist-wrap button {
-    	width: 100%;
-    	margin-bottom: 7px;
-    }
+  .left-form {
+    border-right: none !important;
+  }
 }
-/* ---------------- 검색바 CSS(반응형 포함) 끝 ---------------------------- */
-/* ======================================================================== */
 </style>
 
 </head>
@@ -88,96 +60,103 @@
 						
 							<div class="col pl-4 search-box">
 								<form th:action="@{/orders/buy/search}" method="get" th:object="${orderSearchDTO}">
-									<input type="hidden" name="tradeCode" value="2" />
-									<table id="search-table">
-									    <tr>
-									        <td>
-									            <table style="width: 100%;">
-									                <tr>
-									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="statusCode">주문상태 코드</label></th>
-									                    <td class="col-sm-12 col-md-3">
-									                        <th:block th:with="statusCode=*{statusCode}">
-									                            <select name="statusCode" id="statusCode" th:value="*{statusCode}" class="form-select" aria-label="Default select example">
-									                                <option value="" th:selected="${statusCode} eq '' ">전체</option>
-									                                <option th:each="item : *{codeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}" th:selected="${statusCode} == ${item.minorCode}"></option>
-									                            </select>
-									                        </th:block>
-									                    </td>
-									                </tr>
-									                <tr>
-									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="documentNumber">문서번호</label></th>
-									                    <td class="col-sm-12 col-md-3">
-									                        <input type="text" id="documentNumber" th:field="*{documentNumber}" class="form-control">
-									                    </td>
-									                </tr>
-									                <tr>
-									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="requestStartDate">요청일자</label></th>
-									                    <td class="col-sm-12 col-md-3">
-									                        <div class="input-group mb-3">
-									                            <input type="text" id="requestStartDate" th:field="*{requestStartDate}" class="form-control" autocomplete='off'>
-									                            <span class="input-group-text calendar-icon" data-target="#requestStartDate">
-													                <i class="fa fa-calendar"></i>
-													            </span>
-									                            &nbsp;&nbsp;⁓&nbsp;&nbsp;
-									                            <input type="text" id="requestEndDate" th:field="*{requestEndDate}" class="form-control" autocomplete='off'>
-									                            <span class="input-group-text calendar-icon" data-target="#requestEndDate">
-													                <i class="fa fa-calendar"></i>
-													            </span>
-									                        </div>
-									                    </td>
-									                </tr>
-									            </table>
-									        </td>
-									        <td class="col-sm-12 col-md-1"></td>
-									        <td style="border-left: 1px solid #e3e6f0;"></td>
-									        <td class="col-sm-12 col-md-1"></td>
-									        <td>
-									            <table style="width: 100%;">
-									                <tr>
-									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="companyName">거래처명</label></th>
-									                    <td class="col-sm-12 col-md-3">
-									                  		<input type="text" id="companyName" th:field="*{companyName}" class="form-control">
-									                    </td>
-									                </tr>
-									                <tr>
-									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="isDeleted">삭제유무</label></th>
-									                    <td class="col-sm-12 col-md-3">
-									                        <select name="isDeleted" id="isDeleted" th:value="*{isDeleted}" class="form-select" aria-label="Default select example">
-									                            <option value="" th:selected="*{isDeleted} eq '' ">전체</option>
-									                            <option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
-									                            <option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
-									                        </select>
-									                    </td>
-									                </tr>
-									                <tr>
-									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="dueStartDate">마감일자</label></th>
-									                    <td class="col-sm-12 col-md-3">
-									                        <div class="input-group mb-3">
-									                            <input type="text" id="dueStartDate" th:field="*{dueStartDate}" class="form-control" autocomplete='off'>
-									                            <span class="input-group-text calendar-icon" data-target="#dueStartDate">
-													                <i class="fa fa-calendar"></i>
-													            </span>
-									                            &nbsp;&nbsp;⁓&nbsp;&nbsp;
-									                            <input type="text" id="dueEndDate" th:field="*{dueEndDate}" class="form-control" autocomplete='off'>
-									                            <span class="input-group-text calendar-icon" data-target="#dueEndDate">
-													                <i class="fa fa-calendar"></i>
-													            </span>
-									                        </div>
-									                    </td>
-									                </tr>
-									            </table>
-									        </td>
-									    </tr>
-									</table>
-									<!-- 검색바 버튼 -->
-									<div class="regist-wrap">
-										<!-- 로그인한 사용자 ID 저장 -->
-				<!-- 						<input type="hidden" id="userId" th:value="${#httpSession.getAttribute('userId')}"> -->
-										<button class="btn btn-success ml-2" id="btnRegister" type="button">주문서등록</button>
-										<button class="btn btn-primary ml-2" id="btnSearch" type="submit">검색</button>
-<!-- 										<button class="btn btn-primary ml-2" id="searchBtn" type="submit">검색</button> -->
-									</div>
-									<!-- 검색바 버튼 끝 -->
+								    <div class="container-fluid px-5 mt-3">
+								        <div class="row">
+								            <!-- 왼쪽 컬럼 -->
+								            <div class="col-md-6 left-form">
+								                <!-- 주문상태 코드 -->
+								                <div class="form-group row mb-3">
+								                    <label for="statusCode" class="col-sm-3 col-form-label">주문상태 코드</label>
+								                    <div class="col-sm-9">
+								                        <th:block th:with="statusCode=*{statusCode}">
+								                            <select name="statusCode" id="statusCode" th:value="*{statusCode}" class="form-select">
+								                                <option value="" th:selected="${statusCode} eq '' ">전체</option>
+								                                <option th:each="item : *{codeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}" th:selected="${statusCode} == ${item.minorCode}"></option>
+								                            </select>
+								                        </th:block>
+								                    </div>
+								                </div>
+								
+								                <!-- 문서번호 -->
+								                <div class="form-group row mb-3">
+								                    <label for="documentNumber" class="col-sm-3 col-form-label">문서번호</label>
+								                    <div class="col-sm-9">
+								                        <input type="text" id="documentNumber" th:field="*{documentNumber}" class="form-control">
+								                    </div>
+								                </div>
+								
+								                <!-- 요청일자 -->
+								                <div class="form-group row mb-3">
+								                    <label for="requestStartDate" class="col-sm-3 col-form-label">요청일자</label>
+								                    <div class="col-sm-9">
+								                        <div class="d-flex align-items-center">
+								                            <div class="input-group">
+								                                <input type="text" id="requestStartDate" th:field="*{requestStartDate}" class="form-control" autocomplete="off">
+								                                <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span>
+								                            </div>
+								                            <span class="mx-2">⁓</span>
+								                            <div class="input-group">
+								                                <input type="text" id="requestEndDate" th:field="*{requestEndDate}" class="form-control" autocomplete="off">
+								                                <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span>
+								                            </div>
+								                        </div>
+								                    </div>
+								                </div>
+								            </div>
+								
+								            <!-- 오른쪽 컬럼 -->
+								            <div class="col-md-6">
+								                <!-- 거래처명 -->
+								                <div class="form-group row mb-3">
+								                    <label for="companyName" class="col-sm-3 col-form-label">거래처명</label>
+								                    <div class="col-sm-9">
+								                        <input type="text" id="companyName" th:field="*{companyName}" class="form-control">
+								                    </div>
+								                </div>
+								
+								                <!-- 삭제유무 -->
+								                <div class="form-group row mb-3">
+								                    <label for="isDeleted" class="col-sm-3 col-form-label">삭제유무</label>
+								                    <div class="col-sm-9">
+								                        <select name="isDeleted" id="isDeleted" th:value="*{isDeleted}" class="form-select">
+								                            <option value="" th:selected="*{isDeleted} eq '' ">전체</option>
+								                            <option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
+								                            <option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
+								                        </select>
+								                    </div>
+								                </div>
+								
+								                <!-- 마감일자 -->
+								                <div class="form-group row mb-3">
+								                    <label for="dueStartDate" class="col-sm-3 col-form-label">마감일자</label>
+								                    <div class="col-sm-9">
+								                        <div class="d-flex align-items-center">
+								                            <div class="input-group">
+								                                <input type="text" id="dueStartDate" th:field="*{dueStartDate}" class="form-control" autocomplete="off">
+								                                <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span>
+								                            </div>
+								                            <span class="mx-2">⁓</span>
+								                            <div class="input-group">
+								                                <input type="text" id="dueEndDate" th:field="*{dueEndDate}" class="form-control" autocomplete="off">
+								                                <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span>
+								                            </div>
+								                        </div>
+								                    </div>
+								                </div>
+								            </div>
+								        </div>
+								
+								        <!-- 검색바 버튼 -->
+								        <div class="row justify-content-end">
+										    <div class="col-12 col-sm-auto mb-2">
+								                <button class="btn btn-success btn-block" id="btnRegister" type="button">주문서등록</button>
+								            </div>
+										    <div class="col-12 col-sm-auto mb-2">
+								                <button class="btn btn-primary btn-block" id="btnSearch" type="submit">검색</button>
+								            </div>
+								        </div>
+									    <!-- 검색바 버튼 끝 -->
+								    </div>
 								</form>
 							</div>
 						</section>

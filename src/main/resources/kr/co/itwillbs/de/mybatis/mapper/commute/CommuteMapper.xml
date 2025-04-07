@@ -11,14 +11,84 @@
 		    e.department_code AS department,   	-- 부서
 	        e.position_code AS position,       	-- 직책
 	        e.name,								-- 이름
-		    MIN(CASE WHEN c.work_status_code = '출근' THEN c.reg_date END) AS checkIn,
-		    MAX(CASE WHEN c.work_status_code = '퇴근' THEN c.reg_date END) AS checkOut,
+		    MIN(CASE WHEN ci.minor_name IN ('출근', '지각') THEN c.reg_date END) AS checkIn,	-- 출근시간
+		    MAX(CASE WHEN ci.minor_name = '퇴근' THEN c.reg_date END) AS checkOut,				-- 퇴근시간
 		    -- GROUP_CONCAT을 사용하여 work_status_code를 하나로 합친 후, 마지막 값만 추출
       		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT c.work_status_code ORDER BY c.reg_date SEPARATOR ', '), ', ', -1) AS workStatus
 		FROM t_commute c
 		JOIN t_employee e ON c.employee_id = e.id  -- 사원 테이블과 조인
+		JOIN t_commoncode_item ci ON c.work_status_code = ci.minor_code AND ci.major_code = 'WORK_STATUS_CODE'	-- 공통코드 테이블에서 코드명 받아오기 위함
+		
+		<where>
+			<if test="search.employeeId != null and search.employeeId != ''">
+				AND c.employee_id = #{search.employeeId}
+			</if>
+			<if test="search.workStartDate != null and search.workStartDate != ''">
+				AND DATE(c.reg_date) &gt;= #{search.workStartDate}
+			</if>
+			<if test="search.workEndDate != null and search.workEndDate != ''">
+				AND DATE(c.reg_date) &lt;= #{search.workEndDate}
+			</if>
+			<if test="search.department != null and search.department != ''">
+				AND e.department_code = #{search.department}
+			</if>
+			<if test="search.name != null and search.name != ''">
+				AND e.name LIKE CONCAT('%', #{search.name}, '%')
+			</if>
+		</where>
+		
 		GROUP BY c.employee_id, e.department_code, e.position_code, e.name, DATE(c.reg_date)
 		-- 오라클에서는 GROUP BY 절에 포함되지 않은 컬럼을 SELECT 절에서 사용할 수 없으므로, 모든 비집계 컬럼을 GROUP BY 절에 추가해야함
 		ORDER BY work_date DESC, c.employee_id
 	</select>
+	
+	<!-- 로그인 한 사번의 오늘 출근 기록 조회(SELECT) -->
+	<select id="getCheckInTime" resultType="kr.co.itwillbs.de.commute.dto.CommuteDTO">
+		SELECT *
+		  FROM t_commute
+		 WHERE employee_id = #{id}
+		   AND DATE(reg_date) = #{today}
+		   AND work_status_code = (SELECT minor_code
+									 FROM t_commoncode_item
+									WHERE major_code = 'WORK_STATUS_CODE'
+									  AND minor_name = '출근'
+									  AND is_deleted = 'N'
+								  )
+		 ORDER BY reg_date DESC
+	</select>
+	
+	<!-- 로그인 한 사번의 오늘 퇴근 기록 조회(SELECT) -->
+	<select id="getCheckOutTime" resultType="kr.co.itwillbs.de.commute.dto.CommuteDTO">
+		SELECT *
+		  FROM t_commute
+		 WHERE employee_id = #{id}
+		   AND DATE(reg_date) = #{today}
+		   AND work_status_code = (SELECT minor_code
+									 FROM t_commoncode_item
+									WHERE major_code = 'WORK_STATUS_CODE'
+									  AND minor_name = '퇴근'
+									  AND is_deleted = 'N'
+								  )
+		 ORDER BY reg_date DESC
+	</select>
+	
+	<!-- 로그인 한 사번의 오늘 마지막 출퇴근 기록 조회(SELECT) -->
+	<select id="getTodayLastCommute" resultType="kr.co.itwillbs.de.commute.dto.CommuteDTO">
+		SELECT *
+		  FROM t_commute
+		 WHERE employee_id = #{id}
+		   AND DATE(reg_date) = #{today}
+		 ORDER BY reg_date DESC
+		 LIMIT 1
+	</select>
+	
+	<!-- 출퇴근 기록 저장(INSERT) -->
+	<insert id="insertCommuteInfo">
+		INSERT INTO t_commute
+		VALUES (null				-- idx(auto_increment)
+			 , #{employeeId}		-- employee_id
+			 , #{workStatusCode}	-- work_status_code
+			 , #{regDate}			-- reg_date
+			 )
+	</insert>
 </mapper>

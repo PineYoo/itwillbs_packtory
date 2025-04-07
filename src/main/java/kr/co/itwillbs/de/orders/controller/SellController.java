@@ -60,9 +60,9 @@ public class SellController {
  		
  		// 각 minorName 이 일치하는 minorcode 뽑아내서 trade_code 에 넣기
  		if (SELL_VALUE.equals(tradeName)) {	// sell 일 때
- 			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));   // '수주'
+ 			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));   // '수주(1)'
  		} else if (BUY_VALUE.equals(tradeName)) {	// buy 일 때
- 			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));   // '발주'
+ 			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));   // '발주(2)'
  		}
 		
 		// 수주/발주 관리 목록 리스트 조회 요청(SELECT)
@@ -85,6 +85,17 @@ public class SellController {
 		// 수주 혹은 발주만 남은 codeItemList를 orderSearchDTO에 set
 		orderSearchDTO.setCodeItemList(this.getCodeItemsByTradeName(tradeName));
 		model.addAttribute("orderSearchDTO", orderSearchDTO);
+		
+		// 수주/발주 관리 목록 리스트 조회 요청(SELECT)
+		// 파라미터 : 공통코드에서 '수주' or '발주' 코드
+		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
+		
+		// 각 minorName 이 일치하는 minorcode 뽑아내서 trade_code 에 넣기
+		if (SELL_VALUE.equals(tradeName)) {	// sell 일 때
+			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));   // '수주(1)'
+		} else if (BUY_VALUE.equals(tradeName)) {	// buy 일 때
+			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));   // '발주(2)'
+		}
 		
 		// 수주/발주 조건 검색 리스트 조회 요청(SELECT) - 재사용
 		List<OrderDTO> orderDTOList = sellService.getOrderList(orderSearchDTO);
@@ -120,11 +131,11 @@ public class SellController {
 		
 		// 각 minorName 이 일치하는 minorcode 뽑아내서 trade_code 에 넣기
 		if (SELL_VALUE.equals(tradeName)) {	// sell 일 때
-			orderFormDTO.getOrderDTO().setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));   // '수주'
-			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미출고"));
+			orderFormDTO.getOrderDTO().setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));  // '수주(1)'
+			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미출고"));	// (1)
 		} else if (BUY_VALUE.equals(tradeName)) {	// buy 일 때
 			orderFormDTO.getOrderDTO().setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));   // '발주'
-			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미수금"));
+			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미수금"));	//(2)
 		}
 		
 		System.out.println(">>>>>>>>>" + orderFormDTO.getOrderDTO());
