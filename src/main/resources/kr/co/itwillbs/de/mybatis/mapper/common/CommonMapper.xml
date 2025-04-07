@@ -51,6 +51,10 @@
 		SELECT nextVal('seq_order_number')
 	</select>
 	
+	<select id="getApprovalNoFromMySQL" resultType="string">
+		SELECT nextVal('approval_no')
+	</select>
+	
 	<select id="getCodes" resultType="kr.co.itwillbs.de.admin.dto.CodeDTO">
 		select 
 			major_code,

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
-import kr.co.itwillbs.de.admin.dto.CodeSearchDTO;
 import kr.co.itwillbs.de.common.mapper.CommonMapper;
 
 @Service
@@ -42,6 +41,14 @@ public class CommonService {
 		return commonMapper.getSeqOrderNumberfromMySQL(); 
 	}
 
+	/**
+	 * MySQL DB에서 시퀀스 가져오기 >> approval_no
+	 * @return String seq_*!
+	 */
+	public String getApprovalNoFromMySQL() {
+		return commonMapper.getApprovalNoFromMySQL();
+	}
+	
 	/**
 	 * SELECT t_commoncode where is_deleted = 'N' 
 	 * @param majorCode
