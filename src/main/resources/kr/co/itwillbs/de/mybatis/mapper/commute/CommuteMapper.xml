@@ -11,13 +11,13 @@
 		    e.department_code AS department,   	-- 부서
 	        e.position_code AS position,       	-- 직책
 	        e.name,								-- 이름
-		    MIN(CASE WHEN c.work_status_code = '출근' THEN c.reg_date END) AS checkIn,	-- 출근시간
-		    MAX(CASE WHEN c.work_status_code = '퇴근' THEN c.reg_date END) AS checkOut,	-- 퇴근시간
+		    MIN(CASE WHEN ci.minor_name = '출근' THEN c.reg_date END) AS checkIn,	-- 출근시간
+		    MAX(CASE WHEN ci.minor_name = '퇴근' THEN c.reg_date END) AS checkOut,	-- 퇴근시간
 		    -- GROUP_CONCAT을 사용하여 work_status_code를 하나로 합친 후, 마지막 값만 추출
       		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT c.work_status_code ORDER BY c.reg_date SEPARATOR ', '), ', ', -1) AS workStatus
 		FROM t_commute c
-		JOIN t_employee e 
-		  ON c.employee_id = e.id  -- 사원 테이블과 조인
+		JOIN t_employee e ON c.employee_id = e.id  -- 사원 테이블과 조인
+		JOIN t_commoncode_item ci ON c.work_status_code = ci.minor_code AND ci.major_code = 'WORK_STATUS_CODE'	-- 공통코드 테이블에서 코드명 받아오기 위함
 		
 		<where>
 			<if test="search.employeeId != null and search.employeeId != ''">

@@ -181,7 +181,12 @@
 									<td th:text="${commute.name}"></td>
 									<td th:text="${commute.checkIn != null ? #temporals.format(commute.checkIn, 'HH:mm:ss') : '-'}"></td>
 									<td th:text="${commute.checkOut != null ? #temporals.format(commute.checkOut, 'HH:mm:ss') : '-'}"></td>
-									<td th:text="${commute.workStatus}"></td>
+									<td>	<!-- 근무상태코드 일치하는 코드의 코드명 출력 -->
+									  <span th:each="ci : ${codeItemList}"
+									        th:if="${ci.minorCode == commute.workStatus}"
+									        th:text="${ci.minorName}">
+									  </span>
+									</td>
 								</tr>
 							</tbody>
 						</table>
