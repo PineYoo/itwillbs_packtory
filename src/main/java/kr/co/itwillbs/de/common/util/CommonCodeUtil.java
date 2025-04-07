@@ -46,14 +46,14 @@ public class CommonCodeUtil {
 		// 요청한 majorCode가 존재 할 경우 아이템 리스트 가져오기
 		boolean hasContains = false;
 		for (CodeDTO item : codeList) {
-			if(item.getMajorCode().equals(majorCode)) {
+			if(item.getMajorCode().toLowerCase().equals(majorCode.toLowerCase())) {
 				hasContains = true;
 				break;
 			}
 		}
 		
 		if(!hasContains) {
-			log.info("요청 한 majorCode가 majorCodeList에 존재하지 않습니다.");
+			log.error("요청 한 majorCode가 majorCodeList에 존재하지 않습니다.");
 			return null;
 		}
 		return commonService.getCodeItems(majorCode);

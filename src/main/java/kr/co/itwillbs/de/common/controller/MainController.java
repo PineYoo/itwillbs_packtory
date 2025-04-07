@@ -1,9 +1,14 @@
 package kr.co.itwillbs.de.common.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.co.itwillbs.de.common.vo.LoginVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -42,5 +47,37 @@ public class MainController {
 	@GetMapping("/test/draft")
 	public String test() {
 		return "/approval/draft_form.html";
+	}
+	
+	/**
+	 * 로그인
+	 * @return
+	 */
+	@GetMapping(value= {"/login","/login/"})
+	public String loginForm(Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		model.addAttribute("loginVO", new LoginVO());
+		
+		return "main/login_form";
+	}
+	
+	/**
+	 * 로그인 > 성공 > 메인
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value={"/main","/main/"})
+	public String packtoryMainView(Model model) {
+		
+		return "/main/main";
+	}
+	
+	@GetMapping("/common/currentTime")
+	@ResponseBody
+	public String getCurrentTime() {
+		LocalDateTime nowDate = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		return nowDate.format(formatter);
 	}
 }

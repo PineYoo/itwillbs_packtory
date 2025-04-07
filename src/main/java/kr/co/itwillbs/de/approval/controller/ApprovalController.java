@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -99,15 +100,38 @@ public class ApprovalController {
 //		}
 		
 		// 기안서 등록(저장)
-		int insertApproval = approvalService.registerApproval(draftDTO);
-		if(insertApproval> 0) {
-			return "redirect:/approval"; // 성공했을 경우 새창 닫기
-		}
+//		int insertApproval = approvalService.registerApproval(draftDTO);
+//		if(insertApproval> 0) {
+//			return "redirect:/approval"; // 성공했을 경우 새창 닫기
+//		}
 		
-		return ""; // 실패했을 경우 페이지 그대로
+		approvalService.registerApproval(draftDTO);
+		return "redirect:/approval"; // 성공했을 경우 새창 닫기
+		
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//	결재라인 부분
+	@GetMapping("/line/{idx}")
+	public String getLineList(Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		//	전자결재를 위한 모든 회원 목록 조회
+		List<DraftDTO> draftDTOList = approvalService.getAllEmployeeInfo();
+		model.addAttribute("draftDTOList", draftDTOList);
+		return "approval/approval_sign_line";
+	}
+	
+	//	결재라인 AJAX로 검색어 조회
+	@PostMapping("/line/search")
+	@ResponseBody
+	public List<DraftDTO> getLineSearch(@RequestParam("keyword") String keyword) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+//		log.info("keyword : " + keyword);
+		
+		List<DraftDTO> draftDTOList = approvalService.getSearchEmployeeInfo(keyword);
+		
+		return draftDTOList;
+	}
 	
 	
 	

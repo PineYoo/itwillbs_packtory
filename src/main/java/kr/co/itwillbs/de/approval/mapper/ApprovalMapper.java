@@ -19,10 +19,22 @@ public interface ApprovalMapper {
 	
 	//	기안서 저장
 	int insertApproval(DraftDTO draftDTO);
+	
 	//	=========================================================
-
 	//	전자결재 목록 조회	
 	List<ApprovalDTO> getApprovalList();
+
+	
+	
+	
+	
+	
+	//	=========================================================
+	//	결재라인을 위한 모든 회원 목록 조회
+	List<DraftDTO> getAllEmployeeInfo();
+	
+	//	결재라인 AJAX로 검색어 조회
+	List<DraftDTO> getSearchEmployeeInfo(String keyword);
 	
 	
 	

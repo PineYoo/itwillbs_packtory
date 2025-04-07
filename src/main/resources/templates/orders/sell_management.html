@@ -209,7 +209,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item, status : ${sellDTOList}" th:data-id="${item.documentNumber}">
+								<tr th:each="item, status : ${orderDTOList}" th:data-id="${item.documentNumber}">
 									<!-- <td><input type="checkbox"></td> -->
 									<td th:text="${item.documentNumber != null and item.documentNumber != '' ? item.documentNumber : '-'}"></td>
 									<td th:text="${item.regDate != null and item.regDate != '' ? #temporals.format(item.regDate, 'yyyy-MM-dd') : '-'}"></td>
@@ -239,29 +239,26 @@
 					info: false
 				}); // end of $('#dataTables').DataTable({
 					
-				// 등록 버튼(btnRegister) 클릭 시 이벤트(새창 안가!)
+				// 등록 버튼(btnRegister) 클릭 시 이벤트(주문서 등록 페이지 이동)
 				$('#btnRegister').on("click", function() {
 					console.log("btnRegister click!!!");
 					location.href="/orders/sell/regist";
 					//window.open("/orders/sell/regist", "_blank", "width=810,height=1200,scrollbars=yes,resizable=yes");
 				});
 				// ---------------------------------------------------
-				// 수주 리스트 각 행 클릭 시 주문 상세 클릭 시 이벤트(새창 열기)
+				// 수주 리스트 각 행 클릭 시 주문 상세 클릭 시 이벤트(상세 보기 페이지 이동)
 				$("#dataTables tbody").on('click', 'tr', function() {
 					console.log("dataTables tbody click!!");
 					var documentNumber = $(this).data('id');
+					
+					if (!documentNumber) {
+						return; // 페이지 이동 막기
+					}
+					
 					location.href="/orders/sell/"+documentNumber;
 					//window.open("/orders/sell/" + documentNumber, "_blank", "width=810,height=1200,scrollbars=yes,resizable=yes");
 				});
 
-			    // 엔터키 입력으로 검색 실행
-/* 			    $('#searchKeyword').on('keypress', function(e) {
-			        if (e.which === 13) {
-			            e.preventDefault(); // 기본 엔터 제출 방지
-			            productReport.draw();
-			        }
-			    }); */
-			    
 				// ---------------------------------------------------
 				// 기간별 검색 필터링 제이쿼리 (datepicker)
 			    function initializeDateRangePicker(startInputId, endInputId) {
@@ -309,9 +306,6 @@
 			    initializeDateRangePicker('dueStartDate', 'dueEndDate');
 			    // ------------------------------------------------------------
 			    
-				
-				
-				
 				
 			});
 		</script>

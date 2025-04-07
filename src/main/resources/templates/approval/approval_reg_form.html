@@ -30,7 +30,11 @@
 	<!-- 개별 CSS-->
 	<link href="/css/approval/approval_reg_form.css" rel="stylesheet">
 </th:block>
+<style type="text/css">
+	.approver-group { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
+</style>
 </head>
+
 
 <body id="page-top">
 	<th:block layout:fragment="contents">
@@ -76,10 +80,7 @@
 			        <div class="form-div">
 			            <label th:for="approverId">결재라인</label>
 						<div class="approver-line">
-							<input type="text" th:field="*{approver1}" class="form-control" placeholder="1차 결재" readonly><i class="fa-solid fa-chevron-right"></i>
-				            <input type="text" th:field="*{approver2}" class="form-control" placeholder="2차 결재" readonly><i class="fa-solid fa-chevron-right"></i>
-				            <input type="text" th:field="*{approver3}" class="form-control" placeholder="3차 결재" readonly>
-				        	<button type="button" class="btn btn-primary" id="searchApproverBtn" >검색 <i class="fa-solid fa-magnifying-glass"></i></button>
+			        		<button type="button" class="btn btn-primary" id="addApproverLineBtn" >결재라인 추가 <i class="fa-solid fa-plus"></i></button>
 						</div>
 					</div>
 					<!-- datepicker 사용 -->
@@ -111,8 +112,6 @@
 						<button type="submit" class="btn btn-primary" id="submitBtn">기안하기</button>
 			        </div>
 				</form>
-			
-			
 			</div>
 		</div>
 		<!-- /.container-fluid -->

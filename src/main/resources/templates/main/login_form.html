@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+	<title>Packtory - 로그인</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	<script src="/js/jquery-3.7.1.js"></script>
+	<link href="/css/sb-admin-2.min.css" rel="stylesheet" type="text/css">
+	<script src="/js/sb-admin-2.min.js"></script>
+	<script src="/js/bootstrap/bootstrap.bundle.min.js"></script>
+</head>
+<body class="bg-gradient-primary">
+	<div class="container">
+
+		<!-- Outer Row -->
+		<div class="row justify-content-center">
+
+			<div class="col-xl-10 col-lg-12 col-md-9">
+				<div class="card o-hidden border-0 shadow-lg my-5">
+					<div class="card-body p-0">
+						<!-- Nested Row within Card Body -->
+						<div class="row">
+							<div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+							<div class="col-lg-6">
+								<div class="p-5">
+									<div class="text-center">
+										<h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+									</div>
+									<form th:action="@{/login}" method="post" id="loginForm" th:object="${loginVO}" class="user">
+										<div class="form-group">
+											<input type="text" class="form-control form-control-user" th:field="*{memberId}" placeholder="Enter your Id">
+										</div>
+										<div class="form-group">
+											<input type="password" class="form-control form-control-user" th:field="*{password}" placeholder="Password">
+										</div>
+<!-- 										<div class="form-group">
+											<div class="custom-control custom-checkbox small">
+												<input type="checkbox" class="custom-control-input"
+													id="customCheck"> <label
+													class="custom-control-label" for="customCheck">Remember
+													Me</label>
+											</div>
+										</div> -->
+										<a href="#" class="btn btn-primary btn-user btn-block" id="loginBtn"> Login </a>
+										<hr>
+										<a href="#" class="btn btn-facebook btn-user btn-block" id="login-100010">
+											<i class="fab fa-fw"></i> 100010 사용자 계정 로그인 </a>
+										<a href="#" class="btn btn-facebook btn-user btn-block" id="login-100014">
+											<i class="fab fa-fw"></i> 100014 사용자 계정 로그인 </a>
+										<a href="#" class="btn btn-google btn-user btn-block" id="login-100006">
+											<i class="fab fa-fw"></i> 100006 어드민 계정 로그인 </a>
+										<a href="#" class="btn btn-google btn-user btn-block" id="login-100007">
+											<i class="fab fa-fw"></i> 100007 어드민 계정 로그인 </a>
+									</form>
+									<hr>
+									<div class="text-center">
+										<a class="small" href="#" onclick="alert('도움이 필요해!'); return false;">Forgot
+											Password?</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+				$(document).ready(function() {
+					console.log("document ready!");
+				});
+					
+				$(function() {
+					
+					// 로그인 버튼 서브밋
+					$('#loginBtn').on("click", function() {
+						console.log("loginBtn click!");
+						$('#loginForm').submit();
+					});
+					
+					// 테스트 계정 로그인
+					$("a[id^='login-']").on("click", function() {
+						console.log("button[id^='login-'] click!");
+						//console.log($(this).attr('id').split('-')[1]);
+						$('#memberId').val($(this).attr('id').split('-')[1]);
+						$('#password').val('1234');
+						$('#loginForm').submit();
+						
+					});
+					
+				}); // end of $(function() {
+			</script>
+	</div>
+</body>
+</html>

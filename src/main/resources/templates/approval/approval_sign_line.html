@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- 		layout:decorate="~{common/layouts/de_layout}"> -->
+<head>
+<title>기안서</title>
+<!-- 부트스트랩 icons 가져오기 -->
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+<!-- CSS -->
+<th:block layout:fragment="css">
+	<!-- dataTables 가져오기 -->
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<link href="/css/datatables/datatables.min.css" rel="stylesheet">
+	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
+	<!-- 폰트어썸 가져오기 -->
+	<link href="/css/fontawesome/all.min.css" rel="stylesheet">
+	<script src="/css/fontawesome/all.min.js"></script>
+	<!-- CSS for Page -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+	<!-- 개별 CSS-->
+	<link href="/css/approval/approval_reg_form.css" rel="stylesheet">
+</th:block>
+
+</head>
+
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+		
+			<!-- Page Heading -->
+			<h3 class="reg-title">결재자 검색</h3>
+			<!-- 본문 컨테이너 -->
+			<div class="card-body">
+				<div class="mb-3 approver-searchArea">
+			        <input type="text" id="searchKeyword" class="form-control" placeholder="결재자 검색">
+			    </div>
+			    
+			     <table class="table table-striped">
+			        <thead>
+			            <tr>
+			                <th>이름</th>
+			                <th>부서</th>
+			                <th>직급</th>
+			                <th>선택</th>
+			            </tr>
+			        </thead>
+			        <tbody id="approverList">
+			        	<tr th:each="item , status : ${draftDTOList}" th:data-id="${item.drafterId}">
+			        		<td th:text="${item.drafterName}"></td>
+			        		<td th:text="${item.drafterDepartment}"></td>
+			        		<td th:text="${item.drafterPosition}"></td>
+			        		<td>
+								<button class="btn btn-success">선택</button>
+			        		</td>
+			        	</tr>
+			        </tbody>
+			    </table>
+			    <div class="text-end">
+			        <button class="btn btn-secondary" onclick="window.close()">닫기</button>
+			    </div>
+			</div>
+		</div>
+		<!-- /.container-fluid -->
+	</th:block>
+	
+<!-- JS -->
+<th:block layout:fragment="script">
+	<!-- Bootstrap core JavaScript-->
+	<script src="/js/jquery/jquery.min.js"></script>
+	<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="/js/jquery-3.7.1.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="/js/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="/js/sb-admin-2.min.js"></script>
+   	<!-- Page level plugins -->
+	<script src="/js/datatables/jquery.dataTables.min.js"></script>
+	<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+	<script src="/js/demo/datatables-demo.js"></script>
+<!-- 	<script src="/js/datatables/datatables.min.js"></script> --> <!-- 반응형 -->
+   	<script src="/js/datepicker/moment.min.js"></script>
+   	<script src="/js/datepicker/daterangepicker.js"></script>
+   	<script src="/js/datatables/dataTables.buttons.min.js"></script>
+	<script src="/js/datatables/buttons.html5.min.js"></script>
+	<script src="/js/datatables/jszip.min.js"></script>
+	<script src="/js/datatables/buttons.print.min.js"></script>
+	<!-- 개별 js -->
+    <script src="/js/approval/approval_line.js"></script>
+</th:block>
+	
+</body>
+</html>

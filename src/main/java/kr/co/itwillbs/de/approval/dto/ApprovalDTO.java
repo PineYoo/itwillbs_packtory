@@ -86,5 +86,4 @@ public class ApprovalDTO {
 	//	결재자3 서명
 	private String approver3_signature;
 	
-	
 }
