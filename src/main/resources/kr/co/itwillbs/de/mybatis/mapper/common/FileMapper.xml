@@ -123,6 +123,15 @@
 		order by rank_number asc
 	</select>
 	
+	<select id="getFilesByTypeAndMajorIdx" resultType="kr.co.itwillbs.de.common.vo.FileVO">
+		select 
+			<include refid="t_files_columns_forSelect" />
+		from t_files
+		where type = #{type}
+		  and major_idx = #{majorIdx}
+		order by rank_number asc
+	</select>
+	
 	<update id="removeFile" parameterType="kr.co.itwillbs.de.common.vo.FileVO">
 		update t_files
 			<set>

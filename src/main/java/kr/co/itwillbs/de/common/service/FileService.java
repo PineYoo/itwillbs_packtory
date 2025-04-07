@@ -147,6 +147,20 @@ public class FileService {
 	}
 	
 	/**
+	 * 파일 가져올 때 사용
+	 * <br>SELECT from t_files where type = #{type} and major_idx = #{majorIdx}
+	 * @param idx
+	 * @return
+	 */
+	public List<FileVO> getFilesByTypeAndMajorIdx(String type, String majorIdx) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		List<FileVO> fileList = fileMapper.getFilesByTypeAndMajorIdx(type, majorIdx);
+		
+		return fileList;
+	}
+	
+	/**
 	 * UPDATE FROM t_files set is_deleted = #{fileVO.isDeleted} where idx = #{fileVO.idx}
 	 * @param fileVO
 	 * @return
