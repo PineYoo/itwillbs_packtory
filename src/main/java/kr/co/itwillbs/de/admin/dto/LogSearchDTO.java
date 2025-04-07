@@ -1,5 +1,7 @@
 package kr.co.itwillbs.de.admin.dto;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,8 +11,6 @@ import lombok.ToString;
 @ToString
 public class LogSearchDTO {
 
-	private String type;
-	
 	private String accessId;
 	
 	private String accessType;
@@ -19,10 +19,14 @@ public class LogSearchDTO {
 	
 	private String ip;
 	
+	private String parameters;
+	
 	//accessDate 조회용
-	private String minDate;
-	private String maxDate;
+	private String accessStartDate;
+	private String accessEndDate;
 	
 	private String url;
 	
+	private List<CodeItemDTO> accessTypeItemList;
+	private List<CodeItemDTO> accessDeviceItemList;
 }

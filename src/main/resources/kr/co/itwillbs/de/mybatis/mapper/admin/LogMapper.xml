@@ -83,13 +83,26 @@
 			<include refid="t_log_columns_forSelect" />
 		from t_log
 		<where>
-			<if test="accessId != null">AND access_id LIKE CONCAT('%',#{accessId},'%') </if>
-			<if test="accessType != null">AND access_type = #{accessType} </if>
-			<if test="accessDevice != null">AND access_device = #{accessDevice} </if>
-			<if test="ip != null">AND ip LIKE CONCAT('%',#{ip},'%') </if>
-			<if test="minDate != null">AND access_date <![CDATA[>=]]> #{minDate} </if>
-			<if test="maxDate != null">AND access_date <![CDATA[<=]]> #{maxDate} </if>
-			
+			<if test="accessId != null and accessId.trim() != ''">AND access_id LIKE CONCAT('%',#{accessId},'%') </if>
+			<if test="accessType != null and accessType.trim() != ''">AND access_type = #{accessType} </if>
+			<if test="accessDevice != null and accessDevice.trim() != ''">AND access_device = #{accessDevice} </if>
+			<if test="ip != null and ip.trim() != ''">AND ip LIKE CONCAT('%',#{ip},'%') </if>
+			<if test="parameters != null and parameters.trim() != ''">AND parameters LIKE CONCAT('%',#{parameters},'%') </if>
+			<choose>
+				<when test="(accessStartDate != null and accessStartDate.trim() != '')
+							and (accessEndDate != null and accessEndDate.trim() != '')">
+					AND access_date BETWEEN STR_TO_DATE(CONCAT(#{accessStartDate}, '000000'),'%Y-%m-%d%H%i%S') 
+										AND STR_TO_DATE(CONCAT(#{accessEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(accessStartDate != null and accessStartDate.trim() != '')
+							and (accessEndDate == null or accessEndDate.trim() == '')">
+					AND access_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{accessStartDate}, '000000'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(accessStartDate == null or accessStartDate.trim() == '')
+							and (accessEndDate != null and accessEndDate.trim() != '')">
+					AND access_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{accessEndDate.trim()}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+			</choose>
 		</where>
 	</select>
 	

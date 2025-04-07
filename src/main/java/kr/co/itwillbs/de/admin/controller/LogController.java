@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import kr.co.itwillbs.de.admin.dto.LogDTO;
 import kr.co.itwillbs.de.admin.dto.LogSearchDTO;
 import kr.co.itwillbs.de.admin.service.LogService;
+import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,14 +23,17 @@ import lombok.extern.slf4j.Slf4j;
 public class LogController {
 	
 	private final LogService logService;
+	private final CommonCodeUtil commonCodeUtil;
 	//@Autowired
-	public LogController(LogService logService) {
+	public LogController(LogService logService, CommonCodeUtil commonCodeUtil) {
 		this.logService = logService;
+		this.commonCodeUtil = commonCodeUtil;
 	}
 	
 	// 계속 사용하게 될 클래스 RequestMapping 문자열 값
 	private final String LOG_PATH="/admin/log";
-	
+	private final String COMMON_MAJOR_CODE_ACCESS_TYPE = "log_access_type";
+	private final String COMMON_MAJOR_CODE_ACCESS_DEVICE = "log_access_device";
 	/**
 	 * (개발테스트용)어드민 > 시스템 로그 > 로그 등록
 	 * @param model
@@ -70,12 +74,16 @@ public class LogController {
 	public String getLogList(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		// 리스트 검색 파라미터로 활용할 LogSearchDTO 객체 생성 후 Model에 저장
+		LogSearchDTO logSearchDTO = new LogSearchDTO();
+		logSearchDTO.setAccessTypeItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_ACCESS_TYPE)); // 로그 엑세스타입 셀렉트박스용
+		logSearchDTO.setAccessDeviceItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_ACCESS_DEVICE)); // 로그 엑세스디바이스 셀렉트박스용
+		
+		model.addAttribute("logSearchDTO", logSearchDTO);
+		
+		// 로그 리스트 가져와서 뷰에 전달
 		List<LogDTO> logDTOList = logService.getLogList();
-		
 		model.addAttribute("logDTOList", logDTOList);
-		
-		//리스트 검색 파라미터로 활용할 LogSearchDTO 객체 생성 후 Model에 저장
-		model.addAttribute("logSearchDTO", new LogSearchDTO());
 		
 		return LOG_PATH+"/log_list";
 	}
@@ -95,6 +103,8 @@ public class LogController {
 		log.info("logDTOList {}", logDTOList);
 		
 		model.addAttribute("logDTOList", logDTOList);
+		logSearchDTO.setAccessTypeItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_ACCESS_TYPE)); // 로그 엑세스타입 셀렉트박스용
+		logSearchDTO.setAccessDeviceItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_ACCESS_DEVICE)); // 로그 엑세스디바이스 셀렉트박스용
 		model.addAttribute("logSearchDTO", logSearchDTO);
 		
 		return LOG_PATH+"/log_list";
@@ -110,6 +120,8 @@ public class LogController {
 			return "redirect:"+LOG_PATH;
 		}
 		LogDTO logDTO = logService.getLog(Long.parseLong(idx));
+		model.addAttribute("accessTypeItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_ACCESS_TYPE));
+		model.addAttribute("accessDeviceItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_ACCESS_DEVICE));
 		model.addAttribute("logDTO", logDTO);
 		
 		return LOG_PATH+"/log_detail";
