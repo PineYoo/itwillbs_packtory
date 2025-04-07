@@ -4,6 +4,7 @@
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>팩토리(PackTory) - 로그 관리</title>
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 	<style type="text/css">
 	/* ======================================================================== */
 	/* ---------------- 검색바 CSS(반응형 포함) ------------------------------- */
@@ -192,7 +193,7 @@
 										<td th:text="${item.url}"></td>
 										<td th:text="${#temporals.format(item.accessDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
 									</tr>
-									<tr th:if="${#lists.isEmpty(logDTOList)}" class="clickable-row menu2depth_items" data-id="1">
+									<tr th:if="${#lists.isEmpty(logDTOList)}" class="clickable-row menu2depth_items">
 										<td colspan="7"><span>조회 된 데이터가 없습니다.</span></td>
 									</tr>
 								</tbody>
@@ -222,7 +223,9 @@
 					$('.clickable-row').on("click", function() {
 						const id = $(this).data("id");
 						console.log("click id is %s", id);
-						location.href=`/admin/log/${id}`;
+						if(id != undefined && "" != id) {
+							location.href=`/admin/log/${id}`;
+						}
 					});
 					
 				});// end of $(function() {

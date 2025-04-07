@@ -35,6 +35,9 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="ROLLING_LOG_FILE"/>
     </logger>
+    <logger name="org.springframework.aop" level="DEBUG" additive="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
     <!-- 쿼리 파라미터 -->
     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additive="false">
         <appender-ref ref="CONSOLE"/>

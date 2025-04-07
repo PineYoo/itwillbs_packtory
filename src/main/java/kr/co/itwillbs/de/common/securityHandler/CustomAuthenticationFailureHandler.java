@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import kr.co.itwillbs.de.admin.dto.LogDTO;
 import kr.co.itwillbs.de.admin.mapper.LogMapper;
-import kr.co.itwillbs.de.common.util.DeviceUtil;
+import kr.co.itwillbs.de.common.util.ServletRequestUtil;
 import lombok.extern.slf4j.Slf4j;
 
 // 로그인 실패 시 자동으로 처리할 핸들러 정의
@@ -27,11 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 	private final LogMapper logMapper;
-	private final DeviceUtil deviceUtil;
+	private final ServletRequestUtil servletRequestUtil;
 	
-	public CustomAuthenticationFailureHandler(LogMapper logMapper, DeviceUtil deviceUtil) {
+	public CustomAuthenticationFailureHandler(LogMapper logMapper, ServletRequestUtil servletRequestUtil) {
 		this.logMapper = logMapper;
-		this.deviceUtil = deviceUtil;
+		this.servletRequestUtil = servletRequestUtil;
 	}
 	
 	private final String LOG_ACCESS_TYPE_LOGIN = "9";
@@ -49,8 +49,8 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 			LogDTO logDTO = LogDTO.builder()
 				.accessId(memberId)
 				.accessType(LOG_ACCESS_TYPE_LOGIN)
-				.accessDevice(deviceUtil.getDeviceType(request))
-				.ip(request.getRemoteAddr())
+				.accessDevice(servletRequestUtil.getDeviceType(request))
+				.ip(servletRequestUtil.getClientIp(request))
 				.url("/login")
 				.parameters(failureReason)
 				.build();

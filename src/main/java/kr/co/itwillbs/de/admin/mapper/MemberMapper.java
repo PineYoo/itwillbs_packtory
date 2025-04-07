@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import kr.co.itwillbs.de.admin.dto.EmployeeSearchDTO;
 import kr.co.itwillbs.de.admin.dto.MemberDTO;
+import kr.co.itwillbs.de.admin.dto.MemberSearchDTO;
 
 @Mapper
 public interface MemberMapper {
@@ -14,6 +16,13 @@ public interface MemberMapper {
 	 * @return
 	 */
 	List<MemberDTO> getBeforeMembers();
+	
+	/**
+	 * SELECT FROM T_EMPLOYEE LEFT JOIN T_MEMBER ... WHERE T_MEMBER.STATUS IS NULL AND employeeSearchDTO
+	 * @param employeeSearchDTO
+	 * @return
+	 */
+	List<MemberDTO> getBeforeMembersByEmployeeSearch(EmployeeSearchDTO employeeSearchDTO);
 	
 	/**
 	 * SELECT FROM T_EMPLOYEE LEFT JOIN T_MEMBER ... WHERE T_MEMBER.STATUS IS NULL AND EMP.ID in #{memberDTOList.id}
@@ -35,6 +44,13 @@ public interface MemberMapper {
 	List<MemberDTO> getMembers();
 
 	/**
+	 * SELECT FROM T_EMPLOYEE LEFT JOIN T_MEMBER ... WHERE T_MEMBER.STATUS IS NOT NULL AND memberSearchDTO;
+	 * @param memberSearchDTO
+	 * @return
+	 */
+	List<MemberDTO> getMembersBySearchDTO(MemberSearchDTO memberSearchDTO);
+	
+	/**
 	 * SELECT FROM T_MEMBER
 	 * @param memberId
 	 * @return
@@ -46,4 +62,6 @@ public interface MemberMapper {
 	 * @param memberDTO
 	 */
 	int modifyMember(MemberDTO memberDTO);
+
+
 }

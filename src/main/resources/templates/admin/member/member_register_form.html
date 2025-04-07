@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 사용자관리</title>
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<style type="text/css">
+	/* ======================================================================== */
+	/* ---------------- 검색바 CSS(반응형 포함) ------------------------------- */
+	.clickable-row td:hover {
+		background-color: #edfbfc;
+	}
+	 /* 기본 테이블 스타일 */
+	#search-table {
+	    width: 100%;
+	    max-width: 1200px;
+	    margin: auto;
+	    border-collapse: collapse;
+	}
+	
+	#search-table table td {
+		padding-bottom: 7px;
+	}
+	
+	/* 작은 화면에서 한 줄로 표시되도록 설정 */
+	@media (max-width: 768px) {
+	    #search-table tr {
+	      display: block;
+	    }
+	
+	    #search-table td {
+	      display: block;
+	      width: 100%;
+	    }
+	
+	    #search-table td table {
+	      display: block;
+	    }
+	}
+	/* ---------------- 검색바 CSS(반응형 포함) 끝 ---------------------------- */
+	/* ======================================================================== */
+	</style>
+</head>
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">사용자 등록</h1>
+			</div>
+			<!-- ---------- 검색바 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<!-- ---------- 검색바 ---------- -->
+					<div class="search-wrap border">
+						<section class="d-flex search-inner">
+							<div class="col pl-4 search-box">
+								<form th:action="@{/admin/member/newForm/search}" method="get" th:object="${employeeSearchDTO}">
+									<table id="search-table">
+										<tr>
+											<td>
+												<table style="width: 100%;">
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<label for="id">사원번호</label>
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<input type="text" th:field="*{id}" class="form-control">
+														</td>
+													</tr>
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<label for="name">사원이름</label>
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<input type="text" th:field="*{name}" class="form-control">
+														</td>
+													</tr>
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<label for="hireStartDate">입사일자</label>
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<div class="input-group mb-3">
+																<input type="text" th:field="*{hireStartDate}" class="form-control" autocomplete='off'>
+																<span class="input-group-text calendar-icon" data-target="#hireStartDate">
+																	<i class="fa fa-calendar"></i>
+																</span> &nbsp;&nbsp;⁓&nbsp;&nbsp;
+																<input type="text" th:field="*{hireEndDate}" class="form-control" autocomplete='off'>
+																<span class="input-group-text calendar-icon" data-target="#hireEndDate">
+																	<i class="fa fa-calendar"></i>
+																</span>
+															</div>
+														</td>
+													</tr>
+												</table>
+											</td>
+											<td class="col-sm-12 col-md-1"></td>
+											<td style="border-left: 1px solid #e3e6f0;"></td>
+											<td class="col-sm-12 col-md-1"></td>
+											<td>
+												<table style="width: 100%;">
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<label for="departmentCode">부서명</label>
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<select name="departmentCode" id="departmentCode" th:value="*{departmentCode}" class="form-select">
+																<option value="" th:selected="*{departmentCode} eq '' ">전체</option>
+																<option th:each="code : ${departmentItemList}" th:value="${code.minorCode}" 
+																	th:text="${code.minorName}" th:selected="*{departmentCode} == ${code.minorCode}"></option>
+															</select>
+														</td>
+													</tr>
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<label for="positionCode">직급명</label>
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<select name="positionCode" id="positionCode" th:value="*{positionCode}" class="form-select">
+																<option value="" th:selected="*{positionCode} eq '' ">전체</option>
+																<option th:each="code : ${positionItemList}" th:value="${code.minorCode}" 
+																		th:text="${code.minorName}" th:selected="*{positionCode} == ${code.minorCode}"></option>
+															</select>
+														</td>
+													</tr>
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<!-- <label for="accessStartDate">로그일자</label> -->
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<div class="input-group mb-3">
+																<!-- <input type="text" id="requestStartDate" th:field="*{accessStartDate}" class="form-control" autocomplete='off'>
+																<span class="input-group-text calendar-icon" data-target="#accessStartDate">
+																	<i class="fa fa-calendar"></i>
+																</span> &nbsp;&nbsp;⁓&nbsp;&nbsp;
+																<input type="text" id="accessEndDate" th:field="*{accessEndDate}" class="form-control" autocomplete='off'>
+																<span class="input-group-text calendar-icon" data-target="#requestEndDate">
+																	<i class="fa fa-calendar"></i>
+																</span> -->
+															</div>
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+									<!-- 검색바 버튼 -->
+									<div class="regist-wrap">
+										<button type="button" class="btn btn-success ml-2" id="addUserBtn">사용자 등록</button>
+										<button type="button" class="btn btn-danger ml-2" id="listBtn">사용자 목록</button>
+										<button type="submit" class="btn btn-primary ml-2" id="btnSearch">검색</button>
+									</div>
+									<!-- 검색바 버튼 끝 -->
+								</form>
+							</div>
+						</section>
+					</div>
+					<!-- ---------- 검색바 끝 ---------- -->
+				</div> 
+			</div>
+			<!-- ---------- 검색바 컨테이너 끝 ---------- -->
+			
+			<!-- 리스트 출력 -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
+						<div class="row">
+							<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
+								<thead>
+									<tr>
+										<th>체크</th>
+										<th>사원번호</th>
+										<th>이름</th>
+										<th>조직명</th>
+										<th>하위조직명</th>
+										<th>직급</th>
+										<th>전화번호</th>
+										<th>멤버상태</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="item, status : ${memberDTOList}" th:data-id="${item.idx}" class="clickable-row">
+										<!-- <th:block th:object="${item}"> -->
+										<td><input type="checkbox" name="memberChecker" id="memberChecker" th:data-id="${item.id}"/></td>
+										<td th:text="${item.id}"></td>
+										<td th:text="${item.name}"></td>
+										<td th:text="${item.departmentName}"></td>
+										<td th:text="${item.subDepartmentName}"></td>
+										<td th:text="${item.positionName}"></td>
+										<td th:text="${item.phoneNumber}"></td>
+										<td th:text="${item.status}"></td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(memberDTOList)}" class="clickable-row menu2depth_items">
+										<td colspan="8"><span>조회 된 데이터가 없습니다.</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<script src="/js/datatables/jquery.dataTables.min.js"></script>
+			<script type="text/javascript">
+				$(document).ready(function() {
+					console.log("document ready!");
+					// init DataTable
+					$('#dataTables').DataTable({
+						lengthChange: false,
+						searching: false,
+						paging: false,
+						info: false
+					}); // end of $('#dataTables').DataTable({
+				});
+				$(function() {
+					$('#listBtn').on("click", function() {
+						location.href="/admin/member";
+						
+					});
+					
+					$('#addUserBtn').on("click", function() {
+						console.log("addUserBtn click!");
+						let _jsonList = [];
+						let _isAble = false;
+						$('#dataTables').find('tr').find("input[type='checkbox']").each(function(idx,item) {
+							// 체크 된 것만 list{jsonobj} 만들기
+							if($(item).is(":checked")) {
+								let _jsonObj = {};
+								_isAble = true;
+								_jsonObj["id"] = $(item).data("id");
+								_jsonList.push(_jsonObj);
+							}
+						});
+						//console.log(_isAble);
+// 						console.log(_jsonList);
+// 						console.log(JSON.stringify(_jsonList));
+						if(!_isAble) {
+							alert("리스트에서 등록할 사용자를 체크해주세요.");
+							return false;
+						}
+						if(!confirm("선택한 사용자를 등록 하시겠습니까?")) {
+							return false;
+						}
+						// JSON 데이터를 서버로 전송
+						fetch("/admin/member/newForm", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify(_jsonList)
+						})
+						.then(response => response.json())
+						.then(data => {
+							console.log("서버 응답:", data);
+							if(data.status === "success") {
+								alert(data.message);
+								location.reload(); // 현재 페이지 새로 고침
+							}
+							
+						})
+						.catch(error => {
+							console.error("서버 응답 오류:", error);
+							if(data.status === "fail") {
+								alert(data.message);
+							}
+						});
+					}); // end of $('#addUserBtn').on("click", function() {
+				}); // end of $(function() {
+			</script>
+		</div>
+	</th:block>
+</body>
+</html>

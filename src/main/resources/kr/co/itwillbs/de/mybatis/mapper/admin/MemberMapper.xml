@@ -91,6 +91,35 @@
 		WHERE tmb.status IS NULL
 	</select>
 	
+	<!-- 임시 쿼리임 -->
+	<select id="getBeforeMembersByEmployeeSearch" parameterType="kr.co.itwillbs.de.admin.dto.EmployeeSearchDTO"
+									resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
+		<include refid="t_member_columns_forSelectFROM" />
+		<where>
+			AND tmb.status IS NULL
+			<if test="id != null and id.trim() != ''">AND emp.id LIKE CONCAT('%',#{id},'%') </if>
+			<if test="name != null and name.trim() != ''">AND emp.name LIKE CONCAT('%',#{name},'%') </if>
+			<if test="departmentCode != null and departmentCode.trim() != ''">AND emp.department_code = #{departmentCode} </if>
+			<if test="subDepartmentCode != null and subDepartmentCode.trim() != ''">AND emp.sub_department_code = #{subDepartmentCode} </if>
+			<if test="positionCode != null and positionCode.trim() != ''">AND emp.position_code = #{positionCode} </if>
+			<choose>
+				<when test="(hireStartDate != null and hireStartDate.trim() != '')
+							and (hireEndDate != null and hireEndDate.trim() != '')">
+					AND emp.hire_date BETWEEN STR_TO_DATE(CONCAT(#{hireStartDate}, '000000'),'%Y-%m-%d%H%i%S') 
+										AND STR_TO_DATE(CONCAT(#{hireEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(hireStartDate != null and hireStartDate.trim() != '')
+							and (hireEndDate == null or hireEndDate.trim() == '')">
+					AND emp.hire_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{hireStartDate}, '000000'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(hireStartDate == null or hireStartDate.trim() == '')
+							and (hireEndDate != null and hireEndDate.trim() != '')">
+					AND emp.hire_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{hireEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+			</choose>
+		</where> 
+	</select>
+	
 	<!-- 임시 쿼리임2 -->
 	<select id="getBeforeMembersByIds" parameterType="kr.co.itwillbs.de.admin.dto.MemberDTO"
 									resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
@@ -136,10 +165,24 @@
 			(#{item.id}, #{item.password}, #{item.role}, #{item.status}, #{item.isDeleted}, #{item.regId}, now())
 		</foreach>
 	</insert>
-
+	<!-- 임시 쿼리임 -->
 	<select id="getMembers" resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
 		<include refid="t_member_columns_forSelectFROM" />
 		WHERE tmb.status IS NOT NULL
+	</select>
+	
+	<!-- 임시 쿼리임 -->
+	<select id="getMembersBySearchDTO" parameterType="kr.co.itwillbs.de.admin.dto.MemberSearchDTO"
+										resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
+		<include refid="t_member_columns_forSelectFROM" />
+		<where>
+			AND tmb.status IS NOT NULL
+			<if test="memberId != null and memberId.trim() != ''">AND emp.id LIKE CONCAT('%',#{memberId},'%') </if>
+			<if test="memberName != null and memberName.trim() != ''">AND emp.name LIKE CONCAT('%',#{memberName},'%') </if>
+			<if test="role != null and role.trim() != ''">AND tmb.role = #{role} </if>
+			<if test="status != null and status.trim() != ''">AND tmb.status = #{status} </if>
+			<if test="isDeleted != null and isDeleted.trim() != ''">AND tmb.is_deleted = #{isDeleted} </if>
+		</where>
 	</select>
 
 	<select id="getMember" resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">

@@ -4,9 +4,6 @@
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>로그 정보</title>
-<th:block layout:fragment="css">
-	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-</th:block>
 <style type="text/css">
 .form {
 	max-width: 800px;
@@ -39,20 +36,20 @@
 			<div class="card-body">
 				<div class="table-responsive">
 					<!-- Begin Page Content -->
-					<form th:action="@{/admin/log}" method="get" th:object="${logDTO}">
+					<form th:action="@{/admin/log}" method="get" th:object="${logDTO}" class="form row g-3">
 						<div class="col-md-12">
 							<label class="mb-1" for="accessId">사용자ID</label>
 							<input class="form-control" th:field="*{accessId}" readonly>
 						</div>
 						<div class="col-md-6">
 							<label class="mb-1" for="accessType">접속타입</label>
-							<select class="form-select" th:field="*{accessType}">
+							<select class="form-select" th:field="*{accessType}" disabled>
 								<option th:each="item : ${accessTypeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}"></option>
 							</select>
 						</div>
 						<div class="col-md-6">
 							<label for="accessDevice" class="form-label mb-1">접속장치</label>
-							<select class="form-select" th:field="*{accessDevice}">
+							<select class="form-select" th:field="*{accessDevice}" disabled>
 								<option th:each="item : ${accessDeviceItemList}" th:value="${item.minorCode}" th:text="${item.minorName}"></option>
 							</select>
 						</div>

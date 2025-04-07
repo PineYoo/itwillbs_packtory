@@ -24,6 +24,9 @@ spring:
       enabled: false
     restart:
       enabled: false
+
+  aop:
+    auto: true
 # 개발 기본 세팅 끝
 ---
 # 개발 세팅 - Oracle 시작 

@@ -8,6 +8,7 @@ import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.admin.dto.CodeSearchDTO;
 import kr.co.itwillbs.de.admin.mapper.CodeMapper;
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -61,6 +62,7 @@ public class CodeService {
 	 * @param codeSearchDTO
 	 * @return CodeDTO
 	 */
+	@LogExecution
 	public CodeDTO getCodeByIdx(CodeSearchDTO codeSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -83,11 +85,12 @@ public class CodeService {
 	 * @param codeDTO
 	 * @throws Exception 
 	 */
+	@LogExecution
 	public void modifyCode(CodeDTO codeDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		//TODO 세션에서 mod_id 가져와서 셋
-		codeDTO.setModId("superUser");
+		//codeDTO.setModId("superUser");
 		
 		int affectedRow = codeMapper.modifyCode(codeDTO);
 		if(affectedRow < 1) {
@@ -100,6 +103,7 @@ public class CodeService {
 	 * @param itemList
 	 * @throws Exception 
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void codeItemsRegister(List<CodeItemDTO> itemList) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -110,9 +114,9 @@ public class CodeService {
 			log.info("after removeCodeItems, affectedRow is {}", affectedRow);
 		}
 		//TODO 세션에서 reg_id 가져와서 셋		
-		for (CodeItemDTO itemDTO : itemList) {
-			itemDTO.setRegId("superUser");
-		}
+		/*
+		 * for (CodeItemDTO itemDTO : itemList) { itemDTO.setRegId("superUser"); }
+		 */
 		
 		affectedRow = 0;
 		affectedRow = codeMapper.registerCodeItems(itemList);

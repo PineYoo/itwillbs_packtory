@@ -100,7 +100,7 @@
 				</when>
 				<when test="(accessStartDate == null or accessStartDate.trim() == '')
 							and (accessEndDate != null and accessEndDate.trim() != '')">
-					AND access_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{accessEndDate.trim()}, '235959'),'%Y-%m-%d%H%i%S')
+					AND access_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{accessEndDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 		</where>

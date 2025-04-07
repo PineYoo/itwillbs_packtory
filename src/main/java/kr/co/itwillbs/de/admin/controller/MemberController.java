@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.co.itwillbs.de.admin.dto.EmployeeSearchDTO;
 import kr.co.itwillbs.de.admin.dto.MemberDTO;
 import kr.co.itwillbs.de.admin.dto.MemberSearchDTO;
-import kr.co.itwillbs.de.admin.dto.MemberViewDTO;
 import kr.co.itwillbs.de.admin.service.MemberService;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
@@ -45,6 +45,8 @@ public class MemberController {
 	private final String MEMBER_PATH="/admin/member";
 	private final String COMMON_MAJOR_CODE_MEMBER_STATUS = "member_status";
 	private final String COMMON_MAJOR_CODE_MEMBER_ROLE = "member_role";
+	private final String COMMON_MAJOR_CODE_DEPARTMENT_CODE = "department_code";
+	private final String COMMON_MAJOR_CODE_POSITION_CODE = "position_code";
 	/**
 	 * 어드민 > 멤버관리 > 사용자 등록 -> 직원 조회하기
 	 * <br>t_employee 정보들을 조회하여 t_member로 등록하기 위한 폼(GET)
@@ -55,11 +57,15 @@ public class MemberController {
 	public String memberRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		List<MemberDTO> memberList = memberService.getBeforeMembers();
+		// 검색 이름, 사번, 부실명, 직급명, 입사일
+		model.addAttribute("departmentItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_DEPARTMENT_CODE));
+		model.addAttribute("positionItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_POSITION_CODE));
+		model.addAttribute("employeeSearchDTO", new EmployeeSearchDTO());
 		
+		List<MemberDTO> memberList = memberService.getBeforeMembers();
 		model.addAttribute("memberDTOList", memberList);
 		
-		return MEMBER_PATH+"/register_form";
+		return MEMBER_PATH+"/member_register_form";
 	}
 
 	/**
@@ -68,11 +74,19 @@ public class MemberController {
 	 * @return
 	 */
 	@GetMapping(value= {"/newForm/search","/newForm/search/"})
-	public String memberRegisterFormToSearch(@ModelAttribute MemberSearchDTO memberSearchDTO, Model model) {
+	public String memberRegisterFormToSearch(@ModelAttribute EmployeeSearchDTO employeeSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		log.info("requestDTO is {}", StringUtil.objToString(employeeSearchDTO));
 		
-		return MEMBER_PATH+"/member_list";
+		model.addAttribute("departmentItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_DEPARTMENT_CODE));
+		model.addAttribute("positionItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_POSITION_CODE));
+		model.addAttribute("employeeSearchDTO", employeeSearchDTO);
+		
+		List<MemberDTO> memberList = memberService.getBeforeMembersByEmployeeSearch(employeeSearchDTO);
+		model.addAttribute("memberDTOList", memberList);
+		
+		return MEMBER_PATH+"/member_register_form";
 	}
 	
 	/**
@@ -116,19 +130,18 @@ public class MemberController {
 	public String getMembers(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		// 일단 공통코드에서 가져와서 뷰에 던지자 이걸로 selectbox만들어서 .. 어케든 해봐야지
+		// 리스트 검색 DTO 뷰에 전달
 		MemberSearchDTO memberSearchDTO = new MemberSearchDTO();
-		memberSearchDTO.setCodeItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_STATUS));
 		model.addAttribute("memberSearchDTO", memberSearchDTO);
 		
-		MemberViewDTO memberViewDTO = new MemberViewDTO();
-		memberViewDTO.setMemberDTOList(memberService.getMembers());
-		memberViewDTO.setRoleItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_ROLE));
-		memberViewDTO.setStatusItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_STATUS));
-		model.addAttribute("memberViewDTO", memberViewDTO);
+		// 공통코드 selectbox용 리스트 뷰에 전달
+		model.addAttribute("statusItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_STATUS));
+		model.addAttribute("roleItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_ROLE));
 		
+		// 리스트 결과 DTOlist 뷰에 전달
+		model.addAttribute("memberDTOList", memberService.getMembers());
 		
-		return MEMBER_PATH+"/list";
+		return MEMBER_PATH+"/member_list";
 	}
 	
 	/**
@@ -140,7 +153,15 @@ public class MemberController {
 	public String getMembers(@ModelAttribute MemberSearchDTO memberSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		// 리스트 검색 DTO 뷰에 전달
+		model.addAttribute("memberSearchDTO", memberSearchDTO);
 		
+		// 공통코드 selectbox용 리스트 뷰에 전달
+		model.addAttribute("statusItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_STATUS));
+		model.addAttribute("roleItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_ROLE));
+		
+		// 리스트 결과 DTOlist 뷰에 전달
+		model.addAttribute("memberDTOList", memberService.getMembersBySearchDTO(memberSearchDTO));
 		return MEMBER_PATH+"/member_list";
 	}
 	
@@ -163,7 +184,7 @@ public class MemberController {
 		memberDTO.setStatusItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_STATUS));
 		model.addAttribute("memberDTO", memberDTO);
 		
-		return MEMBER_PATH+"/detail";
+		return MEMBER_PATH+"/member_detail";
 	}
 	
 	/**
@@ -183,7 +204,7 @@ public class MemberController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return MEMBER_PATH+"/detail";
+			return MEMBER_PATH+"/member_detail";
 		}
 		
 		return "redirect:"+MEMBER_PATH;

@@ -31,6 +31,11 @@ public class LogDTO {
 	// DB마다 now(), sysdate 값
 	private LocalDateTime accessDate;
 	
+	// 뭔가 url보다 메소드 명이 좋을것 같기도?
+	private String methodName;
+	// 실행 시간 측정을 위한 변수 추가
+	private LocalDateTime executionTime;
+	
 	@Builder
 	public LogDTO(String accessId, String accessType, String accessDevice, String ip, String parameters, String url,
 			LocalDateTime accessDate) {

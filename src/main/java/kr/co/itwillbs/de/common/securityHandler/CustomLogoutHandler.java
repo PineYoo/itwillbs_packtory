@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.itwillbs.de.admin.dto.LogDTO;
 import kr.co.itwillbs.de.admin.mapper.LogMapper;
-import kr.co.itwillbs.de.common.util.DeviceUtil;
+import kr.co.itwillbs.de.common.util.ServletRequestUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -16,11 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomLogoutHandler implements LogoutHandler {
 
 	private final LogMapper logMapper;
-	private final DeviceUtil deviceUtil;
+	private final ServletRequestUtil servletRequestUtil;
 	
-	public CustomLogoutHandler(LogMapper logMapper, DeviceUtil deviceUtil) {
+	public CustomLogoutHandler(LogMapper logMapper, ServletRequestUtil servletRequestUtil) {
 		this.logMapper = logMapper;
-		this.deviceUtil = deviceUtil;
+		this.servletRequestUtil = servletRequestUtil;
 	}
 	
 	private final String LOG_ACCESS_TYPE_LOGIN = "9";
@@ -36,8 +36,8 @@ public class CustomLogoutHandler implements LogoutHandler {
 				LogDTO logDTO = LogDTO.builder()
 					.accessId(memberId)
 					.accessType(LOG_ACCESS_TYPE_LOGIN)
-					.accessDevice(deviceUtil.getDeviceType(request))
-					.ip(request.getRemoteAddr()) // 너 왜 ipv6가 찍히냐? https://developer.mozilla.org/ko/docs/Web/HTTP/Reference/Headers/X-Forwarded-For
+					.accessDevice(servletRequestUtil.getDeviceType(request))
+					.ip(servletRequestUtil.getClientIp(request)) // 너 왜 ipv6가 찍히냐? https://developer.mozilla.org/ko/docs/Web/HTTP/Reference/Headers/X-Forwarded-For
 					.url("/login")
 					.parameters("logoutSuccess")
 					.build();

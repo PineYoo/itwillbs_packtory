@@ -6,8 +6,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import kr.co.itwillbs.de.admin.dto.EmployeeSearchDTO;
 import kr.co.itwillbs.de.admin.dto.MemberDTO;
+import kr.co.itwillbs.de.admin.dto.MemberSearchDTO;
 import kr.co.itwillbs.de.admin.mapper.MemberMapper;
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,7 +28,7 @@ public class MemberService {
 	/**
 	 * 사용자 등록용 직원 조회하기 -> t_employee 정보를 가져옴
 	 * <br>t_member.status IS NULL 조건으로 가져오고 IFNULL||NVL('NOT_YET')으로 화면에 보여줌 
-	 * @return
+	 * @return List<MemberDTO>
 	 */
 	public List<MemberDTO> getBeforeMembers() {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -33,6 +36,17 @@ public class MemberService {
 		return memberMapper.getBeforeMembers();
 	}
 
+	/**
+	 * 사용자 등록용 직원 검색 조건 조회
+	 * @param employeeSearchDTO
+	 * @return List<MemberDTO>
+	 */
+	public List<MemberDTO> getBeforeMembersByEmployeeSearch(EmployeeSearchDTO employeeSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return memberMapper.getBeforeMembersByEmployeeSearch(employeeSearchDTO);
+	}
+	
 	/**
 	 * t_employee (직원)를 t_member(사용자)로 입력
 	 * <pre>
@@ -42,6 +56,7 @@ public class MemberService {
 	 * </pre>
 	 * @param memberDTOList
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void registerMembers(List<MemberDTO> memberDTOList) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -75,12 +90,24 @@ public class MemberService {
 	/**
 	 * 사용자 조회 페이지에서 사용할
 	 * <br>t_member 에 입력된 사용자 조회
-	 * @return
+	 * @return List<MemberDTO>
 	 */
 	public List<MemberDTO> getMembers() {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		List<MemberDTO> memberDTOList = memberMapper.getMembers();
+		return memberDTOList;
+	}
+	
+	/**
+	 * 사용자 조회 검색 조건 조회
+	 * @param memberSearchDTO
+	 * @return List<MemberDTO>
+	 */
+	public List<MemberDTO> getMembersBySearchDTO(MemberSearchDTO memberSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		List<MemberDTO> memberDTOList = memberMapper.getMembersBySearchDTO(memberSearchDTO);
 		return memberDTOList;
 	}
 
@@ -99,6 +126,7 @@ public class MemberService {
 	 * 상세에서 업데이트 하는 것
 	 * @param memberDTO
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void modifyMember(MemberDTO memberDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -117,10 +145,11 @@ public class MemberService {
 		}
 	}
 	
+	@LogExecution // 로그 남길 서비스
 	public void resetPassword(MemberDTO memberDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		
 	}
+
 
 }

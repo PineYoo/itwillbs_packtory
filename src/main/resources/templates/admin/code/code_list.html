@@ -92,7 +92,7 @@
 															<th:block th:with="majorCode=*{majorCode}">
 															<!-- <div th:text="${majorCode}"></div> -->
 															<select name="majorCode" id="majorCode" th:value="*{majorCode}" class="form-select" aria-label="Default select example">
-																<option value="">선택</option>
+																<option value="">전체</option>
 																<!-- <option th:each="item : *{codeList}" th:value="${item.majorCode}" th:text="${item.name}"></option> -->
 																<option th:each="item : *{codeList}" th:value="${item.majorCode}" th:text="${item.name}" th:selected="${majorCode} == ${item.majorCode}"></option>
 															</select>
@@ -172,7 +172,7 @@
 									<td th:text="${item.regId}"></td>
 									<td th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
 								</tr>
-								<tr th:if="${#lists.isEmpty(codeDTOList)}" class="clickable-row menu2depth_items" data-id="1">
+								<tr th:if="${#lists.isEmpty(codeDTOList)}" class="clickable-row menu2depth_items">
 									<td colspan="7"><span>조회 된 데이터가 없습니다.</span></td>
 								</tr>
 							</tbody>
@@ -190,7 +190,9 @@
 					$('.clickable-row').on("click", function() {
 						const id = $(this).data("id");
 						console.log("click id is %s", id);
-						location.href=`/admin/code/${id}`;
+						if(id != undefined) {
+							location.href=`/admin/code/${id}`;
+						}
 					});
 				}); // end of $(function() {
 			</script>

@@ -28,7 +28,7 @@
 								<!-- <button type="button" id="codeItemsSubmit">코드 저장</button> -->
 								<button type="button" id="codeItemsAjax">코드 저장Ajax</button>
 								<select name="minorCode" id="minorCode">
-									<option value="">선택</option>
+									<option value="">전체</option>
 									<option th:each="item : ${codeItems}" th:value="${item.minorCode}" th:text="${item.minorName}" ></option>
 								</select>
 							</div>

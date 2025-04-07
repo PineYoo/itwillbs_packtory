@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.itwillbs.de.admin.dto.LogDTO;
 import kr.co.itwillbs.de.admin.mapper.LogMapper;
-import kr.co.itwillbs.de.common.util.DeviceUtil;
+import kr.co.itwillbs.de.common.util.ServletRequestUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -22,11 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
 	private final LogMapper logMapper;
-	private final DeviceUtil deviceUtil;
+	private final ServletRequestUtil servletRequestUtil;
 	
-	public CustomAuthenticationSuccessHandler(LogMapper logMapper, DeviceUtil deviceUtil) {
+	public CustomAuthenticationSuccessHandler(LogMapper logMapper, ServletRequestUtil servletRequestUtil) {
 		this.logMapper = logMapper;
-		this.deviceUtil = deviceUtil;
+		this.servletRequestUtil = servletRequestUtil;
 	}
 	
 	private final String LOG_ACCESS_TYPE_LOGIN = "9";
@@ -46,8 +46,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 			LogDTO logDTO = LogDTO.builder()
 				.accessId(memberId)
 				.accessType(LOG_ACCESS_TYPE_LOGIN)
-				.accessDevice(deviceUtil.getDeviceType(request))
-				.ip(request.getRemoteAddr())
+				.accessDevice(servletRequestUtil.getDeviceType(request))
+				.ip(servletRequestUtil.getClientIp(request))
 				.url("/login")
 				.parameters("loginSuccess")
 				.build();
