@@ -3,69 +3,217 @@
 		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>로그 리스트</title>
+<title>팩토리(PackTory) - 로그 관리</title>
+	<style type="text/css">
+	/* ======================================================================== */
+	/* ---------------- 검색바 CSS(반응형 포함) ------------------------------- */
+	 /* 기본 테이블 스타일 */
+	#search-table {
+	    width: 100%;
+	    max-width: 1200px;
+	    margin: auto;
+	    border-collapse: collapse;
+	}
+	
+	#search-table table td {
+		padding-bottom: 7px;
+	}
+	
+	/* 작은 화면에서 한 줄로 표시되도록 설정 */
+	@media (max-width: 768px) {
+	    #search-table tr {
+	      display: block;
+	    }
+	
+	    #search-table td {
+	      display: block;
+	      width: 100%;
+	    }
+	
+	    #search-table td table {
+	      display: block;
+	    }
+	    
+	    .regist-wrap {
+	    	display: block;
+	    }
+	    .regist-wrap button {
+	    	width: 100%;
+	    	margin-bottom: 7px;
+	    }
+	    
+	}
+	/* ---------------- 검색바 CSS(반응형 포함) 끝 ---------------------------- */
+	/* ======================================================================== */
+</style>
 </head>
 <body id="page-top">
 	<th:block layout:fragment="contents">
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">로그 리스트</h1>
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">로그 리스트</h1>
+			</div>
+
+			<!-- ---------- 검색바 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<!-- ---------- 검색바 ---------- -->
+					<div class="search-wrap border">
+						<section class="d-flex search-inner">
+
+							<div class="col pl-4 search-box">
+								<form th:action="@{/admin/log/search}" method="get" th:object="${logSearchDTO}">
+									<table id="search-table">
+										<tr>
+											<td>
+												<table style="width: 100%;">
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<label for="accessType">접속타입</label>
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<select name="accessType" id="accessType" th:value="*{accessType}" class="form-select">
+																<option value="" th:selected="*{accessType} eq '' ">전체</option>
+																<option th:each="code : *{accessTypeItemList}" th:value="${code.minorCode}" 
+																	th:text="${code.minorName}" th:selected="*{accessType} == ${code.minorCode}"></option>
+															</select>
+														</td>
+													</tr>
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<label for="accessDevice">접속장치</label>
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<select name="accessDevice" id="accessDevice" th:value="*{accessDevice}" class="form-select">
+																<option value="" th:selected="*{accessType} eq '' ">전체</option>
+																<option th:each="code : *{accessDeviceItemList}" th:value="${code.minorCode}" 
+																		th:text="${code.minorName}" th:selected="*{accessDevice} == ${code.minorCode}"></option>
+															</select>
+														</td>
+													</tr>
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<label for="accessStartDate">로그일자</label>
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<div class="input-group mb-3">
+																<input type="text" id="requestStartDate" th:field="*{accessStartDate}" class="form-control" autocomplete='off'>
+																<span class="input-group-text calendar-icon" data-target="#accessStartDate">
+																	<i class="fa fa-calendar"></i>
+																</span> &nbsp;&nbsp;⁓&nbsp;&nbsp;
+																<input type="text" id="accessEndDate" th:field="*{accessEndDate}" class="form-control" autocomplete='off'>
+																<span class="input-group-text calendar-icon" data-target="#requestEndDate">
+																	<i class="fa fa-calendar"></i>
+																</span>
+															</div>
+														</td>
+													</tr>
+												</table>
+											</td>
+											<td class="col-sm-12 col-md-1"></td>
+											<td style="border-left: 1px solid #e3e6f0;"></td>
+											<td class="col-sm-12 col-md-1"></td>
+											<td>
+												<table style="width: 100%;">
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<label for="accessId">사용자ID</label>
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<input type="text" id="accessId" th:field="*{accessId}" class="form-control">
+														</td>
+													</tr>
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<label for="ip">접속IP</label>
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<input type="text" id="ip" th:field="*{ip}" class="form-control">
+														</td>
+													</tr>
+													<tr>
+														<th class="col-sm-12 col-md-2 search-ttl">
+															<label for="parameters">파라미터</label>
+														</th>
+														<td class="col-sm-12 col-md-3">
+															<input type="text" id="parameters" th:field="*{parameters}" class="form-control">
+														<!-- <select name="isDeleted" id="isDeleted" th:value="*{isDeleted}" class="form-select" aria-label="Default select example">
+																<option value="" th:selected="*{isDeleted} eq '' ">전체</option>
+																<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
+																<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
+															</select> -->
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+									<!-- 검색바 버튼 -->
+									<div class="regist-wrap">
+										<!-- <button class="btn btn-success ml-2" id="btnRegister" type="button">주문서등록</button> -->
+										<button type="submit" class="btn btn-primary ml-2" id="btnSearch">검색</button>
+									</div>
+									<!-- 검색바 버튼 끝 -->
+								</form>
+							</div>
+						</section>
+					</div>
+					<!-- ---------- 검색바 끝 ---------- -->
+				</div>
+			</div>
+			<!-- ---------- 검색바 컨테이너 끝 ---------- -->
 			<!-- 리스트 출력 -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
 						<div class="row">
-							<div class="col-sm-12 col-md-3">
-								<label>AccessID:
-									<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<label>Search:
-								<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<label>Search2:
-								<input type="search" class="form-control form-control-sm" placeholder="">
-								</label>
-							</div>
-							<div class="col-sm-12 col-md-3">
-								<button type="button" id="newBtn">로그작성(개발테스트용)</button>
-							</div>
+							<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
+								<thead>
+									<tr>
+										<th>번호</th>
+										<th>아이디</th>
+										<th>접근타입</th>
+										<th>접근장치</th>
+										<th>IP</th>
+										<th>URL</th>
+										<th>접근일자</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="item, status : ${logDTOList}" th:data-id="${item.idx}" class="clickable-row">
+										<!-- <th:block th:object="${item}"> -->
+										<td th:text="${status.count}"></td>
+										<td th:text="${item.accessId}"></td>
+										<td th:text="${item.accessType}"></td>
+										<td th:text="${item.accessDevice}"></td>
+										<td th:text="${item.ip}"></td>
+										<td th:text="${item.url}"></td>
+										<td th:text="${#temporals.format(item.accessDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(logDTOList)}" class="clickable-row menu2depth_items" data-id="1">
+										<td colspan="7"><span>조회 된 데이터가 없습니다.</span></td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
-						<div class="row">
-						</div>
-						<table class="table table-bordered">
-							<thead>
-								<tr>
-									<th>번호</th>
-									<th>아이디</th>
-									<th>접근타입</th>
-									<th>접근장치</th>
-									<th>IP</th>
-									<th>URL</th>
-									<th>접근일자</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="item, status : ${logDTOList}" th:data-id="${item.idx}" class="clickable-row">
-									<!-- <th:block th:object="${item}"> -->
-									<td th:text="${status.count}"></td>
-									<td th:text="${item.accessId}"></td>
-									<td th:text="${item.accessType}"></td>
-									<td th:text="${item.accessDevice}"></td>
-									<td th:text="${item.ip}"></td>
-									<td th:text="${item.url}"></td>
-									<td th:text="${#temporals.format(item.accessDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
-								</tr>
-							</tbody>
-						</table>
 					</div>
 				</div>
 			</div>
+			<script src="/js/datatables/jquery.dataTables.min.js"></script>
 			<script type="text/javascript">
+				$(document).ready(function() {
+					console.log("document ready!");
+					// init DataTable
+					$('#dataTables').DataTable({
+						lengthChange: false,
+						searching: false,
+						paging: false,
+						info: false
+					}); // end of $('#dataTables').DataTable({
+				});
+				
 				$(function() {
 					$('#newBtn').on("click", function() {
 						location.href="/admin/log/new";
@@ -77,27 +225,6 @@
 						location.href=`/admin/log/${id}`;
 					});
 					
-					$('#register_client').off("click").on("click", function() {
-						console.log("hello register_client");
-						let form_date = $('#registerClientForm').serialize();
-						console.log("form_date : " + form_date);
-			
-						$.ajax({
-							url: "/orders/client",
-							type: "POST",
-							data : form_date,
-							success: function(response) {
-								if(response === "success") {
-									console.log(response);
-								} else {
-									console.log(response);
-								}
-							},
-							error: function(error) {
-								console.error(error);
-							}
-						});
-					});
 				});// end of $(function() {
 			</script>
 		</div>
