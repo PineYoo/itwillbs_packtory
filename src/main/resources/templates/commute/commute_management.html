@@ -27,46 +27,7 @@
 	<link href="/css/common.css" rel="stylesheet">
 </th:block>
 <style type="text/css">
-/* ======================================================================== */
-/* ---------------- 검색바 CSS(반응형 포함) ------------------------------- */
- /* 기본 테이블 스타일 */
-#search-table {
-    width: 100%;
-    max-width: 1200px;
-    margin: auto;
-    border-collapse: collapse;
-}
-
-#search-table table td {
-	padding-bottom: 7px;
-}
-
-/* 작은 화면에서 한 줄로 표시되도록 설정 */
-@media (max-width: 768px) {
-    #search-table tr {
-      display: block;
-    }
-
-    #search-table td {
-      display: block;
-      width: 100%;
-    }
-
-    #search-table td table {
-      display: block;
-    }
-    
-    .regist-wrap {
-    	display: block;
-    }
-    .regist-wrap button {
-    	width: 100%;
-    	margin-bottom: 7px;
-    }
-    
-}
-/* ---------------- 검색바 CSS(반응형 포함) 끝 ---------------------------- */
-/* ======================================================================== */
+	
 </style>
 
 </head>
@@ -88,64 +49,76 @@
 						
 							<div class="col pl-4 search-box">
 								<form th:action="@{/commute/search}" method="get" th:object="${commuteSearchDTO}">
-									<table id="search-table">
-									    <tr>
-									        <td>
-									            <table style="width: 100%;">
-									                <tr>
-									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="employeeId">사원번호</label></th>
-									                    <td class="col-sm-12 col-md-3">
-									                        <input type="text" id="employeeId" th:field="*{employeeId}" class="form-control">
-									                    </td>
-									                </tr>
-									                <tr>
-									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="workStartDate">날짜</label></th>
-									                    <td class="col-sm-12 col-md-3">
-									                        <div class="input-group mb-3">
-									                            <input type="text" id="workStartDate" th:field="*{workStartDate}" class="form-control" autocomplete='off'>
-									                            <span class="input-group-text calendar-icon" data-target="#workStartDate">
-													                <i class="fa fa-calendar"></i>
-													            </span>
-									                            &nbsp;&nbsp;⁓&nbsp;&nbsp;
-									                            <input type="text" id="workEndDate" th:field="*{workEndDate}" class="form-control" autocomplete='off'>
-									                            <span class="input-group-text calendar-icon" data-target="#workEndDate">
-													                <i class="fa fa-calendar"></i>
-													            </span>
-									                        </div>
-									                    </td>
-									                </tr>
-									            </table>
-									        </td>
-									        <td class="col-sm-12 col-md-1"></td>
-									        <td style="border-left: 1px solid #e3e6f0;"></td>
-									        <td class="col-sm-12 col-md-1"></td>
-									        <td>
-									            <table style="width: 100%;">
-									                <tr>
-									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="department">부서</label></th>
-									                    <td class="col-sm-12 col-md-3">
-									                  		<input type="text" id="department" th:field="*{department}" class="form-control">
-									                    </td>
-									                </tr>
-									                <tr>
-									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="name">이름</label></th>
-									                    <td class="col-sm-12 col-md-3">
-									                  		<input type="text" id="name" th:field="*{name}" class="form-control">
-									                    </td>
-									                </tr>
-									            </table>
-									        </td>
-									    </tr>
-									</table>
-									<!-- 검색바 버튼 -->
-									<div class="regist-wrap">
-										<!-- 로그인한 사용자 ID 저장 -->
-				<!-- 						<input type="hidden" id="userId" th:value="${#httpSession.getAttribute('userId')}"> -->
-										<button class="btn btn-success ml-2" id="btnCommute" type="button">출퇴근 버튼페이지로 이동(임시)</button>
-										<button class="btn btn-primary ml-2" id="btnSearch" type="submit">검색</button>
-<!-- 										<button class="btn btn-primary ml-2" id="searchBtn" type="submit">검색</button> -->
-									</div>
-									<!-- 검색바 버튼 끝 -->
+								    <div class="container-fluid px-5">
+								        <div class="row">
+								            <!-- 왼쪽 폼 그룹 -->
+								            <div class="col-md-6">
+								                <div class="form-group row">
+								                    <label for="employeeId" class="col-sm-3 col-form-label">사원번호</label>
+								                    <div class="col-sm-9">
+								                        <input type="text" id="employeeId" th:field="*{employeeId}" class="form-control">
+								                    </div>
+								                </div>
+								
+								                <div class="form-group row">
+								                    <label for="workStartDate" class="col-sm-3 col-form-label">날짜</label>
+								                    <div class="col-sm-9">
+								                        <div class="d-flex align-items-center">
+								                            <div class="input-group">
+								                                <input type="text" id="workStartDate" th:field="*{workStartDate}" class="form-control" autocomplete="off">
+								                                <div class="input-group-append">
+								                                    <span class="input-group-text calendar-icon">
+								                                        <i class="fa fa-calendar"></i>
+								                                    </span>
+								                                </div>
+								                            </div>
+								
+								                            <span class="mx-2">⁓</span>
+								
+								                            <div class="input-group">
+								                                <input type="text" id="workEndDate" th:field="*{workEndDate}" class="form-control" autocomplete="off">
+								                                <div class="input-group-append">
+								                                    <span class="input-group-text calendar-icon">
+								                                        <i class="fa fa-calendar"></i>
+								                                    </span>
+								                                </div>
+								                            </div>
+								                        </div>
+								                    </div>
+								                </div>
+								            </div>
+											
+								            <!-- 오른쪽 폼 그룹 -->
+								            <div class="col-md-6">
+								                <div class="form-group row">
+								                    <label for="department" class="col-sm-3 col-form-label">부서</label>
+								                    <div class="col-sm-9">
+								                        <input type="text" id="department" th:field="*{department}" class="form-control">
+								                    </div>
+								                </div>
+								
+								                <div class="form-group row">
+								                    <label for="name" class="col-sm-3 col-form-label">이름</label>
+								                    <div class="col-sm-9">
+								                        <input type="text" id="name" th:field="*{name}" class="form-control">
+								                    </div>
+								                </div>
+								            </div>
+								        </div>
+								
+								        <!-- 검색바 버튼 -->
+								        <div>
+										    <div class="row justify-content-end">
+										        <div class="col-12 col-sm-auto mb-2">
+										            <button class="btn btn-success btn-block" id="btnCommute" type="button">출퇴근 버튼페이지로 이동(임시)</button>
+										        </div>
+										        <div class="col-12 col-sm-auto mb-2">
+										            <button class="btn btn-primary btn-block" id="btnSearch" type="submit">검색</button>
+										        </div>
+										    </div>
+										</div>
+								        <!-- 검색바 버튼 끝 -->
+								    </div>
 								</form>
 							</div>
 						</section>

@@ -29,12 +29,16 @@
 <style type="text/css">
 .commute-container {
 	display: flex;
+	align-items: center;
 }
-input {
+.commute-container input {
        border: 1px solid #ccc;
        padding: 5px;
        margin: 2px;
        border-radius: 3px;
+}
+.commute-container button {
+	padding: 7px 25px;
 }
 </style>
 
@@ -62,15 +66,28 @@ input {
 							출근시간 : <input type="text" id="checkInTime" class="mb-2" disabled><br>
 							퇴근시간 : <input type="text" id="checkOutTime" class="mb-2" disabled>
 						</div>
-						<div>
-							<th:block th:each="item : ${codeItemList}">
-			                    <button th:id="${item.minorName}"
-			                            class="btn btn-primary ml-2 mb-2 work-btn"
-			                            th:data-code="${item.minorCode}"
-			                            th:data-name="${item.minorName}"
-			                            th:text="${item.minorName}">
-			                    </button>
-			                </th:block>
+						
+						<div style="margin-left: 5px;">
+							<th:block th:each="i : ${#numbers.sequence(0, codeItemList.size() - 1, 2)}">
+						        <div class="d-flex flex-wrap mb-2">
+						            <th:block th:if="${i < codeItemList.size()}" th:with="item=${codeItemList[i]}">
+						                <button th:id="${item.minorName}"
+						                        class="btn btn-primary mr-2 work-btn"
+						                        th:data-code="${item.minorCode}"
+						                        th:data-name="${item.minorName}"
+						                        th:text="${item.minorName}">
+						                </button>
+						            </th:block>
+						            <th:block th:if="${i + 1 < codeItemList.size()}" th:with="item=${codeItemList[i + 1]}">
+						                <button th:id="${item.minorName}"
+						                        class="btn btn-primary mr-2 work-btn"
+						                        th:data-code="${item.minorCode}"
+						                        th:data-name="${item.minorName}"
+						                        th:text="${item.minorName}">
+						                </button>
+						            </th:block>
+						        </div>
+						    </th:block>
 						</div>
 						
 					</div>
