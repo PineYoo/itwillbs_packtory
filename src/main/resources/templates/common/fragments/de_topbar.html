@@ -30,7 +30,8 @@
 		$(function() {
 			setInterval(updateClock, 1000);
 			updateClock();
-			
+			// 서버의 시간을 가져와서
+			// 클라이언트에서 흘러가게 해주세요.
 			function updateClock() {
 				const now = new Date();
 				$("#clock").text(now.toLocaleTimeString()); // jQuery 방식으로 수정

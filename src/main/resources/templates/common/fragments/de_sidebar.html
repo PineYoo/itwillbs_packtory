@@ -2,7 +2,7 @@
 	<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
 		<!-- Sidebar - Brand -->
-		<a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+		<a class="sidebar-brand d-flex align-items-center justify-content-center" href="/main">
 			<div class="sidebar-brand-icon rotate-n-15">
 				<i class="fas fa-laugh-wink" ></i>
 			</div>
@@ -23,8 +23,10 @@
 			<div id="ERP1" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 				<div class="bg-white py-2 collapse-inner rounded">
 					<h6 class="collapse-header">메뉴그룹기능</h6>
-					<a class="collapse-item" href="table">공지사항</a>
-					<a class="collapse-item" href="#" onclick="alert('test'); return false;">전자결재</a>
+					<a class="collapse-item" href="/groupware/approval" onclick="alert('coming soon'); return false;">전자결재</a>
+					<a class="collapse-item" href="/groupware/notice">공지사항</a>
+					<a class="collapse-item" href="/groupware/policy">규정</a>
+					<a class="collapse-item" href="/groupware/message">메시지</a>
 				</div>
 			</div>
 		</li>
@@ -37,8 +39,10 @@
 			<div id="ERP2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 				<div class="bg-white py-2 collapse-inner rounded">
 					<h6 class="collapse-header">메뉴그룹기능</h6>
-					<a class="collapse-item" href="#" onclick="alert('test'); return false;">인사카드관리</a>
-					<a class="collapse-item" href="#" onclick="alert('test'); return false;">인사발령현황</a>
+					<a class="collapse-item" href="/human/employee">인사카드관리</a>
+					<a class="collapse-item" href="/human/department">부서관리</a>
+					<a class="collapse-item" href="/human/position">직급관리</a>
+					<a class="collapse-item" href="#" onclick="alert('coming soon'); return false;">인사발령현황</a>
 				</div>
 			</div>
 		</li>
@@ -51,8 +55,8 @@
 			<div id="ERP3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 				<div class="bg-white py-2 collapse-inner rounded">
 					<h6 class="collapse-header">메뉴그룹기능</h6>
-					<a class="collapse-item" href="#" onclick="alert('test'); return false;">출/퇴근 관리</a>
-					<a class="collapse-item" href="#" onclick="alert('test'); return false;">근태현황</a>
+					<a class="collapse-item" href="/commute/management">출/퇴근 관리</a>
+					<a class="collapse-item" href="#" onclick="alert('coming soon'); return false;">근태현황</a>
 				</div>
 			</div>
 		</li>
@@ -65,9 +69,9 @@
 			<div id="ERP4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 				<div class="bg-white py-2 collapse-inner rounded">
 					<h6 class="collapse-header">메뉴그룹기능</h6>
-					<a class="collapse-item" href="#" onclick="alert('test'); return false;">거래처관리</a>
-					<a class="collapse-item" href="#" onclick="alert('test'); return false;">수주관리</a>
-					<a class="collapse-item" href="#" onclick="alert('test'); return false;">발주관리</a>
+					<a class="collapse-item" href="/orders/client">거래처관리</a>
+					<a class="collapse-item" href="/orders/sell">수주관리</a>
+					<a class="collapse-item" href="/orders/buy">발주관리</a>
 				</div>
 			</div>
 		</li>
@@ -115,8 +119,8 @@
 					<a class="collapse-item" href="/admin/code">공통코드관리</a>
 					<a class="collapse-item" href="/admin/menu">메뉴관리</a>
 					<div class="collapse-divider"></div>
-					<h6 class="collapse-header">권한</h6>
-					<a class="collapse-item" href="#" onclick="alert('test'); return false;">시스템권한관리</a>
+					<h6 class="collapse-header">사용자&권한</h6>
+					<a class="collapse-item" href="/admin/member">시스템사용자관리</a>
 					<div class="collapse-divider"></div>
 					<h6 class="collapse-header">로그</h6>
 					<a class="collapse-item" href="/admin/log">시스템사용로그</a>
