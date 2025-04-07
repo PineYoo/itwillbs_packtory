@@ -30,7 +30,7 @@
             <h2 class="h3 mb-4 text-gray-800">규정 목록</h2>
 
             <!-- 검색 폼 -->
-            <form th:action="@{/policy}" method="get">
+            <form th:action="@{/groupware/policy}" method="get">
                 <div class="form-row mb-3">
                     <div class="col-md-4">
                         <select name="type" class="form-control" th:value="${searchDTO.type}">
@@ -85,7 +85,7 @@
 
             <!-- 규정 등록 버튼 -->
             <div class="d-flex justify-content-end">
-                <a href="/policy/new" class="btn btn-primary">규정 등록</a>
+                <a href="/groupware/policy/new" class="btn btn-primary">규정 등록</a>
             </div>
         </div>
     </div>
@@ -103,7 +103,7 @@
                         const policyId = this.getAttribute('data-id');
                         if (policyId) {
                             // 해당 규정의 상세 페이지로 이동
-                            window.location.href = '/policy/detail/' + policyId;
+                            window.location.href = '/groupware/policy/detail/' + policyId;
                         }
                     });
                 });

@@ -29,7 +29,7 @@
     <div layout:fragment="contents">
         <div class="container mt-5">
             <h2 class="h3 mb-4 text-gray-800">사원 등록</h2>
-            <form action="#" th:action="@{/employee/new}" th:object="${employee}" method="post">
+            <form action="#" th:action="@{/human/employee/new}" th:object="${employee}" method="post">
                 <div class="mb-3">
                     <label for="name" class="form-label">이름</label>
                     <input type="text" class="form-control" id="name" th:field="*{name}" required>
@@ -61,7 +61,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-success">등록</button>
-                <a href="/employee" class="btn btn-secondary ml-2">목록으로</a>
+                <a href="/human/employee" class="btn btn-secondary ml-2">목록으로</a>
             </form>
         </div>
     </div>

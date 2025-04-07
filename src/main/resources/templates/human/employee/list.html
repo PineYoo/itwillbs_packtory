@@ -95,14 +95,14 @@ $(document).ready(function() {
     $(document).on("click", ".clickable-row td:not(.edit-mode)", function() {
         if (!isEditing) {
             const id = $(this).closest("tr").data("id");
-            location.href = `/employee/detail/${id}`;
+            location.href = `/human/employee/detail/${id}`;
         }
     });
 
     // 등록 버튼 클릭 시 이동
     $("#btnNew").on("click", function(event) {
         event.stopPropagation();
-        location.href = "/employee/new";
+        location.href = "/human/employee/new";
     });
 
     // 수정 버튼 클릭
@@ -136,7 +136,7 @@ $(document).ready(function() {
         updatedData["id"] = id;
 
         $.ajax({
-            url: `/employee/update/${id}`,
+            url: `/human/employee/update/${id}`,
             type: "PUT",
             contentType: "application/json",
             data: JSON.stringify(updatedData),
@@ -159,7 +159,7 @@ $(document).ready(function() {
 
         if (confirm("정말 삭제하시겠습니까?")) {
             $.ajax({
-                url: `/employee/delete/${id}`,
+                url: `/human/employee/delete/${id}`,
                 type: "DELETE",
                 success: function(response) {
                     alert("삭제되었습니다.");

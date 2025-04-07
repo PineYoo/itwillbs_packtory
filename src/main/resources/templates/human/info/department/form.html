@@ -26,7 +26,7 @@
     <div layout:fragment="contents">
         <div class="container mt-5">
             <h2 class="h3 mb-4 text-gray-800">부서 등록</h2>
-            <form action="#" th:action="@{/department/new}" th:object="${departmentInfoDTO}" method="post">
+            <form action="#" th:action="@{/human/department/new}" th:object="${departmentInfoDTO}" method="post">
                 <div class="mb-3">
 				    <label for="departmentCode" class="form-label">대표부서코드</label>
 				    <select class="form-control" id="departmentCode" th:field="*{departmentCode}" required>
@@ -62,28 +62,8 @@
 				    <input type="text" class="form-control" id="locationIdx" th:field="*{locationIdx}" placeholder="장소를 입력하세요" required>
 				</div>
 
-<!--            <div class="mb-3"> -->
-<!--            	<label for="regId" class="form-label">작성자</label> -->
-<!--                <input type="text" class="form-control" id="regId" th:field="*{regId}" required> -->
-<!--            </div> -->
-
-<!--			<div class="mb-3"> -->
-<!--				<label for="regDate" class="form-label">작성일자시간</label> -->
-<!--            	<input type="text" class="form-control" id="regDate" th:field="*{regDate}" readonly> -->
-<!--           	</div> -->
-
-<!--			<div class="mb-3"> -->
-<!--				<label for="modId" class="form-label">최종작성자</label> -->
-<!--				<input type="text" class="form-control" id="modId" th:field="*{modId}" required> -->
-<!--			</div> -->
-
-<!--            <div class="mb-3"> -->
-<!--                <label for="modDate" class="form-label">최종작성일자</label> -->
-<!--                <input type="text" class="form-control" id="modDate" th:field="*{modDate}" readonly> -->
-<!--            </div> -->
-
                 <button type="submit" class="btn btn-success">등록</button>
-                <a href="/department" class="btn btn-secondary ml-2">목록으로</a>
+                <a href="/human/department" class="btn btn-secondary ml-2">목록으로</a>
             </form>
         </div>
     </div>

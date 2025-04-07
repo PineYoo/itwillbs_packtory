@@ -50,7 +50,7 @@
 <body>
     <h2>사원 상세정보</h2>
 
-    <form th:action="@{/employee/detail/{id}(id=${employeeDetailDTO.id})}" method="post" th:object="${employeeDetailDTO}">
+    <form th:action="@{/human/employee/detail/{id}(id=${employeeDetailDTO.id})}" method="post" th:object="${employeeDetailDTO}">
         <input type="hidden" name="_method" value="put">
         
         <label>사원번호</label>
@@ -146,7 +146,7 @@
             const empId = $(this).data("id");
             if(confirm("사원을 삭제하시겠습니까?")) {
                 $.ajax({
-                    url: `/employee/${empId}/delete`,
+                    url: `/human/employee/${empId}/delete`,
                     type: "POST",
                     success: function(response) {
                         if(response === "success") {
@@ -166,7 +166,7 @@
 
         // 목록 버튼 클릭 시
         $("#btnList").on("click", function() {
-            location.href = "/employee";
+            location.href = "/human/employee";
         });
     });
 </script>

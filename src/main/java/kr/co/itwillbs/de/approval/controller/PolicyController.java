@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
-@RequestMapping("/policy")
+@RequestMapping("/groupware/policy")
 @RequiredArgsConstructor
 public class PolicyController {
 
@@ -78,7 +78,7 @@ public class PolicyController {
             fileService.registerFiles(fileList);
         }
 
-        return "redirect:/policy";
+        return "redirect:/groupware/policy";
     }
 
     // 규정 목록 조회 (검색 기능 추가)
@@ -112,7 +112,7 @@ public class PolicyController {
                 policyService.addPolicyFiles(String.valueOf(idx), uploadFiles);
             }
 
-            return "redirect:/policy/detail/" + idx;
+            return "redirect:/groupware/policy/detail/" + idx;
         } catch (EntityNotFoundException e) {
             log.error("규정 수정 실패: {}", e.getMessage());
             return "errorPage";

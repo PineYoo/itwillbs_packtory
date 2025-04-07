@@ -36,7 +36,7 @@ public class Message {
     private String status; // 읽음 여부
 
     @Column(name = "file_idxs", length = 50)
-    private String fileIdxs; // 첨부파일 ID 리스트
+    private String fileIdxs = "-";
 
     @Column(name = "is_deleted", length = 2)
     private String isDeleted; // 삭제 여부
@@ -107,12 +107,6 @@ public class Message {
         this.type = dto.getType();
         this.title = dto.getTitle();
         this.contents = dto.getContents();
-        this.status = dto.getStatus();
-        this.fileIdxs = dto.getFileIdxs();
-        this.isDeleted = dto.getIsDeleted();
-        this.senderId = dto.getSenderId();
-        this.sendDate = dto.getSendDate();
         this.receiverId = dto.getReceiverId();
-        this.receiveDate = dto.getReceiveDate();
     }
 }

@@ -16,7 +16,7 @@
 <div layout:fragment="contents">
     <div class="container mt-5">
         <h2 class="h3 mb-4 text-gray-800">규정 상세</h2>
-        <form id="policyForm" th:action="@{/policy/detail/{idx}(idx=${policyDTO.idx})}" method="post" enctype="multipart/form-data">
+        <form id="policyForm" th:action="@{/groupware/policy/detail/{idx}(idx=${policyDTO.idx})}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label>규정 유형</label>
                 <select name="type" id="type" class="form-control" disabled>
@@ -73,7 +73,7 @@
             <button type="button" id="editBtn" class="btn btn-warning">수정</button>
             <button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">저장</button>
             <button type="button" id="deleteBtn" class="btn btn-danger" th:attr="data-idx=${policyDTO.idx}">삭제</button>
-            <a href="/policy" class="btn btn-secondary" style="float: right;">목록으로 돌아가기</a>
+            <a href="/groupware/policy" class="btn btn-secondary" style="float: right;">목록으로 돌아가기</a>
         </form>
     </div>
 </div>
@@ -102,7 +102,7 @@
         	if (!policyIdx) return alert("잘못된 규정 ID입니다.");
 			if (confirm("정말 삭제하시겠습니까?")) {
 				$.ajax({
-					url: `/policy/detail/${policyIdx}`,
+					url: `/groupware/policy/detail/${policyIdx}`,
 					type: "DELETE",
 					success: function(response) {
 						if (response === "success") {
@@ -125,7 +125,7 @@
             const policyIdx = $("#deleteBtn").attr("data-idx");
             if (confirm("이 파일을 삭제하시겠습니까?")) {
                 $.ajax({
-                    url: `/policy/detail/${policyIdx}/file/delete/${fileId}`,
+                    url: `/groupware/policy/detail/${policyIdx}/file/delete/${fileId}`,
                     type: "POST",
                     success: function(response) {
                         if (response === "success") {

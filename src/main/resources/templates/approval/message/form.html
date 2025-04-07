@@ -21,7 +21,7 @@
     <div layout:fragment="contents">
         <div class="container mt-5">
             <h2 class="h3 mb-4 text-gray-800">메시지 등록</h2>
-            <form th:action="@{/message/new}" th:object="${messageDTO}" method="post" enctype="multipart/form-data">
+            <form th:action="@{/groupware/message/new}" th:object="${messageDTO}" method="post" enctype="multipart/form-data">
                 <!-- 메시지 유형 -->
                 <div class="mb-3">
                     <label for="type" class="form-label">메시지 유형</label>
@@ -66,7 +66,7 @@
 
                 <!-- 등록 버튼 -->
                 <button type="submit" class="btn btn-success">등록</button>
-                <a href="/message" class="btn btn-secondary ml-2">목록으로</a>
+                <a href="/groupware/message" class="btn btn-secondary ml-2">목록으로</a>
             </form>
         </div>
     </div>

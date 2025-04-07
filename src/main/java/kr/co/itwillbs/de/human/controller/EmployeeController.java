@@ -26,12 +26,29 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/employee")
+@RequestMapping("/human/employee")
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
 
+    // 사원 등록 페이지 (폼 페이지)
+    @GetMapping("/new")
+    public String showEmployeeForm(Model model) {
+    	log.info("showEmployeeForm --- start");
+    	model.addAttribute("employee", new EmployeeDTO());
+    	return "human/employee/form";
+    }
+    
+    // 사원 등록 처리
+    @PostMapping("/new")
+    public String registerEmployee(EmployeeDTO employeeDTO) {
+    	log.info("registerEmployee --- start");
+    	
+    	employeeService.registerEmployee(employeeDTO);
+    	return "redirect:/human/employee";
+    }
+    
     // 사원 목록 조회
     @GetMapping
     public String showEmployeeList(@ModelAttribute EmployeeSearchDTO searchDTO, Model model) {
@@ -52,23 +69,6 @@ public class EmployeeController {
         model.addAttribute("searchDTO", searchDTO);
 
         return "human/employee/list";
-    }
-
-    // 사원 등록 페이지 (폼 페이지)
-    @GetMapping("/new")
-    public String showEmployeeForm(Model model) {
-        log.info("showEmployeeForm --- start");
-        model.addAttribute("employee", new EmployeeDTO());
-        return "human/employee/form";
-    }
-
-    // 사원 등록 처리
-    @PostMapping("/new")
-    public String registerEmployee(EmployeeDTO employeeDTO) {
-        log.info("registerEmployee --- start");
-
-        employeeService.registerEmployee(employeeDTO);
-        return "redirect:/employee";
     }
 
     // 사원 기본 정보 수정 (리스트 페이지에서 수정)
@@ -116,6 +116,6 @@ public class EmployeeController {
         // 사원 기본 정보와 상세 정보 동시에 업데이트
         employeeService.updateEmployeeDetailAndSsn(employeeDTO, employeeDetailDTO);
 
-        return "redirect:/employee/detail/" + id;
+        return "redirect:/human/employee/detail/" + id;
     }
 }

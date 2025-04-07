@@ -30,7 +30,7 @@
             <h2 class="h3 mb-4 text-gray-800">직급 목록</h2>
 
              <!-- 검색 폼 -->
-            <form th:action="@{/position}" method="get">
+            <form th:action="@{/human/position}" method="get">
                 <div class="form-row mb-3">
                     <div class="col-md-4">
                         <select name="positionCode" class="form-control" th:value="${selectedCode}">
@@ -81,7 +81,7 @@
             </table>
 
             <!-- 직급 등록 버튼 -->
-            <a href="/position/new" class="btn btn-primary">직급 등록</a>
+            <a href="/human/position/new" class="btn btn-primary">직급 등록</a>
         </div>
     </div>
 
@@ -98,7 +98,7 @@
                         const positionId = this.getAttribute('data-id');
                         if (positionId) {
                             // 해당 직급의 디테일 페이지로 리디렉션
-                            window.location.href = '/position/detail/' + positionId;
+                            window.location.href = '/human/position/detail/' + positionId;
                         }
                     });
                 });

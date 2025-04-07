@@ -21,7 +21,7 @@
     <div layout:fragment="contents">
         <div class="container mt-5">
             <h2 class="h3 mb-4 text-gray-800">규정 등록</h2>
-            <form th:action="@{/policy/new}" th:object="${policyDTO}" method="post" enctype="multipart/form-data">
+            <form th:action="@{/groupware/policy/new}" th:object="${policyDTO}" method="post" enctype="multipart/form-data">
                 <!-- 규정 유형 -->
                 <div class="mb-3">
                     <label for="type" class="form-label">규정 유형</label>
@@ -60,7 +60,7 @@
 
                 <!-- 등록 버튼 -->
                 <button type="submit" class="btn btn-success">등록</button>
-                <a href="/policy" class="btn btn-secondary ml-2">목록으로</a>
+                <a href="/groupware/policy" class="btn btn-secondary ml-2">목록으로</a>
             </form>
         </div>
     </div>

@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/position")
+@RequestMapping("/human/position")
 public class PositionInfoController {
 
     @Autowired
@@ -46,7 +46,7 @@ public class PositionInfoController {
     public String positionRegister(@ModelAttribute PositionInfoDTO positionInfoDTO) {
         log.info("positionRegister --- start");
         positionInfoService.registerPosition(positionInfoDTO);
-        return "redirect:/position";
+        return "redirect:/human/position";
     }
 
     // 직급 목록 조회 (검색 기능 추가)
@@ -86,7 +86,7 @@ public class PositionInfoController {
     public String updatePosition(@PathVariable("idx") Long idx, @ModelAttribute PositionInfoDTO positionInfoDTO) {
         try {
             positionInfoService.updatePosition(idx, positionInfoDTO);
-            return "redirect:/position/detail/" + idx;
+            return "redirect:/human/position/detail/" + idx;
         } catch (EntityNotFoundException e) {
             log.error("직급 수정 실패: {}", e.getMessage());
             return "errorPage";

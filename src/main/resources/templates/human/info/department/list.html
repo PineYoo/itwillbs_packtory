@@ -31,7 +31,7 @@
             <h2 class="h3 mb-4 text-gray-800">부서 목록</h2>
 
             <!-- 검색 폼 -->
-            <form th:action="@{/department/search}" method="post">
+            <form th:action="@{/human/department/search}" method="post">
                 <div class="form-row mb-3">
                     <div class="col-md-4">
                         <!-- 대표 부서 셀렉트 박스 -->
@@ -80,7 +80,7 @@
             </table>
 
             <!-- 부서 등록 버튼 -->
-            <a href="/department/new" class="btn btn-primary">부서 등록</a>
+            <a href="/human/department/new" class="btn btn-primary">부서 등록</a>
         </div>
     </div>
 
@@ -97,7 +97,7 @@
                         const departmentId = this.getAttribute('data-id');
                         if (departmentId) {
                             // 해당 부서의 디테일 페이지로 리디렉션
-                            window.location.href = '/department/detail/' + departmentId;
+                            window.location.href = '/human/department/detail/' + departmentId;
                         }
                     });
                 });

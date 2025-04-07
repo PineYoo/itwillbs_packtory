@@ -31,8 +31,8 @@ public class MessageService {
         log.info("getMessageList --- searchDTO: {}", searchDTO);
 
         return messageRepository.searchMessages(
-        		searchDTO.getStartDate(),
-        		searchDTO.getEndDate(),
+        		searchDTO.getSendDate(),
+        		searchDTO.getReceiveDate(),
         		searchDTO.getType(),
                 searchDTO.getReceiverId(),
                 searchDTO.getSenderId()
@@ -59,6 +59,12 @@ public class MessageService {
 
         Message entity = messageRepository.findById(idx)
                 .orElseThrow(() -> new EntityNotFoundException("메시지를 찾을 수 없습니다."));
+        
+        // null이 아닌 값만 업데이트
+        if (dto.getTitle() != null) entity.setTitle(dto.getTitle());
+        if (dto.getType() != null) entity.setType(dto.getType());
+        if (dto.getContents() != null) entity.setContents(dto.getContents());
+        if (dto.getReceiverId() != null) entity.setReceiverId(dto.getReceiverId());
 
         entity.updateFromDTO(dto);
     }

@@ -23,7 +23,7 @@
             <h2 class="h3 mb-4 text-gray-800">부서 상세 목록</h2>
 
             <!-- 수정 요청 처리 폼 -->
-            <form th:action="@{/department/detail/{idx}(idx=${departmentInfoDTO.idx})}" method="post" th:object="${departmentInfoDTO}" id="departmentForm">
+            <form th:action="@{/human/department/detail/{idx}(idx=${departmentInfoDTO.idx})}" method="post" th:object="${departmentInfoDTO}" id="departmentForm">
                 <input type="hidden" th:field="*{idx}" />
 
                 <!-- 부서 정보 -->
@@ -98,7 +98,7 @@
                 <button type="button" class="btn btn-danger" id="deleteBtn" th:attr="data-idx=${departmentInfoDTO.idx}">삭제</button>
 
 				<!-- 목록으로 돌아가기 버튼 -->
-                <a href="/department" class="btn btn-secondary" style="float: right;">목록으로 돌아가기</a>
+                <a href="/human/department" class="btn btn-secondary" style="float: right;">목록으로 돌아가기</a>
             </form>
         </div>
     </div>
@@ -142,7 +142,7 @@
 
                         if (confirm("정말 삭제하시겠습니까?")) {
                             $.ajax({
-                                url: `/department/detail/${departmentIdx}`, // 삭제 경로
+                                url: `human/department/detail/${departmentIdx}`, // 삭제 경로
                                 type: "DELETE", // DELETE 방식으로 요청
                                 success: function(response) {
                                     console.log("삭제 성공 응답:", response); // 응답 확인

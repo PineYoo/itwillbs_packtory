@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/message")
+@RequestMapping("/groupware/message")
 public class MessageController {
 
     private final MessageService messageService;
@@ -34,7 +34,7 @@ public class MessageController {
     public String registerMessage(@ModelAttribute MessageDTO dto) {
         log.info("registerMessage --- dto: {}", dto);
         messageService.registerMessage(dto);
-        return "redirect:/message";
+        return "redirect:/groupware/message";
     }
 
     // 메시지 목록 조회 (검색 기능 추가)
@@ -52,8 +52,8 @@ public class MessageController {
     public String getMessageDetail(@PathVariable("idx") Long idx, Model model) {
         log.info("getMessageDetail --- idx: {}", idx);
         MessageDTO dto = messageService.getMessageByIdx(idx);
-        model.addAttribute("message", dto);
-        model.addAttribute("MessageTypes", commonCodeUtil.getCodeItems("MESSAGE_TYPE"));
+        model.addAttribute("messageDTO", dto);
+        model.addAttribute("messageTypes", commonCodeUtil.getCodeItems("MESSAGE_TYPE"));
         return "approval/message/detail";
     }
 
@@ -62,14 +62,20 @@ public class MessageController {
     public String updateMessage(@PathVariable("idx") Long idx, @ModelAttribute MessageDTO dto) {
         log.info("updateMessage --- idx: {}, dto: {}", idx, dto);
         messageService.updateMessage(idx, dto);
-        return "redirect:/message/" + idx;
+        return "redirect:/groupware/message/" + idx;
     }
 
     // 삭제 처리 (Soft Delete)
-    @PostMapping("/{idx}/delete")
+    @DeleteMapping("/delete/{idx}")
+    @ResponseBody
     public String deleteMessage(@PathVariable("idx") Long idx) {
-        log.info("deleteMessage --- idx: {}", idx);
-        messageService.softDeleteMessage(idx);
-        return "redirect:/message";
+        try {
+            log.info("deleteMessage --- idx: {}", idx);
+            messageService.softDeleteMessage(idx);
+            return "success";
+        } catch (Exception e) {
+            log.error("삭제 실패", e);
+            return "fail";
+        }
     }
 }

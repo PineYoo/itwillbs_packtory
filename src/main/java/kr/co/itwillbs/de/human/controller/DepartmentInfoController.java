@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/department") // 부서 관련 URL
+@RequestMapping("/human/department") // 부서 관련 URL
 public class DepartmentInfoController {
 
     @Autowired
@@ -50,7 +50,7 @@ public class DepartmentInfoController {
     public String departmentRegister(@ModelAttribute DepartmentInfoDTO departmentInfoDTO) {
         log.info("departmentRegister --- start");
         departmentInfoService.registerDepartment(departmentInfoDTO);  // 부서 등록 처리
-        return "redirect:/department";  // 등록 후 부서 목록 페이지로 리다이렉트
+        return "redirect:/human/department";  // 등록 후 부서 목록 페이지로 리다이렉트
     }
 
     // 부서 목록 조회
@@ -108,7 +108,7 @@ public class DepartmentInfoController {
         model.addAttribute("departmentInfoDTO", departmentInfoDTO);
         model.addAttribute("codeItems", codeItems);
         
-        return "human/info/department/detail"; // detail.html 뷰 페이지로 이동
+        return "/human/info/department/detail"; // detail.html 뷰 페이지로 이동
     }
 
     // 부서 수정 요청 (디테일 페이지에서 처리)
@@ -127,7 +127,7 @@ public class DepartmentInfoController {
             
             departmentInfoDTO.setModDate(LocalDateTime.now());
             departmentInfoService.updateDepartment(departmentInfoDTO);
-            return "redirect:/department/detail/" + idx; // 수정 후 상세 페이지로 리디렉션
+            return "redirect:/human/department/detail/" + idx; // 수정 후 상세 페이지로 리디렉션
         } catch (Exception e) {
             log.error("부서 수정 실패: {}", e.getMessage());
             return "errorPage"; // 에러 페이지로 리디렉션 또는 에러 메시지 표시
