@@ -111,6 +111,7 @@
 			<include refid="t_files_columns_forSelect" />
 		from t_files
 		where idx = #{idx}
+		order by rank_number asc
 	</select>
 	
 	<select id="getFilesByMajorIdx" resultType="kr.co.itwillbs.de.common.vo.FileVO">
@@ -119,6 +120,7 @@
 		from t_files
 		where type = #{type}
 		  and major_idx = #{majorIdx}
+		order by rank_number asc
 	</select>
 	
 	<update id="removeFile" parameterType="kr.co.itwillbs.de.common.vo.FileVO">
@@ -128,4 +130,11 @@
 			</set>
 		where idx = #{idx}
 	</update>
+	
+	
+	<select id="getMaxRankNumberByMajorIdx" resultType="int">
+		SELECT IFNULL(MAX(rank_number),0)
+		FROM t_files
+		WHERE major_idx = #{majorIdx}
+	</select>
 </mapper>
