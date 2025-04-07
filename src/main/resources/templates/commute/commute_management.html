@@ -26,20 +26,141 @@
 	<!-- 개별 CSS-->
 	<link href="/css/common.css" rel="stylesheet">
 </th:block>
+<style type="text/css">
+/* ======================================================================== */
+/* ---------------- 검색바 CSS(반응형 포함) ------------------------------- */
+ /* 기본 테이블 스타일 */
+#search-table {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+#search-table table td {
+	padding-bottom: 7px;
+}
+
+/* 작은 화면에서 한 줄로 표시되도록 설정 */
+@media (max-width: 768px) {
+    #search-table tr {
+      display: block;
+    }
+
+    #search-table td {
+      display: block;
+      width: 100%;
+    }
+
+    #search-table td table {
+      display: block;
+    }
+    
+    .regist-wrap {
+    	display: block;
+    }
+    .regist-wrap button {
+    	width: 100%;
+    	margin-bottom: 7px;
+    }
+    
+}
+/* ---------------- 검색바 CSS(반응형 포함) 끝 ---------------------------- */
+/* ======================================================================== */
+</style>
+
 </head>
 <body id="page-top">
 	<div layout:fragment="contents">
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">출/퇴근 관리</h1>
-
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">출퇴근 관리</h1>
+			</div>
+			
+			<!-- ---------- 검색바 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<!-- ---------- 검색바 ---------- -->
+					<div class="search-wrap border">
+						<section class="d-flex search-inner">
+						
+							<div class="col pl-4 search-box">
+								<form th:action="@{/commute/search}" method="get" th:object="${commuteSearchDTO}">
+									<table id="search-table">
+									    <tr>
+									        <td>
+									            <table style="width: 100%;">
+									                <tr>
+									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="employeeId">사원번호</label></th>
+									                    <td class="col-sm-12 col-md-3">
+									                        <input type="text" id="employeeId" th:field="*{employeeId}" class="form-control">
+									                    </td>
+									                </tr>
+									                <tr>
+									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="workStartDate">날짜</label></th>
+									                    <td class="col-sm-12 col-md-3">
+									                        <div class="input-group mb-3">
+									                            <input type="text" id="workStartDate" th:field="*{workStartDate}" class="form-control" autocomplete='off'>
+									                            <span class="input-group-text calendar-icon" data-target="#workStartDate">
+													                <i class="fa fa-calendar"></i>
+													            </span>
+									                            &nbsp;&nbsp;⁓&nbsp;&nbsp;
+									                            <input type="text" id="workEndDate" th:field="*{workEndDate}" class="form-control" autocomplete='off'>
+									                            <span class="input-group-text calendar-icon" data-target="#workEndDate">
+													                <i class="fa fa-calendar"></i>
+													            </span>
+									                        </div>
+									                    </td>
+									                </tr>
+									            </table>
+									        </td>
+									        <td class="col-sm-12 col-md-1"></td>
+									        <td style="border-left: 1px solid #e3e6f0;"></td>
+									        <td class="col-sm-12 col-md-1"></td>
+									        <td>
+									            <table style="width: 100%;">
+									                <tr>
+									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="department">부서</label></th>
+									                    <td class="col-sm-12 col-md-3">
+									                  		<input type="text" id="department" th:field="*{department}" class="form-control">
+									                    </td>
+									                </tr>
+									                <tr>
+									                    <th class="col-sm-12 col-md-2 search-ttl"><label for="name">이름</label></th>
+									                    <td class="col-sm-12 col-md-3">
+									                  		<input type="text" id="name" th:field="*{name}" class="form-control">
+									                    </td>
+									                </tr>
+									            </table>
+									        </td>
+									    </tr>
+									</table>
+									<!-- 검색바 버튼 -->
+									<div class="regist-wrap">
+										<!-- 로그인한 사용자 ID 저장 -->
+				<!-- 						<input type="hidden" id="userId" th:value="${#httpSession.getAttribute('userId')}"> -->
+										<button class="btn btn-success ml-2" id="btnCommute" type="button">출퇴근 버튼페이지로 이동(임시)</button>
+										<button class="btn btn-primary ml-2" id="btnSearch" type="submit">검색</button>
+<!-- 										<button class="btn btn-primary ml-2" id="searchBtn" type="submit">검색</button> -->
+									</div>
+									<!-- 검색바 버튼 끝 -->
+								</form>
+							</div>
+						</section>
+					</div>
+					<!-- ---------- 검색바 끝 ---------- -->
+				</div> 
+			</div>
+			<!-- ---------- 검색바 컨테이너 끝 ---------- -->
+			
 			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" th:object="${commuteList}">
-							<thead>
+						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
+							<thead class="table-light">
 								<tr>
 									<th>날짜</th>
 									<th>사원번호</th>
@@ -71,13 +192,19 @@
 		</div>
 		
 		<script type="text/javascript">
-			document.addEventListener("DOMContentLoaded", function(){
-			    $('#dataTable').DataTable({
-			        lengthChange: true,    // 건수 선택
-			        searching: true,       // 검색
-			        info: true,            // 정보 표시
+			$(document).ready(function() {
+				// 임시) 출퇴근 버튼 클릭하는 페이지 이동
+				$('#btnCommute').on('click', function () {
+				    window.location.href = '/commute/button';
+				});
+				
+				// init DataTable
+			    $('#dataTables').DataTable({
+			        lengthChange: false,    // 건수 선택
+			        searching: false,       // 검색
+			        info: false,            // 정보 표시
 			        ordering: true,        // 정렬
-			        paging: true,          // 페이징
+			        paging: false,          // 페이징
 			        responsive: true,      // 반응형
 			        autoWidth: false,      // 자동 너비 조정 해제
 			        dom: '<"top"<"left-length"l><"right-buttons"fB>>rt<"bottom"ip>',
@@ -87,6 +214,53 @@
 			            { extend: 'print', text: '프린트' }
 			        ]
 			    });
+				
+			 // ---------------------------------------------------
+				// 기간별 검색 필터링 제이쿼리 (datepicker)
+			    function initializeDateRangePicker(startInputId, endInputId) {
+			        var $startInput = $('#' + startInputId);
+			        var $endInput = $('#' + endInputId);
+			        var $iconStart = $('[data-target="#' + startInputId + '"]');
+			        var $iconEnd = $('[data-target="#' + endInputId + '"]');
+
+			        $startInput.daterangepicker({
+			            locale: {
+			                separator: " ~ ",
+			                format: 'YYYY-MM-DD',
+			                applyLabel: "확인",
+			                cancelLabel: "취소",
+			                daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+			                monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+			                customRangeLabel: '기간 지정'
+			            },
+			            autoUpdateInput: false,
+			            timePicker: false,
+			            showDropdowns: true,
+			            autoApply: false,
+			            maxDate: moment(), // 오늘까지만 선택 가능하게 제한
+			            ranges: {
+			                '오늘': [moment()], // 오늘
+			                '이번 주': [moment().startOf('week'), moment().endOf('week')],
+			                '이번 달': [moment().startOf('month'), moment().endOf('month')],
+			                '지난 주': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+			                '지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+			            }
+			        }, function(start, end) {
+			            $startInput.val(start.format('YYYY-MM-DD'));
+			            $endInput.val(end.format('YYYY-MM-DD'));
+			        });
+
+			        // 아이콘과 requestEndDate를 클릭해도 캘린더 열리도록 설정
+			        $iconStart.add($iconEnd).add($endInput).on('click', function() {
+			            $startInput.trigger('click');
+			        });
+			    }
+
+			    // 날짜 적용
+			    initializeDateRangePicker('workStartDate', 'workEndDate');
+			    // ------------------------------------------------------------
+			    
+			    
 			});
 		</script>
 		

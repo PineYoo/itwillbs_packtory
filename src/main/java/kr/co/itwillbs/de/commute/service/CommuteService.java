@@ -1,5 +1,6 @@
 package kr.co.itwillbs.de.commute.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import kr.co.itwillbs.de.commute.dto.CommuteDTO;
 import kr.co.itwillbs.de.commute.dto.CommuteListDTO;
+import kr.co.itwillbs.de.commute.dto.CommuteSearchDTO;
 import kr.co.itwillbs.de.commute.entity.Commute;
 import kr.co.itwillbs.de.commute.mapper.CommuteMapper;
 import kr.co.itwillbs.de.commute.repository.CommuteRepository;
@@ -20,7 +22,33 @@ public class CommuteService {
 	private CommuteMapper commuteMapper;
 
 	// 출퇴근 목록 조회 요청
-	public List<CommuteListDTO> getCommuteList(String id) {
-		return commuteMapper.getCommuteList(id);
+	public List<CommuteListDTO> getCommuteList(String id, CommuteSearchDTO commuteSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return commuteMapper.getCommuteList(id, commuteSearchDTO);
 	}
+
+	// 로그인 한 사번의 오늘 출근 기록 조회 요청
+	public CommuteDTO getCheckInTime(String id, LocalDate today) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return commuteMapper.getCheckInTime(id, today);
 	}
+
+	// 로그인 한 사번의 오늘 퇴근 기록 조회 요청
+	public CommuteDTO getCheckOutTime(String id, LocalDate today) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return commuteMapper.getCheckOutTime(id, today);
+	}
+
+	// 로그인 한 사번의 오늘 마지막 출퇴근 기록 조회 요청
+	public CommuteDTO getTodayLastCommute(String id, LocalDate today) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return commuteMapper.getTodayLastCommute(id, today);
+	}
+	
+	// 출퇴근 기록 저장 요청
+	public void saveCommuteInfo(CommuteDTO commuteDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		commuteMapper.insertCommuteInfo(commuteDTO);
+	}
+
+}
