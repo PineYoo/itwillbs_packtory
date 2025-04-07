@@ -115,41 +115,47 @@ input {
 			        outSideBtn.prop("disabled", true);
 			        comeBackBtn.prop("disabled", true);
 	
+			     	// 출근 전
+			        if (!statusName) {
+			            checkInBtn.prop("disabled", false);
+			            return;
+			        }
+
+		            const now = new Date();
+		            const today = now.toISOString().slice(0, 10); // 오늘 날짜
+		            
+			        // 출근은 했고 퇴근 전이면 (상태가 출근/외근/복귀 관계없이)
+			        if (modelCheckInTime && !modelCheckOutTime) {
+			            const checkIn = new Date(`${today}T${modelCheckInTime}`);
+// 		                const checkOutTime = new Date(checkIn.getTime() + 9 * 60 * 60 * 1000);	// 9시간
+			            const checkOutTime = new Date(checkIn.getTime() + 10 * 1000);	// 테스트용 (10초 후 퇴근 가능)
+		                const delay = checkOutTime - now;	// 퇴근까지 남은시간
+
+			            if (now >= checkOutTime) {	// 퇴근시간이 되었을 경우
+			                checkOutBtn.prop("disabled", false);	// 퇴근 O
+			            } else {	// 아직 퇴근시간 아닐 경우
+			                setTimeout(() => {
+				                checkOutBtn.prop("disabled", false);	// 퇴근 O
+			                }, delay);
+			            }
+		                
+			            // 외근: 퇴근 시간 도달 전, 퇴근 기록 없고, 상태가 출근 또는 복귀일 때만 가능
+			            if (now < checkOutTime && !modelCheckOutTime && (statusName === '출근' || statusName === '복귀')) {
+			                outSideBtn.prop("disabled", false);	// 외근 O
+			            }
+			        }
+
+			        // 현재 상태에 따라 외근/복귀 버튼 설정
 			        switch (statusName) {
-			            case null:
-			            case "":	// 출근 전
-			                checkInBtn.prop("disabled", false);
+			            case '출근':
+			            case '복귀':
+			            	// 위에서 외근 버튼 처리하므로 이 블럭은 생략 가능
 			                break;
-			            case "출근":
-			                outSideBtn.prop("disabled", false);
-
-			                if (modelCheckInTime && !modelCheckOutTime) {	// 출근은 했지만 퇴근전일 경우
-			                    const now = new Date();
-			                    const today = now.toISOString().slice(0, 10); // 오늘 날짜
-			                    const checkIn = new Date(`${today}T${modelCheckInTime}`);
-// 			                    const checkOutTime = new Date(checkIn.getTime() + 9 * 60 * 60 * 1000);	// 9시간
-			                    const checkOutTime = new Date(checkIn.getTime() + 10 * 1000);	// 테스트용(10초)
-
-			                    
-			                    if (now >= checkOutTime) {
-			                        checkOutBtn.prop("disabled", false);
-			                        outSideBtn.prop("disabled", true);
-			                    } else {
-			                        const delay = checkOutTime - now;
-			                        setTimeout(() => {
-			                            checkOutBtn.prop("disabled", false);
-			                            outSideBtn.prop("disabled", true);
-			                        }, delay);
-			                    }
-			                }
-			                break;
-			            case "외근":
+			            case '외근':
 			                comeBackBtn.prop("disabled", false);
 			                break;
-			            case "복귀":
-			                outSideBtn.prop("disabled", false);
-			                break;
-			            case "퇴근":
+			            case '퇴근':
+			                // 모든 버튼 비활성화
 			                break;
 			        }
 			    }
@@ -183,15 +189,13 @@ input {
 			                checkInBtn.prop("disabled", true);
 			                outSideBtn.prop("disabled", false);
 	
-			                // 9시간 뒤 퇴근 버튼 활성화
-// 			                const futureTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
 			             	// 테스트용: 10초 뒤 퇴근 버튼 활성화
-			                const futureTime = new Date(now.getTime() + 10 * 1000);
-
+			                const futureTime = new Date(now.getTime() + 10 * 1000);	// 9시간 : 9 * 60 * 60 * 1000
 			                const delay = futureTime.getTime() - now.getTime();
+
 			                setTimeout(() => {
-			                    checkOutBtn.prop("disabled", false);
-			                    outSideBtn.prop("disabled", true);
+			                    checkOutBtn.prop("disabled", false);	// 출근 O
+			                    outSideBtn.prop("disabled", true);		// 외근 X
 			                }, delay);
 			                break;
 	
@@ -202,7 +206,21 @@ input {
 	
 			            case '복귀':
 			                comeBackBtn.prop("disabled", true);
-			                outSideBtn.prop("disabled", false);
+			             	
+			                // 복귀 로직 - 출근 시간 기준으로 퇴근 시간 비교
+			                const checkInTime = $('#checkInTime').val();
+			                if (checkInTime) {
+			                    const today = now.toISOString().slice(0, 10);  // YYYY-MM-DD
+			                    const checkInDate = new Date(`${today}T${checkInTime}`); // 출근 시각
+			                    const futureTimeForComeback = new Date(checkInDate.getTime() + 10 * 1000); // 출근 10초 후가 퇴근 시간 기준
+			                    const nowForComeback = new Date();
+
+			                    if (nowForComeback < futureTimeForComeback) {   // 퇴근시간 전
+			                        outSideBtn.prop("disabled", false); // 외근 O
+			                    } else {    // 퇴근시간 이후
+			                        outSideBtn.prop("disabled", true);  // 외근 X
+			                    }
+			                }
 			                break;
 	
 			            case '퇴근':
