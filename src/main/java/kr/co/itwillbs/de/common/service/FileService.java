@@ -160,12 +160,13 @@ public class FileService {
 	/**
 	 * 파일 업로드 시 rankNumber 를 입력하기 위해 사용 됨
 	 * <br>SELECT IFNULL(MAX(rank_number),0) FROM t_files WHERE major_idx = majorIdx;
-	 * @param majorIdx max한 값을 주기때문에 사용시 +1 해서 써야함
-	 * @return
+	 * @param String type 파일 업로드 출처 게시판
+	 * @param String majorIdx 파일 idx
+	 * @return maxRankNumber max한 값을 주기때문에 사용시 +1 해서 써야함
 	 */
-	public int getMaxRankNumberByMajorIdx(String majorIdx) {
+	public int getMaxRankNumberByTypeAndMajorIdx(String type, String majorIdx) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		return fileMapper.getMaxRankNumberByMajorIdx(majorIdx);
+		return fileMapper.getMaxRankNumberByTypeAndMajorIdx(type,majorIdx);
 	}
 }

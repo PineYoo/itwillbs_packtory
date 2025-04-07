@@ -21,5 +21,6 @@ public interface FileMapper {
 
 	int removeFile(FileVO fileVO);
 
-	int getMaxRankNumberByMajorIdx(String majorIdx);
+	int getMaxRankNumberByTypeAndMajorIdx(@Param("type")String type, 
+									@Param("majorIdx")String majorIdx);
 }

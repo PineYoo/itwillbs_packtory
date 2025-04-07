@@ -132,9 +132,10 @@
 	</update>
 	
 	
-	<select id="getMaxRankNumberByMajorIdx" resultType="int">
+	<select id="getMaxRankNumberByTypeAndMajorIdx" resultType="int">
 		SELECT IFNULL(MAX(rank_number),0)
 		FROM t_files
-		WHERE major_idx = #{majorIdx}
+		WHERE type = #{type}
+			and major_idx = #{majorIdx}
 	</select>
 </mapper>
