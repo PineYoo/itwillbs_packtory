@@ -45,29 +45,29 @@
 			<h3 class="reg-title">기안서 작성</h3>
 			<!-- 본문 컨테이너 -->
 			<div class="main-container">
-				<form action="/approval/regist" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${draftDTO}" >
+				<form action="/approval/regist" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${approvalDTO}" >
 			        <div class="form-div">
 			            <label th:for="drafterId">사원번호</label>
 			            <input type="text" id="draftId" th:field="*{drafterId}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
-			            <label th:for="drafterName">작성자</label>
-			            <input type="text" id="draftName" th:field="*{drafterName}" class="form-control" readonly>
+			            <label th:for="name">작성자</label>
+			            <input type="text" id="name0" th:field="*{name}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
-			            <label th:for="drafterDepartment">부서</label>
-			            <input type="text" id="drafterDepartment" th:field="*{drafterDepartment}" class="form-control" readonly>
+			            <label th:for="childName">부서</label>
+			            <input type="text" id="childName" th:field="*{childName}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
-			            <label th:for="drapfterPositon">직급</label>
-			            <input type="text" id="drapfterPositon" th:field="*{drafterPosition}" class="form-control" readonly>
+			            <label th:for="positionCode">직급</label>
+			            <input type="text" id="positionCode" th:field="*{positionCode}" class="form-control" readonly>
 			        </div>
 			        
 			        <div class="form-div">
-			            <label th:for="approvalType">결재유형</label>
-			            <select id="approvalType" class="form-control" th:field="*{approvalType}">
+			            <label th:for="type">결재유형</label>
+			            <select id="type" class="form-control" th:field="*{approvalType}">
 			            	<option value="">선택</option>
-			            	<option th:each="item : ${approvalTypeList}" th:value="${item.minorCode}" th:text="${item.minorName}"></option>
+			            	<option th:each="item : ${codeType}" th:value="${item.minorCode}" th:text="${item.minorName}"></option>
 			            </select>
 			        </div>
 			        
@@ -81,6 +81,39 @@
 			            <label th:for="approverId">결재라인</label>
 						<div class="approver-line">
 			        		<button type="button" class="btn btn-primary" id="addApproverLineBtn" >결재라인 추가 <i class="fa-solid fa-plus"></i></button>
+			        		<div class="approver-group" id="approver-1">
+			        			<input th:field="*{approver1}" class="form-control">
+			        			<button type="button" class="btn btn-primary search-approver"
+										id="searchApproverBtn1" data-index="1">
+										검색 <i class="fa-solid fa-magnifying-glass"></i>
+								</button>
+				                <button type="button" class="btn btn-danger remove-approver"
+										data-id="1" data-index="1">
+										삭제
+								</button>
+				            </div>
+			        		<div class="approver-group" id="approver-2">
+			        			<input th:field="*{approver2}" class="form-control">
+			        			<button type="button" class="btn btn-primary search-approver"
+										id="searchApproverBtn2" data-index="2">
+										검색 <i class="fa-solid fa-magnifying-glass"></i>
+								</button>
+				                <button type="button" class="btn btn-danger remove-approver"
+										data-id="2" data-index="2">
+										삭제
+								</button>
+				            </div>
+			        		<div class="approver-group" id="approver-3">
+			        			<input th:field="*{approver3}" class="form-control">
+			        			<button type="button" class="btn btn-primary search-approver"
+										id="searchApproverBtn3" data-index="3">
+										검색 <i class="fa-solid fa-magnifying-glass"></i>
+								</button>
+				                <button type="button" class="btn btn-danger remove-approver"
+										data-id="3" data-index="3">
+										삭제
+								</button>
+				            </div>
 						</div>
 					</div>
 					<!-- datepicker 사용 -->
@@ -137,7 +170,7 @@
 	<script src="/js/datatables/jszip.min.js"></script>
 	<script src="/js/datatables/buttons.print.min.js"></script>
 	<!-- 개별 js -->
-    <script src="/js/approval/approval_reg.js"></script>
+<!--     <script src="/js/approval/approval_reg.js"></script> -->
 </th:block>
 	
 	

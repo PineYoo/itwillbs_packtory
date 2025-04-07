@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.approval.dto.ApprovalDTO;
 import kr.co.itwillbs.de.approval.dto.DraftDTO;
 import kr.co.itwillbs.de.approval.mapper.ApprovalMapper;
+import kr.co.itwillbs.de.common.service.CommonService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -19,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ApprovalService {
 	@Autowired
 	private ApprovalMapper approvalMapper;
+	@Autowired
+	private CommonService commonService;
 
 	
 	//	=====================================================================================
@@ -31,26 +34,32 @@ public class ApprovalService {
 	
 	//	------------------------------------------------------------
 	//	기안서 등록(저장) 요청
-	public int registerApproval(DraftDTO draftDTO) {
+	public String registerApproval(DraftDTO draftDTO) {
 		
 		// ----------- approval_no 결재번호 생성 ----------- 
 		// "A"+ yyyyMMdd + 4자리 숫자 (총13자리)  예) A202503270001
-		String approval_no = draftDTO.getApprovalNo();
+//		String approval_no = draftDTO.getApprovalNo();
 		
-		String today = new SimpleDateFormat("yyyyMMdd").format(new Date());
-		int code = 1;
+//		String today = new SimpleDateFormat("yyyyMMdd").format(new Date());
+//		int code = 1;
 		
 		// DB에서 오늘 날짜의 최대 결재번호 조회
-		String lastApprovalNo = approvalMapper.getLastApprovalNo(today);
-		System.out.println("최대 결재번호: " + lastApprovalNo); //A202503270001
+//		String lastApprovalNo = approvalMapper.getLastApprovalNo(today);
+//		System.out.println("최대 결재번호: " + lastApprovalNo); //A202503270001
 		
-		if(lastApprovalNo != null) { // 기안한 것이 있을 경우 최대 결재번호의 마지막 4자리 숫자에서 +1
-			int lastCode = Integer.parseInt(lastApprovalNo.substring(9));
-			code = lastCode + 1;
-		}
+//		if(lastApprovalNo != null) { // 기안한 것이 있을 경우 최대 결재번호의 마지막 4자리 숫자에서 +1
+//			int lastCode = Integer.parseInt(lastApprovalNo.substring(9));
+//			code = lastCode + 1;
+//		}
 		
-		String formattedCode = String.format("%04d", code); // 4자리 숫자로 포맷
-		approval_no = "A" + today + formattedCode; // 최종 결재번호 생성
+//		String formattedCode = String.format("%04d", code); // 4자리 숫자로 포맷
+//		approval_no = "A" + today + formattedCode; // 최종 결재번호 생성
+		
+//		String approval_no = commonService.getApprovalNoFromMySQL();
+		//	------------------------------------------------------------
+		//	approval_no 결재번호 생성
+		String year = new SimpleDateFormat("yyyy").format(new Date());
+		String approval_no = "A" + year + "-" + commonService.getApprovalNoFromMySQL();
 		
 		draftDTO.setApprovalNo(approval_no);
 		
@@ -62,7 +71,10 @@ public class ApprovalService {
 		// approval_type=null, doc_no=, approver1=, approver2=, approver3=, title=ㅇㅇㄹㄴ, content=ㅇㄴㄹㅇ, due_date=null, approvalStatus=null)
 		//	-------------------------------------------------------------
 		//	기안서 저장
-		return approvalMapper.insertApproval(draftDTO); // DB 비즈니스 로직 처리
+		approvalMapper.insertApproval(draftDTO); // DB 비즈니스 로직 처리
+		
+		//	생성한 결재번호 리턴
+		return approval_no;
 		
 	}
 	//	=====================================================================================
@@ -83,6 +95,15 @@ public class ApprovalService {
 	//	결재라인 AJAX로 검색어 조회
 	public List<DraftDTO> getSearchEmployeeInfo(String keyword) {
 		return approvalMapper.getSearchEmployeeInfo(keyword);
+	}
+	
+	/**
+	 * 결재번호로 전자결재문서 가져오기
+	 * @param approvalNo
+	 * @return ApprovalDTO
+	 */
+	public ApprovalDTO getApprovalByApprovalNo(String approvalNo) {
+		return approvalMapper.getApprovalByApprovalNo(approvalNo);
 	}
 
 	

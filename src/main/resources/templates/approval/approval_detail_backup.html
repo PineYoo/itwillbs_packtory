@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 전자결재</title>
+
+<!-- 부트스트랩 icons 가져오기 -->
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+<!-- CSS -->
+<th:block layout:fragment="css">
+	<!-- dataTables 가져오기 -->
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<link href="/css/datatables/datatables.min.css" rel="stylesheet">
+	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
+	<!-- 폰트어썸 가져오기 -->
+	<link href="/css/fontawesome/all.min.css" rel="stylesheet">
+	<script src="/css/fontawesome/all.min.js"></script>
+	<!-- CSS for Page -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+	<!-- 개별 CSS-->
+	<link href="/css/common.css" rel="stylesheet">
+</th:block>
+<style type="text/css">
+	.form {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+	input, select {
+        border: 1px solid #ccc;
+        padding: 5px;
+        margin: 2px;
+/*     	width: 198px; */
+	}
+	.essential {
+        background-color: #fffbe6; /* 연한 노랑 */
+    }
+    .filled {
+        background-color: white;
+    }
+    
+    /* ----------------- */
+    .approverInfo {
+	    display: flex;
+	}
+    @media (max-width: 768px) {
+	    .approverInfo {
+		    display: block;
+		}
+	}
+</style>
+</head>
+
+<body id="page-top">
+	<div layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid" style="margin-top: 20px;">
+			<!-- Page Heading -->
+			<h1 class="h3 mb-2 text-gray-800">전자결재(상세)</h1>
+
+			<!-- ---------- 본문 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+			    <div class="card-body">
+			    	<div class="table-responsive">
+				        <form th:action="@{/approval/modify}" method="post" th:object="${approvalDTO}" class="form row g-3">
+							<!-- hidden -->
+							<input type="hidden" th:field="*{approvalNo}">
+							<!-- -------------------------------------------------------------- -->
+			                	<div class="row">
+			                		<div class="data-container">
+			                			<div class="row">
+				                			<div class="col-sm-12 col-md-6 mb-3">
+				                				<div>
+													<label class="col-sm-8 col-md-4" for="approvalNo">문서번호</label>
+													<input type="text" id="approvalNo" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{approvalNo}" disabled>
+				                				</div>
+				                				<div>
+													<label class="col-sm-8 col-md-4" for="draftDate">기안일</label>
+													<input type="text" id="draftDate" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{draftDate}" disabled>
+				                				</div>
+				                				<div>
+													<label class="col-sm-8 col-md-4" for="dueDate">마감일자</label>
+													<input type="text" id="dueDate" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{dueDate}" disabled>
+				                				</div>
+				                				<div>
+													<label class="col-sm-8 col-md-4" for="name">기안자</label>
+													<input type="text" id="name" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{name}" disabled>
+				                				</div>
+				                				<div>
+													<label class="col-sm-8 col-md-4" for="positionCode">직급</label>
+													<input type="text" id="positionCode" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{positionCode}" disabled>
+				                				</div>
+				                				<div>
+													<label class="col-sm-8 col-md-4" for="childName">부서</label>
+													<input type="text" id="childName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{childName}" disabled>
+				                				</div>
+				                				<div>
+													<label class="col-sm-8 col-md-4" for="progressStatus">진행상태</label>
+													<input type="text" id="progressStatus" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{progressStatus}" disabled>
+				                				</div>
+				                			</div>
+				                			<div class="col-sm-12 col-md-6 mb-3">
+				                				<div class="approverInfo">
+													<label class="col-sm-8 col-md-4" for="approver1">결재자1</label>
+													<div>
+														<input type="text" id="approver1" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{approver1}" disabled>
+														<button type="button" id="searchApproval1" class="btn btn-outline-primary ml-2">검색</button>
+														<input type="text" id="approver1Status" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{approver1Status}" disabled>
+													</div>
+				                				</div>
+				                				<hr>
+				                				<div class="approverInfo">
+													<label class="col-sm-8 col-md-4" for="approver2">결재자2</label>
+													<div>
+														<input type="text" id="approver2" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{approver2}" disabled>
+														<button type="button" id="searchApproval2" class="btn btn-outline-primary ml-2">검색</button>
+														<input type="text" id="approver1Status" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{approver1Status}" disabled>
+													</div>
+				                				</div>
+				                				<hr>
+				                				<div class="approverInfo">
+													<label class="col-sm-8 col-md-4" for="approver3">결재자3</label>
+													<div>
+														<input type="text" id="approver3" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{approver3}" disabled>
+														<button type="button" id="searchApproval3" class="btn btn-outline-primary ml-2">검색</button>
+														<input type="text" id="approver1Status" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{approver1Status}" disabled>
+													</div>
+				                				</div>
+				                			</div>
+			                			</div>
+			                			
+			                			<hr>
+			                			
+			                			<div class="row">
+				                			<div class="col-md-6">
+				                				<label class="mb-2" for="title">제목</label>
+												<input class="form-control" id="title" th:field="*{title}">
+				                			</div>
+				                			<div class="col-md-6">
+												<label for="type" class="form-label mb-2">구분</label>
+												<select id="type" class="form-select" th:field="*{approvalType}">
+													<option value="">선택</option>
+													<option th:each="type : ${codeType}"
+															th:value="${type.minorCode}"
+															th:text="${type.minorName}">
+													</option>
+												</select>
+											</div>
+			                			</div>
+			                			
+			                			<div class="row">
+				                			<div class="col-md-12">
+												<label class="mt-4" for="content">내용</label>
+												<textarea class="form-control" id="content" th:field="*{content}" rows="15" cols="40"></textarea>
+											</div>
+			                			</div>
+			                			
+			                			<div class="row">
+				                			<div class="col-md-12 custom-div mt-4" th:if="${fileList != null and not #lists.isEmpty(fileList)}">
+												<h6 class="card-title">첨부파일 목록</h6>
+						<!-- 								<ul class="list-group custom-ul"> -->
+												<ul class="list-group">
+												    <li th:each="file : ${fileList}"
+												    	th:if="${file.isDeleted == 'N'}"
+												    	th:id="'file-' + ${file.idx}"
+												    	class="list-group-item d-flex justify-content-between align-items-center">
+											            <span th:text="${file.fileOriginalName}"></span>
+											            <button type="button" class="btn btn-danger btn-sm fileDeleteButton" th:data-id="${file.idx}">삭제</button>
+											        </li>
+												</ul>
+											</div>
+			                			</div>
+			                			
+			                		</div>
+			                	</div>
+							<!-- -------------------------------------------------------------- -->
+							
+							
+							
+			                <!-- commandArea -->
+				            <div style="text-align: center; margin: 10px 0;">
+				                <button type="submit" id="modifyBtn" class="btn btn-primary ">수정</button>
+								<button type="button" id="cancelBtn" class="btn btn-secondary ml-2" >돌아가기</button>
+				            </div>
+				        </form>
+			    	</div>
+			    </div>
+			</div>
+			<!-- ---------- 본문 컨테이너 끝 ---------- -->			
+		</div>
+		
+		<script type="text/javascript">
+			$(function() {
+				// 취소버튼
+				$('#cancelBtn').on("click", function() {
+				    //window.close();
+					//window.opener.location.reload(); // 부모 창 새로고침
+					//250401 팝업에서 페이지 이동으로 변경!
+					location.href="/orders/sell";
+				});
+				
+		     	//---------------------------------------------------
+				// 필수입력요소
+				$(".essential").each(function () {
+		            if ($(this).val().trim() !== "") {
+		                $(this).addClass("filled");
+		            }
+		        });
+
+		        $(".essential").on("input", function () {
+		            if ($(this).val().trim() !== "") {
+		                $(this).addClass("filled");
+		            } else {
+		                $(this).removeClass("filled");
+		            }
+		        });
+		        
+		    });
+		</script>
+	</div>
+	<!-- --------------------------------------------------------------------------------------------- -->
+	<!-- JS -->
+	<th:block layout:fragment="script">
+		<!-- Bootstrap core JavaScript-->
+		<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
+		<script src="/js/jquery-3.7.1.js"></script>
+	    <!-- Core plugin JavaScript-->
+	    <script src="/js/jquery-easing/jquery.easing.min.js"></script>
+	    <!-- Custom scripts for all pages-->
+	    <script src="/js/sb-admin-2.min.js"></script>
+	   	<!-- Page level plugins -->
+		<script src="/js/datatables/jquery.dataTables.min.js"></script>
+		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+		<script src="/js/demo/datatables-demo.js"></script>
+	   	<script src="/js/datepicker/moment.min.js"></script>
+	   	<script src="/js/datepicker/daterangepicker.js"></script>
+	   	<script src="/js/datatables/dataTables.buttons.min.js"></script>
+		<script src="/js/datatables/buttons.html5.min.js"></script>
+		<script src="/js/datatables/jszip.min.js"></script>
+		<script src="/js/datatables/buttons.print.min.js"></script>
+	</th:block>
+
+	
+</body>
+</html>

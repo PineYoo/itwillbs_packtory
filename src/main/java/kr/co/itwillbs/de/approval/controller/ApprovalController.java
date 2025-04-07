@@ -1,10 +1,12 @@
 package kr.co.itwillbs.de.approval.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -22,7 +25,10 @@ import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.approval.dto.ApprovalDTO;
 import kr.co.itwillbs.de.approval.dto.DraftDTO;
 import kr.co.itwillbs.de.approval.service.ApprovalService;
+import kr.co.itwillbs.de.common.service.FileService;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
+import kr.co.itwillbs.de.common.util.FileUtil;
+import kr.co.itwillbs.de.common.vo.FileVO;
 import lombok.extern.slf4j.Slf4j;
 
 /* 전자결재 */
@@ -35,7 +41,14 @@ public class ApprovalController {
 	@Autowired
 	private CommonCodeUtil commonCodeUtil;
 	
-	private final String COMMON_APPROVAL_TYPE = "APPROVAL_TYPE";
+	@Autowired
+	private FileUtil fileUtil;
+	@Autowired
+	private FileService fileService;
+	
+	//	전자결재 공통코드
+	private final String COMMON_MAJOR_CODE_APPROVAL_TYPE = "APPROVAL_TYPE";
+	private final String FILE_COMMON_TYPE = "T_APPROVAL";
 	
 	//------------------------------------------------------------------------------------------------
 	// 전자결재 페이지 매핑
@@ -43,6 +56,7 @@ public class ApprovalController {
 	public String approvalForm(HttpSession session, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		// 세션 아이디값 가져오기
+		//	로그인 컨트롤러에서 세션 값 저장할 시 추가 예정
 //		String userId = (String) session.getAttribute("id");
 		
 		// 해당 회원의 전자결재 목록 가져오기
@@ -51,18 +65,11 @@ public class ApprovalController {
 //		model.addAttribute("approvalDTO", approvalDTO);
 		
 		List<ApprovalDTO> approvalDTOList = approvalService.getApprovalList();
+		log.info("approvalDTOList : " + approvalDTOList.get(4).getTitle());
 		model.addAttribute("approvalDTOList", approvalDTOList);
 		
 		return "approval/approval_list";
 	}
-	//------------------------------------------------------------------------------------------------
-	// 전자결재 리스트 목록 조회(Datatables 그리드)
-//	@ResponseBody
-//	@PostMapping(value = {"/list"})
-//	public String getApprovalList() {
-//		
-//	}
-	
 	//------------------------------------------------------------------------------------------------
 	// 기안서 작성 페이지 매핑 (GET)
 	@GetMapping(value={"/regist/{userId}"})
@@ -76,7 +83,7 @@ public class ApprovalController {
 		log.info("draftDTO : " + draftDTO);
 		
 		//	공통코드 가져와서 approval_type 넣기
-		List<CodeItemDTO> approvalTypeList = commonCodeUtil.getCodeItems(COMMON_APPROVAL_TYPE);
+		List<CodeItemDTO> approvalTypeList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE);
 		log.info("approvalType : " + approvalTypeList.toString());
 		
 		model.addAttribute("draftDTO", draftDTO);
@@ -85,12 +92,13 @@ public class ApprovalController {
 	}
 	
 	//------------------------------------------------------------------------------------------------
-//	 작성 후 기안서 등록 비즈니스 로직 처리 (POST)
+	//	작성 후 기안서 등록 비즈니스 로직 처리 (POST)
 	@PostMapping(value={"/regist"})
 	public String approvalRegister(
-			@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO, BindingResult bindingResult, Model model) throws JsonProcessingException {
-//			@RequestParam("itemImgFiles") List<MultipartFile> itemImgFiles) { 
-			//=> 파일 등록은 나중에!!
+			@ModelAttribute("draftDTO") @Valid DraftDTO draftDTO,
+			@RequestParam("approvalFiles") List<MultipartFile> approvalFiles,
+			BindingResult bindingResult,
+			Model model) throws JsonProcessingException {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		System.out.println("입력한 정보 : " +  draftDTO);
 		
@@ -99,14 +107,48 @@ public class ApprovalController {
 //			return "approval/approval_reg_form";
 //		}
 		
-		// 기안서 등록(저장)
-//		int insertApproval = approvalService.registerApproval(draftDTO);
-//		if(insertApproval> 0) {
-//			return "redirect:/approval"; // 성공했을 경우 새창 닫기
-//		}
+		//	기안서 등록 요청
+		String approval_no = approvalService.registerApproval(draftDTO);
 		
-		approvalService.registerApproval(draftDTO);
-		return "redirect:/approval"; // 성공했을 경우 새창 닫기
+		//	approvalFiles 안에 들어있는 값을 넣기위한 List 객체 선언
+		List<FileVO> fileList = new ArrayList<>();
+		//	파일 랭크넘버용
+		int rank_number = 1;
+		
+		for(MultipartFile file : approvalFiles) {
+			log.info("들어오는거 확인 " + file.getOriginalFilename());
+			
+			//	파일을 첨부하지 않았을 때 파일 업로드 작업 중지
+			if(!StringUtils.hasLength(file.getOriginalFilename())) {
+				break;
+			}
+			
+			try {
+				//	setFile 메서드 호출하여 FileVO 리턴 받아 List에 저장
+				fileList.add(fileUtil.setFile(file));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		for(FileVO fileVO : fileList) {
+			//	문서번호 세팅
+			fileVO.setMajorIdx(approval_no);
+			//	type 세팅
+			fileVO.setType("t_approval");
+			//	삭제유무 기본값 N
+			fileVO.setIsDeleted("N");
+			//	랭크넘버 세팅(int 값 String으로 변환)
+			fileVO.setRankNumber(String.valueOf(rank_number));
+			//	랭크넘버 값 증가
+			rank_number++;
+			
+			fileService.registerFile(fileVO);
+		}
+		
+		//	전자결재 리스트페이지 리다이렉트
+		return "redirect:/approval";
 		
 	}
 	
@@ -133,14 +175,23 @@ public class ApprovalController {
 		return draftDTOList;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * 단일 전자결재 조회(SELECT) "/approval/{idx}" 주소 매핑(GET)
+	 * @param idx 샘플 테이블 PK값
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/{approvalNo}")
+	public String getApproval(@PathVariable(name = "approvalNo") String approvalNo, Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("idx 넘어오는거 확인" + approvalNo);
+		
+		model.addAttribute("approvalDTO", approvalService.getApprovalByApprovalNo(approvalNo));
+		model.addAttribute("fileList", fileService.getFilesByTypeAndMajorIdx(FILE_COMMON_TYPE, approvalNo));
+		model.addAttribute("codeType" ,commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
+		
+		return "approval/approval_detail";
+	}
 	
 	
 	

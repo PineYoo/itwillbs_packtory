@@ -56,12 +56,13 @@ public class NoticeController {
 	@Autowired FileUtil fileUtil;
 	
 	//	공지사항 공통코드
-	private final String MAJOR_CODE = "NOTICE_TYPE";
+	private final String COMMON_MAJOR_CODE_NOTICE_TYPE = "NOTICE_TYPE";
+	private final String FILE_COMMON_TYPE = "T_NOTICE";
 	
 	/**
-	 * 샘플 등록 페이지(view)를 요청하는 "/groupware/notice/new" 연결
+	 * 공지사항 등록 페이지(view)를 요청하는 "/groupware/notice/new" 연결
 	 * @param model
-	 * @return
+	 * @return approval/notice/notice_register_form
 	 */
 	@GetMapping(value={"/new"})
 	public String noticeRegisterForm(Model model) {
@@ -69,13 +70,13 @@ public class NoticeController {
 		
 		model.addAttribute("noticeDTO", new NoticeDTO());
 		//	공통코드 가져오기
-		model.addAttribute("codeType", commonService.getCodeItems(MAJOR_CODE));
+		model.addAttribute("codeType", commonService.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
 		
 		return "approval/notice/notice_register_form";
 	}
 
 	/**
-	 * 샘플 등록(INSERT)을 하는 "/groupware/notice" 연결 POST!
+	 * 공지사항 등록(INSERT)을 하는 "/groupware/notice" 연결 POST!
 	 * <br>http.header.Content-Type: 'application/x-www-form-urlencoded (이게 기본 값임)
 	 * <br>이 경우 @ModelAttribute 어노테이션으로 받으면 매핑되는 DTO의 필드와 이름이 같고 setter가 존재하면 DTO에 필드 값이 채워 짐
 	 * @return
@@ -92,6 +93,8 @@ public class NoticeController {
 		
 		//	noticeFiles 안에 들어있는 값을 넣기위한 List 객체 선언
 		List<FileVO> fileList = new ArrayList<>();
+		//	파일 랭크넘버용
+		int rank_number = 1;
 		
 		//	파일 업로드 작업
 		for(MultipartFile file : noticeFiles) {
@@ -115,10 +118,13 @@ public class NoticeController {
 			//	idx 세팅
 			fileVO.setMajorIdx(idx);
 			//	type 세팅
-			fileVO.setType("t_notice");
+			fileVO.setType(FILE_COMMON_TYPE);
 			//	삭제유무 기본값 N
 			fileVO.setIsDeleted("N");
-			//	랭크넘버 추가예정
+			//	랭크넘버 세팅(int 값 String으로 변환)
+			fileVO.setRankNumber(String.valueOf(rank_number));
+			//	랭크넘버 값 증가
+			rank_number++;
 			
 			fileService.registerFile(fileVO);
 		}
@@ -129,24 +135,25 @@ public class NoticeController {
 	
 	/**
 	 * 공지사항 목록 조회(SELECT)를 요청하는 "/groupware/notice" 연결 GET!
-	 * @return
+	 * @param model
+	 * @return approval/notice/notice_list
 	 */
 	@GetMapping(value={"","/"})
 	public String getNoticeList(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		List<NoticeDTO> noticeDTOlist = noticeService.getNoticeList(MAJOR_CODE);
+		List<NoticeDTO> noticeDTOlist = noticeService.getNoticeList(COMMON_MAJOR_CODE_NOTICE_TYPE);
 		model.addAttribute("noticeDTOlist", noticeDTOlist);
 		
 		NoticeSearchDTO noticeSearchDTO = new NoticeSearchDTO();
-		noticeSearchDTO.setCodeItemList(commonCodeUtil.getCodeItems(MAJOR_CODE));
+		noticeSearchDTO.setCodeItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
 		model.addAttribute("noticeSearchDTO", noticeSearchDTO);
 		
 		return "approval/notice/notice_list";
 	}
 	
 	/**
-	 * 샘플 검색 조건 조회
+	 * 공지사항 게시글 검색 조건 조회
 	 * @param model
 	 * @return
 	 * @throws Exception
@@ -157,14 +164,14 @@ public class NoticeController {
 		
 		log.info("requestData : {} ", noticeSearchDTO.toString());
 		
-		List<NoticeDTO> noticeDTOList = noticeService.getNoticeSearchList(MAJOR_CODE, noticeSearchDTO);
+		List<NoticeDTO> noticeDTOList = noticeService.getNoticeSearchList(COMMON_MAJOR_CODE_NOTICE_TYPE, noticeSearchDTO);
 		log.info("noticeDTOList : {} ", noticeDTOList.toString());
 		
 		// 조회 결과 값 뷰에 전달
 		model.addAttribute("noticeDTOlist", noticeDTOList);
 		
 		// 검색 조건 값 뷰에 전달
-		noticeSearchDTO.setCodeItemList(commonCodeUtil.getCodeItems(MAJOR_CODE));
+		noticeSearchDTO.setCodeItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
 		log.info("noticeDTOList : {} ", noticeSearchDTO.toString());
 		model.addAttribute("noticeSearchDTO", noticeSearchDTO);
 		
@@ -172,7 +179,7 @@ public class NoticeController {
 	}
 	
 	/**
-	 * 단일 샘플 조회(SELECT) "/groupware/notice/{idx}" 주소 매핑(GET)
+	 * 단일 공지사항 게시글 조회(SELECT) "/groupware/notice/{idx}" 주소 매핑(GET)
 	 * @param idx 샘플 테이블 PK값
 	 * @param model sampleDTO
 	 * @return
@@ -186,7 +193,7 @@ public class NoticeController {
 		if(StringUtil.isLongValue(idx)) {
 			// 정수일 경우 조회 가능
 			model.addAttribute("noticeDTO", noticeService.getNotice(idx));
-			model.addAttribute("fileList", fileService.getFilesByMajorIdx("t_notice", Long.parseLong(idx)));
+			model.addAttribute("fileList", fileService.getFilesByMajorIdx(FILE_COMMON_TYPE, Long.parseLong(idx)));
 			// 조회 수도 있기 때문에 업데이트 하자!
 			NoticeDTO noticeDTO = new NoticeDTO();
 			// Idx만 update 쿼리에 보낼 경우 readCnt를 증가시키게 작성해두었다.
@@ -220,8 +227,8 @@ public class NoticeController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info(idx);
 		model.addAttribute("noticeDTO", noticeService.getNotice(idx));
-		model.addAttribute("fileList", fileService.getFilesByMajorIdx("t_notice", Long.parseLong(idx)));
-		model.addAttribute("codeType", commonService.getCodeItems(MAJOR_CODE));
+		model.addAttribute("fileList", fileService.getFilesByMajorIdx(FILE_COMMON_TYPE, Long.parseLong(idx)));
+		model.addAttribute("codeType", commonService.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
 		return "approval/notice/notice_modify_form";
 	}
 	
@@ -257,6 +264,8 @@ public class NoticeController {
 		
 		//	noticeFiles 안에 들어있는 값을 넣기위한 List 객체 선언
 		List<FileVO> fileList = new ArrayList<>();
+		//	t_files 테이블에 들어있는 rank_number중 가장 큰 수 가져와서 + 1
+		int maxRankNumber = fileService.getMaxRankNumberByTypeAndMajorIdx(FILE_COMMON_TYPE, idx) + 1;
 		
 		//	파일 업로드 작업
 		for(MultipartFile file : noticeFiles) {
@@ -284,10 +293,13 @@ public class NoticeController {
 			//	idx 세팅
 			fileVO.setMajorIdx(idx);
 			//	type 세팅
-			fileVO.setType("t_notice");
+			fileVO.setType(FILE_COMMON_TYPE);
 			//	삭제유무 기본값 N
 			fileVO.setIsDeleted("N");
-			//	랭크넘버 추가예정
+			//	랭크넘버 값 세팅
+			fileVO.setRankNumber(String.valueOf(maxRankNumber));
+			
+			maxRankNumber++;
 			
 			fileService.registerFile(fileVO);
 		}

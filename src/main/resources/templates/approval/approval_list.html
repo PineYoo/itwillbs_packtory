@@ -63,7 +63,7 @@
 				<div class="card-body">
 					<!-- 그리드(테이블) -->
 					<div class="table-responsive">
-						<table class="table table-bordered compact" id="approvalList" width="100%" cellspacing="0">
+						<table class="table table-bordered table-hover text-center" id="approvalList" width="100%" cellspacing="0">
 							<thead>
 								<tr>
 									<th>문서번호</th>
@@ -77,7 +77,7 @@
 							<tbody>
 								<tr th:each="item, status : ${approvalDTOList}" th:data-id="${item.approvalNo}">
 									<td th:text="${item.approvalNo != null ? item.approvalNo : '-'}"></td>
-									<td th:text="${item.title != null ? item.title : '-'}"></td>
+									<td th:text="${item.title != '' ? item.title : '-'}"></td>
 									<td th:text="${item.progressStatus != null ? item.progressStatus : '-'}"></td>
 									<td th:text="${item.drafterId != null ? item.drafterId : '-'}"></td>
 									<td th:text="${item.draftDate != null ? item.draftDate : '-'}"></td>
@@ -118,8 +118,20 @@
 					
 // 					window.open(url, '_blank', 'width=800,height=1200,scrollbars=yes,resizable=yes');
 					location.href = `/approval/regist/${userId}`;
-				
 				});
+				
+				$("#approvalList tbody").on("click", 'tr', function() {
+					console.log("dataTables tbody click!!");
+					let documentNumber = $(this).data("id");
+					
+					if(!documentNumber) {
+						return;
+					}
+					
+					location.href="/approval/" + documentNumber;
+				});
+				
+				
 				
 			}); // document.ready 끝
 		</script>

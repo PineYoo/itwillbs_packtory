@@ -2,12 +2,12 @@ package kr.co.itwillbs.de.approval.dto;
 
 import java.util.Date;
 
-import groovy.transform.ToString;
 import kr.co.itwillbs.de.approval.constant.ApprovalStatus;
 import kr.co.itwillbs.de.approval.constant.ApprovalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -80,10 +80,21 @@ public class ApprovalDTO {
 	private String approver3Date;
 	
 	//	결재자1 서명
-	private String approver1_signature;
+	private String approver1Signature;
 	//	결재자2 서명
-	private String approver2_signature;
+	private String approver2Signature;
 	//	결재자3 서명
-	private String approver3_signature;
+	private String approver3Signature;
+	
+	//	employee 이름
+	private String name;
+	//	직급
+	private String positionCode;
+	//	부서이름
+	private String childName;
+	
+	
+	
+	
 	
 }

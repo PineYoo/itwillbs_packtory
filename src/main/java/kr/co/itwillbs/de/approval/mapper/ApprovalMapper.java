@@ -36,6 +36,13 @@ public interface ApprovalMapper {
 	//	결재라인 AJAX로 검색어 조회
 	List<DraftDTO> getSearchEmployeeInfo(String keyword);
 	
+	/**
+	 * 결재번호로 전자결재문서 가져오기
+	 * @param approvalNo
+	 * @return ApprovalDTO
+	 */
+	ApprovalDTO getApprovalByApprovalNo(String approvalNo);
+	
 	
 	
 }
