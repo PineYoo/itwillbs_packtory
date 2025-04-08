@@ -2,6 +2,7 @@ package kr.co.itwillbs.de.commute.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,8 @@ public class CommuteController {
 	private CommonCodeUtil commonCodeUtil;
 	
 	private final String COMMON_MAJOR_CODE_TRADE = "WORK_STATUS_CODE";
-
+	private final String CHECKIN_NAME_KR = "출근";
+	private final String LATE_NAME_KR = "지각";
 	
 	// 출퇴근 목록 조회(SELECT)을 요청(GET)
 	@GetMapping("")	// "/commute"
@@ -126,11 +128,45 @@ public class CommuteController {
 		String id = "100006";	// 허민의 사번 100006 하드코딩
 		
 		commuteDTO.setEmployeeId(id);	// 사번
-		commuteDTO.setRegDate(LocalDateTime.now()); // 현재 시간 설정
+		LocalDateTime now = LocalDateTime.now();
+		commuteDTO.setRegDate(now); // 현재 시간 등록
+
+		// 코드 리스트 조회 (WORK_STATUS_CODE)
+		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
+		String checkInCode = getMinorCodeByMinorName(tradeCode, CHECKIN_NAME_KR); // "출근(1)"
+		String lateCode = getMinorCodeByMinorName(tradeCode, LATE_NAME_KR);       // "지각(5)"
+		log.info("checkInCode : " + checkInCode + ", lateCode : " + lateCode);
+		
+		
+ 		// 출근이면 지각 여부 확인
+		if (checkInCode.equals(commuteDTO.getWorkStatusCode())) {
+			LocalTime standardTime = LocalTime.of(9, 10); // 오전 9시 10분 기준
+			if (now.toLocalTime().isAfter(standardTime)) {
+				commuteDTO.setWorkStatusCode(lateCode); // 지각 처리
+				log.info("※ 지각 처리됨!!!!!!!!!: {}", lateCode);
+			}
+		}
+		
 		log.info("commuteDTO22 : {}", StringUtil.objToString(commuteDTO));
 		
 		// 출퇴근 기록 요청(insert)
 		commuteService.saveCommuteInfo(commuteDTO);
 	    return ResponseEntity.ok("저장 완료");
+	}
+	
+	// ===================================================================
+	/**
+	 * 특정 minorName을 가진 minorCode를 반환하는 유틸 메서드
+	 * @param codeList
+	 * @param targetName(한글명)
+	 * @return
+	 */
+	private String getMinorCodeByMinorName(List<CodeItemDTO> codeList, String targetName) {
+		for (CodeItemDTO item : codeList) {
+			if (targetName.equals(item.getMinorName())) {
+				return item.getMinorCode();
+			}
+		}
+		return null;
 	}
 }

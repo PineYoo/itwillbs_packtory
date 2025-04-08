@@ -48,13 +48,14 @@
 		  FROM t_commute
 		 WHERE employee_id = #{id}
 		   AND DATE(reg_date) = #{today}
-		   AND work_status_code = (SELECT minor_code
+		   AND work_status_code IN (SELECT minor_code
 									 FROM t_commoncode_item
 									WHERE major_code = 'WORK_STATUS_CODE'
-									  AND minor_name = '출근'
+									  AND minor_name IN ('출근', '지각')
 									  AND is_deleted = 'N'
 								  )
 		 ORDER BY reg_date DESC
+		 LIMIT 1
 	</select>
 	
 	<!-- 로그인 한 사번의 오늘 퇴근 기록 조회(SELECT) -->
