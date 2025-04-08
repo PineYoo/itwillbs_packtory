@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
+import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
+import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.commute.dto.CommuteDTO;
 import kr.co.itwillbs.de.commute.dto.CommuteListDTO;
 import kr.co.itwillbs.de.commute.dto.CommuteSearchDTO;
+import kr.co.itwillbs.de.commute.dto.CommuteStatusDTO;
 import kr.co.itwillbs.de.commute.service.CommuteService;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -47,26 +52,30 @@ public class CommuteController {
 	public String getCommuteList(@ModelAttribute CommuteSearchDTO commuteSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
+		// 자기 사번의 부서, 직급에 따라 조회할 수 있는 범위가 달라짐 !!!!!!!!!!!!!!!!!!!!!!!!!
+		// ------------------------------
+		// 세션 아이디(사번) 불러오는 코드
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+		String id = userDetails.getUsername();
+		// ------------------------------
+
 		// 출퇴근 코드
 		List<CodeItemDTO> codeItemList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
 		System.out.println("codeItemList : " + codeItemList);
 		model.addAttribute("codeItemList", codeItemList);
 		
 		// 부서 코드(검색바)
-		List<CodeItemDTO> departmentList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE_DEP);
-		System.out.println("departmentList : " + departmentList);
-		model.addAttribute("departmentList", departmentList);
+//		List<CodeItemDTO> departmentList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE_DEP);
+//		System.out.println("departmentList : " + departmentList);
+//		model.addAttribute("departmentList", departmentList);
 
 		// 하위 부서코드(검색바)
-		List<DepartmentInfoDTO> subDeptList = commuteService.getDepartmentList();
+		List<DepartmentInfoDTO> subDeptList = commuteService.getDepartmentList(id);
 		System.out.println("subDeptList : " + subDeptList);
 		model.addAttribute("subDeptList", subDeptList);
 		
-		
-		
-		// 자기 사번의 부서, 직급에 따라 조회할 수 있는 범위가 달라짐
-		String id = "100001";	//  사번 하드코딩
-		
+        // 출퇴근 목록 조회(같은 부서, 더 낮은 직급인 사원만 조회 - 본인포함)
 		List<CommuteListDTO> commuteList = commuteService.getCommuteList(id, commuteSearchDTO);
 		log.info("commuteList : " + commuteList);
 		model.addAttribute("commuteList",commuteList);
@@ -81,6 +90,14 @@ public class CommuteController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("commuteSearchDTO : {}", StringUtil.objToString(commuteSearchDTO));
 		
+		// 자기 사번의 부서, 직급에 따라 조회할 수 있는 범위가 달라짐 !!!!!!!!!!!!!!!!!!!!!!!!!
+		// ------------------------------
+		// 세션 아이디(사번) 불러오는 코드
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+		String id = userDetails.getUsername();
+		// ------------------------------
+		
 		// 출퇴근 기록 코드
 		List<CodeItemDTO> codeItemList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
 		System.out.println("codeItemList : " + codeItemList);
@@ -92,12 +109,9 @@ public class CommuteController {
 		model.addAttribute("departmentList", departmentList);
 		
 		// 하위 부서코드(검색바)
-		List<DepartmentInfoDTO> subDeptList = commuteService.getDepartmentList();
+		List<DepartmentInfoDTO> subDeptList = commuteService.getDepartmentList(id);
 		System.out.println("subDeptList : " + subDeptList);
 		model.addAttribute("subDeptList", subDeptList);
-		
-		
-		String id = "100001";	//  사번 하드코딩
 		
 		// 출퇴근 조건 검색 리스트 조회 요청(SELECT) - 재사용
 		List<CommuteListDTO> commuteList = commuteService.getCommuteList(id, commuteSearchDTO);
@@ -107,7 +121,24 @@ public class CommuteController {
 		return "commute/commute_management";
 	}
 	
-	// --------------------------------------------------
+	// 근태현황 페이지 이동(GET)
+	@GetMapping("/chart")	// "/commute/chart"
+	public String getCommuteChart(Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		// 날짜별 지각 건수
+	    List<CommuteStatusDTO> lateCountByDate = commuteService.getCommuteCountByDate();
+	    model.addAttribute("lateCountByDate", lateCountByDate);
+		
+		
+		return "commute/commute_chart";
+	}
+	
+	
+	
+	
+	// =======================================================================================================
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 나중에 메인으로 이동 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	// 임시) 메인페이지에 들어 갈 출퇴근 기록 버튼
 	// 페이지 이동(get)
 	@GetMapping("/button")	// "/commute/button"
@@ -119,7 +150,12 @@ public class CommuteController {
 		System.out.println("codeItemList : " + codeItemList);
 		model.addAttribute("codeItemList", codeItemList);
 		
-		String id = "100001";	//  사번 하드코딩
+		// ------------------------------
+		// 세션 아이디(사번) 불러오는 코드
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        String id = userDetails.getUsername();
+        // ------------------------------
 		
 		// 로그인한 사번의 오늘 출퇴근 기록 조회
 		LocalDate today = LocalDate.now();
@@ -147,9 +183,7 @@ public class CommuteController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("commuteDTO : {}", StringUtil.objToString(commuteDTO));
 	    
-		String id = "100001";	//  사번 하드코딩
-		
-		commuteDTO.setEmployeeId(id);	// 사번
+//		commuteDTO.setEmployeeId(id);	// 사번
 		LocalDateTime now = LocalDateTime.now();
 		commuteDTO.setRegDate(now); // 현재 시간 등록
 

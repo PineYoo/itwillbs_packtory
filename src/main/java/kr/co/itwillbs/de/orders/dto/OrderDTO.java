@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
+import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
+@RequiredSessionIds(fields = {"regId", "modId"})
 public class OrderDTO {
     private Long idx; 				// 테이블_인덱스
     

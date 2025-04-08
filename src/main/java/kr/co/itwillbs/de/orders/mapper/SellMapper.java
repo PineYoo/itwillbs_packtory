@@ -1,12 +1,13 @@
 package kr.co.itwillbs.de.orders.mapper;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.human.dto.EmployeeDTO;
+import kr.co.itwillbs.de.orders.dto.OrderCodeDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
@@ -59,5 +60,18 @@ public interface SellMapper {
 	 * @return 
 	 */
 	void updateOrderDetail(OrderDetailDTO orderDetailDTO);
+
+	
+	// -------------------------------------------------------------------
+	List<OrderCodeDTO> getDepartmentList();
+
+	List<OrderCodeDTO> getSubDepartmentList(String mainDeptCode);
+
+	List<OrderCodeDTO> getEmployeeList(@Param("mainDeptCode") String mainDeptCode, @Param("subDeptCode") String subDeptCode);
+
+	OrderCodeDTO getEmployeeInfo(String employeeId);
+	
+	
+	
 
 }

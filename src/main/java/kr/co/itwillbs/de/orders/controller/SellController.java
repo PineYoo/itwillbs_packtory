@@ -12,11 +12,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
+import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
+import kr.co.itwillbs.de.human.dto.EmployeeDTO;
+import kr.co.itwillbs.de.orders.dto.OrderCodeDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
@@ -196,6 +202,42 @@ public class SellController {
 		
 		return "redirect:" + COMMON_PATH + "/" + tradeName + "/" + orderDTO.getDocumentNumber();
 	}
+
+	// ========================================================================================
+	// 주문서안 담당자, 담당자 전화번호 넣기 위함
+	// 대분류 부서 목록
+	@GetMapping("/api/departments/main")
+	@ResponseBody
+	public List<OrderCodeDTO> getDepartmentList() {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+	    return sellService.getDepartmentList(); // major_code 기준
+	}
+
+	// 하위 부서 목록
+	@GetMapping("/api/departments/sub")
+	@ResponseBody
+	public List<OrderCodeDTO> getSubDepartmentList(@RequestParam("mainDeptCode") String mainDeptCode) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+	    return sellService.getSubDepartmentList(mainDeptCode); // 하위 minor_code
+	}
+
+	// 부서별 직원 목록
+	@GetMapping("/api/employees/by-sub-dept")
+	@ResponseBody
+	public List<OrderCodeDTO> getEmployeeList(@RequestParam("mainDeptCode") String mainDeptCode,
+											  @RequestParam("subDeptCode") String subDeptCode) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+	    return sellService.getEmployeeList(mainDeptCode, subDeptCode);
+	}
+
+	// 직원 전화번호 조회
+	@GetMapping("/api/employees/info")
+	@ResponseBody
+	public OrderCodeDTO getEmployeeInfo(@RequestParam("employeeId") String employeeId) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+	    return sellService.getEmployeeInfo(employeeId);
+	}
+	
 	
 	// ========================================================================================
 	/**

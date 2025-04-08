@@ -2,6 +2,7 @@ package kr.co.itwillbs.de.commute.dto;
 
 import java.time.LocalDateTime;
 
+import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import kr.co.itwillbs.de.commute.constant.WorkStatusCode;
 import kr.co.itwillbs.de.commute.entity.Commute;
 import lombok.Builder;
@@ -19,6 +20,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
+@RequiredSessionIds(fields = {"employeeId"})
 public class CommuteDTO {
 	
 	private Long idx; // 테이블 인덱스
