@@ -5,7 +5,7 @@
 <mapper namespace="kr.co.itwillbs.de.human.mapper.EmployeeDetailMapper">
 
     <!-- 사원 상세 정보 조회 -->
-    <select id="getEmployeeDetailById" parameterType="string" resultType="kr.co.itwillbs.de.human.dto.EmployeeDetailDTO">
+    <select id="getEmployeeDetailById" parameterType="String" resultType="kr.co.itwillbs.de.human.dto.EmployeeDetailDTO">
         SELECT *
         FROM t_employee_detail
         WHERE id = #{id}
@@ -13,7 +13,7 @@
     </select>
 
     <!-- 사원 상세 정보 수정 -->
-    <update id="updateEmployeeDetail" parameterType="kr.co.itwillbs.de.human.dto.EmployeeDetailDTO">
+    <update id="updateEmployeeDetail" parameterType="kr.co.itwillbs.de.human.dto.EmployeeDTO">
         UPDATE t_employee_detail
         SET
             phone_number = #{phoneNumber},

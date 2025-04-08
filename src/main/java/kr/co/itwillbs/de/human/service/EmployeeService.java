@@ -70,14 +70,24 @@ public class EmployeeService {
         return employee;
     }
 
-    // 사원 수정
+    // 사원 정보 업데이트 서비스 메서드
     @Transactional
     public void updateEmployeeWithDetail(EmployeeDTO employeeDTO) {
         log.info("사원 + 상세정보 수정 - id: {}", employeeDTO.getId());
 
-        employeeMapper.updateEmployee(employeeDTO);
+        // 사원 기본 정보 업데이트
+        if (employeeDTO != null) {
+            employeeMapper.updateEmployee(employeeDTO);
+        } else {
+            log.warn("사원 기본 정보가 null입니다.");
+        }
+
+        // 사원 상세 정보가 있을 경우 업데이트
         if (employeeDTO.getDetail() != null) {
+            log.info("업데이트할 사원 상세 정보: {}", employeeDTO.getDetail());
             employeeDetailMapper.updateEmployeeDetail(employeeDTO.getDetail());
+        } else {
+            log.warn("사원 상세 정보가 null입니다.");
         }
     }
 

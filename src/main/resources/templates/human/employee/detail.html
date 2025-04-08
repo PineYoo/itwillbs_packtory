@@ -16,160 +16,294 @@
     <div class="container mt-5">
         <h2 class="h3 mb-4 text-gray-800">사원 상세</h2>
 
-        <form id="employeeForm" th:action="@{/human/employee/detail/{id}(id=${employeeDetailDTO.id})}" method="post">
-            <!-- 사원번호 (수정 불가) -->
-            <div class="form-group">
-                <label>사원번호</label>
-                <span th:text="${employeeDetailDTO.id}" class="form-control-plaintext"></span>
-            </div>
+        <form th:action="@{/human/employee/{id}(id=${employeeDTO.id})}" th:object="${employeeDTO}" method="post">
+	    <!-- 사원번호 (수정 불가) -->
+	    <div class="form-group">
+	        <label>사원번호</label>
+	        <span th:text="${employeeDTO.id}" class="form-control-plaintext"></span>
+	    </div>
+	    
+	    <div class="form-group">
+	        <label>이름</label>
+	        <span th:text="${employeeDTO.name}" class="form-control-plaintext"></span>
+	    </div>
+	
+	    <!-- 주민번호 (수정 불가) -->
+	    <div class="form-group">
+	        <label>주민번호</label>
+	        <span th:text="${employeeDTO.ssn}" class="form-control-plaintext"></span>
+	    </div>
+	
+	    <!-- 전화번호 (수정 가능) -->
+	    <div class="form-group">
+	        <label>전화번호</label>
+	        <input type="text" name="phoneNumber" th:value="${employeeDTO.detail.phoneNumber}" class="form-control" readonly>
+	    </div>
+	
+	    <!-- 이메일 (수정 가능) -->
+	    <div class="form-group">
+	        <label>이메일</label>
+	        <input type="text" name="email" th:value="${employeeDTO.detail.email}" class="form-control" readonly>
+	    </div>
+	
+	    <!-- 성별 (수정 불가) -->
+	    <div class="form-group">
+	        <label>성별</label>
+	        <select name="gender" class="form-control" disabled>
+	            <option value="M" th:selected="${employeeDTO.detail.gender == 'M'}">남성</option>
+	            <option value="F" th:selected="${employeeDTO.detail.gender == 'F'}">여성</option>
+	        </select>
+	    </div>
+	
+	    <!-- 주소1 (수정 가능) -->
+	    <div class="form-group">
+	        <label>주소1</label>
+	        <input type="text" name="address1" th:value="${employeeDTO.detail.address1}" class="form-control" readonly>
+	    </div>
+	
+	    <!-- 주소2 (수정 가능) -->
+	    <div class="form-group">
+	        <label>주소2</label>
+	        <input type="text" name="address2" th:value="${employeeDTO.detail.address2}" class="form-control" readonly>
+	    </div>
+	    
+	    <!-- 대표부서 셀렉트 박스 -->
+	    <div class="form-group">
+		    <label for="departmentCode" class="form-label">대표부서</label>
+		    <select class="form-control" id="departmentCode" name="departmentCode" disabled>
+		        <option value="">선택하세요</option>
+		        <option th:each="department : ${validDepartments}"
+		                th:value="${department.minorCode}"
+		                th:text="${department.minorName}"
+		                th:selected="${department.minorCode == employeeDTO.departmentCode}">
+		        </option>
+		    </select>
+		</div>
+	    
+	    <!-- 하위부서 셀렉트 박스 -->
+	    <div class="form-group">
+	        <label for="subDepartmentCode" class="form-label">하위부서</label>
+	        <select class="form-control" id="subDepartmentCode" name="subDepartmentCode" disabled>
+	            <!-- 동적 로딩 -->
+	        </select>
+	    </div>
+	    
+	    <!-- 직급코드 셀렉트 박스로 -->
+		<div class="form-group">
+		    <label for="positionCode" class="form-label">직급코드</label>
+		    <select class="form-control" id="positionCode" th:field="*{positionCode}" disabled>
+		        <option value="">선택하세요</option>
+		        <option th:each="position : ${validPositions}"
+		                th:value="${position.idx}"
+		                th:text="${position.positionCode}"
+		                th:selected="${position.positionCode == employeeDTO.positionCode}">
+		        </option>
+		    </select>
+		</div>
+		
+		<!-- 경력  -->
+		<div class="form-group">
+			<label>경력</label>
+			<input type="text" name="workExperience" th:value="${employeeDTO.workExperience}" class="form-control" readonly>
+		</div>
+            
+		<!-- 퇴사일 -->
+		<div class="form-group">
+			<label>퇴사일</label>
+			<input type="date" name="resignationDate" th:value="${employeeDTO.resignationDate}" class="form-control" readonly>
+		</div>
+	
+	    <!-- 급여은행 코드 (수정 가능) -->
+	    <div class="form-group">
+	        <label>급여은행 코드</label>
+	        <input type="text" name="salaryBankCode" th:value="${employeeDTO.detail.salaryBankCode}" class="form-control" readonly>
+	    </div>
+	
+	    <!-- 급여은행 이름 (수정 가능) -->
+	    <div class="form-group">
+	        <label>급여은행 이름</label>
+	        <input type="text" name="salaryBankName" th:value="${employeeDTO.detail.salaryBankName}" class="form-control" readonly>
+	    </div>
+	
+	    <!-- 급여계좌번호 (수정 가능) -->
+	    <div class="form-group">
+	        <label>급여계좌번호</label>
+	        <input type="text" name="salaryAccountNumber" th:value="${employeeDTO.detail.salaryAccountNumber}" class="form-control" readonly>
+	    </div>
+	
+	    <!-- 급여계좌 예금주 (수정 가능) -->
+	    <div class="form-group">
+	        <label>급여계좌 예금주</label>
+	        <input type="text" name="salaryAccountHolder" th:value="${employeeDTO.detail.salaryAccountHolder}" class="form-control" readonly>
+	    </div>
+	
+	    <!-- 직원 차량 여부 (수정 가능) -->
+	    <div class="form-group">
+	        <label>직원 차량 여부</label>
+	        <input type="text" name="hasVehicle" th:value="${employeeDTO.detail.hasVehicle}" class="form-control" readonly>
+	    </div>
+	
+	    <!-- 직원 상태 코드 (수정 가능) -->
+	    <div class="form-group">
+	        <label>직원 상태 코드</label>
+	        <input type="text" name="employeeStatusCode" th:value="${employeeDTO.detail.employeeStatusCode}" class="form-control" readonly>
+	    </div>
+	
+	    <!-- 상태 시작일 (수정 가능) -->
+	    <div class="form-group">
+	        <label>상태 시작일</label>
+	        <input type="date" name="statusStartDate" th:value="${employeeDTO.detail.statusStartDate}" class="form-control" readonly>
+	    </div>
+	
+	    <!-- 상태 종료일 (수정 가능) -->
+	    <div class="form-group">
+	        <label>상태 종료일</label>
+	        <input type="date" name="statusEndDate" th:value="${employeeDTO.detail.statusEndDate}" class="form-control" readonly>
+	    </div>
+	
+	    <!-- 작성자 (수정 불가) -->
+	    <div class="form-group">
+	        <label>작성자</label>
+	        <span th:text="${employeeDTO.regId}" class="form-control-plaintext"></span>
+	    </div>
+	
+	    <!-- 작성일자 (수정 불가) -->
+	    <div class="form-group">
+	        <label>작성일자</label>
+	        <span th:text="${employeeDTO.regDate}" class="form-control-plaintext"></span>
+	    </div>
+	
+	    <!-- 최종 수정자 (수정 불가) -->
+	    <div class="form-group">
+	        <label>최종 수정자</label>
+	        <span th:text="${employeeDTO.modId}" class="form-control-plaintext"></span>
+	    </div>
+	
+	    <!-- 최종 수정일자 (수정 불가) -->
+	    <div class="form-group">
+	        <label>최종 수정일자</label>
+	        <span th:text="${employeeDTO.modDate}" class="form-control-plaintext"></span>
+	    </div>
 
-            <!-- 주민번호 (수정 불가) -->
-            <div class="form-group">
-                <label>주민번호</label>
-                <span th:text="${employeeDetailDTO.ssn}" class="form-control-plaintext"></span>
-            </div>
+	
+	    <div class="mt-4">
+	        <button type="button" id="editBtn" class="btn btn-warning">수정</button>
+	        <button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">저장</button>
+	        <button type="button" id="deleteBtn" class="btn btn-danger" th:data-id="${employeeDTO.id}">삭제</button>
+	        <a href="/human/employee" class="btn btn-secondary float-right">목록으로</a>
+	    </div>
+	</form>
 
-            <div class="form-group">
-                <label>전화번호</label>
-                <input type="text" name="phoneNumber" th:value="${employeeDetailDTO.phoneNumber}" class="form-control" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>이메일</label>
-                <input type="text" name="email" th:value="${employeeDetailDTO.email}" class="form-control" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>성별</label>
-                <select name="gender" class="form-control" disabled>
-                    <option value="M" th:selected="${employeeDetailDTO.gender == 'M'}">남성</option>
-                    <option value="F" th:selected="${employeeDetailDTO.gender == 'F'}">여성</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>주소1</label>
-                <input type="text" name="address1" th:value="${employeeDetailDTO.address1}" class="form-control" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>주소2</label>
-                <input type="text" name="address2" th:value="${employeeDetailDTO.address2}" class="form-control" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>급여은행 코드</label>
-                <input type="text" name="salaryBankCode" th:value="${employeeDetailDTO.salaryBankCode}" class="form-control" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>급여은행 이름</label>
-                <input type="text" name="salaryBankName" th:value="${employeeDetailDTO.salaryBankName}" class="form-control" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>급여계좌번호</label>
-                <input type="text" name="salaryAccountNumber" th:value="${employeeDetailDTO.salaryAccountNumber}" class="form-control" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>급여계좌 예금주</label>
-                <input type="text" name="salaryAccountHolder" th:value="${employeeDetailDTO.salaryAccountHolder}" class="form-control" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>직원 차량 여부</label>
-                <input type="text" name="hasVehicle" th:value="${employeeDetailDTO.hasVehicle}" class="form-control" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>직원 상태 코드</label>
-                <input type="text" name="employeeStatusCode" th:value="${employeeDetailDTO.employeeStatusCode}" class="form-control" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>상태 시작일</label>
-                <input type="date" name="statusStartDate" th:value="${employeeDetailDTO.statusStartDate}" class="form-control" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>상태 종료일</label>
-                <input type="date" name="statusEndDate" th:value="${employeeDetailDTO.statusEndDate}" class="form-control" readonly>
-            </div>
-
-            <!-- 작성자 (수정 불가) -->
-            <div class="form-group">
-                <label>작성자</label>
-                <span th:text="${employeeDetailDTO.regId}" class="form-control-plaintext"></span>
-            </div>
-
-            <!-- 작성일자 (수정 불가) -->
-            <div class="form-group">
-                <label>작성일자</label>
-                <span th:text="${employeeDetailDTO.regDate}" class="form-control-plaintext"></span>
-            </div>
-
-            <!-- 최종 수정자 (수정 불가) -->
-            <div class="form-group">
-                <label>최종 수정자</label>
-                <span th:text="${employeeDetailDTO.modId}" class="form-control-plaintext"></span>
-            </div>
-
-            <!-- 최종 수정일자 (수정 불가) -->
-            <div class="form-group">
-                <label>최종 수정일자</label>
-                <span th:text="${employeeDetailDTO.modDate}" class="form-control-plaintext"></span>
-            </div>
-
-            <div class="mt-4">
-                <button type="button" id="editBtn" class="btn btn-warning">수정</button>
-                <button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">저장</button>
-                <button type="button" id="deleteBtn" class="btn btn-danger" th:data-id="${employeeDetailDTO.id}">삭제</button>
-                <a href="/human/employee" class="btn btn-secondary float-right">목록으로</a>
-            </div>
-        </form>
     </div>
 </div>
 
 <th:block layout:fragment="script">
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        // 수정 버튼
-        $("#editBtn").on("click", function () {
-            $("input[readonly]").prop("readonly", false);
-            $("select[disabled]").prop("disabled", false);
-            $("#submitBtn").show();
-            $(this).hide();
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // 페이지 로드 시, 기존 하위부서 값을 설정
+            // 1. 입력 필드 수정
+            $("#editBtn").on("click", function () {
+                try {
+                    toggleFieldState(false);
+                    $(this).hide();
+                    $("#submitBtn").show();
+                } catch (error) {
+                    console.error("수정 버튼 클릭 시 오류 발생:", error);
+                    alert("수정 버튼 처리 중 오류가 발생했습니다.");
+                }
+            });
 
-            // 수정 불가 필드 다시 비활성화
-            $("input[name='id']").prop("readonly", true);
-            $("input[name='ssn']").prop("readonly", true);
-        });
+            // 2. 삭제 버튼 클릭
+            $("#deleteBtn").on("click", function () {
+                const empId = $(this).data("id");
+                confirmDelete(empId);
+            });
 
-        // 삭제 버튼
-        $("#deleteBtn").on("click", function () {
-            const empId = $(this).data("id");
-            if (confirm("정말 삭제하시겠습니까?")) {
-                $.ajax({
-                    url: `/human/employee/${empId}/delete`,
-                    type: "POST",
-                    success: function (response) {
-                        if (response === "success") {
-                            alert("삭제 완료!");
-                            location.href = "/human/employee";
-                        } else {
-                            alert("삭제 실패: " + response);
+            // 3. 전화번호 포맷 처리
+            $("input[name='phoneNumber']").on("input", function () {
+                formatPhoneNumber($(this));
+            });
+
+            // 4. 하위 부서 조회
+            $('#departmentCode').on("change", function () {
+                const selectedCode = $(this).val();
+                selectedCode ? fetchSubDepartments(selectedCode) : resetSubDepartmentSelect();
+            });
+
+            // 5. 폼 제출 전 로딩 체크
+            $('form').on('submit', function (e) {
+                if (isLoading) {
+                    alert("하위 부서를 불러오는 중입니다. 잠시만 기다려 주세요.");
+                    e.preventDefault();
+                }
+            });
+
+            // 공통 입력 필드 상태 토글
+            function toggleFieldState(isReadOnly) {
+                $("input[readonly]").prop("readonly", isReadOnly);  
+                $("select[disabled]").prop("disabled", isReadOnly);
+                $("#isDeleted, #regId, #regDate, #modId, #modDate").prop("readonly", true); // 유지
+            }
+
+            // 1. 삭제 처리
+            function confirmDelete(empId) {
+                if (confirm("정말 삭제하시겠습니까?")) {
+                    $.ajax({
+                        url: `/human/employee/${empId}/delete`,
+                        type: "POST",
+                        success: function (response) {
+                            response === "success" ? alert("삭제 완료!") : alert("삭제 실패: " + response);
+                            if (response === "success") location.href = "/human/employee";
+                        },
+                        error: function () {
+                            alert("삭제 중 오류가 발생했습니다.");
                         }
+                    });
+                }
+            }
+
+            // 2. 전화번호 포맷 처리
+            function formatPhoneNumber(input) {
+                var phoneNumber = input.val().replace(/\D/g, '');
+                input.val(phoneNumber.length <= 3 ? phoneNumber :
+                           phoneNumber.length <= 7 ? phoneNumber.replace(/(\d{3})(\d{1,4})/, '$1-$2') :
+                           phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'));
+            }
+
+            // 3. 하위 부서 조회
+            let isLoading = false;
+            function fetchSubDepartments(departmentCode) {
+                isLoading = true;
+                $.ajax({
+                    url: '/human/employee/subDepartments',
+                    type: 'GET',
+                    data: { departmentCode: departmentCode },
+                    success: function (data) {
+                        updateSubDepartmentSelect(data);
                     },
                     error: function () {
-                        alert("삭제 중 오류가 발생했습니다.");
+                        console.error("하위 부서 조회 실패");
+                        alert("하위 부서 정보를 불러오는 데 실패했습니다.");
+                    },
+                    complete: function () {
+                        isLoading = false;
                     }
                 });
             }
+
+            // 4. 하위 부서 셀렉트 박스 업데이트
+            function updateSubDepartmentSelect(data) {
+                let options = data.map(item => `<option value="${item.childCode}">${item.childName}</option>`);
+                $('#subDepartmentCode').html('<option value="">하위 부서를 선택하세요</option>' + options.join(''));
+            }
+
+            // 5. 하위 부서 셀렉트 박스 초기화
+            function resetSubDepartmentSelect() {
+                $('#subDepartmentCode').empty().append('<option value="">하위 부서를 선택하세요</option>');
+            }
         });
-    });
-</script>
+    </script>
 </th:block>
 </body>
 </html>
