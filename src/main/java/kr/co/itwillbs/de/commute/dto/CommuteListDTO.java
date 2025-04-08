@@ -17,20 +17,23 @@ public class CommuteListDTO {	// Wrapper DTO로 묶어버림
 	private Date workDate; 			// 날짜
 	private String employeeId; 		// 사원번호
 	private String department; 		// 부서
+	private String subDepartment; 	// 하위부서
 	private String position; 		// 직책
 	private String name;	 		// 이름
 	private LocalDateTime checkIn; 	// 출근시간
 	private LocalDateTime checkOut; // 퇴근시간
 	private String workStatus; 		// 근무상태
-    
+    private String isLate;			// 지각여부
+	
 	@Builder
 	public CommuteListDTO(String employeeId, Date workDate, LocalDateTime checkIn, LocalDateTime checkOut,
-			String workStatus) {
+			String workStatus, String isLate) {
 		this.employeeId = employeeId;
 		this.workDate = workDate;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
 		this.workStatus = workStatus;
+		this.isLate = isLate;
 	}
 	
 	

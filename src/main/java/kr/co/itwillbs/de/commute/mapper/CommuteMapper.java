@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import kr.co.itwillbs.de.commute.dto.CommuteDTO;
 import kr.co.itwillbs.de.commute.dto.CommuteListDTO;
 import kr.co.itwillbs.de.commute.dto.CommuteSearchDTO;
+import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
 
 @Mapper
 public interface CommuteMapper {
@@ -22,6 +23,13 @@ public interface CommuteMapper {
 	List<CommuteListDTO> getCommuteList(@Param("id") String id, 
 										@Param("search") CommuteSearchDTO commuteSearchDTO);
 
+	/**
+	 * 부서 조회(SELECT)
+	 * @return
+	 */
+	List<DepartmentInfoDTO> getDepartmentList();
+
+	// =====================================================================================
 	/**
 	 * 로그인 한 사번의 오늘 출근 기록 조회(SELECT)
 	 * @param id
@@ -54,6 +62,7 @@ public interface CommuteMapper {
 	 * @param commuteDTO
 	 */
 	void insertCommuteInfo(CommuteDTO commuteDTO);
+
 	
 
 	

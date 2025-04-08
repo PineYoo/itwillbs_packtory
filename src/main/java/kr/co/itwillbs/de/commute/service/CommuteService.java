@@ -13,6 +13,7 @@ import kr.co.itwillbs.de.commute.dto.CommuteSearchDTO;
 import kr.co.itwillbs.de.commute.entity.Commute;
 import kr.co.itwillbs.de.commute.mapper.CommuteMapper;
 import kr.co.itwillbs.de.commute.repository.CommuteRepository;
+import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
@@ -31,7 +32,16 @@ public class CommuteService {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		return commuteMapper.getCommuteList(id, commuteSearchDTO);
 	}
-
+	
+	/**
+	 * 부서 조회 요청(SELECT)
+	 * @return List<DepartmentInfoDTO>
+	 */
+	public List<DepartmentInfoDTO> getDepartmentList() {
+		return commuteMapper.getDepartmentList();
+	}
+	
+	// ======================================================================================
 	/**
 	 * 로그인 한 사번의 오늘 출근 기록 조회 요청(SELECT)
 	 * @param id

@@ -15,14 +15,15 @@ import lombok.ToString;
 @NoArgsConstructor
 public class CommuteSearchDTO {
 	
-	private String employeeId; // 사원번호
-	private String workStartDate; // 날짜(시작일)
-	private String workEndDate; // 날짜(종료일)
-	private String department; // 부서
-	private String name; // 이름
+	private String employeeId;		// 사원번호
+	private String workStartDate;	// 날짜(시작일)
+	private String workEndDate;		// 날짜(종료일)
+	private String department;		// 부서
+	private String subDepartment;	// 하위부서
+	private String name;			// 이름
 	
 	// 검색 키워드
-	private String searchKeyword; // 키워드
+	private String searchKeyword;	// 키워드
 	
 	private List<DepartmentInfoDTO> departmentInfo;	// 부서
 

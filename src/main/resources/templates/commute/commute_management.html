@@ -62,6 +62,7 @@
 								        <div class="row">
 								            <!-- 왼쪽 폼 그룹 -->
 								            <div class="col-md-6 left-form">
+								            	<!-- 사원번호 -->
 								                <div class="form-group row">
 								                    <label for="employeeId" class="col-sm-3 col-form-label">사원번호</label>
 								                    <div class="col-sm-9">
@@ -69,6 +70,7 @@
 								                    </div>
 								                </div>
 								
+								            	<!-- 날짜 -->
 								                <div class="form-group row">
 								                    <label for="workStartDate" class="col-sm-3 col-form-label">날짜</label>
 								                    <div class="col-sm-9">
@@ -99,13 +101,41 @@
 											
 								            <!-- 오른쪽 폼 그룹 -->
 								            <div class="col-md-6">
+								            	<!-- 부서 -->
 								                <div class="form-group row">
-								                    <label for="department" class="col-sm-3 col-form-label">부서</label>
-								                    <div class="col-sm-9">
-								                        <input type="text" id="department" th:field="*{department}" class="form-control">
-								                    </div>
-								                </div>
-								
+												    <label class="col-sm-3 col-form-label">부서</label>
+												    <div class="col-sm-9">
+												        <div class="form-row">
+												            <div class="col">
+												                <select id="mainDepartment" name="department" class="form-select">
+												                    <option value="">대표부서 선택</option>
+												                    <th:block th:each="dept : ${departmentList}">
+												                        <option 
+												                        	th:value="${dept.minorCode}" 
+												                        	th:text="${dept.minorName}"
+												                        	th:selected="${department} == ${dept.minorCode}">
+												                        </option>
+												                    </th:block>
+												                </select>
+												            </div>
+												            <div class="col">
+												                <select id="subDepartment" name="subDepartment" class="form-select">
+												                    <option value="">하위부서 선택</option>
+												                    <th:block th:each="sub : ${subDeptList}">
+												                        <option 
+												                            th:value="${sub.childCode}" 
+												                            th:data-parent-code="${sub.departmentCode}" 
+												                            th:text="${sub.childName}"
+												                            th:selected="${subDepartment} == ${sub.childCode}">
+												                        </option>
+												                    </th:block>
+												                </select>
+												            </div>
+												        </div>
+												    </div>
+												</div>
+												
+								            	<!-- 이름 -->
 								                <div class="form-group row">
 								                    <label for="name" class="col-sm-3 col-form-label">이름</label>
 								                    <div class="col-sm-9">
@@ -147,6 +177,7 @@
 									<th>날짜</th>
 									<th>사원번호</th>
 									<th>부서</th>
+									<th>하위부서</th>
 									<th>직책</th>
 									<th>이름</th>
 									<th>출근시간</th>
@@ -159,9 +190,19 @@
 									<td th:text="${commute.workDate}"></td>
 									<td th:text="${commute.employeeId}"></td>
 									<td th:text="${commute.department}"></td>
+									<td th:text="${commute.subDepartment}"></td>
 									<td th:text="${commute.position}"></td>
 									<td th:text="${commute.name}"></td>
-									<td th:text="${commute.checkIn != null ? #temporals.format(commute.checkIn, 'HH:mm:ss') : '-'}"></td>
+<!-- 									<td th:text="${commute.checkIn != null ? #temporals.format(commute.checkIn, 'HH:mm:ss') : '-'}"></td> -->
+
+									<!-- 지각한 날은 빨간글씨로 표시 -->
+									<td>
+										<span th:if="${commute.checkIn != null}"
+										      th:style="${commute.isLate == 'Y'} ? 'color: red;' : ''"
+										      th:text="${#temporals.format(commute.checkIn, 'HH:mm:ss')}">
+										</span>
+										<span th:if="${commute.checkIn == null}">-</span>
+									</td>
 									<td th:text="${commute.checkOut != null ? #temporals.format(commute.checkOut, 'HH:mm:ss') : '-'}"></td>
 									<td>	<!-- 근무상태코드 일치하는 코드의 코드명 출력 -->
 									  <span th:each="ci : ${codeItemList}"
@@ -246,6 +287,32 @@
 			    // 날짜 적용
 			    initializeDateRangePicker('workStartDate', 'workEndDate');
 			    // ------------------------------------------------------------
+			    // 대표부서 선택에 따른 하위부서 필터링
+			    function filterSubDepartments() {
+			        const selectedMain = $('#mainDepartment').val();
+
+			        $('#subDepartment option').each(function () {
+			            const parentCode = $(this).attr('data-parent-code'); // ← 여기 주의!
+
+			            if (!parentCode) return; // '하위부서 선택'은 유지
+
+			            if (parentCode === selectedMain) {
+			                $(this).show();
+			            } else {
+			                $(this).hide();
+			            }
+			        });
+
+			        // 선택 초기화
+			        $('#subDepartment').val('');
+			    }
+
+			    // 대표부서 선택 시 하위부서 필터링
+			    $('#mainDepartment').on('change', filterSubDepartments);
+
+			    // 페이지 로드 시 초기 필터링
+			    filterSubDepartments();
+			    
 			    
 			    
 			});

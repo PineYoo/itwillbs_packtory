@@ -8,16 +8,42 @@
 		SELECT 
 		    DATE(c.reg_date) AS work_date, 		-- reg_date에서 날짜만 추출
 		    c.employee_id,						-- 사원번호
-		    e.department_code AS department,   	-- 부서
-	        e.position_code AS position,       	-- 직책
+		    ci2.minor_name AS department,   	-- 부서명
+		    di.child_name AS sub_department,	-- 하위부서명
+	        ci3.minor_name AS position,       	-- 직책명
 	        e.name,								-- 이름
 		    MIN(CASE WHEN ci.minor_name IN ('출근', '지각') THEN c.reg_date END) AS checkIn,	-- 출근시간
 		    MAX(CASE WHEN ci.minor_name = '퇴근' THEN c.reg_date END) AS checkOut,				-- 퇴근시간
 		    -- GROUP_CONCAT을 사용하여 work_status_code를 하나로 합친 후, 마지막 값만 추출
-      		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT c.work_status_code ORDER BY c.reg_date SEPARATOR ', '), ', ', -1) AS workStatus
+      		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT c.work_status_code ORDER BY c.reg_date SEPARATOR ', '), ', ', -1) AS workStatus,
+      		
+      		-- 지각 여부 컬럼 추가 (출근기록 중 '지각'이 있으면 'Y', 아니면 'N')
+		    CASE 
+		         WHEN SUM(CASE WHEN ci.minor_name = '지각' THEN 1 ELSE 0 END) > 0 THEN 'Y'
+		         ELSE 'N'
+		     END AS is_late
+		
 		FROM t_commute c
 		JOIN t_employee e ON c.employee_id = e.id  -- 사원 테이블과 조인
-		JOIN t_commoncode_item ci ON c.work_status_code = ci.minor_code AND ci.major_code = 'WORK_STATUS_CODE'	-- 공통코드 테이블에서 코드명 받아오기 위함
+		-- 출퇴근 상태명
+		JOIN t_commoncode_item ci 
+		     ON c.work_status_code = ci.minor_code 
+		     AND ci.major_code = 'WORK_STATUS_CODE'
+		
+		-- 부서명
+		LEFT JOIN t_commoncode_item ci2 
+		     ON e.department_code = ci2.minor_code 
+		     AND ci2.major_code = 'DEPARTMENT_CODE'
+		
+		-- 하위부서명
+		LEFT JOIN t_department_info di
+		     ON e.department_code = di.department_code
+		     AND e.sub_department_code = di.child_code
+		     		
+		-- 직책명 조인 추가
+		LEFT JOIN t_commoncode_item ci3
+		     ON e.position_code = ci3.minor_code
+		     AND ci3.major_code = 'POSITION_CODE'
 		
 		<where>
 			<if test="search.employeeId != null and search.employeeId != ''">
@@ -32,16 +58,26 @@
 			<if test="search.department != null and search.department != ''">
 				AND e.department_code = #{search.department}
 			</if>
+			<if test="search.subDepartment != null and search.subDepartment != ''">
+				AND e.sub_department_code = #{search.subDepartment}
+			</if>
 			<if test="search.name != null and search.name != ''">
 				AND e.name LIKE CONCAT('%', #{search.name}, '%')
 			</if>
 		</where>
 		
-		GROUP BY c.employee_id, e.department_code, e.position_code, e.name, DATE(c.reg_date)
 		-- 오라클에서는 GROUP BY 절에 포함되지 않은 컬럼을 SELECT 절에서 사용할 수 없으므로, 모든 비집계 컬럼을 GROUP BY 절에 추가해야함
+		GROUP BY DATE(c.reg_date), c.employee_id, ci2.minor_name, di.child_name, ci3.minor_name, e.name
 		ORDER BY work_date DESC, c.employee_id
 	</select>
 	
+	<!-- 부서 조회(SELECT) -->
+	<select id="getDepartmentList" resultType="kr.co.itwillbs.de.human.dto.DepartmentInfoDTO">
+		SELECT *
+		  FROM t_department_info
+	</select>
+	
+	<!-- ============================================================================== -->
 	<!-- 로그인 한 사번의 오늘 출근 기록 조회(SELECT) -->
 	<select id="getCheckInTime" resultType="kr.co.itwillbs.de.commute.dto.CommuteDTO">
 		SELECT *
