@@ -42,7 +42,7 @@
 		<div class="container-fluid">
 		
 			<!-- Page Heading -->
-			<h3 class="reg-title">기안서 작성</h3>
+			<h3 class="reg-title">기안서 상세보기</h3>
 			<!-- 본문 컨테이너 -->
 			<div class="main-container">
 				<form action="/approval/regist" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${approvalDTO}" >
@@ -81,7 +81,7 @@
 			            <label th:for="approverId">결재라인</label>
 						<div class="approver-line">
 			        		<button type="button" class="btn btn-primary" id="addApproverLineBtn" >결재라인 추가 <i class="fa-solid fa-plus"></i></button>
-			        		<div class="approver-group" id="approver-1">
+			        		<div class="approver-group" id="approver-1" th:if="${approvalDTO.approver1 != null and !#strings.isEmpty(approvalDTO.approver1)}">
 			        			<input th:field="*{approver1}" class="form-control">
 			        			<button type="button" class="btn btn-primary search-approver"
 										id="searchApproverBtn1" data-index="1">
@@ -92,7 +92,7 @@
 										삭제
 								</button>
 				            </div>
-			        		<div class="approver-group" id="approver-2">
+			        		<div class="approver-group" id="approver-2" th:if="${approvalDTO.approver2 != null and !#strings.isEmpty(approvalDTO.approver2)}">
 			        			<input th:field="*{approver2}" class="form-control">
 			        			<button type="button" class="btn btn-primary search-approver"
 										id="searchApproverBtn2" data-index="2">
@@ -103,7 +103,7 @@
 										삭제
 								</button>
 				            </div>
-			        		<div class="approver-group" id="approver-3">
+			        		<div class="approver-group" id="approver-3" th:if="${approvalDTO.approver3 != null and !#strings.isEmpty(approvalDTO.approver3)}">
 			        			<input th:field="*{approver3}" class="form-control">
 			        			<button type="button" class="btn btn-primary search-approver"
 										id="searchApproverBtn3" data-index="3">
@@ -170,7 +170,7 @@
 	<script src="/js/datatables/jszip.min.js"></script>
 	<script src="/js/datatables/buttons.print.min.js"></script>
 	<!-- 개별 js -->
-<!--     <script src="/js/approval/approval_reg.js"></script> -->
+    <script src="/js/approval/approval_reg.js"></script>
 </th:block>
 	
 	

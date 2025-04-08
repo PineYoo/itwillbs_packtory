@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import kr.co.itwillbs.de.approval.dto.NoticeDTO;
 import kr.co.itwillbs.de.approval.dto.NoticeSearchDTO;
 import kr.co.itwillbs.de.approval.mapper.NoticeMapper;
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.FileService;
 import kr.co.itwillbs.de.common.vo.FileVO;
 import kr.co.itwillbs.de.sample.constant.IsDeleted;
@@ -53,6 +54,7 @@ public class NoticeService {
 	 * 공지사항 Insert
 	 * @param sampleVO
 	 */
+	@LogExecution // 로그 남길 서비스
 	public String registerNotice(NoticeDTO noticeDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -80,6 +82,7 @@ public class NoticeService {
 	 * 공지사항 업데이트
 	 * @param noticeDTO
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void modifyNotice(NoticeDTO noticeDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -102,6 +105,7 @@ public class NoticeService {
 	 * @param idx 테이블 PK 컬럼
 	 * @throws Exception
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void removeItem(String idx) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -124,6 +128,7 @@ public class NoticeService {
 	 * 공지사항 파일 개별 삭제(AJAX) 
 	 * @param idx
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void removeFile(String idx) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		FileVO fileVO = new FileVO();

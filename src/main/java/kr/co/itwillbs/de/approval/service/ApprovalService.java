@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.approval.dto.ApprovalDTO;
 import kr.co.itwillbs.de.approval.dto.DraftDTO;
 import kr.co.itwillbs.de.approval.mapper.ApprovalMapper;
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +35,7 @@ public class ApprovalService {
 	
 	//	------------------------------------------------------------
 	//	기안서 등록(저장) 요청
+	@LogExecution // 로그 남길 서비스
 	public String registerApproval(DraftDTO draftDTO) {
 		
 		// ----------- approval_no 결재번호 생성 ----------- 
