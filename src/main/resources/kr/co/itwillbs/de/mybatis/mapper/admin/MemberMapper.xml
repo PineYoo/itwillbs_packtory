@@ -39,6 +39,51 @@
 		 -->
 	</sql>
 	
+	<sql id="withEmpBase">
+		WITH empBase AS (
+			SELECT
+				emp.id,
+				emp.name,
+				emp.ssn,
+				emp.department_code,
+				tdi.department_name,
+				emp.sub_department_code,
+				tdi.child_name AS sub_department_name,
+				emp.position_code,
+				tpi.position_code AS position_name,
+				tpi.is_manager,
+				emp.hire_date,
+				emp.resignation_date,
+				emp_de.phone_number,
+				emp_de.email,
+				emp_de.file_idxs,
+				emp_de.employee_status_code
+			FROM t_employee AS emp
+			LEFT JOIN t_employee_detail AS emp_de
+				ON emp.id = emp_de.id
+			LEFT JOIN (
+				SELECT
+					tdi.idx,
+					tdi.department_code,
+					cci.minor_name AS department_name,
+					tdi.parent_code,
+					tdi.child_code,
+					tdi.child_name,
+					tdi.rank_number,
+					tdi.is_deleted,
+					tdi.location_idx
+				FROM t_department_info AS tdi
+				LEFT JOIN t_commoncode_item AS cci
+					ON cci.major_code = 'DEPARTMENT_CODE'
+				AND tdi.department_code = cci.minor_code
+				) AS tdi
+				ON emp.department_code = tdi.department_code
+				AND emp.sub_department_code = tdi.child_code
+			LEFT JOIN t_position_info AS tpi
+				ON emp.position_code = tpi.idx
+			)
+	</sql>
+	
 	<sql id="t_member_columns_forSelectFROM">
 		SELECT
 			emp.id,
@@ -87,16 +132,54 @@
 	
 	<!-- 임시 쿼리임 -->
 	<select id="getBeforeMembers" resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
-		<include refid="t_member_columns_forSelectFROM" />
-		WHERE tmb.status IS NULL
+		<include refid="withEmpBase" />
+		SELECT
+			emp.*,
+			tm.password,
+			tm.role,
+			tci1.minor_name AS role_name,
+			tci1.description AS role_description,
+			IFNULL(tm.status,'NOT_YET') AS status,
+			tci2.minor_name AS status_name,
+			tci2.description AS status_description,
+			tm.is_deleted
+		FROM empBase AS emp
+		LEFT JOIN t_member as tm
+			ON emp.id = tm.member_id
+		LEFT JOIN t_commoncode_item as tci1
+			ON tci1.major_code = 'MEMBER_ROLE'
+			AND tm.role = tci1.minor_code
+		LEFT JOIN t_commoncode_item as tci2
+			ON tci2.major_code = 'MEMBER_STATUS'
+			AND tm.status = tci2.minor_code
+		WHERE tm.status IS NULL
 	</select>
 	
 	<!-- 임시 쿼리임 -->
 	<select id="getBeforeMembersByEmployeeSearch" parameterType="kr.co.itwillbs.de.admin.dto.EmployeeSearchDTO"
 									resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
-		<include refid="t_member_columns_forSelectFROM" />
+		<include refid="withEmpBase" />
+		SELECT
+			emp.*,
+			tm.password,
+			tm.role,
+			tci1.minor_name AS role_name,
+			tci1.description AS role_description,
+			IFNULL(tm.status,'NOT_YET') AS status,
+			tci2.minor_name AS status_name,
+			tci2.description AS status_description,
+			tm.is_deleted
+		FROM empBase AS emp
+		LEFT JOIN t_member as tm
+			ON emp.id = tm.member_id
+		LEFT JOIN t_commoncode_item as tci1
+			ON tci1.major_code = 'MEMBER_ROLE'
+			AND tm.role = tci1.minor_code
+		LEFT JOIN t_commoncode_item as tci2
+			ON tci2.major_code = 'MEMBER_STATUS'
+			AND tm.status = tci2.minor_code
 		<where>
-			AND tmb.status IS NULL
+			AND tm.status IS NULL
 			<if test="id != null and id.trim() != ''">AND emp.id LIKE CONCAT('%',#{id},'%') </if>
 			<if test="name != null and name.trim() != ''">AND emp.name LIKE CONCAT('%',#{name},'%') </if>
 			<if test="departmentCode != null and departmentCode.trim() != ''">AND emp.department_code = #{departmentCode} </if>
