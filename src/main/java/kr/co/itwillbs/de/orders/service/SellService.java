@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
@@ -40,6 +41,7 @@ public class SellService {
 	 * @param orderDTO
 	 * @return 
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void registerOrder(@Valid OrderDTO orderDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -53,6 +55,7 @@ public class SellService {
 	 * @param orderDetailDTO
 	 * @return 
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void registerOrderDetail(OrderDetailDTO orderDetailDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		sellMapper.insertOrderDetail(orderDetailDTO);
@@ -77,6 +80,7 @@ public class SellService {
 	 * @param orderDTO
 	 * @return 
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void modifyOrder(OrderDTO orderDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		sellMapper.updateOrder(orderDTO);
@@ -87,12 +91,12 @@ public class SellService {
 	 * @param orderDetailDTO
 	 * @return 
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void modifyOrderDetail(OrderDetailDTO orderDetailDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		sellMapper.updateOrderDetail(orderDetailDTO);
 	}
 	
 	
-
 	
 }
