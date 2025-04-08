@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.groupware.dto.MessageDTO;
 import kr.co.itwillbs.de.groupware.dto.MessageSearchDTO;
 import kr.co.itwillbs.de.groupware.entity.Message;
@@ -21,6 +22,7 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
 
+    @LogExecution
     // 메시지 등록
     public void registerMessage(MessageDTO messageDTO) {
         log.info("registerMessage --- start");
@@ -54,6 +56,7 @@ public class MessageService {
     }
 
     // 메시지 수정
+    @LogExecution
     @Transactional
     public void updateMessage(Long idx, MessageDTO dto) {
         log.info("updateMessage --- idx: {}", idx);

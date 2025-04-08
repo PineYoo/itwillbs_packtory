@@ -124,9 +124,6 @@ public class DepartmentInfo {
 	    this.rankNumber = departmentInfoDTO.getRankNumber();
 	    this.isDeleted = departmentInfoDTO.getIsDeleted();
 	    this.locationIdx = departmentInfoDTO.getLocationIdx();
-	    if (departmentInfoDTO.getRegId() != null) {
-	        this.regId = departmentInfoDTO.getRegId();
-	    }
 	    if (departmentInfoDTO.getRegDate() != null) {
 	        this.regDate = departmentInfoDTO.getRegDate();
 	    }

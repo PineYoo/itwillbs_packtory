@@ -3,6 +3,8 @@ package kr.co.itwillbs.de.groupware.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.service.FileService;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.FileUtil;
 import kr.co.itwillbs.de.common.vo.FileVO;
+import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.groupware.dto.PolicyDTO;
 import kr.co.itwillbs.de.groupware.dto.PolicySearchDTO;
 import kr.co.itwillbs.de.groupware.service.PolicyService;
@@ -41,6 +45,16 @@ public class PolicyController {
     @GetMapping("/new")
     public String policyRegisterForm(Model model) {
         log.info("policyRegisterForm --- start");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+			LoginVO loginVO = userDetails.getLoginVO();
+			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
+			log.info("userDetails is {}",userDetails);
+			log.info("loginVO is {}",loginVO);
+			model.addAttribute("userDetails", userDetails);
+			model.addAttribute("loginVO", loginVO);
+		}
         model.addAttribute("policyDTO", new PolicyDTO());
         model.addAttribute("policyTypes", commonCodeUtil.getCodeItems("POLICY_TYPE"));
         return "groupware/policy/form";

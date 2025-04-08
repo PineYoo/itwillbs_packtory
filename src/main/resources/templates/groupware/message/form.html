@@ -55,9 +55,6 @@
                 <!-- 삭제 여부 (자동으로 "N"으로 설정됨) -->
                 <input type="hidden" th:field="*{isDeleted}" value="N">
 
-                <!-- 발신자 ID (로그인 사용자로 자동 설정) -->
-                <input type="hidden" th:field="*{senderId}" th:value="${#authentication.name}">
-
                 <!-- 수신자 ID -->
                 <div class="mb-3">
                     <label for="receiverId" class="form-label">수신자 ID</label>

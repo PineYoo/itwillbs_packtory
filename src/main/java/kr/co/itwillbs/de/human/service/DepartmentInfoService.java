@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.human.dto.DepartmentCodeDTO;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoSearchDTO;
@@ -20,7 +21,8 @@ public class DepartmentInfoService {
 
 	@Autowired
     private DepartmentInfoRepository departmentInfoRepository;
-        
+    
+	@LogExecution
     // 부서 등록
 	public void registerDepartment(DepartmentInfoDTO departmentInfoDTO) {
 	    log.info("registerDepartment --- start");
@@ -67,6 +69,7 @@ public class DepartmentInfoService {
     }
 
     // 부서 수정
+    @LogExecution
     @Transactional
     public void updateDepartment(DepartmentInfoDTO departmentInfoDTO) {
         log.info("updateDepartment --- start");

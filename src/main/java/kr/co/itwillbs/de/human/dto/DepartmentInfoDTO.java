@@ -3,6 +3,7 @@ package kr.co.itwillbs.de.human.dto;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotEmpty;
+import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import kr.co.itwillbs.de.human.entity.DepartmentInfo;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
+@RequiredSessionIds(fields = {"regId", "modId"})
 public class DepartmentInfoDTO {
 
     private Long idx; // 인덱스

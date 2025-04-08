@@ -3,6 +3,8 @@ package kr.co.itwillbs.de.human.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.persistence.EntityNotFoundException;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
+import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
+import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.human.dto.PositionInfoDTO;
 import kr.co.itwillbs.de.human.service.PositionInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +40,17 @@ public class PositionInfoController {
     @GetMapping("/new")
     public String positionRegisterForm(Model model) {
         log.info("positionRegisterForm --- start");
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+			LoginVO loginVO = userDetails.getLoginVO();
+			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
+			log.info("userDetails is {}",userDetails);
+			log.info("loginVO is {}",loginVO);
+			model.addAttribute("userDetails", userDetails);
+			model.addAttribute("loginVO", loginVO);
+		}
         model.addAttribute("positionInfoDTO", new PositionInfoDTO());
         model.addAttribute("codeItems", commonCodeUtil.getCodeItems("POSITION_CODE"));
         return "human/info/position/form";

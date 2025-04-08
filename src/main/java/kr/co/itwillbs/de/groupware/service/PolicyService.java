@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.FileService;
 import kr.co.itwillbs.de.common.util.FileUtil;
 import kr.co.itwillbs.de.common.vo.FileVO;
@@ -30,6 +31,7 @@ public class PolicyService {
     private final FileUtil fileUtil;
     
     // 규정 등록
+    @LogExecution
     public String registerPolicy(PolicyDTO policyDTO) {
         log.info("registerPolicy --- start");
 
@@ -74,6 +76,7 @@ public class PolicyService {
     }
 
     // 규정 수정
+    @LogExecution
     @Transactional
     public void updatePolicy(Long idx, PolicyDTO policyDTO) {
         log.info("updatePolicy --- start");

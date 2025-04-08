@@ -1,5 +1,6 @@
 package kr.co.itwillbs.de.human.service;
 
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.human.dto.DepartmentCodeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
@@ -30,6 +31,7 @@ public class EmployeeService {
     }
 
     // 사원 등록
+    @LogExecution
     @Transactional
     public String registerEmployee(EmployeeDTO employeeDTO) {
         log.info("사원 등록 요청: {}", employeeDTO);
@@ -71,6 +73,7 @@ public class EmployeeService {
     }
 
     // 사원 정보 업데이트 서비스 메서드
+    @LogExecution
     @Transactional
     public void updateEmployeeWithDetail(EmployeeDTO employeeDTO) {
         log.info("사원 + 상세정보 수정 - id: {}", employeeDTO.getId());

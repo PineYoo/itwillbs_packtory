@@ -2,6 +2,7 @@ package kr.co.itwillbs.de.human.dto;
 
 import java.time.LocalDateTime;
 import jakarta.validation.constraints.NotEmpty;
+import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import kr.co.itwillbs.de.human.entity.PositionInfo;
 import lombok.*;
 
@@ -9,6 +10,7 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
+@RequiredSessionIds(fields = {"regId", "modId"})
 public class PositionInfoDTO {
 
     private Long idx; // 테이블 인덱스

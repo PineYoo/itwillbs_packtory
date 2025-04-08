@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.NotEmpty;
+import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import kr.co.itwillbs.de.common.vo.FileVO;
 import kr.co.itwillbs.de.groupware.entity.Policy;
 import lombok.Builder;
@@ -18,6 +19,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
+@RequiredSessionIds(fields = {"regId", "modId"})
 public class PolicyDTO {
 
     private Long idx; // PK

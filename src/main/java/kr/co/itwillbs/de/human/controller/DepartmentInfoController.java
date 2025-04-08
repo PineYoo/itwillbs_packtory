@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
+import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
+import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoSearchDTO;
 import kr.co.itwillbs.de.human.service.DepartmentInfoService;
@@ -38,6 +42,17 @@ public class DepartmentInfoController {
         log.info("departmentRegisterForm --- start");
         model.addAttribute("departmentInfoDTO", new DepartmentInfoDTO());
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+			LoginVO loginVO = userDetails.getLoginVO();
+			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
+			log.info("userDetails is {}",userDetails);
+			log.info("loginVO is {}",loginVO);
+			model.addAttribute("userDetails", userDetails);
+			model.addAttribute("loginVO", loginVO);
+		}
+        
         // 공통 코드 유틸을 활용하여 major_code가 "DEPARTMENT_CODE"인 코드 아이템 목록 조회
         List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("DEPARTMENT_CODE");
         model.addAttribute("codeItems", codeItems);

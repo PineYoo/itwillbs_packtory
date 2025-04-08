@@ -1,5 +1,7 @@
 package kr.co.itwillbs.de.groupware.controller;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
+import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.groupware.dto.MessageDTO;
 import kr.co.itwillbs.de.groupware.dto.MessageSearchDTO;
 import kr.co.itwillbs.de.groupware.service.MessageService;
@@ -30,6 +34,16 @@ public class MessageController {
     @GetMapping("/new")
     public String MessageRegisterForm(Model model) {
         log.info("MessageRegisterForm --- start");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+			LoginVO loginVO = userDetails.getLoginVO();
+			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
+			log.info("userDetails is {}",userDetails);
+			log.info("loginVO is {}",loginVO);
+			model.addAttribute("userDetails", userDetails);
+			model.addAttribute("loginVO", loginVO);
+		}
         model.addAttribute("messageDTO", new MessageDTO());
         model.addAttribute("messageTypes", commonCodeUtil.getCodeItems("MESSAGE_TYPE"));
         return "groupware/message/form";

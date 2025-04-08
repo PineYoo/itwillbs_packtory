@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.itwillbs.de.common.service.CommonService;
+import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.human.dto.DepartmentCodeDTO;
@@ -47,9 +48,16 @@ public class EmployeeController {
     public String employeeRegisterForm(Model model) {
         log.info("employeeRegisterForm --- 시작");
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        LoginVO userDetails = (LoginVO) auth.getPrincipal();
-        String memberId = userDetails.getUsername();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+			LoginVO loginVO = userDetails.getLoginVO();
+			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
+			log.info("userDetails is {}",userDetails);
+			log.info("loginVO is {}",loginVO);
+			model.addAttribute("userDetails", userDetails);
+			model.addAttribute("loginVO", loginVO);
+		}
        
         EmployeeDTO employeeDTO = EmployeeDTO.builder()
             .departmentCode("")

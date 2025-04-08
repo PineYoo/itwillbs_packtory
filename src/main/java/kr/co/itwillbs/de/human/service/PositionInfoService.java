@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.human.dto.PositionInfoDTO;
 import kr.co.itwillbs.de.human.entity.PositionInfo;
 import kr.co.itwillbs.de.human.repository.PositionInfoRepository;
@@ -20,6 +21,7 @@ public class PositionInfoService {
     @Autowired
     private PositionInfoRepository positionInfoRepository;
 
+    @LogExecution
     // 직급 등록
     public void registerPosition(PositionInfoDTO positionInfoDTO) {
         log.info("registerPosition --- start");
@@ -56,6 +58,7 @@ public class PositionInfoService {
     }
 
     // 직급 수정
+    @LogExecution
     @Transactional
     public void updatePosition(Long idx, PositionInfoDTO positionInfoDTO) {
         log.info("updatePosition --- start");
