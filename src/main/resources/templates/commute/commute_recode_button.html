@@ -68,7 +68,7 @@
 						</div>
 						
 						<div style="margin-left: 5px;">
-							<th:block th:each="i : ${#numbers.sequence(0, codeItemList.size() - 1, 2)}">
+							<th:block th:each="i : ${#numbers.sequence(0, codeItemList.size() - 1, 2)}" th:if="${i < 4}">	<!-- 지각 버튼은 안나오게 하기 위함 -->
 						        <div class="d-flex flex-wrap mb-2">
 						            <th:block th:if="${i < codeItemList.size()}" th:with="item=${codeItemList[i]}">
 						                <button th:id="${item.minorName}"
