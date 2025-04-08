@@ -45,22 +45,22 @@
 			<h3 class="reg-title">기안서 작성</h3>
 			<!-- 본문 컨테이너 -->
 			<div class="main-container">
-				<form action="/approval/regist" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${draftDTO}" >
+				<form th:action="@{/groupware/approval/regist}" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${approvalDTO}" >
 			        <div class="form-div">
 			            <label th:for="drafterId">사원번호</label>
 			            <input type="text" id="draftId" th:field="*{drafterId}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
 			            <label th:for="drafterName">작성자</label>
-			            <input type="text" id="draftName" th:field="*{drafterName}" class="form-control" readonly>
+			            <input type="text" id="draftName" th:field="*{name}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
 			            <label th:for="drafterDepartment">부서</label>
-			            <input type="text" id="drafterDepartment" th:field="*{drafterDepartment}" class="form-control" readonly>
+			            <input type="text" id="drafterDepartment" th:field="*{departmentName}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
 			            <label th:for="drapfterPositon">직급</label>
-			            <input type="text" id="drapfterPositon" th:field="*{drafterPosition}" class="form-control" readonly>
+			            <input type="text" id="drapfterPositon" th:field="*{positionName}" class="form-control" readonly>
 			        </div>
 			        
 			        <div class="form-div">
@@ -90,7 +90,6 @@
 						<button class="btn btn-success ml-2" id="initDateBtn" type="button"><i class="fa-solid fa-rotate"></i></button>
 					</div>
 					
-					
 			        <div class="form-div">
 			            <label th:for="title">제목</label>
 			            <input type="text" id="title" th:field="*{title}" class="form-control">
@@ -98,18 +97,30 @@
 			        
 			        <div class="form-div">
 			            <label th:for="content">내용</label>
-<!-- 			            <input type="text" th:field="*{content}" class="form-control"> -->
 			            <textarea id="content" th:field="*{content}" class="form-control" rows="10"></textarea>
 <!-- 			            Editor 라이브러리 일단 나중에......... -->
 			        </div>
-					
+			        <div class="col-md-12 custom-div" th:if="${fileList != null and not #lists.isEmpty(fileList)}">
+						<h6 class="card-title">첨부파일 목록</h6>
+<!-- 								<ul class="list-group custom-ul"> -->
+						<ul class="list-group">
+						    <li th:each="file : ${fileList}"
+						    	th:if="${file.isDeleted == 'N'}"
+						    	th:id="'file-' + ${file.idx}"
+						    	class="list-group-item d-flex justify-content-between align-items-center">
+					            <span th:text="${file.fileOriginalName}"></span>
+					            <button type="button" class="btn btn-danger btn-sm fileDeleteButton" th:data-id="${file.idx}">삭제</button>
+					        </li>
+						</ul>
+					</div>
 					<div class="form-div">
 					    <label for="fileUpload">첨부파일</label>
-					    <input type="file" id="fileUpload" name="approvalFiles" multiple>
+					    <input type="file" id="fileUpload" class="form-control" name="approvalFiles" multiple>
 					</div>
 					
-			        <div style="text-align: center">
+			        <div style="text-align: center; margin: 10px 0;">
 						<button type="submit" class="btn btn-primary" id="submitBtn">기안하기</button>
+						<button type="button" id="cancelBtn" class="btn btn-secondary ml-2" >돌아가기</button>
 			        </div>
 				</form>
 			</div>

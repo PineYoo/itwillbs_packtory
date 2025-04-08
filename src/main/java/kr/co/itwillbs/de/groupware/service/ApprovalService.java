@@ -27,54 +27,37 @@ public class ApprovalService {
 	//	보라씨 작업
 	//	------------------------------------------------------------
 	// 로그인한 userId로 사원 정보 가져오기
-	public DraftDTO getEmployeeInfo(String userId) {
-		return approvalMapper.selectEmployeeInfo(userId);
+	public ApprovalDTO getEmployeeInfo(String memberId) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return approvalMapper.selectEmployeeInfo(memberId);
 	}
 	
 	//	------------------------------------------------------------
 	//	기안서 등록(저장) 요청
 	@LogExecution // 로그 남길 서비스
-	public String registerApproval(DraftDTO draftDTO) {
-		
-		// ----------- approval_no 결재번호 생성 ----------- 
-		// "A"+ yyyyMMdd + 4자리 숫자 (총13자리)  예) A202503270001
-//		String approval_no = draftDTO.getApprovalNo();
-		
-//		String today = new SimpleDateFormat("yyyyMMdd").format(new Date());
-//		int code = 1;
-		
-		// DB에서 오늘 날짜의 최대 결재번호 조회
-//		String lastApprovalNo = approvalMapper.getLastApprovalNo(today);
-//		System.out.println("최대 결재번호: " + lastApprovalNo); //A202503270001
-		
-//		if(lastApprovalNo != null) { // 기안한 것이 있을 경우 최대 결재번호의 마지막 4자리 숫자에서 +1
-//			int lastCode = Integer.parseInt(lastApprovalNo.substring(9));
-//			code = lastCode + 1;
-//		}
-		
-//		String formattedCode = String.format("%04d", code); // 4자리 숫자로 포맷
-//		approval_no = "A" + today + formattedCode; // 최종 결재번호 생성
-		
-//		String approval_no = commonService.getApprovalNoFromMySQL();
+	public String registerApproval(ApprovalDTO approvalDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		//	------------------------------------------------------------
 		//	approval_no 결재번호 생성
 		String year = new SimpleDateFormat("yyyy").format(new Date());
-		String approval_no = "A" + year + "-" + commonService.getApprovalNoFromMySQL();
+		String approvalNo = "A" + year + "-" + commonService.getApprovalNoFromMySQL();
 		
-		draftDTO.setApprovalNo(approval_no);
+		approvalDTO.setApprovalNo(approvalNo);
 		
 		//	서버로 넘어오는 값(ex - 2025-04-03 ~ 2025-04-10)
+		//	~ 기준으로 앞쪽 날짜를 draftDate(기안일자)로 세팅
 		//	~ 기준으로 뒤쪽 날짜를 dueDate(마감일자)로 세팅
-		draftDTO.setDueDate(draftDTO.getDueDate().split("~")[1].trim());
-		log.info("draftDTO : " + draftDTO);
+		approvalDTO.setDraftDate(approvalDTO.getDueDate().split("~")[0].trim());
+		approvalDTO.setDueDate(approvalDTO.getDueDate().split("~")[1].trim());
+		log.info("draftDTO : " + approvalDTO);
 		//DraftDTO(approval_no=A202503280001, drafter_id=100008, drafter_name=김보라, drafter_department=아이티윌, drafter_position=주임, 
 		// approval_type=null, doc_no=, approver1=, approver2=, approver3=, title=ㅇㅇㄹㄴ, content=ㅇㄴㄹㅇ, due_date=null, approvalStatus=null)
 		//	-------------------------------------------------------------
 		//	기안서 저장
-		approvalMapper.insertApproval(draftDTO); // DB 비즈니스 로직 처리
+		approvalMapper.insertApproval(approvalDTO); // DB 비즈니스 로직 처리
 		
 		//	생성한 결재번호 리턴
-		return approval_no;
+		return approvalNo;
 		
 	}
 	//	=====================================================================================
@@ -89,11 +72,13 @@ public class ApprovalService {
 
 	//	=====================================================================================
 	//	결재라인을 위한 모든 회원 목록 조회
-	public List<DraftDTO> getAllEmployeeInfo() {
+	public List<ApprovalDTO> getAllEmployeeInfo() {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		return approvalMapper.getAllEmployeeInfo();
 	}
 	//	결재라인 AJAX로 검색어 조회
-	public List<DraftDTO> getSearchEmployeeInfo(String keyword) {
+	public List<ApprovalDTO> getSearchEmployeeInfo(String keyword) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		return approvalMapper.getSearchEmployeeInfo(keyword);
 	}
 	
@@ -103,7 +88,33 @@ public class ApprovalService {
 	 * @return ApprovalDTO
 	 */
 	public ApprovalDTO getApprovalByApprovalNo(String approvalNo) {
-		return approvalMapper.getApprovalByApprovalNo(approvalNo);
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		ApprovalDTO approvalDTO = approvalMapper.getApprovalByApprovalNo(approvalNo);
+		return approvalDTO;
+	}
+
+	/**
+	 * 전자결재 업데이트
+	 * @param approvalDTO
+	 */
+	@LogExecution // 로그 남길 서비스
+	public void modifyApproval(ApprovalDTO approvalDTO) throws Exception {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		//	기안일자 세팅
+		approvalDTO.setDraftDate(approvalDTO.getDueDate().split("~")[0].trim());
+		//	마감일자 세팅
+		approvalDTO.setDueDate(approvalDTO.getDueDate().split("~")[1].trim());
+		
+		int affectedRow = approvalMapper.modifyNotice(approvalDTO);
+		log.info("affectedRow is {}", affectedRow);
+		//TODO 0이 나올 경우 예외처리 필요? 다음엔 좀더 예쁘게?
+		if(affectedRow < 1) {
+			throw new Exception("수정할 문서가 존재하지 않습니다.");
+		}
+		
+		
 	}
 
 	

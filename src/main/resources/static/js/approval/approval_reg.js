@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	//	결재라인 추가 시 사용할 변수 선언
 	let approverCount = 0;
 	const maxApprovers = 3;
+	//	detail과 reg에 공용으로 쓰기 위해 count값 초기화
+	reorderApprovers();
 	//---------------------------------------------------
 	// 기간별 검색 필터링 제이쿼리 (datepicker)
     $('#dueDate').daterangepicker({
@@ -81,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	
 	$(document).on("click", "[id^=searchApproverBtn]", function() {  // id가 searchApproverBtn로 시작하는것들 모두 선택
 	    let approverIndex = $(this).attr("id").replace("searchApproverBtn", ""); // ID에서 숫자 부분 추출
-	    let url = `/approval/line/${approverIndex}`; 
+	    let url = `/groupware/approval/line/${approverIndex}`; 
 	    window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
 	});
 	

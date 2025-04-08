@@ -291,16 +291,16 @@ public class NoticeController {
 			fileVO.setType(FILE_COMMON_TYPE);
 			//	삭제유무 기본값 N
 			fileVO.setIsDeleted("N");
-			//	랭크넘버 값 세팅
+			//	랭크넘버 값 세팅(int 값 String으로 변환)
 			fileVO.setRankNumber(String.valueOf(maxRankNumber));
-			
+			//	랭크넘버 값 증가
 			maxRankNumber++;
 			
 			fileService.registerFile(fileVO);
 		}
 		
 		// 샘플 정보 페이지 리다이렉트 (GET)방식 
-		return "redirect:/groupware/notice/"+idx;
+		return "redirect:/groupware/notice/" + idx;
 	}
 	
 	/**

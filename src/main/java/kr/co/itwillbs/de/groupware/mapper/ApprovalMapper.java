@@ -12,29 +12,24 @@ public interface ApprovalMapper {
 	//	=========================================================
 	//	보라씨 작업
 	//	로그인한 userId로 사원 정보 가져오기
-	DraftDTO selectEmployeeInfo(String userId);
+	ApprovalDTO selectEmployeeInfo(String memberId);
 	
 	//	기안번호 중복 확인
 	String getLastApprovalNo(String today);
 	
 	//	기안서 저장
-	int insertApproval(DraftDTO draftDTO);
+	int insertApproval(ApprovalDTO approvalDTO);
 	
 	//	=========================================================
 	//	전자결재 목록 조회	
 	List<ApprovalDTO> getApprovalList();
-
-	
-	
-	
-	
 	
 	//	=========================================================
 	//	결재라인을 위한 모든 회원 목록 조회
-	List<DraftDTO> getAllEmployeeInfo();
+	List<ApprovalDTO> getAllEmployeeInfo();
 	
 	//	결재라인 AJAX로 검색어 조회
-	List<DraftDTO> getSearchEmployeeInfo(String keyword);
+	List<ApprovalDTO> getSearchEmployeeInfo(String keyword);
 	
 	/**
 	 * 결재번호로 전자결재문서 가져오기
@@ -43,6 +38,12 @@ public interface ApprovalMapper {
 	 */
 	ApprovalDTO getApprovalByApprovalNo(String approvalNo);
 	
+	/**
+	 * 전자결재문서 업데이트
+	 * @param approvalDTO
+	 * @return int
+	 */
+	int modifyNotice(ApprovalDTO approvalDTO);
 	
 	
 }

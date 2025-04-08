@@ -4,10 +4,10 @@ $(document).ready(function() {
 	
 	$(document).on("click", "#approverList .btn-success", function() {
 		let drafterId = $(this).closest("tr").data("id");	//	결재자 ID
-		let drafterName = $(this).closest("tr").find("td:eq(0)").text();	// 결재자 이름
+		let name = $(this).closest("tr").find("td:eq(0)").text();	// 결재자 이름
 		
 		if(window.opener) {
-			window.opener.setApprover(approverIndex, drafterId, drafterName);
+			window.opener.setApprover(approverIndex, drafterId, name);
 			window.close();
 		}
 	});
@@ -22,7 +22,7 @@ $(document).ready(function() {
 		let keyword = $(this).val().trim();	//	입력값 가져오기
 		
 		$.ajax({
-			url: "/approval/line/search",
+			url: "/groupware/approval/line/search",
 			type: "POST",
 			data: { keyword : keyword },
 			success: function(data) {
@@ -46,9 +46,9 @@ $(document).ready(function() {
 		data.forEach(item => {
 			let row = `
 				<tr data-id="${item.drafterId}">
-					<td>${item.drafterName}</td>
-					<td>${item.drafterDepartment}</td>
-					<td>${item.drafterPosition}</td>
+					<td>${item.name}</td>
+					<td>${item.departmentName}</td>
+					<td>${item.positionName}</td>
 					<td>
 						<button class="btn btn-success">선택</button>
 					</td>

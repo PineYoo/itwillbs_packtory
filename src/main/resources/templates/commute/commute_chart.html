@@ -42,147 +42,228 @@
 			
 			<!-- ---------- 본문 컨테이너 ---------- -->
 <!-- 			<div class="card shadow mb-4"> -->
-				<div class="card-body">
-					<div class="row">
-						<div class="col-lg-6 mb-4">
-						    <div class="card shadow mb-4">
-						        <div class="card-header">
-						            <strong>날짜별 출근자 및 지각자 수</strong>
-						        </div>
-						        <div class="card-body">
-						            <canvas id="lateCountByDate"></canvas>
-						        </div>
-						    </div>
-						</div>
-						
-						<div class="col-lg-6 mb-4">
-						    <div class="card shadow mb-4">
-						        <div class="card-header">
-						            <strong>날짜별 지각률 (%)</strong>
-						        </div>
-						        <div class="card-body">
-						            <canvas id="latePercentageByDate"></canvas>
-						        </div>
-						    </div>
-						</div>
-					</div>
-
-				</div>
+				<!-- 월별 셀렉트박스 추가 -->
+	            <div class="form-group">
+	                <label>날짜 선택</label>
+	                <div class="row">
+	                	<div class="col-md-6">
+			                <select  class="form-control" id="yearSelector">
+							    <!-- JavaScript로 연도 옵션이 추가됨 -->
+							</select>
+	                	</div>
+	                	<div class="col-md-6">
+			                <select id="monthSelector" class="form-control">
+							    <option value="0">최근 한 달</option>
+							    <!-- 1월부터 12월까지의 옵션은 JavaScript로 자동으로 추가됨 -->
+		   	                </select>
+	                	</div>
+	                </div>
+	            </div>
+	            
+	            <div class="row">
+	                <div class="col-lg-6 mb-4">
+	                    <div class="card shadow mb-4">
+	                        <div class="card-header">
+	                            <strong>날짜별 출근자 및 지각자 수</strong>
+	                        </div>
+	                        <div class="card-body">
+	                            <canvas id="lateCountByDate"></canvas>
+	                        </div>
+	                    </div>
+	                </div>
+	                
+	                <div class="col-lg-6 mb-4">
+	                    <div class="card shadow mb-4">
+	                        <div class="card-header">
+	                            <strong>날짜별 지각률 (%)</strong>
+	                        </div>
+	                        <div class="card-body">
+	                            <canvas id="latePercentageByDate"></canvas>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
 <!-- 			</div> -->
 			<!-- ---------- 본문 컨테이너 끝 ---------- -->
 		</div>
 		
 		<script type="text/javascript">
-		    const labels = lateCountByDate.map(item => item.workDate);
-// 		    const labels = lateCountByDate.map(item => item.workDate.slice(5)); // 'MM-DD'만 추출
-		    const totalCounts = lateCountByDate.map(item => item.totalCount);
-		    const lateCounts = lateCountByDate.map(item => item.lateCount);
-	
-		    const ctx = document.getElementById('lateCountByDate').getContext('2d');
-		    const myChart = new Chart(ctx, {
-		        type: 'bar',
-		        data: {
-		            labels: labels,
-		            datasets: [
-		                {
-		                    label: '전체 출근자 수',
-		                    data: totalCounts,
-		                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
-		                },
-		                {
-		                    label: '지각자 수',
-		                    data: lateCounts,
-		                    backgroundColor: 'rgba(255, 99, 132, 0.6)'
-		                }
-		            ]
-		        },
-		        options: {
-		            responsive: true,
-		            plugins: {
-		                title: {
-		                    display: true,
-		                    text: '출근 vs 지각 통계'
-		                }
-		            },
-		            scales: {
-		                x: {
-		                    ticks: {
-		                        autoSkip: true,
-		                        maxTicksLimit: 6,
-		                        maxRotation: 0,
-		                        minRotation: 0
+		    // 서버에서 전달받은 데이터를 기반으로 데이터 레이블과 값 추출
+		    const labels = lateCountByDate.map(item => item.workDate); // 날짜를 x축 레이블로 사용
+		    const totalCounts = lateCountByDate.map(item => item.totalCount); // 전체 출근자 수
+		    const lateCounts = lateCountByDate.map(item => item.lateCount); // 지각자 수
+		
+		    // 연도 및 월 선택을 위한 셀렉트박스 추가
+		    const yearSelector = document.getElementById("yearSelector");
+		    const monthSelector = document.getElementById("monthSelector");
+		
+		    // 연도 셀렉트박스 옵션 설정 (예: 2021 ~ 2023)
+		    const currentYear = new Date().getFullYear();
+		    for (let i = currentYear; i >= currentYear - 5; i--) { // 최근 5년까지 연도 선택 가능
+		        const option = document.createElement("option");
+		        option.value = i;
+		        option.textContent = `${i}년`;
+		        yearSelector.appendChild(option);
+		    }
+		
+		    // 월 셀렉트박스 옵션 설정 (1 ~ 12월)
+		    for (let i = 1; i <= 12; i++) {
+		        const option = document.createElement("option");
+		        option.value = i;
+		        option.textContent = `${i}월`;
+		        monthSelector.appendChild(option);
+		    }
+		
+		    // 날짜를 기준으로 연도 및 월 필터링하는 함수
+		    function filterDataByYearAndMonth(year, month) {
+		        const filteredLabels = [];
+		        const filteredTotalCounts = [];
+		        const filteredLateCounts = [];
+		
+		        lateCountByDate.forEach(item => {
+		            const itemDate = new Date(item.workDate);
+		            const itemYear = itemDate.getFullYear();
+		            const itemMonth = itemDate.getMonth() + 1; // 0~11 범위의 월을 1~12로 변경
+		
+		            // 선택된 연도와 월에 해당하는 데이터만 필터링
+		            if ((year === 0 || itemYear === year) && (month === 0 || itemMonth === month)) {
+		                filteredLabels.push(item.workDate);
+		                filteredTotalCounts.push(item.totalCount);
+		                filteredLateCounts.push(item.lateCount);
+		            }
+		        });
+		
+		        return { filteredLabels, filteredTotalCounts, filteredLateCounts };
+		    }
+		
+		    // 데이터 초기화 및 그래프 생성
+		    function updateChart(selectedYear, selectedMonth) {
+		        const { filteredLabels, filteredTotalCounts, filteredLateCounts } = filterDataByYearAndMonth(selectedYear, selectedMonth);
+		
+		        // 데이터가 선택된 월 및 연도에 맞게 업데이트되면 그래프를 그리기
+		        const ctx = document.getElementById('lateCountByDate').getContext('2d');
+		        const myChart = new Chart(ctx, {
+		            type: 'bar',
+		            data: {
+		                labels: filteredLabels, // 선택된 날짜
+		                datasets: [
+		                    {
+		                        label: '전체 출근자 수',
+		                        data: filteredTotalCounts,
+		                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+		                    },
+		                    {
+		                        label: '지각자 수',
+		                        data: filteredLateCounts,
+		                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
 		                    }
-		                },
-		                y: {
-		                    beginAtZero: true,
+		                ]
+		            },
+		            options: {
+		                responsive: true,
+		                plugins: {
 		                    title: {
 		                        display: true,
-		                        text: '인원 수'
+		                        text: '출근 vs 지각 통계'
+		                    }
+		                },
+		                scales: {
+		                    x: {
+		                        ticks: {
+		                            autoSkip: true,
+		                            maxTicksLimit: 6,
+		                            maxRotation: 0,
+		                            minRotation: 0
+		                        }
+		                    },
+		                    y: {
+		                        beginAtZero: true,
+		                        title: {
+		                            display: true,
+		                            text: '인원 수'
+		                        }
 		                    }
 		                }
 		            }
-		        }
+		        });
+		
+		        // 날짜별 지각률 차트 업데이트
+		        const percentageLabels = filteredLabels;
+		        const latePercentages = filteredLateCounts.map((lateCount, index) => 
+		            filteredTotalCounts[index] > 0 ? (lateCount / filteredTotalCounts[index] * 100).toFixed(1) : 0
+		        );
+		
+		        const ctx2 = document.getElementById('latePercentageByDate').getContext('2d');
+		        const percentageChart = new Chart(ctx2, {
+		            type: 'line',
+		            data: {
+		                labels: percentageLabels,
+		                datasets: [
+		                    {
+		                        label: '지각률 (%)',
+		                        data: latePercentages,
+		                        borderColor: 'rgba(255, 206, 86, 1)',
+		                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+		                        fill: true,
+		                        tension: 0.3,
+		                        pointRadius: 3
+		                    }
+		                ]
+		            },
+		            options: {
+		                responsive: true,
+		                plugins: {
+		                    title: {
+		                        display: true,
+		                        text: '날짜별 지각률 (%)'
+		                    },
+		                    tooltip: {
+		                        callbacks: {
+		                            label: function(context) {
+		                                return `${context.parsed.y}%`; // 툴팁에 지각률 표시
+		                            }
+		                        }
+		                    }
+		                },
+		                scales: {
+		                    y: {
+		                        beginAtZero: true,
+		                        max: 100,
+		                        title: {
+		                            display: true,
+		                            text: '지각률 (%)'
+		                        },
+		                        ticks: {
+		                            callback: function(value) {
+		                                return value + '%'; // y축 값에 '%' 추가
+		                            }
+		                        }
+		                    }
+		                }
+		            }
+		        });
+		    }
+		
+		    // 초기 차트는 최근 5년 내의 데이터로 로드
+		    updateChart(currentYear, 0); // 기본값으로 최근 1년 데이터 표시
+		
+		    // 셀렉트박스에서 연도와 월을 선택할 때마다 데이터 업데이트
+		    yearSelector.addEventListener('change', function() {
+		        const selectedYear = parseInt(this.value); // 선택한 연도
+		        const selectedMonth = parseInt(monthSelector.value); // 선택한 월
+		        updateChart(selectedYear, selectedMonth); // 해당 연도와 월의 데이터를 보여줌
 		    });
-		    
-		    // --------------------------------------------------
-		    const percentageLabels = lateCountByDate.map(item => item.workDate);
-			const latePercentages = lateCountByDate.map(item =>
-			    item.totalCount > 0 ? (item.lateCount / item.totalCount * 100).toFixed(1) : 0
-			);
-			
-			const ctx2 = document.getElementById('latePercentageByDate').getContext('2d');
-			const percentageChart = new Chart(ctx2, {
-			    type: 'line',
-			    data: {
-			        labels: percentageLabels,
-			        datasets: [
-			            {
-			                label: '지각률 (%)',
-			                data: latePercentages,
-			                borderColor: 'rgba(255, 206, 86, 1)',
-			                backgroundColor: 'rgba(255, 206, 86, 0.2)',
-			                fill: true,
-			                tension: 0.3,
-			                pointRadius: 3
-			            }
-			        ]
-			    },
-			    options: {
-			        responsive: true,
-			        plugins: {
-			            title: {
-			                display: true,
-			                text: '날짜별 지각률 (%)'
-			            },
-			            tooltip: {
-			                callbacks: {
-			                    label: function(context) {
-			                        return `${context.parsed.y}%`;
-			                    }
-			                }
-			            }
-			        },
-			        scales: {
-			            y: {
-			                beginAtZero: true,
-			                max: 100,
-			                title: {
-			                    display: true,
-			                    text: '지각률 (%)'
-			                },
-			                ticks: {
-			                    callback: function(value) {
-			                        return value + '%';
-			                    }
-			                }
-			            }
-			        }
-			    }
-			});
-		    
-		    // --------------------------------------------------
-		    
+		
+		    monthSelector.addEventListener('change', function() {
+		        const selectedYear = parseInt(yearSelector.value); // 선택한 연도
+		        const selectedMonth = parseInt(this.value); // 선택한 월
+		        updateChart(selectedYear, selectedMonth); // 해당 연도와 월의 데이터를 보여줌
+		    });
+		
 		</script>
+
+
+
 		
 		
 		

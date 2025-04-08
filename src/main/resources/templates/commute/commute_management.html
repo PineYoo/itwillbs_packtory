@@ -143,7 +143,7 @@
 										                        <option 
 										                            th:value="${sub.childCode}" 
 										                            th:text="${sub.childName}"
-										                            th:selected="${subDepartment} == ${sub.childCode}">
+										                            th:selected="*{subDepartment} == ${sub.childCode}">
 										                        </option>
 										                    </th:block>
 										                </select>

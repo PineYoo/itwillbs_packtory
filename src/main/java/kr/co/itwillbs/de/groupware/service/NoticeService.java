@@ -90,7 +90,7 @@ public class NoticeService {
 		log.info("affectedRow is {}", affectedRow);
 		//TODO 0이 나올 경우 예외처리 필요? 다음엔 좀더 예쁘게?
 		if(affectedRow < 1) {
-			throw new Exception("업데이트할 샘플 데이터가 존재하지 않습니다.");
+			throw new Exception("업데이트할 게시글이 존재하지 않습니다.");
 		}
 		
 	}

@@ -10,39 +10,31 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class ApprovalDTO {
-	
-	//	일단 임시로 String(방세현)
-//	private String approvalStatus; // 진행상태 (일단 enum으로! 나중에 공통코드로 뺄지 고민)
-//	
-//	private String drafterId;		// 기안자ID(사원번호)
-//	private String drafterName;	// 기안자명(작성자)
-//	private String drafterDepartment;// 기안자 부서
-//	private String drafterPosition;// 기안자 직급
-//
-//	private String approval_type;	// 결재유형 (일단 enum으로! 나중에 공통코드로 빼기)
-//	
-//	private String docNo;			// 문서양식번호	(공통코드)
-//	private String title;			// 제목		
-//	private String content;			// 내용
-//	private String uploadFile;		// 첨부파일
-//	
-//	private String draftDate;		// 기안일자
-//	private String dueDate;			// 마감일자
-	
 	//	결재 번호
 	private String approvalNo;
-	//	결재 유형
+	
+	//	결재 유형 코드
 	private String approvalType;
-	//	문서양식번호
+	//	결재 유형 이름
+	private String approvalTypeName;
+	
+	//	문서 양식 코드
 	private String docNo;
+	//	문서 양식 이름
+	private String docName;
+	
 	//	제목
 	private String title;
 	//	내용
 	private String content;
 	//	첨부파일(?)
 	private String uploadFile;
-	//	진행상태
+	
+	//	진행상태코드
 	private String progressStatus;
+	//	진행상태이름
+	private String progressName;
+	
 	//	기안자
 	private String drafterId;
 	//	기안일자
@@ -56,10 +48,13 @@ public class ApprovalDTO {
 	
 	//	결재자1
 	private String approver1;
+	private String approver1Name;
 	//	결재자2
 	private String approver2;
+	private String approver2Name;
 	//	결재자3
 	private String approver3;
+	private String approver3Name;
 	
  	//	결재자1 승인여부
 	private String approver1Status;
@@ -84,10 +79,18 @@ public class ApprovalDTO {
 	
 	//	employee 이름
 	private String name;
-	//	직급
-	private String positionCode;
+	//	부서코드
+	private String departmentCode;
 	//	부서이름
-	private String childName;
+	private String departmentName;
+	//	팀코드
+	private String subDepartmentCode;
+	//	팀이름
+	private String subDepartmentName;
+	//	직급코드
+	private String positionCode;
+	//	직급이름
+	private String positionName;
 	
 	
 	
