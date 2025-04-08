@@ -23,6 +23,7 @@ import kr.co.itwillbs.de.commute.dto.CommuteDTO;
 import kr.co.itwillbs.de.commute.dto.CommuteListDTO;
 import kr.co.itwillbs.de.commute.dto.CommuteSearchDTO;
 import kr.co.itwillbs.de.commute.service.CommuteService;
+import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
 import lombok.extern.slf4j.Slf4j;
 
 /* 근태 관리 */
@@ -37,6 +38,7 @@ public class CommuteController {
 	private CommonCodeUtil commonCodeUtil;
 	
 	private final String COMMON_MAJOR_CODE_TRADE = "WORK_STATUS_CODE";
+	private final String COMMON_MAJOR_CODE_TRADE_DEP = "DEPARTMENT_CODE";
 	private final String CHECKIN_NAME_KR = "출근";
 	private final String LATE_NAME_KR = "지각";
 	
@@ -45,13 +47,25 @@ public class CommuteController {
 	public String getCommuteList(@ModelAttribute CommuteSearchDTO commuteSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		// 출퇴근 기록 코드
+		// 출퇴근 코드
 		List<CodeItemDTO> codeItemList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
 		System.out.println("codeItemList : " + codeItemList);
 		model.addAttribute("codeItemList", codeItemList);
 		
-		// 하드코딩
-		String id = "100006";	// 허민의 사번 100006 하드코딩
+		// 부서 코드(검색바)
+		List<CodeItemDTO> departmentList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE_DEP);
+		System.out.println("departmentList : " + departmentList);
+		model.addAttribute("departmentList", departmentList);
+
+		// 하위 부서코드(검색바)
+		List<DepartmentInfoDTO> subDeptList = commuteService.getDepartmentList();
+		System.out.println("subDeptList : " + subDeptList);
+		model.addAttribute("subDeptList", subDeptList);
+		
+		
+		
+		// 자기 사번의 부서, 직급에 따라 조회할 수 있는 범위가 달라짐
+		String id = "100001";	//  사번 하드코딩
 		
 		List<CommuteListDTO> commuteList = commuteService.getCommuteList(id, commuteSearchDTO);
 		log.info("commuteList : " + commuteList);
@@ -72,8 +86,18 @@ public class CommuteController {
 		System.out.println("codeItemList : " + codeItemList);
 		model.addAttribute("codeItemList", codeItemList);
 		
-		// 하드코딩
-		String id = "100006";	// 허민의 사번 100006 하드코딩
+		// 부서 코드(검색바)
+		List<CodeItemDTO> departmentList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE_DEP);
+		System.out.println("departmentList : " + departmentList);
+		model.addAttribute("departmentList", departmentList);
+		
+		// 하위 부서코드(검색바)
+		List<DepartmentInfoDTO> subDeptList = commuteService.getDepartmentList();
+		System.out.println("subDeptList : " + subDeptList);
+		model.addAttribute("subDeptList", subDeptList);
+		
+		
+		String id = "100001";	//  사번 하드코딩
 		
 		// 출퇴근 조건 검색 리스트 조회 요청(SELECT) - 재사용
 		List<CommuteListDTO> commuteList = commuteService.getCommuteList(id, commuteSearchDTO);
@@ -95,8 +119,7 @@ public class CommuteController {
 		System.out.println("codeItemList : " + codeItemList);
 		model.addAttribute("codeItemList", codeItemList);
 		
-		// 사번_하드코딩
-		String id = "100006";	// 허민의 사번 100006 하드코딩
+		String id = "100001";	//  사번 하드코딩
 		
 		// 로그인한 사번의 오늘 출퇴근 기록 조회
 		LocalDate today = LocalDate.now();
@@ -124,8 +147,7 @@ public class CommuteController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("commuteDTO : {}", StringUtil.objToString(commuteDTO));
 	    
-		// 사번_하드코딩
-		String id = "100006";	// 허민의 사번 100006 하드코딩
+		String id = "100001";	//  사번 하드코딩
 		
 		commuteDTO.setEmployeeId(id);	// 사번
 		LocalDateTime now = LocalDateTime.now();
