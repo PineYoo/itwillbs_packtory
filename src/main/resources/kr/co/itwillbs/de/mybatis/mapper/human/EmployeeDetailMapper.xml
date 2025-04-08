@@ -4,67 +4,36 @@
 
 <mapper namespace="kr.co.itwillbs.de.human.mapper.EmployeeDetailMapper">
 
-	<!-- VO/DTO 매핑용 ResultMap -->
-	<resultMap id="employeeDetailResultMap" type="kr.co.itwillbs.de.human.dto.EmployeeDetailDTO">
-	    <id property="idx" column="idx"/>
-	    <result property="id" column="id"/>
-	
-		<result property="phoneNumber" column="phone_number"/>
-		<result property="email" column="email"/>
-		<result property="gender" column="gender"/>
-		<result property="address1" column="address1"/>
-		<result property="address2" column="address2"/>
-		
-		<result property="fileIdxs" column="file_idxs"/>
-		
-		<result property="salaryBankCode" column="salary_bank_code"/>
-		<result property="salaryBankName" column="salary_bank_name"/>
-		<result property="salaryAccountNumber" column="salary_account_number"/>
-		<result property="salaryAccountHolder" column="salary_account_holder"/>
-	
-		<result property="hasVehicle" column="has_vehicle"/>
-		<result property="employeeStatusCode" column="employee_status_code"/>
-		<result property="statusStartDate" column="status_start_date"/>
-		<result property="statusEndDate" column="status_end_date"/>
-		
-		<result property="regId" column="reg_id"/>
-		<result property="regDate" column="reg_date"/>
-		<result property="modId" column="mod_id"/>
-		<result property="modDate" column="mod_date"/>
-	
-		<result property="isDeleted" column="is_deleted"/>
-	</resultMap>
+    <!-- 사원 상세 정보 조회 -->
+    <select id="getEmployeeDetailById" parameterType="string" resultType="kr.co.itwillbs.de.human.dto.EmployeeDetailDTO">
+        SELECT *
+        FROM t_employee_detail
+        WHERE id = #{id}
+        AND is_deleted = 'N'
+    </select>
 
-	<!-- 사원 상세 정보 조회 -->
-	<select id="getEmployeeDetailById" parameterType="string" resultMap="employeeDetailResultMap">
-		SELECT *
-		FROM t_employee_detail
-		WHERE id = #{id}
-		AND is_deleted = 'N'
-	</select>
-
-	<!-- 사원 상세 정보 수정 -->
-	<update id="updateEmployeeDetail" parameterType="EmployeeDetailDTO">
-	    UPDATE t_employee_detail
-	    SET
-	        phone_number = #{phoneNumber},
-	        email = #{email},
-	        gender = #{gender},
-	        address1 = #{address1},
-	        address2 = #{address2},
-	        file_idxs = #{fileIdxs},
-	        salary_bank_code = #{salaryBankCode},
-	        salary_bank_name = #{salaryBankName},
-	        salary_account_number = #{salaryAccountNumber},
-	        salary_account_holder = #{salaryAccountHolder},
-	        has_vehicle = #{hasVehicle},
-	        employee_status_code = #{employeeStatusCode},
-	        status_start_date = #{statusStartDate},
-	        status_end_date = #{statusEndDate},
-	        mod_id = #{modId},
-	        mod_date = NOW()
-	    WHERE id = #{id}
-	</update>
+    <!-- 사원 상세 정보 수정 -->
+    <update id="updateEmployeeDetail" parameterType="kr.co.itwillbs.de.human.dto.EmployeeDetailDTO">
+        UPDATE t_employee_detail
+        SET
+            phone_number = #{phoneNumber},
+            email = #{email},
+            gender = #{gender},
+            address1 = #{address1},
+            address2 = #{address2},
+            file_idxs = #{fileIdxs},
+            salary_bank_code = #{salaryBankCode},
+            salary_bank_name = #{salaryBankName},
+            salary_account_number = #{salaryAccountNumber},
+            salary_account_holder = #{salaryAccountHolder},
+            has_vehicle = #{hasVehicle},
+            employee_status_code = #{employeeStatusCode},
+            status_start_date = #{statusStartDate},
+            status_end_date = #{statusEndDate},
+            mod_id = #{modId},
+            mod_date = NOW()
+        WHERE id = #{id}
+    </update>
 
     <!-- 사원 삭제 (Soft Delete) -->
     <update id="deleteEmployeeDetail" parameterType="string">
