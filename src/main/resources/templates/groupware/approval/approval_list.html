@@ -38,7 +38,7 @@
 				<h1 class="h3 mb-2 text-gray-800">전자결재</h1>
 			</div>
 			<div class="regist-wrap">
-<!-- 				<input type="hidden" id="userId" th:value="${#httpSession.getAttribute('userId')}"> -->
+				<input type="hidden" id="memberId" th:value="${memberId}">
 				<button class="btn btn-success ml-2" id="registerBtn" type="button">기안서 작성</button>
 			</div>
 			<!-- ---------- 검색바 컨테이너 ---------- -->
@@ -78,8 +78,8 @@
 								<tr th:each="item, status : ${approvalDTOList}" th:data-id="${item.approvalNo}">
 									<td th:text="${item.approvalNo != null ? item.approvalNo : '-'}"></td>
 									<td th:text="${item.title != '' ? item.title : '-'}"></td>
-									<td th:text="${item.progressStatus != null ? item.progressStatus : '-'}"></td>
-									<td th:text="${item.drafterId != null ? item.drafterId : '-'}"></td>
+									<td th:text="${item.progressName != null ? item.progressName : '-'}"></td>
+									<td th:text="${item.name != null ? item.name : '-'}"></td>
 									<td th:text="${item.draftDate != null ? item.draftDate : '-'}"></td>
 									<td th:text="${item.dueDate != null ? item.dueDate : '-'}"></td>
 								</tr>
@@ -111,13 +111,13 @@
 				$("#registerBtn").on('click', function() {
 					//로그인한 사용자 id 가져오기
 // 					let userId = $("#userId").val();
-					let userId = "100008"; //일단 하드코딩
+					let userId = "100004"; //일단 하드코딩
 					
 // 					let url = `/approval/register?userId=` + userId;
 //					let url = `/approval/register?userId=` + encodeURIComponent(userId); //userId보안설정
 					
 // 					window.open(url, '_blank', 'width=800,height=1200,scrollbars=yes,resizable=yes');
-					location.href = `/approval/regist/${userId}`;
+					location.href = `/groupware/approval/regist/${userId}`;
 				});
 				
 				$("#approvalList tbody").on("click", 'tr', function() {
@@ -128,7 +128,7 @@
 						return;
 					}
 					
-					location.href="/approval/" + documentNumber;
+					location.href="/groupware/approval/" + documentNumber;
 				});
 				
 				

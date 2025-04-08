@@ -178,10 +178,10 @@ document.addEventListener("DOMContentLoaded", function(){
 	// 기안서 작성 버튼 클릭 이벤트(새창 열기)
 	$("#registerBtn").on('click', function() {
 		//로그인한 사용자 id 가져오기
-//		let userId = $("#userId").val();
-		let userId = "100008"; //일단 하드코딩
+		let memberId = $("#memberId").val();
+//		let memberId = "100004"; //일단 하드코딩
 		
-		let url = `/approval/register?userId=` + userId;
+		let url = `/approval/register?userId=` + memberId;
 //		let url = `/approval/register?userId=` + encodeURIComponent(userId); //userId보안설정
 		
 		window.open(url, '_blank', 'width=800,height=1200,scrollbars=yes,resizable=yes');

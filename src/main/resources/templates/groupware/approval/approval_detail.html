@@ -32,6 +32,7 @@
 </th:block>
 <style type="text/css">
 	.approver-group { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
+	.fileSpan { margin-right: 30px; }
 </style>
 </head>
 
@@ -45,22 +46,25 @@
 			<h3 class="reg-title">기안서 상세보기</h3>
 			<!-- 본문 컨테이너 -->
 			<div class="main-container">
-				<form action="/approval/regist" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${approvalDTO}" >
+				<form th:action="@{/groupware/approval/{approvalNo}(approvalNo=${approvalDTO.approvalNo})}" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${approvalDTO}" >
+					<input type="hidden" name="_method" value="put">
 			        <div class="form-div">
 			            <label th:for="drafterId">사원번호</label>
-			            <input type="text" id="draftId" th:field="*{drafterId}" class="form-control" readonly>
+			            <input type="text" id=drafterId th:field="*{drafterId}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
 			            <label th:for="name">작성자</label>
-			            <input type="text" id="name0" th:field="*{name}" class="form-control" readonly>
+			            <input type="text" id="name" th:field="*{name}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
-			            <label th:for="childName">부서</label>
-			            <input type="text" id="childName" th:field="*{childName}" class="form-control" readonly>
+			            <input type="hidden" th:field="*{departmentCode}" class="form-control" readonly>
+			            <label th:for="departmentName">부서</label>
+			            <input type="text" id="departmentName" th:field="*{departmentName}" class="form-control" readonly>
 			        </div>
 			        <div class="form-div">
-			            <label th:for="positionCode">직급</label>
-			            <input type="text" id="positionCode" th:field="*{positionCode}" class="form-control" readonly>
+			            <input type="hidden" th:field="*{positionCode}" class="form-control" readonly>
+			            <label th:for="positionName">직급</label>
+			            <input type="text" id="positionName" th:field="*{positionName}" class="form-control" readonly>
 			        </div>
 			        
 			        <div class="form-div">
@@ -82,11 +86,11 @@
 						<div class="approver-line">
 			        		<button type="button" class="btn btn-primary" id="addApproverLineBtn" >결재라인 추가 <i class="fa-solid fa-plus"></i></button>
 			        		<div class="approver-group" id="approver-1" th:if="${approvalDTO.approver1 != null and !#strings.isEmpty(approvalDTO.approver1)}">
-			        			<input type="hidden" class="approver-id" name="approver1" value="*{approver1}">
+			        			<input type="hidden" class="approver-id" name="approver1" th:value="${approvalDTO.approver1}">
 			        			<input type="text"
 			        					class="form-control approver-input"
 			        					data-index="1"
-			        					th:value="*{approver1}"
+			        					th:value="*{approver1Name}"
 			        					readonly>
 			        			<button type="button" class="btn btn-primary search-approver"
 										id="searchApproverBtn1" data-index="1">
@@ -98,11 +102,11 @@
 								</button>
 				            </div>
 			        		<div class="approver-group" id="approver-2" th:if="${approvalDTO.approver2 != null and !#strings.isEmpty(approvalDTO.approver2)}">
-			        			<input type="hidden" class="approver-id" name="approver2" value="*{approver2}">
+			        			<input type="hidden" class="approver-id" name="approver2" th:value="${approvalDTO.approver2}">
 			        			<input type="text"
 			        					class="form-control approver-input"
 			        					data-index="2"
-			        					th:value="*{approver2}"
+			        					th:value="*{approver2Name}"
 			        					readonly>
 			        			<button type="button" class="btn btn-primary search-approver"
 										id="searchApproverBtn2" data-index="2">
@@ -114,11 +118,11 @@
 								</button>
 				            </div>
 			        		<div class="approver-group" id="approver-3" th:if="${approvalDTO.approver3 != null and !#strings.isEmpty(approvalDTO.approver3)}">
-			        			<input type="hidden" class="approver-id" name="approver3" value="*{approver3}">
+			        			<input type="hidden" class="approver-id" name="approver3" th:value="${approvalDTO.approver3}">
 			        			<input type="text"
 			        					class="form-control approver-input"
 			        					data-index="3"
-			        					th:value="*{approver3}"
+			        					th:value="*{approver3Name}"
 			        					readonly>
 			        			<button type="button" class="btn btn-primary search-approver"
 										id="searchApproverBtn3" data-index="3">
@@ -134,7 +138,7 @@
 					<!-- datepicker 사용 -->
 					<div class="form-div">
 					    <label for="dueDate">결재기간</label>
-					    <input type="text" id="dueDate" th:field="*{dueDate}" class="form-control" placeholder="결재 기간을 선택하세요.">
+					    <input type="text" id="dueDate" name="dueDate" th:value="${approvalDTO.draftDate} + ' ~ ' + ${approvalDTO.dueDate}" class="form-control" placeholder="결재 기간을 선택하세요.">
 						<button class="btn btn-success ml-2" id="initDateBtn" type="button"><i class="fa-solid fa-rotate"></i></button>
 					</div>
 					
@@ -151,13 +155,28 @@
 <!-- 			            Editor 라이브러리 일단 나중에......... -->
 			        </div>
 					
-					<div class="form-div">
-					    <label for="fileUpload">첨부파일</label>
-					    <input type="file" id="fileUpload" name="approvalFiles" multiple>
+					<div class="form-div" th:if="${fileList != null and not #lists.isEmpty(fileList)}">
+						<label th:for="file">첨부파일 목록</label>
+	<!-- 								<ul class="list-group custom-ul"> -->
+						<ul id="file" class="list-group">
+						    <li th:each="file : ${fileList}"
+						    	th:if="${file.isDeleted == 'N'}"
+						    	th:id="'file-' + ${file.idx}"
+						    	class="list-group-item d-flex justify-content-between align-items-center">
+					            <span th:text="${file.fileOriginalName}" class="fileSpan"></span>
+					            <button type="button" class="btn btn-danger btn-sm fileDeleteButton" th:data-id="${file.idx}">삭제</button>
+					        </li>
+						</ul>
 					</div>
 					
-			        <div style="text-align: center">
-						<button type="submit" class="btn btn-primary" id="submitBtn">기안하기</button>
+					<div class="form-div">
+					    <label for="fileUpload">첨부파일</label>
+					    <input type="file" id="fileUpload" class="form-control mb-3" name="approvalFiles" multiple>
+					</div>
+					
+			        <div style="text-align: center; margin: 10px 0;">
+						<button type="submit" class="btn btn-primary" id="submitBtn">수정하기</button>
+						<button type="button" id="cancelBtn" class="btn btn-secondary ml-2" >돌아가기</button>
 			        </div>
 				</form>
 			</div>
@@ -185,7 +204,7 @@
 	<script src="/js/datatables/jszip.min.js"></script>
 	<script src="/js/datatables/buttons.print.min.js"></script>
 	<!-- 개별 js -->
-    <script src="/js/approval/approval_detail.js"></script>
+    <script src="/js/approval/approval_reg.js"></script>
 </th:block>
 	
 	

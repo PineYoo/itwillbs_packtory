@@ -53,10 +53,10 @@
 			            </tr>
 			        </thead>
 			        <tbody id="approverList">
-			        	<tr th:each="item , status : ${draftDTOList}" th:data-id="${item.drafterId}">
-			        		<td th:text="${item.drafterName}"></td>
-			        		<td th:text="${item.drafterDepartment}"></td>
-			        		<td th:text="${item.drafterPosition}"></td>
+			        	<tr th:each="item , status : ${approvalDTOList}" th:data-id="${item.drafterId}">
+			        		<td th:text="${item.name}"></td>
+			        		<td th:text="${item.departmentName}"></td>
+			        		<td th:text="${item.positionName}"></td>
 			        		<td>
 								<button class="btn btn-success">선택</button>
 			        		</td>
