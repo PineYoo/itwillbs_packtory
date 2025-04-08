@@ -10,7 +10,6 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -101,99 +100,45 @@ public class PacktoryAspect {
 	}
 
 	
-	// 포인트컷 정의
-/*	@Pointcut("execution(* kr.co.itwillbs.de..service.*.*(..)) && args(dto,..)")
-	public void singleDtoPointcut() {
-	}
-
-	@Pointcut("execution(* kr.co.itwillbs.de..service.*.*(..)) && args(dtoList,..)")
-	public void dtoListPointcut() {
-	}
-	*/
-	
 	/**
 	 * <pre>
 	 * 세션에 있는 memberId를 DTO의 여러 필드에 주입
-	 * 포인트컷 설명 : packtory 서비스클래스.메서드 && 아규먼트 첫번째가 dto 객체여야한다. 여러개 쓰는 사람 있나???요???
+	 * 포인트컷 설명 : packtory 서비스클래스.메서드 대상임
 	 * (memberId인 이유는 시큐리티 로그인할때 username이 memberId이기 때문)
 	 * DTO 객체에 여러 필드명 지정, @RequiredSessionIds(fields = {"memberId", "regId", "modId"})
+	 * 하지만 사용에 주의 점이 한가지 있는데
+	 * 메서드에 진입한 DTO나 DTOList가 바로 insert 작업을 하면 문제가 없지만
+	 * 조회를 한 후에 입력을 하려하면 AOP로 주입한 객체를 조회하면서 새로 써버렸기에 아무일도 없는 것 처럼 되어버림
 	 * </pre>
-	 * 
 	 * @param joinPoint
-	 * @param dto
 	 * @return
 	 * @throws Throwable
 	 */
-	@Around("execution(* kr.co.itwillbs.de..service.*.*(..)) && args(dto,..)")
-	public Object injectMultipleSessionIds(ProceedingJoinPoint joinPoint, Object dto) throws Throwable {
+	@Around("execution(* kr.co.itwillbs.de..service.*.*(..))")
+	public Object injectSessionIds(ProceedingJoinPoint joinPoint) throws Throwable {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		if (dto != null && dto.getClass().isAnnotationPresent(RequiredSessionIds.class)) {
-			this.injectMemberIds(dto);
-			/*
-			try {
-				// 세션에서 memberId 가져오기
-				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-				String memberId = authentication != null ? authentication.getName() : null;
+		Object[] args = joinPoint.getArgs();
+		
+		for(Object arg : args) {
+			if (arg == null)
+				continue;
 
-				if (memberId != null) {
-					// 어노테이션에서 필드 목록 가져오기
-					RequiredSessionIds annotation = dto.getClass().getAnnotation(RequiredSessionIds.class);
-					String[] fields = annotation.fields();
-
-					// 각 필드에 memberId 주입
-					for (String fieldName : fields) {
-						try {
-							Field field = dto.getClass().getDeclaredField(fieldName);
-							field.setAccessible(true);
-							
-							// 필드 타입이 String이 아닌 경우 예외 발생
-							if (!field.getType().equals(String.class)) {
-								throw new IllegalArgumentException(fieldName + " 필드는 String 타입이어야 합니다.");
-							}
-							// 현재 값이 null인 경우에만 주입
-							if (field.get(dto) == null) {
-								field.set(dto, memberId);
-								log.debug("{} 필드에 memberId 주입 성공: {}", fieldName, memberId);
-							}
-						} catch (NoSuchFieldException e) {
-							log.debug("DTO에 {} 필드가 없습니다: {}", fieldName, dto.getClass().getName());
-						} catch (IllegalAccessException e) {
-							log.error("{} 필드 접근 중 오류 발생: {}", fieldName, e.getMessage());
-						}
-					}
+			if (arg instanceof List<?>) {
+				for (Object item : (List<?>) arg) {
+					injectIfAnnotated(item);
 				}
-			} catch (Exception e) {
-				log.error("memberId 주입 중 오류 발생: {}", e.getMessage());
-			}*/
-		}
-
-		return joinPoint.proceed();
-	}
-	
-	/**
-	 * <pre>
-	 * 세션에 있는 memberId를 DTO의 여러 필드에 주입
-	 * 포인트컷 설명 : packtory 서비스클래스.메서드 && 아규먼트 첫번째가 dtoList 객체여야한다.
-	 * (memberId인 이유는 시큐리티 로그인할때 username이 memberId이기 때문)
-	 * DTO 객체에 여러 필드명 지정, @RequiredSessionIds(fields = {"memberId", "regId", "modId"})
-	 * </pre>
-	 * @param joinPoint
-	 * @param dtoList
-	 * @return
-	 * @throws Throwable
-	 */
-	@Around("execution(* kr.co.itwillbs.de..service.*.*(..)) && args(dtoList,..)")
-	public Object injectSessionIdToList(ProceedingJoinPoint joinPoint, List<?> dtoList) throws Throwable {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		if (dtoList != null && !dtoList.isEmpty()) {
-			// List의 각 요소가 @RequiredSessionIds 어노테이션이 있는지 확인
-			for (Object dto : dtoList) {
-				if (dto != null && dto.getClass().isAnnotationPresent(RequiredSessionIds.class)) {
-					this.injectMemberIds(dto);
-				}
+			} else {
+				injectIfAnnotated(arg);
 			}
-		}
+		} // end of for(Object arg : args) {
+		
 		return joinPoint.proceed();
+	}
+	
+	private void injectIfAnnotated(Object dto) {
+		if (dto.getClass().isAnnotationPresent(RequiredSessionIds.class)) {
+			injectMemberIds(dto);
+		}
 	}
 	
 	/**
@@ -224,12 +169,12 @@ public class PacktoryAspect {
 						
 						// 현재 값 확인
 						Object currentValue = field.get(dto);
-						//log.info("{} 필드 현재 값: {}", fieldName, currentValue);
+						log.info("{} 필드 현재 값: {}", fieldName, currentValue);
 
 						// null인 경우에만 주입
 						if (currentValue == null) {
 							field.set(dto, memberId);
-							//log.info("{} 필드에 memberId 주입 성공: {}", fieldName, memberId);
+							log.info("{} 필드에 memberId 주입 성공: {}", fieldName, memberId);
 						}
 						
 					} catch (NoSuchFieldException e) {

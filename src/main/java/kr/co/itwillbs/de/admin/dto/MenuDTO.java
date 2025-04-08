@@ -2,6 +2,7 @@ package kr.co.itwillbs.de.admin.dto;
 
 import java.time.LocalDateTime;
 
+import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
+@RequiredSessionIds(fields = {"regId", "modId"})
 public class MenuDTO {
 
 	// 테이블 PK

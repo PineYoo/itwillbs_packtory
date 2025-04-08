@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.3'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'war'
 }
 
 group = 'kr.co.itwillbs.de'
@@ -12,7 +13,9 @@ java {
 		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
-
+bootWar {
+	archiveFileName = 'ROOT.war' // 원하는 파일명
+}
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -48,7 +51,6 @@ Validation
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	
 	//QueryDSL 의존성 추가
 	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
 	annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'	// Q클래스 자동 생성 지원
@@ -68,6 +70,9 @@ Validation
 	
 	// 서비스 로그를 위한 AOP 추가
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	
+	// Tomcat을 외부에서 제공받을 것이므로 provided로 설정
+	providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
 }
 
 tasks.named('test') {

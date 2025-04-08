@@ -11,6 +11,7 @@ import kr.co.itwillbs.de.admin.dto.MemberDTO;
 import kr.co.itwillbs.de.admin.dto.MemberSearchDTO;
 import kr.co.itwillbs.de.admin.mapper.MemberMapper;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
+import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -47,17 +48,8 @@ public class MemberService {
 		return memberMapper.getBeforeMembersByEmployeeSearch(employeeSearchDTO);
 	}
 	
-	/**
-	 * t_employee (직원)를 t_member(사용자)로 입력
-	 * <pre>
-	 * 1)t_employee 정보를 List로 받아옴
-	 * 2)password, role, status, isDeleted 정보를 작성함
-	 * 3)t_member 테이블에 다중 인서트함
-	 * </pre>
-	 * @param memberDTOList
-	 */
-	@LogExecution // 로그 남길 서비스
-	public void registerMembers(List<MemberDTO> memberDTOList) {
+	/*
+	public void OldregisterMembers(List<MemberDTO> memberDTOList) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// t_empoyee.id 를 가지고 데이터를 다시 가져온다.
@@ -85,8 +77,59 @@ public class MemberService {
 			log.error("dtoList.size() {} , affectedRow {}", memberDTOList.size(), affectedRow);
 			throw new IllegalStateException("요청한 입력 개수와 처리된 개수가 같지 않습니다.");
 		}
+	}*/
+	/**
+	 * t_employee (직원)를 t_member(사용자)로 입력
+	 * <pre>
+	 * 1)t_employee 정보를 List로 받아옴 -> registerMembersPartOne
+	 * 2)password, role, status, isDeleted 정보를 작성함 -> registerMembersPartTwo
+	 * 3)t_member 테이블에 다중 인서트함
+	 * </pre>
+	 * @param memberDTOList
+	 */
+	public List<MemberDTO> registerMembersPartOne(List<MemberDTO> memberDTOList) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		// t_empoyee.id 를 가지고 데이터를 다시 가져온다.
+		List<MemberDTO> memberList = memberMapper.getBeforeMembersByIds(memberDTOList);
+		log.info("before memberList in {}", memberList);
+		return memberList;
 	}
-
+	
+	/**
+	 * AOP 작업을 위해 INSERT 작업 메서드를 별도로 처리
+	 * @param memberDTOList
+	 * @return
+	 */
+	@LogExecution // 로그 남길 서비스
+	@RequiredSessionIds
+	public void registerMembersPartTwo(List<MemberDTO> memberDTOList) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		if(memberDTOList.size() > 0) {
+			for(MemberDTO member : memberDTOList) {
+				// 암호 만들기
+				if(member.getSsn().length() > 6) {
+					//스프링 시큐리티 이후 이걸로 암호 만들어서 넣는다. 기본 암호는 생년월일 6자리이다.
+					member.setPassword(passwordEncoder.encode(member.getSsn().substring(0, 6)));
+				}
+				// 기본 값 셋
+				member.setRole("4");	// 1: Admin, 2: Manger, 3: employee, 4: user, 5: visitor
+				member.setStatus("1");	// 사용중
+				member.setIsDeleted("N"); //삭제되지 않음
+				//member.setRegId("superUser");
+			}
+		}
+		log.info("after memberList in {}", memberDTOList);
+		
+		int affectedRow = memberMapper.registerMembers(memberDTOList);;
+		
+		log.info("memberDTOList.size(): {}, affectedRow: {}", memberDTOList.size(), affectedRow);
+		if(memberDTOList.size() != affectedRow) {
+			log.error("dtoList.size() {} , affectedRow {}", memberDTOList.size(), affectedRow);
+			throw new IllegalStateException("요청한 입력 개수와 처리된 개수가 같지 않습니다.");
+		}
+	}
+	
 	/**
 	 * 사용자 조회 페이지에서 사용할
 	 * <br>t_member 에 입력된 사용자 조회
@@ -124,6 +167,7 @@ public class MemberService {
 
 	/**
 	 * 상세에서 업데이트 하는 것
+	 * 너도 AOP가 적용되어야 한다.
 	 * @param memberDTO
 	 */
 	@LogExecution // 로그 남길 서비스

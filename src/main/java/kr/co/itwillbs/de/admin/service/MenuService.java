@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.co.itwillbs.de.admin.dto.MenuDTO;
 import kr.co.itwillbs.de.admin.dto.MenuSearchDTO;
 import kr.co.itwillbs.de.admin.mapper.MenuMapper;
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,6 +26,7 @@ public class MenuService {
 	 * @param menuDTO
 	 * @return
 	 */
+	@LogExecution
 	public int registerMenu(MenuDTO menuDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -99,6 +101,7 @@ public class MenuService {
 	 * @param menuDTO
 	 * @return
 	 */
+	@LogExecution
 	public int modifyMenuIsDeleted(MenuDTO menuDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -113,6 +116,7 @@ public class MenuService {
 	 * @param menuDTO
 	 * @throws Exception 
 	 */
+	@LogExecution
 	public void modifyMenu1Depth(MenuDTO menuDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -125,6 +129,7 @@ public class MenuService {
 		}
 	}
 	
+	@LogExecution
 	@Transactional
 	public void registerMenu2Depth(List<MenuDTO> menuList) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());

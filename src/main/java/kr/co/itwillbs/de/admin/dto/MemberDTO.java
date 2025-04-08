@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
+@RequiredSessionIds(fields = {"regId", "modId"})
 public class MemberDTO {
 	
 	// t_member
@@ -20,7 +22,11 @@ public class MemberDTO {
 	private String memberId;
 	private String password;
 	private String role;
+	private String roleName;
+	private String roleDescription;
 	private String status;
+	private String statusName;
+	private String statusDescription;
 	private String isDeleted;
 	private String regId;
 	private String regDate;
