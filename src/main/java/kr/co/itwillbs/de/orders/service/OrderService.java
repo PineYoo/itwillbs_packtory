@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientInfoDTO;
 import kr.co.itwillbs.de.orders.mapper.ClientMapper;
@@ -33,6 +34,7 @@ public class OrderService {
 	 * 거래처 등록
 	 * @param clientDTO 
 	 */
+	@LogExecution // 로그 남길 서비스
 	public int insertClient(ClientDTO clientDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -53,6 +55,7 @@ public class OrderService {
 	 * 거래처 정보 수정
 	 * @param clientDTO
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void updateClient(ClientDTO clientDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		clientMapper.updateClient(clientDTO);
@@ -62,6 +65,7 @@ public class OrderService {
 	 * 거래처_부가정보 수정
 	 * @param clientInfoDTO
 	 */
+	@LogExecution // 로그 남길 서비스
 	public void updateClientInfo(ClientInfoDTO clientInfoDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
