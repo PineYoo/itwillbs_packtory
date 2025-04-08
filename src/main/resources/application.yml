@@ -18,6 +18,7 @@ spring:
       on-profile: mysql
     import:
     - /packtory/properties/application-dev.yml
+    #- /usr/local/tomcat/packtory/properties/application-itwill.yml
 
   devtools:
     livereload:

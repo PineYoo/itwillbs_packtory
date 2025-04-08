@@ -1,6 +1,5 @@
 package kr.co.itwillbs.de.orders.service;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,8 @@ import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
+import kr.co.itwillbs.de.human.dto.EmployeeDTO;
+import kr.co.itwillbs.de.orders.dto.OrderCodeDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
@@ -95,6 +96,27 @@ public class SellService {
 	public void modifyOrderDetail(OrderDetailDTO orderDetailDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		sellMapper.updateOrderDetail(orderDetailDTO);
+	}
+	
+	// ------------------------------------------------------------------------------------
+	public List<OrderCodeDTO> getDepartmentList() {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return sellMapper.getDepartmentList();
+	}
+
+	public List<OrderCodeDTO> getSubDepartmentList(String mainDeptCode) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return sellMapper.getSubDepartmentList(mainDeptCode);
+	}
+
+	public List<OrderCodeDTO> getEmployeeList(String mainDeptCode, String subDeptCode) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return sellMapper.getEmployeeList(mainDeptCode, subDeptCode);
+	}
+
+	public OrderCodeDTO getEmployeeInfo(String employeeId) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return sellMapper.getEmployeeInfo(employeeId);
 	}
 	
 	

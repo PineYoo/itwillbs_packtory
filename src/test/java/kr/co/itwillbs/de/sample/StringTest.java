@@ -11,5 +11,8 @@ public class StringTest {
 		} else {
 			System.out.println("1");
 		}
+		
+		
+		System.out.println(!"Y".equalsIgnoreCase("N"));
 	}
 }

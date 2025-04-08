@@ -2,6 +2,7 @@ package kr.co.itwillbs.de.orders.dto;
 
 import java.time.LocalDateTime;
 
+import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
+@RequiredSessionIds(fields = {"regId", "modId"})
 public class OrderDetailDTO {
     private Long idx; 				// 테이블_인덱스
     

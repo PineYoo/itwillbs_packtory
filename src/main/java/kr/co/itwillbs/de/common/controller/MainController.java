@@ -1,13 +1,13 @@
 package kr.co.itwillbs.de.common.controller;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.vo.LoginVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,15 +69,19 @@ public class MainController {
 	 */
 	@GetMapping(value={"/main","/main/"})
 	public String packtoryMainView(Model model) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+			LoginVO loginVO = userDetails.getLoginVO();
+			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
+			log.info("userDetails is {}",userDetails);
+			log.info("loginVO is {}",loginVO);
+			model.addAttribute("userDetails", userDetails);
+			model.addAttribute("loginVO", loginVO);
+		}
 		
 		return "/main/main";
-	}
-	
-	@GetMapping("/common/currentTime")
-	@ResponseBody
-	public String getCurrentTime() {
-		LocalDateTime nowDate = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		return nowDate.format(formatter);
 	}
 }

@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.commute.dto.CommuteDTO;
 import kr.co.itwillbs.de.commute.dto.CommuteListDTO;
 import kr.co.itwillbs.de.commute.dto.CommuteSearchDTO;
+import kr.co.itwillbs.de.commute.dto.CommuteStatusDTO;
 import kr.co.itwillbs.de.commute.entity.Commute;
 import kr.co.itwillbs.de.commute.mapper.CommuteMapper;
 import kr.co.itwillbs.de.commute.repository.CommuteRepository;
@@ -35,10 +37,21 @@ public class CommuteService {
 	
 	/**
 	 * 부서 조회 요청(SELECT)
+	 * @param id 
 	 * @return List<DepartmentInfoDTO>
 	 */
-	public List<DepartmentInfoDTO> getDepartmentList() {
-		return commuteMapper.getDepartmentList();
+	public List<DepartmentInfoDTO> getDepartmentList(String id) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return commuteMapper.getDepartmentList(id);
+	}
+	
+	/**
+	 * 날짜별 지각 건수 조회 요청(SELECT)
+	 * @return List<CommuteStatusDTO>
+	 */
+	public List<CommuteStatusDTO> getCommuteCountByDate() {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return commuteMapper.getCommuteCountByDate();
 	}
 	
 	// ======================================================================================
@@ -79,6 +92,7 @@ public class CommuteService {
 	 * 출퇴근 기록 저장 요청(INSERT)
 	 * @param commuteDTO
 	 */
+	@LogExecution
 	public void saveCommuteInfo(CommuteDTO commuteDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		commuteMapper.insertCommuteInfo(commuteDTO);
