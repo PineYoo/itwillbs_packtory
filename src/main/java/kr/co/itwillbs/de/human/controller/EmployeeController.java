@@ -3,6 +3,8 @@ package kr.co.itwillbs.de.human.controller;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
+import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.human.dto.DepartmentCodeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
+import kr.co.itwillbs.de.human.dto.EmployeeDetailDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
 import kr.co.itwillbs.de.human.service.DepartmentInfoService;
 import kr.co.itwillbs.de.human.service.EmployeeService;
@@ -33,6 +37,8 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final DepartmentInfoService departmentInfoService;
     private final PositionInfoService positionInfoService;
+    
+    // 공통코드 주입
     private final CommonCodeUtil commonCodeUtil;
     private final CommonService commonService;
     
@@ -41,6 +47,10 @@ public class EmployeeController {
     public String employeeRegisterForm(Model model) {
         log.info("employeeRegisterForm --- 시작");
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        LoginVO userDetails = (LoginVO) auth.getPrincipal();
+        String memberId = userDetails.getUsername();
+       
         EmployeeDTO employeeDTO = EmployeeDTO.builder()
             .departmentCode("")
             .build();
@@ -115,29 +125,41 @@ public class EmployeeController {
     	log.info("getEmployeeDetail --- 시작, id: {}", id);
 
     	// 사원 기본정보 + 상세정보 조회
-    	EmployeeDTO employeeDTO = employeeService.getEmployeeByIdWithDetail(id);
-    	model.addAttribute("employeeDTO", employeeDTO);
+        EmployeeDTO employeeDTO = employeeService.getEmployeeByIdWithDetail(id);
+        model.addAttribute("employeeDTO", employeeDTO);
+        
+        // 대표부서, 하위부서, 직급 조회
+        model.addAttribute("validDepartments", commonCodeUtil.getCodeItems("DEPARTMENT_CODE"));
+        model.addAttribute("SubDepartments", Collections.emptyList()); // JS로 동적 처리
+        model.addAttribute("validPositions", positionInfoService.getValidPositions());
 
-    	// 대표부서, 하위부서, 직급 조회
-    	model.addAttribute("validDepartments", commonCodeUtil.getCodeItems("DEPARTMENT_CODE"));
-    	model.addAttribute("SubDepartments", Collections.emptyList()); // JS로 동적 처리
-    	model.addAttribute("validPositions", positionInfoService.getValidPositions());
-
-    	return "human/employee/detail";
+        return "human/employee/detail";
     }
 
     // 사원 수정 처리
     @PostMapping("/{id}")
     public String updateEmployee(@PathVariable("id") String id, 
-    							 @ModelAttribute EmployeeDTO employeeDTO) {
+                                 @ModelAttribute EmployeeDTO employeeDTO,
+                                 @ModelAttribute EmployeeDetailDTO employeeDetailDTO) {
         log.info("updateEmployee --- 시작, id: {}", id);
 
         // 전달된 idx 값을 employeeDTO에 설정
         employeeDTO.setId(id);
+        
+        // EmployeeDTO에 세부사항(detail) 필드 세팅
+        if (employeeDetailDTO != null) {
+            employeeDTO.setDetail(employeeDetailDTO);
+        }
+
+        // 업데이트 처리 전 로그
+        log.info("Updating EmployeeDTO: {}", employeeDTO);
+
+        // 사원 정보와 상세 정보를 업데이트
         employeeService.updateEmployeeWithDetail(employeeDTO);
 
-        return "redirect:/human/employee/"+id;
+        return "redirect:/human/employee";
     }
+
 
     // 사원 삭제 처리
     @PostMapping("/delete/{id}")

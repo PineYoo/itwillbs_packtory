@@ -1,5 +1,7 @@
 package kr.co.itwillbs.de.human.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +13,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
+@Builder
 public class EmployeeDetailDTO {
     private Long idx;                    // 인덱스
     private String id;                   // 사원번호
