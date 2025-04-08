@@ -1,131 +1,43 @@
 package kr.co.itwillbs.de.human.dto;
 
-import java.time.LocalDateTime;
-
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import kr.co.itwillbs.de.human.entity.Employee;
-import kr.co.itwillbs.de.human.entity.EmployeeDetail;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Builder
 public class EmployeeDTO {
+    private Long idx;                  // 인덱스 (PK)
+    private String id;                 // 사원번호
+    private String name;               // 이름
+    private String ssn;                // 주민번호 (마스킹 가능)
 
-    private Long idx; // 테이블 인덱스
+    private String departmentCode;     // 대표부서코드
+    private String subDepartmentCode;  // 하위부서코드
+    private String positionCode;       // 직급코드
 
-    @NotBlank(message = "사원번호는 필수 입력 값입니다.")
-    private String id; // 사원번호
+    private String departmentName;     // 부서 이름 (조인 결과 포함)
+    private String subDepartmentName;  // 하위부서 이름
+    private String positionName;       // 직급 이름
 
-    @NotBlank(message = "사원명은 필수 입력 값입니다.")
-    private String name; // 사원명
+    private LocalDate hireDate;        // 입사일
+    private LocalDate resignationDate; // 퇴사일
+    private String workExperience;     // 경력
 
-    @NotBlank(message = "주민등록번호는 필수 입력 값입니다.")
-    private String ssn; // 주민등록번호
-
-    @NotBlank(message = "부서 코드는 필수 입력 값입니다.")
-    private String departmentCode; // 부서코드
-
-    @NotBlank(message = "하위 부서 코드는 필수 입력 값입니다.")
-    private String subDepartmentCode; // 하위부서코드
-
-    @NotBlank(message = "직급 코드는 필수 입력 값입니다.")
-    private String positionCode; // 직급코드
-
-    @NotNull(message = "입사일은 필수 입력 값입니다.")
-    private LocalDateTime hireDate = LocalDateTime.now(); // 입사일
+    private String regId;			   // 최초등록자 ID
+    private LocalDateTime regDate;	   // 최초등록일
+    private String modId;			   // 최종수정자 ID
+    private LocalDateTime modDate;	   // 최종수정일
     
-    private LocalDateTime resignationDate; // 퇴사일
-
-    @Size(max = 50, message = "경력은 50자 이내로 입력해주세요.")
-    private String workExperience; // 경력
-
-    private String regId; // 작성자
-
-    private LocalDateTime regDate; // 작성일자시간
-
-    private String modId; // 최종 작성자
-
-    private LocalDateTime modDate; // 최종작성일자
-
-    private EmployeeDetailDTO employeeDetailDTO; // EmployeeDetailDTO 추가
-    
-    // Employee 객체를 받아서 DTO로 변환하는 생성자 추가
-    public EmployeeDTO(Employee employee) {
-        this.idx = employee.getIdx();
-        this.id = employee.getId();
-        this.name = employee.getName();
-        this.departmentCode = employee.getDepartmentCode();
-        this.subDepartmentCode = employee.getSubDepartmentCode();
-        this.positionCode = employee.getPositionCode();
-        this.hireDate = employee.getHireDate();
-        this.resignationDate = employee.getResignationDate();
-        this.workExperience = employee.getWorkExperience();
-        this.regId = employee.getRegId();
-        this.regDate = employee.getRegDate();
-        this.modId = employee.getModId();
-        this.modDate = employee.getModDate();
-        
-        // EmployeeDTO 생성 부분
-        if (employee.getEmployeeDetail() != null) {
-            this.employeeDetailDTO = new EmployeeDetailDTO(employee.getId(), employee.getEmployeeDetail(), employee);
-        }
-    }
-
-    @Builder
-    public EmployeeDTO(Long idx, String id, String name, String ssn, String departmentCode, String subDepartmentCode,
-                       String positionCode, LocalDateTime hireDate, LocalDateTime resignationDate, String workExperience,
-                       String regId, LocalDateTime regDate, String modId, LocalDateTime modDate, EmployeeDetailDTO employeeDetailDTO,
-                       String employeeStatus) {
-        this.idx = idx;
-        this.id = id;
-        this.name = name;
-        this.ssn = ssn;
-        this.departmentCode = departmentCode;
-        this.subDepartmentCode = subDepartmentCode;
-        this.positionCode = positionCode;
-        this.hireDate = hireDate;
-        this.resignationDate = resignationDate;
-        this.workExperience = workExperience;
-        this.regId = regId;
-        this.regDate = regDate;
-        this.modId = modId;
-        this.modDate = modDate;
-        this.employeeDetailDTO = employeeDetailDTO;
-    }
-
-    // EmployeeDTO -> Employee 엔티티 변환 메서드
-    public Employee toEntity() {
-        // EmployeeDTO -> Employee 변환
-        Employee employee = Employee.builder()
-                .id(id)
-                .name(name)
-                .ssn(ssn)
-                .departmentCode(departmentCode)
-                .subDepartmentCode(subDepartmentCode)
-                .positionCode(positionCode)
-                .hireDate(hireDate)
-                .resignationDate(resignationDate)
-                .workExperience(workExperience)
-                .regId(regId)
-                .regDate(regDate)
-                .modId(modId)
-                .modDate(modDate)
-                .build();
-
-        // EmployeeDetailDTO를 EmployeeDetail로 변환하여 추가
-        if (employeeDetailDTO != null) {
-            EmployeeDetail employeeDetail = employeeDetailDTO.toEntity();
-            employee.setEmployeeDetail(employeeDetail); // Employee에 EmployeeDetail 설정
-        }
-
-        return employee;
-    }
+    private EmployeeDetailDTO detail; // 상세정보 DTO 포함
 }

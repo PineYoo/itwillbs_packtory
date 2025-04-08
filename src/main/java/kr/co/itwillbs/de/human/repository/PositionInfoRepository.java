@@ -31,4 +31,8 @@ public interface PositionInfoRepository extends JpaRepository<PositionInfo, Long
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE PositionInfo p SET p.isDeleted = 'Y', p.modDate = :modDate WHERE p.idx = :idx")
     void softDeleteById(@Param("idx") Long idx, @Param("modDate") LocalDateTime modDate);
+    
+    @Query("SELECT p FROM PositionInfo p WHERE p.isDeleted = 'N' ORDER BY p.rankNumber ASC")
+    List<PositionInfo> findValidPositions();
+    
 }

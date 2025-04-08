@@ -73,4 +73,10 @@ public class PositionInfoService {
         positionInfoRepository.softDeleteById(idx, LocalDateTime.now());
     }
     
+    // EmployeeService에서 씀
+    public List<PositionInfo> getValidPositions() {
+        log.debug("getValidPositions() 호출됨");
+        return positionInfoRepository.findValidPositions();
+    }
+    
 }

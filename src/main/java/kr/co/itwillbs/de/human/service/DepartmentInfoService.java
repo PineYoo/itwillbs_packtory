@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.itwillbs.de.human.dto.DepartmentCodeDTO;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoSearchDTO;
 import kr.co.itwillbs.de.human.entity.DepartmentInfo;
@@ -94,5 +95,10 @@ public class DepartmentInfoService {
 		return departmentList.stream()
 				.map(DepartmentInfo::toDto)
 				.collect(Collectors.toList());
+    }
+	
+	// 하위 부서 코드 조회
+    public List<DepartmentCodeDTO> getSubDepartmentCodes(String departmentCode) {
+        return departmentInfoRepository.findSubDepartmentsByParentCode(departmentCode);
     }
 }

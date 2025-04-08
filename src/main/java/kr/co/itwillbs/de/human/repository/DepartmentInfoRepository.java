@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.itwillbs.de.human.dto.DepartmentCodeDTO;
 import kr.co.itwillbs.de.human.entity.DepartmentInfo;
 
 import org.springframework.data.repository.query.Param;
@@ -27,8 +28,20 @@ public interface DepartmentInfoRepository extends JpaRepository<DepartmentInfo, 
     // 삭제되지 않은 부서 리스트 조회
     List<DepartmentInfo> findByIsDeleted(String isDeleted);
 
-    @Transactional
-    @Modifying
-    @Query("UPDATE DepartmentInfo d SET d.isDeleted = 'Y' WHERE d.idx = :idx")
-    void softDeleteById(@Param("idx") Long idx);
+	@Transactional
+	@Modifying
+	@Query("UPDATE DepartmentInfo d SET d.isDeleted = 'Y' WHERE d.idx = :idx")
+	void softDeleteById(@Param("idx") Long idx);
+    
+	// 하위 부서 코드 조회
+	@Query("SELECT new kr.co.itwillbs.de.human.dto.DepartmentCodeDTO(d.parentCode, d.childCode, d.childName) " +
+		   "FROM DepartmentInfo d " +
+		   "WHERE d.parentCode = :departmentCode AND d.isDeleted = 'N'")
+	List<DepartmentCodeDTO> findSubDepartmentsByParentCode(@Param("departmentCode") String departmentCode);
+
+
+
+
+
+
 }
