@@ -54,42 +54,46 @@
 			</div>
 			
 			<!-- ---------- 본문 컨테이너 ---------- -->
-			<div class="card shadow mb-4">
-				<div class="card-body">
-					<!-- hidden ! -->
-					<input type="hidden" id="modelCheckInTime" th:value="${checkInTime}">
-					<input type="hidden" id="modelCheckOutTime" th:value="${checkOutTime}">
-					<input type="hidden" id="modelLastStatus" th:value="${lastCommuteRecord != null ? lastCommuteRecord.workStatusCode : ''}">
-					
-					<div class="commute-container">
-						<div>
-							출근시간 : <input type="text" id="checkInTime" class="mb-2" disabled><br>
-							퇴근시간 : <input type="text" id="checkOutTime" class="mb-2" disabled>
-						</div>
+<!-- 			<div class="col-xl-4 col-lg-5"> -->
+			<div class="col-lg-6 mb-4">
+			
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<!-- hidden ! -->
+						<input type="hidden" id="modelCheckInTime" th:value="${checkInTime}">
+						<input type="hidden" id="modelCheckOutTime" th:value="${checkOutTime}">
+						<input type="hidden" id="modelLastStatus" th:value="${lastCommuteRecord != null ? lastCommuteRecord.workStatusCode : ''}">
 						
-						<div style="margin-left: 5px;">
-							<th:block th:each="i : ${#numbers.sequence(0, codeItemList.size() - 1, 2)}" th:if="${i < 4}">	<!-- 지각 버튼은 안나오게 하기 위함 -->
-						        <div class="d-flex flex-wrap mb-2">
-						            <th:block th:if="${i < codeItemList.size()}" th:with="item=${codeItemList[i]}">
-						                <button th:id="${item.minorName}"
-						                        class="btn btn-primary mr-2 work-btn"
-						                        th:data-code="${item.minorCode}"
-						                        th:data-name="${item.minorName}"
-						                        th:text="${item.minorName}">
-						                </button>
-						            </th:block>
-						            <th:block th:if="${i + 1 < codeItemList.size()}" th:with="item=${codeItemList[i + 1]}">
-						                <button th:id="${item.minorName}"
-						                        class="btn btn-primary mr-2 work-btn"
-						                        th:data-code="${item.minorCode}"
-						                        th:data-name="${item.minorName}"
-						                        th:text="${item.minorName}">
-						                </button>
-						            </th:block>
-						        </div>
-						    </th:block>
+						<div class="commute-container">
+							<div>
+								출근시간 : <input type="text" id="checkInTime" class="mb-2" disabled><br>
+								퇴근시간 : <input type="text" id="checkOutTime" class="mb-2" disabled>
+							</div>
+							
+							<div style="margin-left: 5px;">
+								<th:block th:each="i : ${#numbers.sequence(0, codeItemList.size() - 1, 2)}" th:if="${i < 4}">	<!-- 지각 버튼은 안나오게 하기 위함 -->
+							        <div class="d-flex flex-wrap mb-2">
+							            <th:block th:if="${i < codeItemList.size()}" th:with="item=${codeItemList[i]}">
+							                <button th:id="${item.minorName}"
+							                        class="btn btn-primary mr-2 work-btn"
+							                        th:data-code="${item.minorCode}"
+							                        th:data-name="${item.minorName}"
+							                        th:text="${item.minorName}">
+							                </button>
+							            </th:block>
+							            <th:block th:if="${i + 1 < codeItemList.size()}" th:with="item=${codeItemList[i + 1]}">
+							                <button th:id="${item.minorName}"
+							                        class="btn btn-primary mr-2 work-btn"
+							                        th:data-code="${item.minorCode}"
+							                        th:data-name="${item.minorName}"
+							                        th:text="${item.minorName}">
+							                </button>
+							            </th:block>
+							        </div>
+							    </th:block>
+							</div>
+							
 						</div>
-						
 					</div>
 				</div>
 			</div>
@@ -116,7 +120,8 @@
 			        $('#checkOutTime').val(modelCheckOutTime);
 			    }
 	
-			    // workStatusCode를 기반으로 minorName 찾기
+			    // workStatusCode(=minorCode)를 기반으로 minorName 찾기
+			    // => codeItemList를 JSON 문자열로 가져옴
 			    let lastStatusName = null;
 			    if (modelLastStatus) {
 			        const statusItem = codeItemList.find(item => item.minorCode == modelLastStatus);
@@ -125,8 +130,10 @@
 			        }
 			    }
 	
+			    // ---------------------------------------------------------------------------------
 			    // 버튼 초기 상태 설정
 			    function initButtonState(statusName) {
+			    	// 모든 버튼 비활성화
 			        checkInBtn.prop("disabled", true);
 			        checkOutBtn.prop("disabled", true);
 			        outSideBtn.prop("disabled", true);
@@ -145,41 +152,33 @@
 			        if (modelCheckInTime && !modelCheckOutTime) {
 			            const checkIn = new Date(`${today}T${modelCheckInTime}`);
 // 		                const checkOutTime = new Date(checkIn.getTime() + 9 * 60 * 60 * 1000);	// 9시간
-			            const checkOutTime = new Date(checkIn.getTime() + 10 * 1000);	// 테스트용 (10초 후 퇴근 가능)
+			            const checkOutTime = new Date(checkIn.getTime() + 10 * 60 * 1000);	// 테스트용 (10분 후 퇴근 가능)
 		                const delay = checkOutTime - now;	// 퇴근까지 남은시간
 
+		                // 퇴근 버튼 처리
 			            if (now >= checkOutTime) {	// 퇴근시간이 되었을 경우
-			                checkOutBtn.prop("disabled", false);	// 퇴근 O
+			                checkOutBtn.prop("disabled", false);
 			            } else {	// 아직 퇴근시간 아닐 경우
-			                setTimeout(() => {
-				                checkOutBtn.prop("disabled", false);	// 퇴근 O
-			                }, delay);
+			                setTimeout(() => checkOutBtn.prop("disabled", false), delay);
 			            }
 		                
-			            // 외근: 퇴근 시간 도달 전, 퇴근 기록 없고, 상태가 출근 또는 복귀일 때만 가능
-			            if (now < checkOutTime && !modelCheckOutTime && (statusName === '출근' || statusName === '복귀')) {
+			            // 외근 버튼 처리 (출근/지각/복귀 상태, 퇴근 시간 도달 전, 퇴근 기록 없어야 함)
+// 			            if ((statusName === '출근' || statusName === '지각' || statusName === '복귀') && now < checkOutTime && !modelCheckOutTime) {
+			            if (['출근', '지각', '복귀'].includes(statusName) && now < checkOutTime && !modelCheckOutTime) {
 			                outSideBtn.prop("disabled", false);	// 외근 O
 			            }
 			        }
 
-			        // 현재 상태에 따라 외근/복귀 버튼 설정
-			        switch (statusName) {
-			            case '출근':
-			            case '복귀':
-			            	// 위에서 외근 버튼 처리하므로 이 블럭은 생략 가능
-			                break;
-			            case '외근':
-			                comeBackBtn.prop("disabled", false);
-			                break;
-			            case '퇴근':
-			                // 모든 버튼 비활성화
-			                break;
+			     	// 복귀 버튼은 상태가 외근일 때만
+			        if (statusName === '외근') {
+			            comeBackBtn.prop("disabled", false);	// 복귀 O
 			        }
 			    }
 	
 			    initButtonState(lastStatusName);
 	
-			    // 출퇴근시간 포맷 함수
+			    // ---------------------------------------------------------------------------------
+			    // 출퇴근시간 포맷 함수(hh:mm:ss)
 			    function formatTime(date) {
 			        const hh = String(date.getHours()).padStart(2, '0');
 			        const mm = String(date.getMinutes()).padStart(2, '0');
@@ -190,14 +189,14 @@
 			    // 버튼 클릭 이벤트
 			    $('.work-btn').on('click', function () {
 			        const $btn = $(this);
-			        let workStatusCode = $btn.data('code');
-			        let workStatusName = $btn.data('name');
+			        let workStatusCode = $btn.data('code');	// minorCode
+			        let workStatusName = $btn.data('name');	// minorName
 	
 			        const now = new Date();
 			        if (workStatusName === '출근') {
-			            $('#checkInTime').val(formatTime(now));
+			            $('#checkInTime').val(formatTime(now));		// hh:mm:ss
 			        } else if (workStatusName === '퇴근') {
-			            $('#checkOutTime').val(formatTime(now));
+			            $('#checkOutTime').val(formatTime(now));	// hh:mm:ss
 			        }
 	
 			        // 버튼 상태 변경
@@ -206,17 +205,20 @@
 			                checkInBtn.prop("disabled", true);
 			                outSideBtn.prop("disabled", false);
 							
-			                const referenceTime = new Date();	// 기준 시간
-			                referenceTime.setHours(20, 10, 0, 0); // 오전 9시 10분 기준
-			                if (now > referenceTime) {
-			                    workStatusCode = "5";  	// 지각 코드
-			                    workStatusName = "지각";
+			                // ==========================================================
+			                // 출근버튼 클릭 시 지각유무 처리
+// 			                const referenceTime = new Date();		// 기준 시간
+// 			                referenceTime.setHours(10, 50, 0, 0);	// 오전 9시 10분 기준
+// 			                if (now > referenceTime) {	// 지각
+// 			                    workStatusCode = "5";  	// 지각 코드
+// 			                    workStatusName = "지각";
 			                    
-			                    alert("지각!");
-			                }
+// 			                    alert("지각!");
+// 			                }
+			                // ==========================================================
 			                
-			             	// 테스트용: 10초 뒤 퇴근 버튼 활성화
-			                const futureTime = new Date(now.getTime() + 10 * 1000);	// 9시간 : 9 * 60 * 60 * 1000
+			             	// 테스트용: 10분 뒤 퇴근 버튼 활성화
+			                const futureTime = new Date(now.getTime() + 10 * 60 * 1000);	// 9시간 : 9 * 60 * 60 * 1000
 			                const delay = futureTime.getTime() - now.getTime();
 
 			                setTimeout(() => {
@@ -238,7 +240,7 @@
 			                if (checkInTime) {
 			                    const today = now.toISOString().slice(0, 10);  // YYYY-MM-DD
 			                    const checkInDate = new Date(`${today}T${checkInTime}`); // 출근 시각
-			                    const futureTimeForComeback = new Date(checkInDate.getTime() + 10 * 1000); // 출근 10초 후가 퇴근 시간 기준
+			                    const futureTimeForComeback = new Date(checkInDate.getTime() + 10 * 60 * 1000); // 출근 10분 후가 퇴근 시간 기준
 			                    const nowForComeback = new Date();
 
 			                    if (nowForComeback < futureTimeForComeback) {   // 퇴근시간 전
@@ -274,6 +276,9 @@
 			            }
 			        });
 			    });
+			    // ---------------------------------------------------------------------------------
+			    
+			    
 			});
 		</script>
 		
