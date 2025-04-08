@@ -86,7 +86,7 @@
 	<!-- 하위 부서 조회(SELECT) -->
 	<select id="getDepartmentList" resultType="kr.co.itwillbs.de.human.dto.DepartmentInfoDTO">
 		SELECT *
-		  FROM t_department_info  d
+		  FROM t_department_info d
 		 WHERE d.department_code = (
 				    SELECT e.department_code
 				    FROM t_employee e

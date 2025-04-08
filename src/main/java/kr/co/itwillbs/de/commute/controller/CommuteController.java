@@ -58,6 +58,7 @@ public class CommuteController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
 		String id = userDetails.getUsername();
+		log.info("id!!!!!!!!!!!!" + id);
 		// ------------------------------
 
 		// 출퇴근 코드
@@ -104,9 +105,9 @@ public class CommuteController {
 		model.addAttribute("codeItemList", codeItemList);
 		
 		// 부서 코드(검색바)
-		List<CodeItemDTO> departmentList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE_DEP);
-		System.out.println("departmentList : " + departmentList);
-		model.addAttribute("departmentList", departmentList);
+//		List<CodeItemDTO> departmentList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE_DEP);
+//		System.out.println("departmentList : " + departmentList);
+//		model.addAttribute("departmentList", departmentList);
 		
 		// 하위 부서코드(검색바)
 		List<DepartmentInfoDTO> subDeptList = commuteService.getDepartmentList(id);
