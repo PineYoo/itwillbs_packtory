@@ -2,6 +2,7 @@ package kr.co.itwillbs.de.common.vo;
 
 import java.time.LocalDateTime;
 
+import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
+@RequiredSessionIds(fields = {"regId"})
 public class FileVO {
 
 	private String idx;

@@ -77,7 +77,7 @@ public class MemberController {
 	public String memberRegisterFormToSearch(@ModelAttribute EmployeeSearchDTO employeeSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		log.info("requestDTO is {}", StringUtil.objToString(employeeSearchDTO));
+		//log.info("requestDTO is {}", StringUtil.objToString(employeeSearchDTO));
 		
 		model.addAttribute("departmentItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_DEPARTMENT_CODE));
 		model.addAttribute("positionItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_POSITION_CODE));
@@ -101,13 +101,16 @@ public class MemberController {
 	public ResponseEntity<Map<String, Object>> memberRegister(@RequestBody List<MemberDTO> memberDTOList, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		log.info("requestDTO : {}", StringUtil.objToString(memberDTOList));
+		//log.info("requestDTO : {}", StringUtil.objToString(memberDTOList));
 		log.info("requestDTO : {}", memberDTOList);
 		
 		//리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			memberService.registerMembers(memberDTOList);
+			// 원래 하나였는데 2개로 분리함.
+			memberDTOList = memberService.registerMembersPartOne(memberDTOList);
+			// AOP 받을 메서드
+			memberService.registerMembersPartTwo(memberDTOList);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {

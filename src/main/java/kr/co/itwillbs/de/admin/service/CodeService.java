@@ -26,6 +26,7 @@ public class CodeService {
 	 * @param codeDTO
 	 * @return
 	 */
+	@LogExecution
 	public int registerCode(CodeDTO codeDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
