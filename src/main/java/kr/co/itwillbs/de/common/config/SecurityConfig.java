@@ -82,7 +82,7 @@ public class SecurityConfig {
 				.expiredUrl("/login?expired=true") // 세션 만료 시 리다이렉트 URL
 			)
 			
-			// 시큐리티6 에서는 세션 고정 보호가 기본으로 활성화 라고 한다. 그래도 어떻게 생겼는지 봐두자
+			// 시큐리티3 에서는 세션 고정 보호가 기본으로 활성화 라고 한다. 그래도 어떻게 생겼는지 봐두자
 			.securityContext(securityContext -> securityContext
 				.requireExplicitSave(true)); // 비활성화는 당연히 false 로
 		

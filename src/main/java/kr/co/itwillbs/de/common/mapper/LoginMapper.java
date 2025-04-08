@@ -8,8 +8,6 @@ import kr.co.itwillbs.de.common.vo.LoginVO;
 public interface LoginMapper {
 
 	
-//	LoginVO getMemberByUserName(LoginVO loginVO);
-
 	/**
 	 * 
 	 * @param userName
