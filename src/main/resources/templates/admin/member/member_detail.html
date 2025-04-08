@@ -56,13 +56,13 @@
 								<div class="col-md-12">
 									<label class="mb-1" for="role">역할</label>
 									<select class="form-select" name="role" id="role" th:value="*{role}" >
-										<option th:each="code : *{roleItemList}" th:value="${code.minorCode}" th:text="${code.minorName}" th:selected="*{role} == ${code.minorCode}"></option>
+										<option th:each="code : ${roleItemList}" th:value="${code.minorCode}" th:text="${code.minorName}" th:selected="*{role} == ${code.minorCode}"></option>
 									</select>
 								</div>
 								<div class="col-md-12">
 									<label class="mb-1" for="status">상태</label>
 									<select class="form-select" name="status" id="status" th:value="*{status}" >
-											<option th:each="code : *{statusItemList}" th:value="${code.minorCode}" th:text="${code.minorName}" th:selected="*{status} == ${code.minorCode}"></option>
+											<option th:each="code : ${statusItemList}" th:value="${code.minorCode}" th:text="${code.minorName}" th:selected="*{status} == ${code.minorCode}"></option>
 									</select>
 								</div>
 								<div class="col-md-12">

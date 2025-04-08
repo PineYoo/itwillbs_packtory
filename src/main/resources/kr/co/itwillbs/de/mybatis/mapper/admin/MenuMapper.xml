@@ -65,7 +65,7 @@
 			is_deleted,
 			reg_id,
 			reg_date,
-			<if test='modId !=null and !("".equals(modId))'>
+			<if test='modId !=null and !("".equals(modId.trim()))'>
 			mod_id,
 			mod_date,
 			</if>
@@ -79,10 +79,10 @@
 			#{description},
 			#{isDeleted},
 			#{regId},
-			#{regDate},
-			<if test='modId !=null and !("".equals(modId))'>
+			now(),
+			<if test='modId !=null and !("".equals(modId.trim()))'>
 			#{modId},
-			#{modDate},
+			now(),
 			</if>
 			</trim>
 		)
@@ -94,12 +94,12 @@
 			<include refid="t_menu_columns_forSelect" />
 		from t_menu
 			<where>
-				<if test='idx != null and !("".equals(idx))'>AND idx = #{idx} </if>
-				<if test='menuType != null and !("".equals(menuType))'>AND menu_type = #{menuType} </if>
-				<if test='menuId != null and !("".equals(menuId))'>AND menu_id = #{menuId} </if>
-				<if test='isDeleted != null and !("".equals(isDeleted))'>AND is_deleted = #{isDeleted} </if>
-				<if test='url != null and !("".equals(url))'>AND is_deleted = #{url} </if>
-				<if test='regId != null and !("".equals(regId))'>AND reg_id = #{regId} </if>
+				<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
+				<if test='menuType != null and !("".equals(menuType.trim()))'>AND menu_type LIKE CONCAT('%',#{menuType},'%') </if>
+				<if test='menuId != null and !("".equals(menuId.trim()))'>AND menu_id = #{menuId} </if>
+				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
+				<if test='url != null and !("".equals(url.trim()))'>AND url LIKE CONCAT('%',#{url},'%') </if>
+				<if test='regId != null and !("".equals(regId.trim()))'>AND reg_id = #{regId} </if>
 			</where>
 	</select>
 	
@@ -110,20 +110,21 @@
 		from t_menu
 		<where>
 			menu_id != '0'
-			<if test="menuType != null">AND menu_type = #{menuType} </if>
+			<if test='menuType != null and !("".equals(menuType.trim()))'>AND menu_type = #{menuType} </if>
 		</where>
 		order by rank_number asc
 	</select>
 	
-	<update id="modifyMenu1Depth" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
+	<update id="modifyTypeMenu" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		update t_menu
 			<set>
-				<if test="menuType != null">menu_type = #{menuType},</if>
-				<if test="rank_number != null">rank_number = #{rankNumber},</if>
-				<if test="url != null">url = #{url},</if>
-				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-				<if test='modId !=null and !("".equals(modId))'>mod_id = #{modId},</if>
-				<if test='modId !=null and !("".equals(modId))'>mod_date = now(),</if>
+				<if test='menuType != null and !("".equals(menuType.trim()))'>menu_type = #{menuType},</if>
+				<if test='rankNumber != null and !("".equals(rankNumber.trim()))'>rank_number = #{rankNumber},</if>
+				<if test='url != null and !("".equals(url.trim()))'>url = #{url},</if>
+				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+				<if test='description != null and !("".equals(description.trim()))'>description = #{description},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 			</set> 
 		where idx = #{idx}
 	</update>
@@ -131,21 +132,21 @@
 	<update id="modifyMenuIsDeleted" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		update t_menu
 			<set>
-				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-				<if test='modId !=null and !("".equals(modId))'>mod_id = #{modId},</if>
-				<if test='modId !=null and !("".equals(modId))'>mod_date = now(),</if>
+				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 			</set> 
 		where idx = #{idx}
 	</update>
 	
 	<!-- 뭔가 대량 인서트나 업데이트가 있을것 같은데...? -->
-	<delete id="removeMenu2Depth" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
+	<delete id="removeChildMenu" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		delete from t_menu 
 		where menu_type = #{menuType}
 		  and menu_id != '0'
 	</delete>
 	
-	<insert id="registerMenu2Depth" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
+	<insert id="registerChildMenu" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		insert into t_menu (
 			<trim suffixOverrides=",">
 			menu_type,

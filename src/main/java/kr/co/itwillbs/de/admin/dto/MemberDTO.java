@@ -52,10 +52,6 @@ public class MemberDTO {
 	private String fileIdxs;
 	private String employeeStatusCode;
 	
-	// 이게 맞아?
-	private List<CodeItemDTO> roleItemList;
-	private List<CodeItemDTO> statusItemList;
-	
 	/**
 	 * Object 안에 null이 아닌 필드 값 출력
 	 * @param obj

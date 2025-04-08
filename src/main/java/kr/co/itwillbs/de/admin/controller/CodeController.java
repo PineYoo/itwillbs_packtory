@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,7 +20,6 @@ import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.admin.dto.CodeSearchDTO;
 import kr.co.itwillbs.de.admin.service.CodeService;
-import kr.co.itwillbs.de.common.aop.annotation.LogExecutionTime;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -82,8 +82,9 @@ public class CodeController {
 		
 		// 리스트 검색 DTO 뷰에 전달
 		CodeSearchDTO codeSearchDTO = new CodeSearchDTO();
-		codeSearchDTO.setCodeList(commonCodeUtil.getCodes());
 		model.addAttribute("codeSearchDTO", codeSearchDTO);
+		// 리스트 공통코드 select 용 리스트 뷰에 전달
+		model.addAttribute("codeList", commonCodeUtil.getCodes());
 		
 		List<CodeDTO> codeDTOList = codeService.getCodes();
 		//log.info("codeDTOList : {}", codeDTOList);
@@ -104,9 +105,10 @@ public class CodeController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("request codeSearchDTO : {}", StringUtil.objToString(codeSearchDTO));
-		codeSearchDTO.setCodeList(commonCodeUtil.getCodes());
 		// 리스트 검색 DTO 뷰에 전달
 		model.addAttribute("codeSearchDTO", codeSearchDTO);
+		// 리스트 공통코드 select 용 리스트 뷰에 전달
+		model.addAttribute("codeList", commonCodeUtil.getCodes());
 		
 		// 리스트 결과 DTOlist 뷰에 전달
 		List<CodeDTO> codeDTOList = codeService.getCodesBySearchDTO(codeSearchDTO);
@@ -141,7 +143,7 @@ public class CodeController {
 			if(codeDTO != null) { 
 				model.addAttribute("codeDTO", codeDTO);
 				// 공통 코드 가져오기(TEST) codeDTO.getMajorCode()
-				model.addAttribute("codeItems", commonCodeUtil.getCodeItems(codeDTO.getMajorCode()));
+//				model.addAttribute("codeItems", commonCodeUtil.getCodeItems(codeDTO.getMajorCode()));
 				
 				// 조회된 결과 값에서 하위 공통코드 조회를 위해 majorCode 셋
 				codeSearchDTO.setMajorCode(codeDTO.getMajorCode());
@@ -164,9 +166,9 @@ public class CodeController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping("/codeJson")
+	@PutMapping("/modifyCode")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> codeModifyJson(@RequestBody CodeDTO codeDTO,  Model model) {
+	public ResponseEntity<Map<String, Object>> modifyCode(@RequestBody CodeDTO codeDTO,  Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestBody : {}", codeDTO);
@@ -194,9 +196,9 @@ public class CodeController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping("/itemsJson")
+	@PostMapping("/registerCodeItems")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> codeItemsRegisterJson(@RequestBody List<CodeItemDTO> itemList,  Model model) {
+	public ResponseEntity<Map<String, Object>> registerCodeItems(@RequestBody List<CodeItemDTO> itemList,  Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestBody : {}", itemList);
@@ -204,7 +206,7 @@ public class CodeController {
 		//리턴 객체
 		Map<String, Object> response = new HashMap<>();
 		try {
-			codeService.codeItemsRegister(itemList);
+			codeService.registerCodeItems(itemList);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {

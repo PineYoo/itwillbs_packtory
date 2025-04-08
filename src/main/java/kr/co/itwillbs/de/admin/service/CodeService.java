@@ -30,8 +30,6 @@ public class CodeService {
 	public int registerCode(CodeDTO codeDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		//TODO 세션에서 regId 가져와서 셋
-		codeDTO.setRegId("superUser");
 		int affectedRow = codeMapper.registerCode(codeDTO);
 		log.info("affectedRow is {}", affectedRow);
 		return affectedRow;
@@ -90,9 +88,6 @@ public class CodeService {
 	public void modifyCode(CodeDTO codeDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		//TODO 세션에서 mod_id 가져와서 셋
-		//codeDTO.setModId("superUser");
-		
 		int affectedRow = codeMapper.modifyCode(codeDTO);
 		if(affectedRow < 1) {
 			throw new Exception("그룹코드 수정을 완료하지 못했습니다.\\n잠시 후 다시 시도해주시기 바랍니다.");
@@ -105,7 +100,7 @@ public class CodeService {
 	 * @throws Exception 
 	 */
 	@LogExecution // 로그 남길 서비스
-	public void codeItemsRegister(List<CodeItemDTO> itemList) throws Exception {
+	public void registerCodeItems(List<CodeItemDTO> itemList) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		int affectedRow = 0;

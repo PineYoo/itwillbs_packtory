@@ -94,6 +94,7 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
+	/*
 	@PostConstruct
 	public void init() {
 		log.info("SecurityConfig 초기화 - 핸들러 주입 확인");
@@ -101,4 +102,5 @@ public class SecurityConfig {
 		log.info("FailureHandler: {}", authenticationFailureHandler != null);
 		log.info("LogoutHandler: {}", logoutHandler != null);
 	}
+	*/
 }

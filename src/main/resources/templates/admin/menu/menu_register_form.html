@@ -5,6 +5,35 @@
 <head>
 <meta charset="UTF-8">
 <title>메뉴 등록</title>
+
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<style type="text/css">
+		.form {
+			max-width: 800px;
+			margin: 0 auto;
+		}
+		input, select {
+	        border: 1px solid #ccc;
+	        padding: 5px;
+	        margin: 2px;
+		}
+		.essential {
+	        background-color: #fffbe6; /* 연한 노랑 */
+	    }
+	    .filled {
+	        background-color: white;
+	    }
+	    
+	    /* ----------------- */
+	    .addressInfo {
+		    display: flex;
+		}
+	    @media (max-width: 768px) {
+		    .addressInfo {
+			    display: block;
+			}
+		}
+	</style>
 </head>
 <body>
 <body id="page-top">
@@ -12,50 +41,108 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">로그 등록</h1>
+				<h1 class="h3 mb-4 text-gray-800">그룹 메뉴 등록</h1>
 			</div>
-			<!-- Content Row -->
-			<div class="row">
-				<div class="card shadow col-xl-12 col-lg-12 mb-1">
-					<form th:action="@{/admin/menu}" method="post" th:object="${menuDTO}">
-					<input type="hidden" id="menuId" name="menuId" value="0">
-						<table class="table table-borderd">
-							<tr>
-								<td><label for="menuType">메뉴 타입</label></td>
-								<td><input type="text" id="menuType" th:field="*{menuType}"></td>
-							</tr>
-							<tr>
-								<td><label for="url">URL</label></td>
-								<td><input type="text" id="url" th:field="*{url}"></td>
-							</tr>
-							<tr>
-								<td><label for="description">설명</label></td>
-								<td><textarea id="description" th:field="*{description}" rows="2"></textarea></td>
-							</tr>
-							<tr>
-								<td><label for="rankNumber">순서</label></td>
-								<td><input type="text" id="rankNumber" th:field="*{rankNumber}"></td>
-							</tr>
-							<tr>
-								<td><label for="isDeleted">삭제여부</label></td>
-								<td><input type="text" id="isDeleted" th:field="*{isDeleted}"></td>
-							</tr>
-							<tr>
-								<td><button type="button" id="btnList" class="btn btn-success">메뉴 목록</button></td>
-								<td><button type="submit" class="btn btn-primary">메뉴 등록</button></td>
-							</tr>
-						</table>
-					</form>
+			
+			<!-- ---------- 본문 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive">
+						<form th:action="@{/admin/menu}" method="post" th:object="${menuDTO}" class="form row g-3">
+							<input type="hidden" id="menuId" name="menuId" value="0">
+							<div class="col-md-6">
+								<label class="mb-1" for="menuType">메뉴 타입</label>
+								<input type="text" class="form-control" th:field="*{menuType}" placeholder="메뉴 타입">
+							</div>
+							<div class="col-md-6">
+								<label class="mb-1" for="url">메뉴 URL</label>
+								<input type="text" class="form-control" th:field="*{url}" placeholder="URL">
+							</div>
+							<div class="col-md-6">
+								<label class="mb-1" for="rankNumber">메뉴 순서</label>
+								<input type="text" class="form-control" th:field="*{rankNumber}" placeholder="메뉴 순서">
+							</div>
+							<div class="col-md-6">
+								<label for="isDeleted" class="form-label">삭제유무</label>
+								<select id="isDeleted" name="isDeleted" class="form-select" th:field="*{isDeleted}">
+									<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
+									<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
+<!-- 									<option value="" th:selected="*{isDeleted} eq '' ">선택</option> -->
+								</select>
+							</div>
+							<div class="col-md-12 mb-4">
+								<label class="mb-1" for="description">메뉴 설명</label>
+								<textarea class="form-control" th:field="*{description}" rows="3" cols="40" placeholder="메뉴 설명 입력"></textarea>
+							</div>
+							
+							<div class="col-md-12 row align-items-center justify-content-center">
+								<button type="submit" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">취소</button>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
-			<script type="text/javascript">
-				$(function() {
-					$('#btnList').on("click", function() {
-						location.href="/admin/menu";
-					});
-				});
-			</script>
+			
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">전체 메뉴 URL 표</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
+							<thead class="table-light">
+								<tr>
+									<th>HTTP Method</th>
+									<th>UrlPath</th>
+									<th>Controller</th>
+									<th>Handler Method</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item : ${mappingList}">
+									<td th:text="${item.method}">GET</td>
+									<td th:text="${item.urlPattern}">/api/example</td>
+									<td th:text="${item.simpleName}">ExampleController</td>
+									<td th:text="${item.methodName}">exampleMethod</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
 		</div>
+		
+		<!-- 딱 요만큼이면 되네! jquery.dataTables.min.js, dataTables.bootstrap4.min.js, datatables-demo.js-->
+		<!-- Page level plugins -->
+		<script src="/js/datatables/jquery.dataTables.min.js"></script>
+		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+		<!-- Page level custom scripts -->
+		<script src="/js/demo/datatables-demo.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				console.log("document ready!");
+				
+				// init DataTable
+				$('#dataTables').DataTable({
+					lengthChange: true,
+					searching: true,
+					paging: true,
+					info: false
+				}); // end of $('#dataTables').DataTable({
+				
+			}); // end of $(document).ready(function() {
+		
+		
+			$(function() {
+				
+				$('#btnList').on("click", function() {
+					location.href="/admin/menu";
+				}); // end of $('#btnList').on("click", function() {
+				
+			}); // end of $(function() {
+		</script>
 	</th:block>
 </body>
 </html>

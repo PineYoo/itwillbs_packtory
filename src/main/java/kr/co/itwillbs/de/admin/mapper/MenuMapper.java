@@ -40,25 +40,25 @@ public interface MenuMapper {
 
 	
 	/**
-	 * 메뉴 1depth(대메뉴) 수정
+	 * 메뉴 1depth(그룹메뉴) 수정
 	 * @param menuDTO
 	 * @return
 	 */
-	int modifyMenu1Depth(MenuDTO menuDTO);
+	int modifyTypeMenu(MenuDTO menuDTO);
 	
 	/**
-	 * 메뉴 2depth(소메뉴) 등록 전 삭제
+	 * 메뉴 2depth(하위메뉴) 등록 전 삭제
 	 * @param menuDTO
 	 * @return
 	 */
-	int removeMenu2Depth(MenuDTO menuDTO);
+	int removeChildMenu(MenuDTO menuDTO);
 	
 	/**
 	 * 메뉴 2depth(소메뉴) 등록
 	 * @param menuList
 	 * @return
 	 */
-	int registerMenu2Depth(List<MenuDTO> menuList);
+	int registerChildMenu(List<MenuDTO> menuList);
 
 
 }

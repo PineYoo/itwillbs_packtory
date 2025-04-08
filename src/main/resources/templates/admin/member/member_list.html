@@ -162,7 +162,7 @@
 									<th>전화번호</th>
 									<th>역할</th>
 									<th>멤버상태</th>
-									<th>액션</th>
+									<!-- <th>액션</th> -->
 								</tr>
 							</thead>
 							<tbody>
@@ -183,10 +183,11 @@
 											<option th:each="code : ${statusItemList}" th:value="${code.minorCode}" th:text="${code.minorName}" th:selected="${item.status} == ${code.minorCode}"></option>
 										</select>
 									</td>
-									<td><button type="button" id="modifyMode" th:id="'modifyMode-' + ${status.count}">수정</button></td>
+									<!-- <td><button type="button" id="modifyMode" th:id="'modifyMode-' + ${status.count}">수정</button></td> -->
 								</tr>
 								<tr th:if="${#lists.isEmpty(memberDTOList)}" class="clickable-row menu2depth_items">
-									<td colspan="9"><span>조회 된 데이터가 없습니다.</span></td>
+									<!-- <td colspan="9"><span>조회 된 데이터가 없습니다.</span></td> -->
+									<td colspan="8"><span>조회 된 데이터가 없습니다.</span></td>
 								</tr>
 							</tbody>
 						</table>
@@ -197,6 +198,7 @@
 			<script type="text/javascript">
 				$(document).ready(function() {
 					console.log("document ready!");
+					
 					// init DataTable
 					$('#dataTables').DataTable({
 						lengthChange: false,
@@ -204,7 +206,8 @@
 						paging: false,
 						info: false
 					}); // end of $('#dataTables').DataTable({
-				});
+						
+				}); // end of $(document).ready(function() {
 					
 				$(function() {
 					
@@ -212,21 +215,23 @@
 					$('#goNewFormBtn').on("click", function() {
 						console.log("goNewFormBtn click!");
 						location.href="/admin/member/newForm";
-					});
+					}); // end of $('#goNewFormBtn').on("click", function() { 
 					
 					$('.clickable-row').on("click", function() {
 						const id = $(this).data("id");
 						console.log("click id is %s", id);
-						location.href=`/admin/member/${id}`;
-					});
+						if(id != undefined && id != "") {
+							location.href=`/admin/member/${id}`;
+						}
+					}); // end of $('.clickable-row').on("click", function() { 
 					
-					// 수정 버튼 액션
+					// 수정 버튼 액션 25.04.09 잠깐 멈춤
 					$("button[id^='modifyMode-']").on("click", function() {
 						event.stopPropagation();
 						console.log("button[id^='modifyMode-'] click!");
 						console.log($(this).attr('id'));
 						
-					});
+					}); // end of $("button[id^='modifyMode-']").on("click", function() {
 					
 				}); // end of $(function() {
 			</script>

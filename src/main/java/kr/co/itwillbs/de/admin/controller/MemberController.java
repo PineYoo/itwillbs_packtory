@@ -181,10 +181,13 @@ public class MemberController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("request memberId : {}, memberSearchDTO : {}", memberId, memberSearchDTO);
 		
+		// 공통코드 selectbox용 리스트 뷰에 전달
+		model.addAttribute("statusItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_STATUS));
+		model.addAttribute("roleItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_ROLE));
+		
+		// 조회 결과 뷰에 전달
 		MemberDTO memberDTO = new MemberDTO();
 		memberDTO = memberService.getMember(memberId);
-		memberDTO.setRoleItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_ROLE));
-		memberDTO.setStatusItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_STATUS));
 		model.addAttribute("memberDTO", memberDTO);
 		
 		return MEMBER_PATH+"/member_detail";

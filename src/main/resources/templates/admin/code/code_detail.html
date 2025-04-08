@@ -3,262 +3,207 @@
 		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>코드 관리</title>
+<meta charset="UTF-8">
+<title>공통코드 관리</title>
+
+	<style type="text/css">
+		.form {
+			max-width: 800px;
+			margin: 0 auto;
+		}
+		input, select {
+	        border: 1px solid #ccc;
+	        padding: 5px;
+	        margin: 2px;
+		}
+		.essential {
+	        background-color: #fffbe6; /* 연한 노랑 */
+	    }
+	    .filled {
+	        background-color: white;
+	    }
+	    
+	    /* ----------------- */
+	    .addressInfo {
+		    display: flex;
+		}
+	    @media (max-width: 768px) {
+		    .addressInfo {
+			    display: block;
+			}
+		}
+	</style>
 </head>
+<body>
 <body id="page-top">
 	<th:block layout:fragment="contents">
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
-			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">코드 상세</h1>
-			<!-- 리스트 출력 -->
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-4 text-gray-800">하위 코드 관리</h1>
+			</div>
+			
+			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
-					<div class="table-responsive"><!-- 반응형으로 해준다는 말이겠지? -->
-						<div class="row">
-							<div class="col-sm-12 col-md-4">
-								<button type="button" id="majorCodeToggle">그룹코드 수정<span id="majorCodeToggle_text">(열기)</span></button>
-								<button type="button" id="codeAjax">코드그룹 수정Ajax</button>
-								<button type="button" id="listBtn">리스트 가기</button>
+					<div class="table-responsive">
+						<form th:action="@{/admin/code}" method="post" th:object="${codeDTO}" class="form row g-3" id="codeForm">
+							<input type="hidden" name="_method" value="put" disabled />
+							<input type="hidden" th:field="*{idx}" id="idx" disabled />
+							<div class="col-md-6">
+								<label class="mb-1" for="majorCode">그룹코드</label>
+								<input type="text" class="form-control" th:field="*{majorCode}" placeholder="그룹코드" disabled>
 							</div>
-							<div class="col-sm-12 col-md-2">
+							<div class="col-md-6">
+								<label class="mb-1" for="name">그룹코드 이름</label>
+								<input type="text" class="form-control" th:field="*{name}" placeholder="그룹코드 이름" disabled>
 							</div>
-							<div class="col-sm-12 col-md-6">
-								<button type="button" id="addRow">코드 추가</button>
-								<!-- <button type="button" id="codeItemsSubmit">코드 저장</button> -->
-								<button type="button" id="codeItemsAjax">코드 저장Ajax</button>
-								<select name="minorCode" id="minorCode">
-									<option value="">전체</option>
-									<option th:each="item : ${codeItems}" th:value="${item.minorCode}" th:text="${item.minorName}" ></option>
+							<div class="col-md-6">
+								<label class="mb-1" for="description">코드 설명</label>
+								<input type="text" class="form-control" th:field="*{description}" placeholder="코드 설명" disabled>
+							</div>
+							<div class="col-md-6 mb-4">
+								<label for="isDeleted" class="form-label">삭제유무</label>
+								<select id="isDeleted" name="isDeleted" class="form-select" th:field="*{isDeleted}" disabled>
+									<option value="" th:selected="*{isDeleted} eq '' ">전체</option>
+									<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
+									<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
 								</select>
 							</div>
-						</div>
-						<div class="row">
-						</div>
-						<table class="table table-bordered" th:object="${codeDTO}">
-						<input type="hidden" th:field="*{idx}" id="major_idx"/>
-							<thead>
+							
+							<div class="col-md-12 row align-items-center justify-content-center">
+								<button type="button" id="btnToggleDisabled" class="btn btn-success btn-lg d-block col-3 ml-2 mb-3">수정(<span id="toggleText">열기</span>)</button>
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">그룹코드 수정</button>
+								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">취소</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			<div class="card shadow mb-4">
+				<div class="card-header py-3" style="display: flex; justify-content: space-between; align-items: center;">
+					<h6 class="m-0 font-weight-bold text-primary" style="flex-grow: 1;">하위 코드 등록</h6>
+					<div>
+						<button type="button" id="addChildCodeRow" class="btn btn-success">코드 추가</button>
+						<button type="button" id="childCodeSubmit" class="btn btn-primary">하위 코드 등록</button>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered table-hover text-center" id="dataTables1" width="100%" cellspacing="0">
+							<thead class="table-light">
 								<tr>
 									<th>그룹코드</th>
-									<th>그룹코드이름</th>
-									<th>그룹코드설명</th>
-									<th>삭제유무</th>
-									<th>최초 작성자</th>
-									<!-- <th>작성일자</th> -->
+									<th>하위코드</th>
+									<th>하위코드 이름</th>
+									<th>하위코드 설명</th>
+									<th>하위코드 순서</th>
+									<th>삭제 유무</th>
+									<th>삭제</th>
 								</tr>
 							</thead>
-							<tbody>
-								<tr id="major_tr">
-									<td><input type="text" th:field="*{majorCode}" id="majorCode" disabled></td>
-									<td><input type="text" th:field="*{name}" id="majorName" disabled></td>
-									<td><input type="text" th:field="*{description}" disabled></td>
-									<td><input type="text" th:field="*{isDeleted}" disabled></td>
-									<td><input type="text" th:field="*{regId}" disabled></td>
-									<!-- <td><input type="text" th:field="*{regDate}" disabled></td> -->
+							<tbody id="childCodeBody">
+								<tr th:each="item, status : ${codeItemDTOList}" class="clickable-row childCodeItems">
+									<td><input type="text" name="majorCode" th:value="${item.majorCode}" class="form-control" placeholder="그룹코드" /></td>
+									<td><input type="text" name="minorCode" th:value="${item.minorCode}" class="form-control" placeholder="하위코드" /></td>
+									<td><input type="text" name="minorName" th:value="${item.minorName}" class="form-control" placeholder="하위코드 이름" /></td>
+									<td><input type="text" name="description" th:value="${item.description}" class="form-control" placeholder="코드 설명" /></td>
+									<td><input type="text" name="rankNumber" th:value="${item.rankNumber}" class="form-control" placeholder="코드 순서" /></td>
+									<td>
+										<select name="isDeleted" id="isDeleted" th:value="${item.isDeleted}" class="form-select">
+											<option value="" th:selected="${item.isDeleted} eq '' ">전체</option>
+											<option value="Y" th:selected="${item.isDeleted} eq 'Y' ">삭제</option>
+											<option value="N" th:selected="${item.isDeleted} eq 'N' ">사용중</option>
+										</select>
+									</td>
+									<td><button type="button" class="btn btn-secondary removeChildCode">삭제</button></td>
+								</tr>
+								<tr th:if="${#lists.isEmpty(codeItemDTOList)}" class="clickable-row childCodeItems">
+									<td><input type="text" id="majorCode" name="majorCode" class="form-control" placeholder="그룹코드" /></td>
+									<td><input type="text" id="minorCode" name="minorCode" class="form-control" placeholder="하위코드" /></td>
+									<td><input type="text" id="minorName" name="minorName" class="form-control" placeholder="하위코드 이름" /></td>
+									<td><input type="text" id="description" name="description" class="form-control" placeholder="코드 설명" /></td>
+									<td><input type="text" id="rankNumber" name="rankNumber" class="form-control" placeholder="코드 순서" /></td>
+									<td>
+										<select name="isDeleted" id="isDeleted" class="form-select">
+											<option value="N">사용중</option>
+											<option value="Y">삭제</option>
+											<!-- <option value="">전체</option> -->
+										</select>
+									</td>
+									<td><button type="button" class="btn btn-secondary removeChildCode">삭제</button></td>
 								</tr>
 							</tbody>
 						</table>
-						<div class="row">
-							<form action="/admin/code/codeItemsForm" method="post" id="codeItemDTOListForm" th:object="${codeItemDTOList}">
-								<table class="table table-bordered">
-									<thead>
-										<tr>
-											<th>코드</th>
-											<th>코드 이름</th>
-											<th>코드 설명</th>
-											<th>순서</th>
-											<th>삭제유무</th>
-											<th>삭제</th>
-										</tr>
-									</thead>
-									<tbody id="code_items_tbody">
-										<tr th:each="item, status : ${codeItemDTOList}" class="clickable-row code_items" th:data-id="${status.count}">
-											<!--/* <td><input type="text" name="majorCode" th:value="${item.majorCode}" placeholder="그룹 코드" /></td> */-->
-											<td><input type="text" name="minorCode" th:value="${item.minorCode}" placeholder="코드" /></td>
-											<td><input type="text" name="minorName" th:value="${item.minorName}" placeholder="코드 이름" /></td>
-											<td><input type="text" name="description" th:value="${item.description}" placeholder="코드 설명" /></td>
-											<td><input type="text" name="rankNumber" th:value="${item.rankNumber}" placeholder="순서" /></td>
-											<td><input type="text" name="isDeleted" th:value="${item.isDeleted}" placeholder="삭제 유무(Y/N)" /></td>
-											<td><button type="button" class="removeItems">삭제</button></td>
-										</tr>
-										<tr th:if="${#lists.isEmpty(codeItemDTOList)}" class="clickable-row code_items" data-id="1">
-											<td><input type="text" name="minorCode" placeholder="코드" /></td>
-											<td><input type="text" name="minorName" placeholder="코드 이름" /></td>
-											<td><input type="text" name="description" placeholder="코드 설명" /></td>
-											<td><input type="text" name="rankNumber"  placeholder="순서" /></td>
-											<td><input type="text" name="isDeleted" placeholder="삭제 유무(Y/N)" /></td>
-											<td><button type="button" class="removeItems">삭제</button></td>
-										</tr>
-									</tbody>
-								</table>
-							</form>
-						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		
 		<script type="text/javascript">
+			$(document).ready(function() {
+				console.log("document ready!");
+				
+				
+			}); // end of $(document).ready(function() {
+		
+		
 			$(function() {
-				// 리스트 가기 버튼 클릭 이벤트
-				$('#listBtn').on("click", function() {
+				
+				$('#btnList').on("click", function() {
 					location.href="/admin/code";
-				});
-				// 메뉴 추가 버튼 클릭 이벤트
-				$('#addRow').on("click", function() {
-					console.group('click! addRow!');
-					let idx = $('#code_items_tbody').children('tr').length+1;
-					console.log('idx is %s', idx);
-					let tableRowHtml = '<tr class="clickable-row code_items" data-id='+idx+'>';
-					tableRowHtml += '<td><input type="text" name="minorCode" value="" placeholder="코드" /></td>';
-					tableRowHtml += '<td><input type="text" name="minorName" value="" placeholder="코드 이름" /></td>';
-					tableRowHtml += '<td><input type="text" name="description" value="" placeholder="코드 설명" /></td>';
-					tableRowHtml += '<td><input type="text" name="rankNumber" value="" placeholder="순서" /></td>';
-					tableRowHtml += '<td><input type="text" name="isDeleted" value="" placeholder="삭제 유무(Y/N)" /></td>';
-					tableRowHtml += '<td><button type="button" class="removeItems">삭제</button></td>';
-					tableRowHtml += '</tr>';
-					$('#code_items_tbody').append(tableRowHtml);
-					console.groupEnd();
-				}); // end of $('#addRow').on("click", function() {
+				}); // end of $('#btnList').on("click", function() {
 				
-				// 메뉴 저장 서브밋 처리
-				$('#codeItemsSubmit').on("click", function() {
-					console.group('click! codeItemsSubmit!');
-					alert("서브밋 불가!");
-					return false;
-					$('#codeItemDTOListForm').submit();
-					console.groupEnd();
-				}); // end of $('#codeItemsSubmit').on("click", function() {
-				
-				$('#codeItemsAjax').on("click", function() {
-					console.group('click! codeItemsAjax!');
-					let _rowCnt = $('.code_items').length;
-					let _totalCnt = $('.code_items').find('input').length;
-					let _hasValueCnt = 0;
-					const _rankSet = new Set();
-					$('.code_items').find('input').each(function(idx, item) {
-						if(item.name == "rankNumber") _rankSet.add(item.value);
-						if(item.value != "" || item.value.length > 0) _hasValueCnt += 1;
-					});
-					
-					if(_totalCnt != _hasValueCnt) {
-						alert("하위코드는 빈 값을 허용하지 않습니다.\n값을 입력하거나, 비어있는 메뉴 행을 삭제 후 저장해주세요.");
-						return false;
-					}
- 					console.log("_rowCnt : %s", _rowCnt);
-					console.log(typeof _rowCnt);
-					console.log(_rankSet);
-					console.log("_rankSet.size : %s", _rankSet.size);
-					console.log(typeof _rankSet.size);
-					if(_rowCnt != _rankSet.size) {
-						alert("순서는 중복될 수 없습니다.\n각각 다른 값을 입력해주세요.");
-						return false;
-					}
-					
-					const _codeItems = document.querySelectorAll(".code_items");
-					const _itemsList = [];
-			
-					_codeItems.forEach(item => {
-						const codeItem = {
-							majorCode: document.querySelector('#majorCode').value,
-							minorCode: item.querySelector('[name="minorCode"]').value,
-							minorName: item.querySelector('[name="minorName"]').value,
-							description: item.querySelector('[name="description"]').value,
-							rankNumber: item.querySelector('[name="rankNumber"]').value,
-							isDeleted: item.querySelector('[name="isDeleted"]').value
-						};
-						_itemsList.push(codeItem);
-					});
-					console.log(_itemsList);
-					if(!confirm("하위 코드를 저장 하시겠습니까?")) {
-						return false;
-					}
-					// JSON 데이터를 서버로 전송
-					fetch("/admin/code/itemsJson", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json"
-						},
-						body: JSON.stringify(_itemsList)
-					})
-					.then(response => response.json())
-					.then(data => {
-						console.log("서버 응답:", data);
-						if(data.status === "success") {
-							alert(data.message);
-							location.reload(); // 현재 페이지 새로 고침
-						} else {
-							
-						}
-						
-					})
-					.catch(error => {
-						console.error("서버 응답 오류:", error);
-						if(data.status === "fail") {
-							alert(data.message);
-						}
-					});
-					console.groupEnd();
-				}); //end of $('#codeItemsAjax').on("click", function() {
-				
-				// 2depth 메뉴들의 삭제 버튼에 이벤트
-				$('#code_items_tbody').on("click", '.removeItems', function() {
-					console.group('click! #code_items_tbody > .removeItems!');
-					//랜더링 이후 append로 들어간 dom에 이렇게 해야지 이벤트가 걸리다니?
-					console.log($(this));
-					//디자인을 위해 최소한? 1개는 가지고 있어야 할것 같다
-					if($('#code_items_tbody').children('tr').length > 1) {
-						//클릭한 버튼의 부모 tr을 없애주세요
-						$(this).parents('tr').remove();
-					} else {
-						console.log("It's imposible");
-					}
-					console.groupEnd();
-				}); // end of $('#code_items_tbody').on("click", '.removeItems', function() {
-				
-				// majorCode 수정 모드
-				$('#majorCodeToggle').on("click", function() {
-					console.group('click! #majorCodeToggle!');
-					let _isDisabled = document.querySelector('#majorCode').disabled;
+				// 공통코드 수정 토글버튼 이벤트
+				$('#btnToggleDisabled').on("click", function() {
+					console.group('click! #btnToggleDisabled!');
+					let _isDisabled = document.querySelector('#idx').disabled;
 					console.log("_isDisabled : " + _isDisabled);
 					if(_isDisabled) {
-						$('#majorCodeToggle_text').text("(닫기)");
+						$('#toggleText').text("잠금");
 					} else {
-						$('#majorCodeToggle_text').text("(열기)");
-					}
-					let inputItems = $('#majorCode').parents('tr').children('td').find('input');
-					//console.log(inputItems);
-					// 현재 disabled 값을 가져온다! 가져온것!
-					let _targetIsDisabled = !_isDisabled;
-					console.log("_targetIsDisabled : " + _targetIsDisabled);
-					for(let i=0; i<inputItems.length; i++) {
-						inputItems[i].disabled = _targetIsDisabled;
+						$('#toggleText').text("열기");
 					}
 					
+					// 폼 내의 모든 input, textarea, select 요소를 찾아서 disabled 설정
+					const formElements = document.querySelectorAll('#codeForm input, #codeForm select');
+					formElements.forEach(element => {
+						element.disabled = !_isDisabled;
+					});
+					
 					console.groupEnd();
-				}); // end of $('#majorCodeToggle').on("click", function() {
+				}); // end of $('#btnToggleDisabled').on("click", function() {
 				
-				$('#codeAjax').on("click", function() {
-					console.group('click! #codeAjax!');
+				// 그룹코드 수정!
+				$('#btnSubmitForm').on("click", function() {
+					console.group('click! #btnSubmitForm!');
 					let _majorCode = document.querySelector('#majorCode').value;
-					if(!confirm("[ "+ _majorCode + " ] 정보를 수정 하시겠습니까?")){
+					if(!confirm("[ "+ _majorCode + " ] 그룹코드를 수정 하시겠습니까?")){
 						return;
 					}
-					// 빈 객체 생성
-					let _jsonObj = {};
-					let _name, _value; // _이름과 값으로 쓸 변수 생성
-					// 반복 돌면서 데이터 가져오기
-					let _inputItems = $('#majorCode').parents('tr').children('td').find('input');
-					$(_inputItems).each(function(idx) {
-						_name = $(this).attr('name');	// DTO 클래스 필드 값 가져오기
-						_value = $(this).val();			// DTO 클래스 필드에 들어갈 값 가져오기
-						_jsonObj[_name] = _value;
+					
+					let _isDisabled = document.querySelector('#idx').disabled;
+					if(_isDisabled) {
+					// disabled 가 true 이면 수정을 할 수 없다. elements disabled 풀고 전송
+						$('#btnToggleDisabled').trigger( "click" );
+					}
+					// 만세 폼이다!
+					const _serializedData = $('#codeForm').serialize();
+					// 문자열을 '&' 기준으로 분리하여 배열로 변환
+					const _pairs = _serializedData.split('&');
+					// 빈 객체를 생성하여 데이터를 담을 준비
+					const _jsonObj = {};
+					// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
+					_pairs.forEach(pair => {
+						const [key, value] = pair.split('=');
+						_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
 					});
-					// 인덱스 넣기
-					_jsonObj['idx'] = $('#major_idx').val();
+					// 데이터 확인
 					console.log(_jsonObj);
 					// JSON 데이터를 서버로 전송
-					fetch("/admin/code/codeJson", {
-						method: "POST",
+					fetch("/admin/code/modifyCode", {
+						method: "PUT",
 						headers: {
 							"Content-Type": "application/json"
 						},
@@ -279,8 +224,125 @@
 							alert(data.message);
 						}
 					});
+					
 					console.groupEnd();
-				}); // end of $('#codeAjax').on("click", function() {
+				}); // end of $('#btnSubmitForm').on("click", function() {
+				
+				// 하위코드 추가 버튼 클릭 이벤트
+				$('#addChildCodeRow').on("click", function() {
+					console.group('click! addChildCodeRow!');
+					
+					let tableRowHtml = '<tr class="clickable-row childCodeItems" >';
+					tableRowHtml += '<td><input type="text" id="majorCode" name="majorCode" class="form-control" placeholder="그룹코드" /></td>';
+					tableRowHtml += '<td><input type="text" id="minorCode" name="minorCode" class="form-control" placeholder="하위코드" /></td>';
+					tableRowHtml += '<td><input type="text" id="minorName" name="minorName" class="form-control" placeholder="하위코드 이름" /></td>';
+					tableRowHtml += '<td><input type="text" id="description" name="description" class="form-control" placeholder="코드 설명" /></td>';
+					tableRowHtml += '<td><input type="text" id="rankNumber" name="rankNumber" class="form-control" placeholder="코드 순서" /></td>';
+					tableRowHtml += '<td>';
+					tableRowHtml += '	<select name="isDeleted" id="isDeleted" class="form-select">';
+					tableRowHtml += '		<option value="N">사용중</option>';
+					tableRowHtml += '		<option value="Y">삭제</option>';
+					tableRowHtml += '	</select>';
+					tableRowHtml += '</td>';
+					tableRowHtml += '<td><button type="button" class="btn btn-secondary removeChildCode">삭제</button></td>';
+					tableRowHtml += '</tr>';
+					
+					$('#childCodeBody').append(tableRowHtml);
+					
+					console.groupEnd();
+				}); // end of $('#addRow').on("click", function() {
+					
+				// 하위코드 삭제 버튼 클릭 이벤트
+				$('#childCodeBody').on("click", '.removeChildCode', function() {
+					console.group('click! #childCodeBody > .removeChildCode!');
+							
+					console.log($(this));
+					//디자인을 위해 최소한? 1개는 가지고 있어야 할것 같다
+					if($('#childCodeBody').children('tr').length > 1) {
+						//클릭한 버튼의 부모 tr을 없애주세요
+						$(this).parents('tr').remove();
+					} else {
+						console.log("It's imposible");
+					}
+					
+					console.groupEnd();
+				}); // end of $('#childCodeBody').on("click", '.removeChildCode', function() {
+				
+				// 하위 코드 등록!
+				$('#childCodeSubmit').on("click", function() {
+					console.group('click! childCodeSubmit!');
+					
+					let _rowCnt = $('.childCodeItems').length;
+					let _totalCnt = $('.childCodeItems').find('input').length;
+					let _hasValueCnt = 0;
+					const _rankSet = new Set();
+					$('.childCodeItems').find('input').each(function(idx, item) {
+						if(item.name == "rankNumber") _rankSet.add(item.value);
+						if(item.value != "" || item.value.length > 0) _hasValueCnt += 1;
+					});
+					
+					if(_totalCnt != _hasValueCnt) {
+						alert("하위 코드는 빈 값을 허용하지 않습니다.\n값을 입력하거나, 비어있는 메뉴 행을 삭제 후 저장해주세요.");
+						return false;
+					}
+/* 					console.log("_rowCnt : %s", _rowCnt);
+					console.log(typeof _rowCnt);
+					console.log(_rankSet);
+					console.log("_rankSet.size : %s", _rankSet.size);
+					console.log(typeof _rankSet.size); */
+					if(_rowCnt != _rankSet.size) {
+						alert("순서는 중복될 수 없습니다.\n각각 다른 값을 입력해주세요.");
+						return false;
+					}
+					
+					const codeItems = document.querySelectorAll(".childCodeItems");
+					const _codeList = [];
+			
+					codeItems.forEach(item => {
+						const code = {
+							majorCode: document.querySelector('#majorCode').value,
+							minorCode: item.querySelector('[name="minorCode"]').value,
+							minorName: item.querySelector('[name="minorName"]').value,
+							description: item.querySelector('[name="description"]').value,
+							rankNumber: item.querySelector('[name="rankNumber"]').value,
+							isDeleted: item.querySelector('[name="isDeleted"]').value
+						};
+						_codeList.push(code);
+					});
+					console.log(_codeList);
+					
+					if(!confirm("하위 코드를 저장 하시겠습니까?")) {
+						return false;
+					}
+					// JSON 데이터를 서버로 전송
+					fetch("/admin/code/registerCodeItems", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(_codeList)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.status === "success") {
+							alert(data.message);
+							location.reload(); // 현재 페이지 새로 고침
+						} else {
+							
+						}
+						
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						if(data.status === "fail") {
+							alert(data.message);
+						}
+					});
+					
+					console.groupEnd();
+				}); // end of $('#childMenuSubmit').on("click", function() {
+				
 				
 			}); // end of $(function() {
 		</script>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<meta charset="UTF-8">
+<title>메뉴 등록</title>
+
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<style type="text/css">
+		.form {
+			max-width: 800px;
+			margin: 0 auto;
+		}
+		input, select {
+	        border: 1px solid #ccc;
+	        padding: 5px;
+	        margin: 2px;
+		}
+		.essential {
+	        background-color: #fffbe6; /* 연한 노랑 */
+	    }
+	    .filled {
+	        background-color: white;
+	    }
+	    
+	    /* ----------------- */
+	    .addressInfo {
+		    display: flex;
+		}
+	    @media (max-width: 768px) {
+		    .addressInfo {
+			    display: block;
+			}
+		}
+	</style>
+</head>
+<body>
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-4 text-gray-800">하위 메뉴 관리</h1>
+			</div>
+			
+			<!-- ---------- 본문 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive">
+						<form th:action="@{/admin/menu}" method="post" th:object="${menuDTO}" class="form row g-3" id="menuTypeForm">
+							<input type="hidden" name="_method" value="put">
+							<input type="hidden" th:field="*{idx}" id="major_idx" disabled />
+							<input type="hidden" th:field="*{menuId}" value="0" disabled />
+							<div class="col-md-6">
+								<label class="mb-1" for="menuType">메뉴 타입</label>
+								<input type="text" class="form-control" th:field="*{menuType}" placeholder="메뉴 타입" disabled>
+							</div>
+							<div class="col-md-6">
+								<label class="mb-1" for="url">메뉴 URL</label>
+								<input type="text" class="form-control" th:field="*{url}" placeholder="URL" disabled>
+							</div>
+							<div class="col-md-6">
+								<label class="mb-1" for="rankNumber">메뉴 순서</label>
+								<input type="text" class="form-control" th:field="*{rankNumber}" placeholder="메뉴 순서" disabled>
+							</div>
+							<div class="col-md-6">
+								<label for="isDeleted" class="form-label">삭제유무</label>
+								<select id="isDeleted" name="isDeleted" class="form-select" th:field="*{isDeleted}" disabled>
+									<option value="" th:selected="*{isDeleted} eq '' ">전체</option>
+									<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
+									<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
+								</select>
+							</div>
+							<div class="col-md-12 mb-4">
+								<label class="mb-1" for="description">메뉴 설명</label>
+								<textarea class="form-control" th:field="*{description}" rows="3" cols="40" placeholder="메뉴 설명 입력" disabled></textarea>
+							</div>
+							
+							<div class="col-md-12 row align-items-center justify-content-center">
+								<button type="button" id="btnToggleDisabled" class="btn btn-success btn-lg d-block col-3 ml-2 mb-3">수정(<span id="toggleText">열기</span>)</button>
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">그룹 메뉴 수정</button>
+								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">취소</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			<div class="card shadow mb-4">
+				<div class="card-header py-3" style="display: flex; justify-content: space-between; align-items: center;">
+					<h6 class="m-0 font-weight-bold text-primary" style="flex-grow: 1;">하위 메뉴 등록</h6>
+					<div>
+						<button type="button" id="addChildMenuRow" class="btn btn-success">메뉴 추가</button>
+						<button type="button" id="childMenuSubmit" class="btn btn-primary">하위 메뉴 등록</button>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered table-hover text-center" id="dataTables1" width="100%" cellspacing="0">
+							<thead class="table-light">
+								<tr>
+									<th>메뉴ID</th>
+									<th>메뉴 URL</th>
+									<th>메뉴 순서</th>
+									<th>삭제유무</th>
+									<th>메뉴 설명</th>
+									<th>삭제</th>
+								</tr>
+							</thead>
+							<tbody id="childMenuBody">
+								<tr th:each="item, status : ${menuDTOIdList}" class="clickable-row childMenuItems">
+									<td><input type="text" name="menuId" th:value="${item.menuId}" class="form-control" placeholder="메뉴 ID" /></td>
+									<td><input type="text" name="url" th:value="${item.url}" class="form-control" placeholder="메뉴 URL" /></td>
+									<td><input type="text" name="rankNumber" th:value="${item.rankNumber}" class="form-control" placeholder="메뉴 순서" /></td>
+									<td>
+										<select name="isDeleted" id="isDeleted" th:value="${item.isDeleted}" class="form-select">
+											<option value="" th:selected="${item.isDeleted} eq '' ">전체</option>
+											<option value="Y" th:selected="${item.isDeleted} eq 'Y' ">삭제</option>
+											<option value="N" th:selected="${item.isDeleted} eq 'N' ">사용중</option>
+										</select>
+									</td>
+									<!-- <td><input type="text" name="isDeleted" th:value="${item.isDeleted}" class="form-control" placeholder="삭제유무 (Y/N)" /></td> -->
+									<td><input type="text" name="description" th:value="${item.description}" class="form-control" placeholder="메뉴 설명" /></td>
+									<td><button type="button" class="btn btn-secondary removeChildMenu">삭제</button></td>
+								</tr>
+								<tr th:if="${#lists.isEmpty(menuDTOIdList)}" class="clickable-row childMenuItems">
+									<td><input type="text" id="menuId" name="menuId" class="form-control" placeholder="메뉴 ID" /></td>
+									<td><input type="text" id="url" name="url" class="form-control" placeholder="메뉴 URL" /></td>
+									<td><input type="text" id="rankNumber" name="rankNumber" class="form-control" placeholder="메뉴 순서" /></td>
+									<td>
+										<select name="isDeleted" id="isDeleted" class="form-select">
+											<option value="N">사용중</option>
+											<option value="Y">삭제</option>
+											<!-- <option value="">전체</option> -->
+										</select>
+									</td>
+									<!-- <td><input type="text" id="isDeleted" name="isDeleted" class="form-control" placeholder="삭제유무 (Y/N)" /></td> -->
+									<td><input type="text" id="description" name="description" class="form-control" placeholder="메뉴 설명" /></td>
+									<td><button type="button" class="btn btn-secondary removeChildMenu">삭제</button></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">전체 메뉴 URL 표</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered table-hover text-center" id="dataTables2" width="100%" cellspacing="0">
+							<thead class="table-light">
+								<tr>
+									<th>HTTP Method</th>
+									<th>UrlPath</th>
+									<th>Controller</th>
+									<th>Handler Method</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item : ${mappingList}">
+									<td th:text="${item.method}">GET</td>
+									<td th:text="${item.urlPattern}">/api/example</td>
+									<td th:text="${item.simpleName}">ExampleController</td>
+									<td th:text="${item.methodName}">exampleMethod</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 딱 요만큼이면 되네! jquery.dataTables.min.js, dataTables.bootstrap4.min.js, datatables-demo.js-->
+		<!-- Page level plugins -->
+		<script src="/js/datatables/jquery.dataTables.min.js"></script>
+		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+		<!-- Page level custom scripts -->
+		<script src="/js/demo/datatables-demo.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				console.log("document ready!");
+				
+				// init DataTable
+				$('#dataTables2').DataTable({
+					lengthChange: true,
+					searching: true,
+					paging: true,
+					info: false
+				}); // end of $('#dataTables').DataTable({
+				
+			}); // end of $(document).ready(function() {
+		
+		
+			$(function() {
+				
+				$('#btnList').on("click", function() {
+					location.href="/admin/menu";
+				}); // end of $('#btnList').on("click", function() {
+				
+				// 메뉴타입(그룹메뉴) 수정 토글버튼 이벤트
+				$('#btnToggleDisabled').on("click", function() {
+					console.group('click! #btnToggleDisabled!');
+					let _isDisabled = document.querySelector('#menuType').disabled;
+					console.log("_isDisabled : " + _isDisabled);
+					if(_isDisabled) {
+						$('#toggleText').text("잠금");
+					} else {
+						$('#toggleText').text("열기");
+					}
+					
+					// 폼 내의 모든 input, textarea, select 요소를 찾아서 disabled 설정
+					const formElements = document.querySelectorAll('#menuTypeForm input, #menuTypeForm select, #menuTypeForm textarea');
+					formElements.forEach(element => {
+						element.disabled = !_isDisabled;
+					});
+					
+					console.groupEnd();
+				}); // end of $('#btnToggleDisabled').on("click", function() {
+				
+				// 메뉴타입(그룹메뉴) 수정!
+				$('#btnSubmitForm').on("click", function() {
+					console.group('click! #btnSubmitForm!');
+					let _groupType = document.querySelector('#menuType').value;
+					if(!confirm("[ "+ _groupType + " ] 메뉴 정보를 수정 하시겠습니까?")){
+						return;
+					}
+					
+					let _isDisabled = document.querySelector('#menuType').disabled;
+					if(_isDisabled) {
+					// disabled 가 true 이면 수정을 할 수 없다. elements disabled 풀고 전송
+						$('#btnToggleDisabled').trigger( "click" );
+					}
+					// 만세 폼이다!
+					const _serializedData = $('#menuTypeForm').serialize();
+					// 문자열을 '&' 기준으로 분리하여 배열로 변환
+					const _pairs = _serializedData.split('&');
+					// 빈 객체를 생성하여 데이터를 담을 준비
+					const _jsonObj = {};
+					// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
+					_pairs.forEach(pair => {
+						const [key, value] = pair.split('=');
+						_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
+					});
+					// 데이터 확인
+					console.log(_jsonObj);
+					// JSON 데이터를 서버로 전송
+					fetch("/admin/menu/modifyTypeMenu", {
+						method: "PUT",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(_jsonObj)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.status === "success") {
+							alert(data.message);
+							location.reload(); // 현재 페이지 새로 고침
+						}
+						
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						if(data.status === "fail") {
+							alert(data.message);
+						}
+					});
+					
+					console.groupEnd();
+				}); // end of $('#btnSubmitForm').on("click", function() {
+				
+				// 하위메뉴 추가 버튼 클릭 이벤트
+				$('#addChildMenuRow').on("click", function() {
+					console.group('click! addChildMenuRow!');
+					
+					let tableRowHtml = '<tr class="clickable-row childMenuItems" >';
+					tableRowHtml += '<td><input type="text" id="menuId" name="menuId" class="form-control" placeholder="메뉴 ID" /></td>';
+					tableRowHtml += '<td><input type="text" id="url" name="url" class="form-control" placeholder="메뉴 URL" /></td>';
+					tableRowHtml += '<td><input type="text" id="rankNumber" name="rankNumber" class="form-control" placeholder="메뉴 순서" /></td>';
+					tableRowHtml += '<td>';
+					tableRowHtml += '	<select name="isDeleted" id="isDeleted" class="form-select">';
+					tableRowHtml += '		<option value="N">사용중</option>';
+					tableRowHtml += '		<option value="Y">삭제</option>';
+					tableRowHtml += '	</select>';
+					tableRowHtml += '</td>';
+					tableRowHtml += '<td><input type="text" id="description" name="description" class="form-control" placeholder="메뉴 설명" /></td>';
+					tableRowHtml += '<td><button type="button" class="btn btn-secondary removeChildMenu">삭제</button></td>';
+					tableRowHtml += '</tr>';
+					
+					$('#childMenuBody').append(tableRowHtml);
+					
+					console.groupEnd();
+				}); // end of $('#addChildMenuRow').on("click", function() {
+					
+				// 하위메뉴 삭제 버튼 클릭 이벤트
+				$('#childMenuBody').on("click", '.removeChildMenu', function() {
+					console.group('click! #childMenuBody > .removeChildMenu!');
+							
+					console.log($(this));
+					//디자인을 위해 최소한? 1개는 가지고 있어야 할것 같다
+					if($('#childMenuBody').children('tr').length > 1) {
+						//클릭한 버튼의 부모 tr을 없애주세요
+						$(this).parents('tr').remove();
+					} else {
+						console.log("It's imposible");
+					}
+					
+					console.groupEnd();
+				}); // end of $('#childMenuBody').on("click", '.removeChildMenu', function() {
+				
+				// 하위 메뉴 등록!
+				$('#childMenuSubmit').on("click", function() {
+					console.group('click! childMenuSubmit!');
+					
+					let _rowCnt = $('.childMenuItems').length;
+					let _totalCnt = $('.childMenuItems').find('input').length;
+					let _hasValueCnt = 0;
+					const _rankSet = new Set();
+					$('.childMenuItems').find('input').each(function(idx, item) {
+						if(item.name == "rankNumber") _rankSet.add(item.value);
+						if(item.value != "" || item.value.length > 0) _hasValueCnt += 1;
+					});
+					
+					if(_totalCnt != _hasValueCnt) {
+						alert("하위 메뉴는 빈 값을 허용하지 않습니다.\n값을 입력하거나, 비어있는 메뉴 행을 삭제 후 저장해주세요.");
+						return false;
+					}
+/* 					console.log("_rowCnt : %s", _rowCnt);
+					console.log(typeof _rowCnt);
+					console.log(_rankSet);
+					console.log("_rankSet.size : %s", _rankSet.size);
+					console.log(typeof _rankSet.size); */
+					if(_rowCnt != _rankSet.size) {
+						alert("순서는 중복될 수 없습니다.\n각각 다른 값을 입력해주세요.");
+						return false;
+					}
+					
+					const menuItems = document.querySelectorAll(".childMenuItems");
+					const _menuList = [];
+			
+					menuItems.forEach(item => {
+						const menu = {
+							menuType : document.querySelector('#menuType').value,
+							menuId: item.querySelector('[name="menuId"]').value,
+							rankNumber: item.querySelector('[name="rankNumber"]').value,
+							url: item.querySelector('[name="url"]').value,
+							isDeleted: item.querySelector('[name="isDeleted"]').value,
+							description: item.querySelector('[name="description"]').value
+						};
+						_menuList.push(menu);
+					});
+					console.log(_menuList);
+					if(!confirm("하위 메뉴를 저장 하시겠습니까?")) {
+						return false;
+					}
+					// JSON 데이터를 서버로 전송
+					fetch("/admin/menu/registerChildMenu", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(_menuList)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.status === "success") {
+							alert(data.message);
+							location.reload(); // 현재 페이지 새로 고침
+						} else {
+							
+						}
+						
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						if(data.status === "fail") {
+							alert(data.message);
+						}
+					});
+					
+					console.groupEnd();
+				}); // end of $('#childMenuSubmit').on("click", function() {
+				
+				
+			}); // end of $(function() {
+		</script>
+	</th:block>
+</body>
+</html>

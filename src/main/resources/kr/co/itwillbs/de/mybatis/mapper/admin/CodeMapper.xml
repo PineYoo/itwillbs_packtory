@@ -75,10 +75,6 @@
 			is_deleted,
 			reg_id,
 			reg_date,
-			<if test='modId !=null and !("".equals(modId.trim()))'>
-			mod_id,
-			mod_date,
-			</if>
 			</trim>
 		) values (
 			<trim suffixOverrides=",">
@@ -88,10 +84,6 @@
 			#{isDeleted},
 			#{regId},
 			now(),
-			<if test='modId !=null and !("".equals(modId.trim()))'>
-			#{modId},
-			now()
-			</if>
 			</trim>
 		)
 	</insert>
@@ -110,6 +102,7 @@
 		<where>
 			<if test='majorCode !=null and !("".equals(majorCode.trim()))'>and major_code = #{majorCode}</if>
 			<if test='name !=null and !("".equals(name.trim()))'>and name LIKE CONCAT('%',#{name},'%')</if>
+			<if test='description !=null and !("".equals(description.trim()))'>and description LIKE CONCAT('%',#{description},'%')</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>and is_deleted = #{isDeleted}</if>
 			<if test='regId !=null and !("".equals(regId.trim()))'>and reg_id = #{regId}</if>
 		</where>

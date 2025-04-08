@@ -1,12 +1,22 @@
 package kr.co.itwillbs.de.admin.service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import kr.co.itwillbs.de.admin.dto.MenuDTO;
 import kr.co.itwillbs.de.admin.dto.MenuSearchDTO;
+import kr.co.itwillbs.de.admin.dto.RequestMappingDTO;
 import kr.co.itwillbs.de.admin.mapper.MenuMapper;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 public class MenuService {
 
 	private final MenuMapper menuMapper;
+	private final RequestMappingHandlerMapping requestMappingHandlerMapping;
+	
 	//@Autowired
-	public MenuService(MenuMapper menuMapper) {
+	public MenuService(MenuMapper menuMapper, RequestMappingHandlerMapping requestMappingHandlerMapping) {
 		this.menuMapper = menuMapper;
+		this.requestMappingHandlerMapping = requestMappingHandlerMapping;
 	}
 	
 	/**
@@ -29,9 +42,6 @@ public class MenuService {
 	@LogExecution
 	public int registerMenu(MenuDTO menuDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		// 세션에서 reg_id 가져와서 셋
-		menuDTO.setRegId("superUser");
 		
 		return menuMapper.registerMenu(menuDTO);
 	}
@@ -105,9 +115,6 @@ public class MenuService {
 	public int modifyMenuIsDeleted(MenuDTO menuDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		// 세션에서 mod_id 가져와서 셋
-		menuDTO.setModId("superUser");
-		
 		return menuMapper.modifyMenuIsDeleted(menuDTO);
 	}
 
@@ -117,36 +124,75 @@ public class MenuService {
 	 * @throws Exception 
 	 */
 	@LogExecution
-	public void modifyMenu1Depth(MenuDTO menuDTO) throws Exception {
+	public void modifyTypeMenu(MenuDTO menuDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		// 세션에서 mod_id 가져와서 셋
-		menuDTO.setModId("superUser");
-		
-		int affectedRow = menuMapper.modifyMenu1Depth(menuDTO);
+		int affectedRow = menuMapper.modifyTypeMenu(menuDTO);
 		if(affectedRow < 1) {
 			throw new Exception("데이터 수정에 실패 했습니다.");
 		}
 	}
 	
+	/**
+	 * 
+	 * @param menuList
+	 * @throws Exception
+	 */
 	@LogExecution
 	@Transactional
-	public void registerMenu2Depth(List<MenuDTO> menuList) throws Exception {
+	public void registerChildMenu(List<MenuDTO> menuList) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		//등록 전에 삭제부터 하고
-		menuMapper.removeMenu2Depth((MenuDTO)menuList.get(0));
-		//등록 한다 등록하기전 등록자 세션에서 아이디 가져온다.
-		for (MenuDTO menuDTO : menuList) {
-			menuDTO.setRegId("superUser");
-		}
-		int affectedRow = menuMapper.registerMenu2Depth(menuList);
+		menuMapper.removeChildMenu((MenuDTO)menuList.get(0));
+		
+		int affectedRow = menuMapper.registerChildMenu(menuList);
 		log.info("itemList.size is {}, // affectedRow is {}", menuList.size(), affectedRow);
 		
 		if(affectedRow < 1 || menuList.size() != affectedRow) {
 			throw new Exception("데이터 등록에 실패 했습니다.");
 		}
 	}
+	
+	/**
+	 * <pre>
+	 * @Controller에 @RequestMapping 관련 어노테이션으로 구현된 컨트롤러 요소들을
+	 * RequestMappingHandlerMapping 으로 찾으려 만듦.
+	 * 오랜만에 보니까 하나도 모르겠네.. GPT 만세!!
+	 * </pre>
+	 * @return List<RequestMappingDTO>
+	 */
+	public List<RequestMappingDTO> MappingConvertor() {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		List<RequestMappingDTO> mappingList = new ArrayList<>();
+		
+		Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
+		for(Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
+			RequestMappingInfo requestMappingInfo = entry.getKey();
+			HandlerMethod handlerMethod = entry.getValue();
+			
+			Set<String> patterns = requestMappingInfo.getPatternValues();
+			Set<RequestMethod> methods = requestMappingInfo.getMethodsCondition().getMethods();
+			
+			RequestMappingDTO dto = null;
 
-
+			for (String pattern : patterns) {
+				for (RequestMethod method : methods) {
+					dto = new RequestMappingDTO();
+					dto.setMethod(method.name());
+					dto.setMethodName(handlerMethod.getMethod().getName());
+					dto.setUrlPattern(pattern);
+					dto.setSimpleName(handlerMethod.getBeanType().getSimpleName());
+					mappingList.add(dto);
+				}
+			}
+		}
+		
+		// 와 진짜 이거 뭐지? 이렇게 한다고 정렬이 된다고? 정신을 못차리겠네 이게 무슨말이야
+		mappingList.sort(Comparator
+				.comparing(RequestMappingDTO::getSimpleName)
+				.thenComparing(RequestMappingDTO::getMethodName));
+		return mappingList;
+	}
 }

@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MenuController {
 
 	private final MenuService menuService;
+	
 	//@Autowired
 	public MenuController(MenuService menuService) {
 		this.menuService = menuService;
@@ -46,7 +47,10 @@ public class MenuController {
 	public String menuRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		// Form th:object를 위한 DTO 뷰에 전달
 		model.addAttribute("menuDTO", new MenuDTO());
+		// 메뉴 등록을 위한 RequestMapping 리스트
+		model.addAttribute("mappingList", menuService.MappingConvertor());
 		
 		return MENU_PATH+"/menu_register_form";
 	}
@@ -137,24 +141,27 @@ public class MenuController {
 			menuSearchDTO.setMenuType(menuDTO.getMenuType());
 			// 이제 2depth 메뉴 리스트 가져오기
 			model.addAttribute("menuDTOIdList", menuService.getMenuIdListByMenuType(menuSearchDTO));
+			
+			// 메뉴 등록을 위한 RequestMapping 리스트
+			model.addAttribute("mappingList", menuService.MappingConvertor());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return "redirect:"+MENU_PATH;
 		}
 		
-		return MENU_PATH+"/menu_id_list";
+		return MENU_PATH+"/menu_child_list";
 	}
 
 	/**
-	 * 어드민 > 메뉴 목록 > 메뉴관리(1Depth) > 대메뉴 수정
+	 * 어드민 > 메뉴 목록 > 하위 메뉴 등록 -> 화면 상단의 메뉴 타입 업데이트
 	 * <br> 만약, 2Depth 메뉴와 함께 수정하라고 하면.. 조금 머리가 아파질것 같다
 	 * @param menuDTO
 	 * @param model
 	 * @return
 	 */
-	@PostMapping("/1depthjson")
+	@PutMapping("/modifyTypeMenu")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> menu1ModifyJson(@RequestBody MenuDTO menuDTO,  Model model) {
+	public ResponseEntity<Map<String, Object>> modifyTypeMenu(@RequestBody MenuDTO menuDTO,  Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestBody : {}", menuDTO);
@@ -162,7 +169,7 @@ public class MenuController {
 		//리턴 객체
 		Map<String, Object> response = new HashMap<>();
 		try {
-			menuService.modifyMenu1Depth(menuDTO);
+			menuService.modifyTypeMenu(menuDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -176,15 +183,15 @@ public class MenuController {
 	}
 	
 	/**
-	 * 어드민 > 메뉴 목록 > 메뉴관리(2Depth) > 소메뉴 등록/수정
+	 * 어드민 > 메뉴 목록 > 하위 메뉴 등록 > 하위 메뉴 등록/수정
 	 * <br> 전체 삭제 후 인서트 작업이기에 등록/수정 한곳에서 이루어짐
 	 * @param menuList jsonObj >> {"menuType" : "foo", "menuId": "bar", "rank": n, "url":"bla/bla", "isDeleted":"Y/N", "description": "st"}
 	 * @param model
 	 * @return
 	 */
-	@PostMapping("/2depthjson")
+	@PostMapping("/registerChildMenu")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> menu2RegisterJson(@RequestBody List<MenuDTO> menuList,  Model model) {
+	public ResponseEntity<Map<String, Object>> registerChildMenu(@RequestBody List<MenuDTO> menuList,  Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestBody : {}", menuList);
@@ -192,7 +199,7 @@ public class MenuController {
 		//리턴 객체
 		Map<String, Object> response = new HashMap<>();
 		try {
-			menuService.registerMenu2Depth(menuList);
+			menuService.registerChildMenu(menuList);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -233,4 +240,5 @@ public class MenuController {
 		// 상품 상세정보 조회 페이지 리다이렉트(GET 방식 /items/ 와 id값 결합 필요)
 		return "redirect:"+MENU_PATH;
 	}
+	
 }
