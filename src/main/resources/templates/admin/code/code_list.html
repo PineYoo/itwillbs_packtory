@@ -3,7 +3,7 @@
 		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>공통코드 관리</title>
+<title>팩토리(PackTory) - 공통코드 관리</title>
 		<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 	<style type="text/css">
 	/* 검색바 중앙에 세로줄 */
@@ -33,7 +33,11 @@
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
-								<form th:action="@{/admin/code/search}" method="get" th:object="${codeSearchDTO}">
+								<form th:action="@{/admin/code/search}" method="get" th:object="${codeSearchDTO}" id="searchForm">
+									<!-- 페이징 히든 변수 -->
+									<input type="hidden" th:field="*{pageDTO.page}">
+									<input type="hidden" th:field="*{pageDTO.size}">
+									<!-- 페이징 히든 변수 -->
 									<div class="container-fluid px-5">
 										<div class="row">
 											<!-- 왼쪽 컬럼 -->
@@ -87,6 +91,9 @@
 												<button type="button" class="btn btn-success btn-block" id="goNewFormBtn">등록</button>
 											</div>
 											<div class="col-12 col-sm-auto mb-2">
+												<button type="button" class="btn btn-warning btn-block" onclick="formReset('searchForm');">초기화</button>
+											</div>
+											<div class="col-12 col-sm-auto mb-2">
 												<button type="submit" class="btn btn-primary btn-block" id="btnSearch">검색</button>
 											</div>
 										</div>
@@ -109,18 +116,19 @@
 							<thead class="table-light">
 								<tr>
 									<th>번호</th>
-									<th>공통코드그룹</th>
+									<th>그룹코드</th>
 									<th>이름</th>
 									<th>설명</th>
-									<th>사용여부</th>
-									<th>등록자</th>
+									<th>삭제유무</th>
+									<th>작성자</th>
 									<th>등록일자</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="item, status : ${codeDTOList}" th:data-id="${item.idx}" class="clickable-row">
 									<!-- <th:block th:object="${item}"> -->
-									<td th:text="${status.count}"></td>
+									<td th:text="${item.idx}"></td>
+									<!-- <td th:text="${status.count}"></td> -->
 									<td th:text="${item.majorCode}"></td>
 									<td th:text="${item.name}"></td>
 									<td th:text="${item.description}"></td>
@@ -134,20 +142,22 @@
 							</tbody>
 						</table>
 					</div>
+					<div th:replace="~{common/fragments/de_pagination :: pagination(${codeSearchDTO})}"></div>
 				</div>
 			</div>
 			
-			<script src="/js/datatables/jquery.dataTables.min.js"></script>
 			<script type="text/javascript">
 				$(document).ready(function() {
 					console.log("document ready!");
 					
 					// init DataTable
 					$('#dataTables').DataTable({
-						lengthChange: false,
-						searching: false,
-						paging: false,
-						info: false
+						lengthChange : false,
+						searching : false,
+						paging : false,
+						info : false,
+						order: [0, "desc"],
+						responsive: true
 					}); // end of $('#dataTables').DataTable({
 					
 				}); // end of $(document).ready(function() {

@@ -76,10 +76,11 @@ public class LogController {
 		model.addAttribute("accessTypeList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_ACCESS_TYPE)); // 로그 엑세스타입 셀렉트박스용
 		model.addAttribute("accessDeviceList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_ACCESS_DEVICE)); // 로그 엑세스디바이스 셀렉트박스용
 		
+		// 페이징용 totalCount 가져오기
+		logSearchDTO.getPageDTO().setTotalCount(logService.getLogSearchCountForPaging(logSearchDTO));
 		model.addAttribute("logSearchDTO", logSearchDTO);
-		
 		// 로그 리스트 가져와서 뷰에 전달
-		model.addAttribute("logListDTO", logService.getLogSearchList(logSearchDTO));
+		model.addAttribute("logDTOList", logService.getLogSearchList(logSearchDTO));
 		
 		return LOG_PATH+"/log_list";
 	}
@@ -97,10 +98,12 @@ public class LogController {
 		
 		model.addAttribute("accessTypeList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_ACCESS_TYPE)); // 로그 엑세스타입 셀렉트박스용
 		model.addAttribute("accessDeviceList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_ACCESS_DEVICE)); // 로그 엑세스디바이스 셀렉트박스용
-		
-		logSearchDTO = logService.getLogSearchList(logSearchDTO);
-//		model.addAttribute("logDTOList", logDTOList);
+
+		// 페이징용 totalCount 가져오기
+		logSearchDTO.getPageDTO().setTotalCount(logService.getLogSearchCountForPaging(logSearchDTO));
 		model.addAttribute("logSearchDTO", logSearchDTO);
+		// 로그 리스트 가져와서 뷰에 전달
+		model.addAttribute("logDTOList", logService.getLogSearchList(logSearchDTO));
 		
 		return LOG_PATH+"/log_list";
 	}

@@ -88,11 +88,11 @@
 		)
 	</insert>
 	
-	<select id="getMenuTypeList" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
-								resultType="kr.co.itwillbs.de.admin.dto.MenuDTO">
-		select 
-			<include refid="t_menu_columns_forSelect" />
-		from t_menu
+	<select id="getMenuTypeCount" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
+								resultType="int">
+		SELECT 
+			count(*)
+		FROM t_menu
 			<where>
 				<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
 				<if test='menuType != null and !("".equals(menuType.trim()))'>AND menu_type LIKE CONCAT('%',#{menuType},'%') </if>
@@ -101,6 +101,22 @@
 				<if test='url != null and !("".equals(url.trim()))'>AND url LIKE CONCAT('%',#{url},'%') </if>
 				<if test='regId != null and !("".equals(regId.trim()))'>AND reg_id = #{regId} </if>
 			</where>
+	</select>
+	
+	<select id="getMenuTypeList" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
+								resultType="kr.co.itwillbs.de.admin.dto.MenuDTO">
+		SELECT 
+			<include refid="t_menu_columns_forSelect" />
+		FROM t_menu
+			<where>
+				<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
+				<if test='menuType != null and !("".equals(menuType.trim()))'>AND menu_type LIKE CONCAT('%',#{menuType},'%') </if>
+				<if test='menuId != null and !("".equals(menuId.trim()))'>AND menu_id = #{menuId} </if>
+				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
+				<if test='url != null and !("".equals(url.trim()))'>AND url LIKE CONCAT('%',#{url},'%') </if>
+				<if test='regId != null and !("".equals(regId.trim()))'>AND reg_id = #{regId} </if>
+			</where>
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
 	<select id="getMenuIdListByMenuType" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"

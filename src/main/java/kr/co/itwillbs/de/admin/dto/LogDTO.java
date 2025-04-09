@@ -20,8 +20,10 @@ public class LogDTO {
 	private String accessId;
 	// 접속 타입(예시. 1:front, 2:admin, 3: partner)
 	private String accessType;
+	private String accessTypeName;
 	// 접속 장치(예시. 1:PC, 2:Mobile)
 	private String accessDevice;
+	private String accessDeviceName;
 	// HttpServletRequest.getRemoteAddr()?
 	private String ip;
 	// HttpServletRequest.parameterMap()?

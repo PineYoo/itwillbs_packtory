@@ -18,6 +18,13 @@ public interface MemberMapper {
 	List<MemberDTO> getBeforeMembers();
 	
 	/**
+	 * SELECT count(*) FROM T_EMPLOYEE LEFT JOIN T_MEMBER ... WHERE T_MEMBER.STATUS IS NULL AND employeeSearchDTO
+	 * @param employeeSearchDTO
+	 * @return
+	 */
+	int getBeforeMembersCountByEmployeeSearch(EmployeeSearchDTO employeeSearchDTO);
+	
+	/**
 	 * SELECT FROM T_EMPLOYEE LEFT JOIN T_MEMBER ... WHERE T_MEMBER.STATUS IS NULL AND employeeSearchDTO
 	 * @param employeeSearchDTO
 	 * @return
@@ -43,6 +50,13 @@ public interface MemberMapper {
 	 */
 	List<MemberDTO> getMembers();
 
+	/**
+	 * SELECT FROM T_EMPLOYEE LEFT JOIN T_MEMBER ... WHERE T_MEMBER.STATUS IS NOT NULL AND memberSearchDTO;
+	 * @param memberSearchDTO
+	 * @return
+	 */
+	int getMembersCountBySearchDTO(MemberSearchDTO memberSearchDTO);
+	
 	/**
 	 * SELECT FROM T_EMPLOYEE LEFT JOIN T_MEMBER ... WHERE T_MEMBER.STATUS IS NOT NULL AND memberSearchDTO;
 	 * @param memberSearchDTO

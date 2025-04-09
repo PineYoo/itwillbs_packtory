@@ -47,7 +47,21 @@ public class MenuService {
 	}
 
 	/**
-	 * 메뉴 리스트 조회(1depth) -> 조건은 생각해보자
+	 * 그룹 메뉴 리스트 검색 조건 조회 카운트 - 페이징용
+	 * @param menuSearchDTO
+	 * @return
+	 */
+	public int getMenuTypeCount(MenuSearchDTO menuSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		// 1depth 메뉴들은 menuId가 0이다.
+		menuSearchDTO.setMenuId("0");
+		log.info("menuSearchDTO : {}", menuSearchDTO);
+		return menuMapper.getMenuTypeCount(menuSearchDTO);
+	}
+	
+	/**
+	 * 그룹 메뉴 리스트 검색 조건 조회
 	 * @param menuSearchDTO
 	 * @return
 	 */

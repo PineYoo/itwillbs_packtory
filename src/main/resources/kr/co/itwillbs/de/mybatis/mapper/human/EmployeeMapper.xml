@@ -51,48 +51,34 @@
 		</if>
 		
 		<choose>
-			<when
-				test="(hireDateFrom != null and hireDateFrom.trim() != '')
-							and (hireDateTo != null and hireDateTo.trim() != '')">
-				and hire_date BETWEEN
-				STR_TO_DATE(CONCAT(#{hireDateFrom},'000000'),'%Y-%m-%d%H%i%S')
-				AND STR_TO_DATE(CONCAT(#{hireDateTo},
-				'235959'),'%Y-%m-%d%H%i%S')
+			<when test="(hireDateFrom != null and hireDateFrom.trim() != '') 
+						and (hireDateTo != null and hireDateTo.trim() != '')">
+				and hire_date BETWEEN STR_TO_DATE(CONCAT(#{hireDateFrom},'000000'),'%Y-%m-%d%H%i%S')
+				AND STR_TO_DATE(CONCAT(#{hireDateTo}, '235959'),'%Y-%m-%d%H%i%S')
 			</when>
-			<when
-				test="(hireDateFrom != null and hireDateFrom.trim() != '')
+			<when test="(hireDateFrom != null and hireDateFrom.trim() != '')
 							and (hireDateTo == null or hireDateTo.trim() == '')">
-				and hire_date <![CDATA[>=]]>
-				STR_TO_DATE(CONCAT(#{hireDateFrom},'000000'),'%Y-%m-%d%H%i%S')
+				and hire_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{hireDateFrom},'000000'),'%Y-%m-%d%H%i%S')
 			</when>
-			<when
-				test="(hireDateFrom == null or hireDateFrom.trim() == '')
+			<when test="(hireDateFrom == null or hireDateFrom.trim() == '')
 							and (hireDateTo != null and hireDateTo.trim() != '')">
-				and hire_date <![CDATA[<=]]>
-				STR_TO_DATE(CONCAT(#{hireDateTo}, '235959'),'%Y-%m-%d%H%i%S')
+				and hire_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{hireDateTo}, '235959'),'%Y-%m-%d%H%i%S')
 			</when>
 		</choose>
 		
 		<choose>
-			<when
-				test="(resignationDateFrom != null and resignationDateFrom.trim() != '')
+			<when test="(resignationDateFrom != null and resignationDateFrom.trim() != '')
 							and (resignationDateTo != null and resignationDateTo.trim() != '')">
-				and resignation_date BETWEEN
-				STR_TO_DATE(CONCAT(#{resignationDateFrom},'000000'),'%Y-%m-%d%H%i%S')
-				AND STR_TO_DATE(CONCAT(#{resignationDateTo},
-				'235959'),'%Y-%m-%d%H%i%S')
+				and resignation_date BETWEEN STR_TO_DATE(CONCAT(#{resignationDateFrom},'000000'),'%Y-%m-%d%H%i%S')
+				AND STR_TO_DATE(CONCAT(#{resignationDateTo},'235959'),'%Y-%m-%d%H%i%S')
 			</when>
-			<when
-				test="(resignationDateFrom != null and resignationDateFrom.trim() != '')
+			<when test="(resignationDateFrom != null and resignationDateFrom.trim() != '')
 							and (resignationDateTo == null or resignationDateTo.trim() == '')">
-				and resignation_date <![CDATA[>=]]>
-				STR_TO_DATE(CONCAT(#{resignationDateFrom},'000000'),'%Y-%m-%d%H%i%S')
+				and resignation_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{resignationDateFrom},'000000'),'%Y-%m-%d%H%i%S')
 			</when>
-			<when
-				test="(resignationDateFrom == null or resignationDateFrom.trim() == '')
+			<when test="(resignationDateFrom == null or resignationDateFrom.trim() == '')
 							and (resignationDateTo != null and resignationDateTo.trim() != '')">
-				and resignation_date <![CDATA[<=]]>
-				STR_TO_DATE(CONCAT(#{resignationDateTo}, '235959'),'%Y-%m-%d%H%i%S')
+				and resignation_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{resignationDateTo}, '235959'),'%Y-%m-%d%H%i%S')
 			</when>
 		</choose>
 

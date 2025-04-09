@@ -112,6 +112,8 @@
 									resultType="kr.co.itwillbs.de.admin.dto.LogDTO">
 		SELECT 
 			<include refid="t_log_columns_forSelect" />
+			, get_item_name('LOG_ACCESS_TYPE', access_type) as access_type_name
+			, get_item_name('LOG_ACCESS_DEVICE', access_device) as access_device_name
 		FROM t_log
 		<where>
 			<if test="accessId != null and accessId.trim() != ''">AND access_id LIKE CONCAT('%',#{accessId},'%') </if>

@@ -4,7 +4,7 @@
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
 <meta charset="UTF-8">
-<title>공통코드 관리</title>
+<title>팩토리(PackTory) - 공통코드 관리</title>
 	<style type="text/css">
 		.form {
 			max-width: 800px;
@@ -40,7 +40,7 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">공통코드 등록</h1>
+				<h1 class="h3 mb-4 text-gray-800">그룹코드 등록</h1>
 			</div>
 			
 			<!-- ---------- 본문 컨테이너 ---------- -->
@@ -64,8 +64,8 @@
 							<div class="col-md-6 mb-4">
 								<label for="isDeleted" class="form-label">삭제유무</label>
 								<select id="isDeleted" name="isDeleted" class="form-select" th:field="*{isDeleted}">
-									<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
 									<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
+									<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
 <!-- 									<option value="" th:selected="*{isDeleted} eq '' ">선택</option> -->
 								</select>
 							</div>

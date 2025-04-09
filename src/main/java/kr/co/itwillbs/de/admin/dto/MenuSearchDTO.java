@@ -2,6 +2,7 @@ package kr.co.itwillbs.de.admin.dto;
 
 import java.time.LocalDateTime;
 
+import kr.co.itwillbs.de.common.vo.PageDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,4 +30,7 @@ public class MenuSearchDTO {
 	
 	private String modId;
 	private LocalDateTime modDate;
+	
+	// 페이징용 DTO composition
+	private PageDTO pageDTO = new PageDTO();
 }

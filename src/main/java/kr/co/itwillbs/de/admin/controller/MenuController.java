@@ -78,13 +78,15 @@ public class MenuController {
 	 * @return
 	 */
 	@GetMapping(value= {"","/"})
-	public String getMenuTypeList(Model model) {
+	public String getMenuTypeList(@ModelAttribute MenuSearchDTO menuSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// 리스트 검색 DTO 빈 값 뷰에 전달
-		model.addAttribute("menuSearchDTO", new MenuSearchDTO());
+		menuSearchDTO.getPageDTO().setTotalCount(menuService.getMenuTypeCount(menuSearchDTO));
+		model.addAttribute("menuSearchDTO", menuSearchDTO);
+		
 		// 리스트 결과 DTOlist 뷰에 전달
-		List<MenuDTO> menuDTOList = menuService.getMenuTypeList(new MenuSearchDTO());
+		List<MenuDTO> menuDTOList = menuService.getMenuTypeList(menuSearchDTO);
 		model.addAttribute("menuDTOList", menuDTOList);
 		
 		return MENU_PATH+"/menu_type_list";
@@ -104,7 +106,9 @@ public class MenuController {
 		log.info("request menuSearchDTO : {}", StringUtil.objToString(menuSearchDTO));
 		
 		// 리스트 검색 DTO 뷰에 전달
+		menuSearchDTO.getPageDTO().setTotalCount(menuService.getMenuTypeCount(menuSearchDTO));
 		model.addAttribute("menuSearchDTO", menuSearchDTO);
+		
 		// 리스트 결과 DTOlist 뷰에 전달
 		List<MenuDTO> menuDTOList = menuService.getMenuTypeList(menuSearchDTO);
 		model.addAttribute("menuDTOList", menuDTOList);

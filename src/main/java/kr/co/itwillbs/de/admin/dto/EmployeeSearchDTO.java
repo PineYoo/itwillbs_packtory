@@ -1,5 +1,6 @@
 package kr.co.itwillbs.de.admin.dto;
 
+import kr.co.itwillbs.de.common.vo.PageDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,4 +26,6 @@ public class EmployeeSearchDTO {
 	private String hireEndDate;
 	private String resignationDate;
 	
+	// 페이징용 DTO composition
+	private PageDTO pageDTO = new PageDTO();
 }

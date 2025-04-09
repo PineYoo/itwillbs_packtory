@@ -46,6 +46,17 @@ public class CodeService {
 	}
 	
 	/**
+	 * SELECT count(*) t_commoncode 
+	 * @param codeSearchDTO
+	 * @return List<CodeDTO>
+	 */
+	public int getCodesCountBySearchDTO(CodeSearchDTO codeSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return codeMapper.getCodesCountBySearchDTO(codeSearchDTO);
+	}
+		
+	/**
 	 * SELECT t_commoncode 
 	 * @param codeSearchDTO
 	 * @return List<CodeDTO>

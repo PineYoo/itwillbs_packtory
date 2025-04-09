@@ -1,0 +1,75 @@
+<!-- templates/common/fragments/pagination.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<th:block th:fragment="pagination(searchDTO)">
+		<th:block th:if="${searchDTO.pageDTO.totalCount > 0}">
+			<div class="d-flex justify-content-between align-items-center my-3 flex-wrap gap-2">
+	
+				<!-- 전체 건수 및 size 선택 -->
+				<div class="d-flex align-items-center gap-2">
+					<div>
+						총 <strong th:text="${searchDTO.pageDTO.totalCount}">0</strong>건
+					</div>
+					<div>
+						<select class="form-select form-select-sm" th:value="${searchDTO.pageDTO.size}" onchange="onPageSizeChange(this);">
+							<option th:value="10" th:selected="${searchDTO.pageDTO.size} eq '10'">10개씩</option>
+							<option th:value="20" th:selected="${searchDTO.pageDTO.size} eq '20'">20개씩</option>
+							<option th:value="50" th:selected="${searchDTO.pageDTO.size} eq '50'">50개씩</option>
+							<option th:value="100" th:selected="${searchDTO.pageDTO.size} eq '100'">100개씩</option>
+						</select>
+					</div>
+				</div>
+
+			
+				<!-- 페이지 네비게이션 -->
+				<nav>
+					<!-- <ul class="pagination pagination-sm mb-0"> -->
+					<ul class="pagination pagination mb-0">
+	
+						<!-- 이전 그룹 -->
+						<li class="page-item" th:if="${searchDTO.pageDTO.isHasPrevGroup()}">
+							<button class="page-link page-go" type="button"
+								th:data-page="${searchDTO.pageDTO.startPageGroup - 1}">«</button>
+						</li>
+	
+						<!-- 페이지 번호들 -->
+						<li class="page-item"
+							th:each="i : ${#numbers.sequence(searchDTO.pageDTO.getStartPageGroup(), searchDTO.pageDTO.getEndPageGroup())}"
+							th:classappend="${i == searchDTO.pageDTO.page} ? 'active'">
+							<button class="page-link page-go" type="button"
+								th:data-page="${i}" th:text="${i}">1</button>
+						</li>
+	
+						<!-- 다음 그룹 -->
+						<li class="page-item" th:if="${searchDTO.pageDTO.isHasNextGroup()}">
+							<button class="page-link page-go" type="button"
+								th:data-page="${searchDTO.pageDTO.endPageGroup + 1}">»</button>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</th:block>
+		<script type="text/javascript">
+		
+			// 페이징 nav 이벤트
+			document.querySelectorAll('.page-go').forEach(function(btn) {
+				btn.addEventListener('click', function(event) {
+					event.preventDefault();
+					const page = this.dataset.page;
+					const form = document.querySelector('#searchForm');
+					document.querySelector('[name="pageDTO.page"]').value = page;
+					form.submit();
+				});
+			}); // end of document.querySelectorAll('.page-go').forEach(function(btn) {
+			
+			// 리스트 size 변경
+			function onPageSizeChange(select) {
+				document.querySelector('[name="pageDTO.page"]').value = 1;
+				document.querySelector('[name="pageDTO.size"]').value = select.value;
+				document.querySelector('#searchForm').submit();
+			} // end of function onPageSizeChange(select) {
+		</script>
+	</th:block>
+</body>
+</html>

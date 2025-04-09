@@ -26,6 +26,13 @@ public interface CodeMapper {
 	List<CodeDTO> getCodes();
 
 	/**
+	 * SELECT count(*) t_commonCode where codeSearchDTO
+	 * @param codeSearchDTO
+	 * @return count(*) int
+	 */
+	int getCodesCountBySearchDTO(CodeSearchDTO codeSearchDTO);
+	
+	/**
 	 * SELECT t_commonCode where codeSearchDTO
 	 * @param codeSearchDTO
 	 * @return

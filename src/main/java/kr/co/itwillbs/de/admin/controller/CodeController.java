@@ -77,17 +77,16 @@ public class CodeController {
 	 * @return
 	 */
 	@GetMapping(value={"","/"})
-	public String getCodes(Model model) {
+	public String getCodes(@ModelAttribute CodeSearchDTO codeSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// 리스트 검색 DTO 뷰에 전달
-		CodeSearchDTO codeSearchDTO = new CodeSearchDTO();
+		codeSearchDTO.getPageDTO().setTotalCount(codeService.getCodesCountBySearchDTO(codeSearchDTO));
 		model.addAttribute("codeSearchDTO", codeSearchDTO);
 		// 리스트 공통코드 select 용 리스트 뷰에 전달
 		model.addAttribute("codeList", commonCodeUtil.getCodes());
 		
-		List<CodeDTO> codeDTOList = codeService.getCodes();
-		//log.info("codeDTOList : {}", codeDTOList);
+		List<CodeDTO> codeDTOList = codeService.getCodesBySearchDTO(codeSearchDTO);
 		model.addAttribute("codeDTOList", codeDTOList);
 		
 		return CODE_PATH+"/code_list";
@@ -106,6 +105,7 @@ public class CodeController {
 		
 		log.info("request codeSearchDTO : {}", StringUtil.objToString(codeSearchDTO));
 		// 리스트 검색 DTO 뷰에 전달
+		codeSearchDTO.getPageDTO().setTotalCount(codeService.getCodesCountBySearchDTO(codeSearchDTO));
 		model.addAttribute("codeSearchDTO", codeSearchDTO);
 		// 리스트 공통코드 select 용 리스트 뷰에 전달
 		model.addAttribute("codeList", commonCodeUtil.getCodes());

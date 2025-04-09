@@ -4,7 +4,7 @@
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
 <meta charset="UTF-8">
-<title>메뉴 등록</title>
+<title>팩토리(PackTory) - 메뉴 관리</title>
 
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 	<style type="text/css">
@@ -41,7 +41,7 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">하위 메뉴 관리</h1>
+				<h1 class="h3 mb-4 text-gray-800">그룹 메뉴 관리</h1>
 			</div>
 			
 			<!-- ---------- 본문 컨테이너 ---------- -->
@@ -53,8 +53,8 @@
 							<input type="hidden" th:field="*{idx}" id="major_idx" disabled />
 							<input type="hidden" th:field="*{menuId}" value="0" disabled />
 							<div class="col-md-6">
-								<label class="mb-1" for="menuType">메뉴 타입</label>
-								<input type="text" class="form-control" th:field="*{menuType}" placeholder="메뉴 타입" disabled>
+								<label class="mb-1" for="menuType">그룹 메뉴</label>
+								<input type="text" class="form-control" th:field="*{menuType}" placeholder="그룹 메뉴" disabled>
 							</div>
 							<div class="col-md-6">
 								<label class="mb-1" for="url">메뉴 URL</label>

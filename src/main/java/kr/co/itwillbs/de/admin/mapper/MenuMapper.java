@@ -18,7 +18,14 @@ public interface MenuMapper {
 	int registerMenu(MenuDTO menuDTO);
 
 	/**
-	 * 메뉴 리스트 조회(1depth) -> 조건은 생각해보자
+	 * 그룹 메뉴 리스트 조회 카운트 - 페이징용
+	 * @param menuSearchDTO
+	 * @return
+	 */
+	int getMenuTypeCount(MenuSearchDTO menuSearchDTO);
+	
+	/**
+	 * 그룹 메뉴 리스트 검색 조건 조회
 	 * @param menuSearchDTO
 	 * @return
 	 */

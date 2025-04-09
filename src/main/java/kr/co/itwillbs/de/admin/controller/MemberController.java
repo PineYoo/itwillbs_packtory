@@ -54,15 +54,17 @@ public class MemberController {
 	 * @return
 	 */
 	@GetMapping(value= {"/newForm"})
-	public String memberRegisterForm(Model model) {
+	public String memberRegisterForm(@ModelAttribute EmployeeSearchDTO employeeSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// 검색 이름, 사번, 부실명, 직급명, 입사일
 		model.addAttribute("departmentItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_DEPARTMENT_CODE));
 		model.addAttribute("positionItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_POSITION_CODE));
-		model.addAttribute("employeeSearchDTO", new EmployeeSearchDTO());
+		employeeSearchDTO.getPageDTO().setTotalCount(memberService.getBeforeMembersCountByEmployeeSearch(employeeSearchDTO));
+		model.addAttribute("employeeSearchDTO", employeeSearchDTO);
 		
-		List<MemberDTO> memberList = memberService.getBeforeMembers();
+		//List<MemberDTO> memberList = memberService.getBeforeMembers();
+		List<MemberDTO> memberList = memberService.getBeforeMembersByEmployeeSearch(employeeSearchDTO);
 		model.addAttribute("memberDTOList", memberList);
 		
 		return MEMBER_PATH+"/member_register_form";
@@ -81,6 +83,8 @@ public class MemberController {
 		
 		model.addAttribute("departmentItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_DEPARTMENT_CODE));
 		model.addAttribute("positionItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_POSITION_CODE));
+		// 페이징용 카운트
+		employeeSearchDTO.getPageDTO().setTotalCount(memberService.getBeforeMembersCountByEmployeeSearch(employeeSearchDTO));
 		model.addAttribute("employeeSearchDTO", employeeSearchDTO);
 		
 		List<MemberDTO> memberList = memberService.getBeforeMembersByEmployeeSearch(employeeSearchDTO);
@@ -130,11 +134,11 @@ public class MemberController {
 	 * @return
 	 */
 	@GetMapping(value= {"","/"})
-	public String getMembers(Model model) {
+	public String getMembers(@ModelAttribute MemberSearchDTO memberSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// 리스트 검색 DTO 뷰에 전달
-		MemberSearchDTO memberSearchDTO = new MemberSearchDTO();
+		memberSearchDTO.getPageDTO().setTotalCount(memberService.getMembersCountBySearchDTO(memberSearchDTO));
 		model.addAttribute("memberSearchDTO", memberSearchDTO);
 		
 		// 공통코드 selectbox용 리스트 뷰에 전달
@@ -142,7 +146,7 @@ public class MemberController {
 		model.addAttribute("roleItemList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_MEMBER_ROLE));
 		
 		// 리스트 결과 DTOlist 뷰에 전달
-		model.addAttribute("memberDTOList", memberService.getMembers());
+		model.addAttribute("memberDTOList", memberService.getMembersBySearchDTO(memberSearchDTO));
 		
 		return MEMBER_PATH+"/member_list";
 	}
@@ -153,10 +157,11 @@ public class MemberController {
 	 * @return
 	 */
 	@GetMapping(value= {"/search","/search/"})
-	public String getMembers(@ModelAttribute MemberSearchDTO memberSearchDTO, Model model) {
+	public String getMembersBySearchDTO(@ModelAttribute MemberSearchDTO memberSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// 리스트 검색 DTO 뷰에 전달
+		memberSearchDTO.getPageDTO().setTotalCount(memberService.getMembersCountBySearchDTO(memberSearchDTO));
 		model.addAttribute("memberSearchDTO", memberSearchDTO);
 		
 		// 공통코드 selectbox용 리스트 뷰에 전달

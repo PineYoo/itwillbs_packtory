@@ -26,7 +26,7 @@ public interface LogMapper {
 	/**
 	 * 페이징 카운트가져오기
 	 * @param logSearchDTO
-	 * @return
+	 * @return count(*) int
 	 */
 	int getLogSearchCountForPaging(LogSearchDTO logSearchDTO);
 	/**

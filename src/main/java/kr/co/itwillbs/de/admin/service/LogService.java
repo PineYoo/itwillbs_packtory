@@ -43,16 +43,24 @@ public class LogService {
 	}
 
 	/**
-	 * 로그 리스트 검색조건이 있을 때
+	 * 로그 리스트 검색조건 가져오기(count)
+	 * @param logSearchDTO
+	 * @return
+	 */
+	public int getLogSearchCountForPaging(LogSearchDTO logSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return logMapper.getLogSearchCountForPaging(logSearchDTO);
+	}
+	
+	/**
+	 * 로그 리스트 검색조건 가져오기
 	 * @param logSearchDTO
 	 * @return List<LogDTO>
 	 */
-	public LogSearchDTO getLogSearchList(LogSearchDTO logSearchDTO) {
+	public List<LogDTO> getLogSearchList(LogSearchDTO logSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		logSearchDTO.getPageDTO().setTotalCount(logMapper.getLogSearchCountForPaging(logSearchDTO));
-		logSearchDTO.setList(logMapper.getLogSearchList(logSearchDTO));
 		
-		return logSearchDTO;
+		return logMapper.getLogSearchList(logSearchDTO);
 	}
 
 	/**

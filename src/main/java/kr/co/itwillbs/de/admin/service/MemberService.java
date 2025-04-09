@@ -38,6 +38,17 @@ public class MemberService {
 	}
 
 	/**
+	 * 사용자 등록용 직원 검색 조건 조회 카운트 - 페이징용
+	 * @param employeeSearchDTO
+	 * @return List<MemberDTO>
+	 */
+	public int getBeforeMembersCountByEmployeeSearch(EmployeeSearchDTO employeeSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return memberMapper.getBeforeMembersCountByEmployeeSearch(employeeSearchDTO);
+	}
+	
+	/**
 	 * 사용자 등록용 직원 검색 조건 조회
 	 * @param employeeSearchDTO
 	 * @return List<MemberDTO>
@@ -140,6 +151,17 @@ public class MemberService {
 		
 		List<MemberDTO> memberDTOList = memberMapper.getMembers();
 		return memberDTOList;
+	}
+	
+	/**
+	 * 사용자 조회 검색 조건 조회 카운트 - 페이징용
+	 * @param memberSearchDTO
+	 * @return List<MemberDTO>
+	 */
+	public int getMembersCountBySearchDTO(MemberSearchDTO memberSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return memberMapper.getMembersCountBySearchDTO(memberSearchDTO);
 	}
 	
 	/**
