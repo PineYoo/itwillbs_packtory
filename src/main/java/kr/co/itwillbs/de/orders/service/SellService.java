@@ -26,6 +26,17 @@ public class SellService {
 	private CommonService commonService;
 
 	/**
+	 * 수주/발주 정보 조건 카운트 가져오기 페이징용
+	 * @param orderSearchDTO
+	 * @return
+	 */
+	public int getOrderCountForPaging(OrderSearchDTO orderSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return sellMapper.getOrderCountForPaging(orderSearchDTO);
+	}
+	
+	/**
 	 * 수주/발주 정보 조건 검색 가져오기
 	 * @param orderSearchDTO
 	 * @return List<OrderDTO>

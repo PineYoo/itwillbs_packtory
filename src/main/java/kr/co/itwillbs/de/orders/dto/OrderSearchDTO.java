@@ -3,6 +3,7 @@ package kr.co.itwillbs.de.orders.dto;
 import java.util.List;
 
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
+import kr.co.itwillbs.de.common.vo.PageDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +27,9 @@ public class OrderSearchDTO {
 	private String isDeleted; // 삭제유무
 	// 검색 키워드
 	private String searchKeyword; // 키워드
-	
+
+	private PageDTO pageDTO = new PageDTO();
+
 	private List<CodeItemDTO> codeItemList;
 
 }

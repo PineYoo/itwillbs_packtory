@@ -18,6 +18,62 @@
 	</sql>
 	
 	<!-- 수주/발주 정보 조건 검색 가져오기(SELECT) -->
+	<select id="getOrderCountForPaging" parameterType="kr.co.itwillbs.de.orders.dto.OrderSearchDTO"
+									resultType="int">
+		SELECT 
+			count(*)
+		  FROM t_order o
+		  LEFT JOIN t_order_detail d
+		    ON o.document_number = d.document_number
+		<where>
+			o.trade_code = #{tradeCode}
+			<if test="documentNumber != null and documentNumber.trim() != ''">
+				and o.document_number = #{documentNumber}
+			</if>
+			<if test="statusCode != null and statusCode.trim() != ''">
+				and o.status_code = #{statusCode}
+			</if>
+			<if test="companyName != null and companyName.trim() != ''">
+				and o.company_name = #{companyName}
+			</if>
+			<choose>
+				<when test="(requestStartDate != null and requestStartDate.trim() != '')
+							and (requestEndDate != null and requestEndDate.trim() != '')">
+					and o.request_date BETWEEN STR_TO_DATE(CONCAT(#{requestStartDate},'000000'),'%Y-%m-%d%H%i%S') 
+											AND STR_TO_DATE(CONCAT(#{requestEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(requestStartDate != null and requestStartDate.trim() != '')
+							and (requestEndDate == null or requestEndDate.trim() == '')">
+					and o.request_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{requestStartDate},'000000'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(requestStartDate == null or requestStartDate.trim() == '')
+							and (requestEndDate != null and requestEndDate.trim() != '')">
+					and o.request_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{requestEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+			</choose>
+			<if test="isDeleted != null and isDeleted.trim() != ''">
+				and o.is_deleted = #{isDeleted}
+			</if>
+			<choose>
+				<when test="(dueStartDate != null and dueStartDate.trim() != '')
+							and (dueEndDate != null and dueEndDate.trim() != '')">
+					and o.due_date BETWEEN STR_TO_DATE(CONCAT(#{dueStartDate},'000000'),'%Y-%m-%d%H%i%S') 
+										AND STR_TO_DATE(CONCAT(#{dueEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(dueStartDate != null and dueStartDate.trim() != '')
+							and (dueEndDate == null or dueEndDate.trim() == '')">
+					and o.due_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{dueStartDate},'000000'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(dueStartDate == null or dueStartDate.trim() == '')
+							and (dueEndDate != null and dueEndDate.trim() != '')">
+					and o.due_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{dueEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+			</choose>
+		</where>
+		ORDER BY o.reg_date DESC
+	</select>
+	
+	<!-- 수주/발주 정보 조건 검색 가져오기(SELECT) -->
 	<select id="getOrderList" parameterType="kr.co.itwillbs.de.orders.dto.OrderSearchDTO"
 									resultType="kr.co.itwillbs.de.orders.dto.OrderDTO">
 		SELECT 
@@ -71,6 +127,7 @@
 			</choose>
 		</where>
 		ORDER BY o.reg_date DESC
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
 	<!-- ============================================================= -->

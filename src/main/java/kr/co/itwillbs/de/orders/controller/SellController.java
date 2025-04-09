@@ -76,6 +76,10 @@ public class SellController {
 		model.addAttribute("orderDTOList", orderDTOList);
 		log.info("orderDTOList : " + orderDTOList);
 		
+		//페이징용 totalCount
+		orderSearchDTO.getPageDTO().setTotalCount(sellService.getOrderCountForPaging(orderSearchDTO));
+
+		
 		return COMMON_PATH + "/" + tradeName +"_management";	// "orders/sell_management" or "orders/buy_management"
 //		return COMMON_PATH + "/order_management";
 	}
@@ -107,6 +111,9 @@ public class SellController {
 		List<OrderDTO> orderDTOList = sellService.getOrderList(orderSearchDTO);
 		model.addAttribute("orderDTOList", orderDTOList);
 		log.info("orderDTOList : " + orderDTOList);
+		
+		//페이징용 totalCount
+		orderSearchDTO.getPageDTO().setTotalCount(sellService.getOrderCountForPaging(orderSearchDTO));
 		
 		return COMMON_PATH + "/" + tradeName +"_management";	// "orders/sell_management" or "orders/buy_management"
 //		return COMMON_PATH + "/order_management";

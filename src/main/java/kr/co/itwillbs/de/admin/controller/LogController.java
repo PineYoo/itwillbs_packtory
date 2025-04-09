@@ -1,7 +1,5 @@
 package kr.co.itwillbs.de.admin.controller;
 
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.co.itwillbs.de.admin.dto.LogDTO;
-import kr.co.itwillbs.de.admin.dto.LogListDTO;
 import kr.co.itwillbs.de.admin.dto.LogSearchDTO;
 import kr.co.itwillbs.de.admin.service.LogService;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
