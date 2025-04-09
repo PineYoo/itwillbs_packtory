@@ -260,47 +260,47 @@
 				
 			 // ---------------------------------------------------
 				// 기간별 검색 필터링 제이쿼리 (datepicker)
-			    function initializeDateRangePicker(startInputId, endInputId) {
-			        var $startInput = $('#' + startInputId);
-			        var $endInput = $('#' + endInputId);
-			        var $iconStart = $('[data-target="#' + startInputId + '"]');
-			        var $iconEnd = $('[data-target="#' + endInputId + '"]');
+// 			    function initializeDateRangePicker(startInputId, endInputId) {
+// 			        var $startInput = $('#' + startInputId);
+// 			        var $endInput = $('#' + endInputId);
+// 			        var $iconStart = $('[data-target="#' + startInputId + '"]');
+// 			        var $iconEnd = $('[data-target="#' + endInputId + '"]');
 
-			        $startInput.daterangepicker({
-			            locale: {
-			                separator: " ~ ",
-			                format: 'YYYY-MM-DD',
-			                applyLabel: "확인",
-			                cancelLabel: "취소",
-			                daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
-			                monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-			                customRangeLabel: '기간 지정'
-			            },
-			            autoUpdateInput: false,
-			            timePicker: false,
-			            showDropdowns: true,
-			            autoApply: false,
-			            maxDate: moment(), // 오늘까지만 선택 가능하게 제한
-			            ranges: {
-			                '오늘': [moment()], // 오늘
-			                '이번 주': [moment().startOf('week'), moment().endOf('week')],
-			                '이번 달': [moment().startOf('month'), moment().endOf('month')],
-			                '지난 주': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-			                '지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-			            }
-			        }, function(start, end) {
-			            $startInput.val(start.format('YYYY-MM-DD'));
-			            $endInput.val(end.format('YYYY-MM-DD'));
-			        });
+// 			        $startInput.daterangepicker({
+// 			            locale: {
+// 			                separator: " ~ ",
+// 			                format: 'YYYY-MM-DD',
+// 			                applyLabel: "확인",
+// 			                cancelLabel: "취소",
+// 			                daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+// 			                monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+// 			                customRangeLabel: '기간 지정'
+// 			            },
+// 			            autoUpdateInput: false,
+// 			            timePicker: false,
+// 			            showDropdowns: true,
+// 			            autoApply: false,
+// 			            maxDate: moment(), // 오늘까지만 선택 가능하게 제한
+// 			            ranges: {
+// 			                '오늘': [moment()], // 오늘
+// 			                '이번 주': [moment().startOf('week'), moment().endOf('week')],
+// 			                '이번 달': [moment().startOf('month'), moment().endOf('month')],
+// 			                '지난 주': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+// 			                '지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+// 			            }
+// 			        }, function(start, end) {
+// 			            $startInput.val(start.format('YYYY-MM-DD'));
+// 			            $endInput.val(end.format('YYYY-MM-DD'));
+// 			        });
 
-			        // 아이콘과 requestEndDate를 클릭해도 캘린더 열리도록 설정
-			        $iconStart.add($iconEnd).add($endInput).on('click', function() {
-			            $startInput.trigger('click');
-			        });
-			    }
+// 			        // 아이콘과 requestEndDate를 클릭해도 캘린더 열리도록 설정
+// 			        $iconStart.add($iconEnd).add($endInput).on('click', function() {
+// 			            $startInput.trigger('click');
+// 			        });
+// 			    }
 
 			    // 날짜 적용
-			    initializeDateRangePicker('workStartDate', 'workEndDate');
+			    initDateRangePickerMaxToday('workStartDate', 'workEndDate');
 			    // ------------------------------------------------------------
 			    // 대표부서 선택에 따른 하위부서 필터링
 // 			    function filterSubDepartments() {
@@ -338,8 +338,8 @@
 	</div>
 	<th:block layout:fragment="script">
 		<!-- Bootstrap core JavaScript-->
-		<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
 		<script src="/js/jquery-3.7.1.js"></script>
+		<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
 	    <!-- Core plugin JavaScript-->
 	    <script src="/js/jquery-easing/jquery.easing.min.js"></script>
 	    <!-- Custom scripts for all pages-->
