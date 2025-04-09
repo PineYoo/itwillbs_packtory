@@ -102,12 +102,13 @@ public class EmployeeController {
 
 	// 사원 목록 조회
 	@GetMapping("")
-	public String getEmployeeList(EmployeeSearchDTO searchDTO, Model model) {
+	public String getEmployeeList(@ModelAttribute EmployeeSearchDTO searchDTO, Model model) {
 		log.info("getEmployeeList --- 시작");
 
 		// 사원 목록 조회
 		List<EmployeeDTO> employeeList = employeeService.getEmployeeList(searchDTO);
 		model.addAttribute("employeeList", employeeList);
+		searchDTO.getPageDTO().setTotalCount(employeeService.searchEmployeesCount(searchDTO));
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
 		// 부서 코드 (공통코드)
@@ -150,23 +151,6 @@ public class EmployeeController {
 		model.addAttribute("validDepartments", commonCodeUtil.getCodeItems("DEPARTMENT_CODE"));
 		model.addAttribute("SubDepartments", Collections.emptyList()); // JS로 동적 처리
 		model.addAttribute("validPositions", positionInfoService.getValidPositions());
-
-		// 로그인 사용자 정보 가져오기 + 권한 비교
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		boolean canEdit = false;
-
-		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
-			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-			String memberId = userDetails.getUsername(); // 로그인한 사용자의 사번
-			log.info("현재 로그인 사번: {}", memberId);
-			log.info("조회한 사원 사번: {}", employeeDTO.getId());
-
-			if (memberId.equals(employeeDTO.getId())) {
-				canEdit = true; // 본인이면 수정 가능
-			}
-		}
-
-		model.addAttribute("canEdit", canEdit);
 
 		return "human/employee/detail";
 	}

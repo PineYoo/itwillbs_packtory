@@ -55,6 +55,12 @@ public class EmployeeService {
         return departmentInfoService.getSubDepartmentCodes(departmentCode);
     }
 
+    // 사원 목록 카운트 -> 페이징용
+    public int searchEmployeesCount(EmployeeSearchDTO searchDTO) {
+    	log.info("사원 목록 조회");
+    	return employeeMapper.searchEmployeesCount(searchDTO);
+    }
+    
     // 사원 목록 조회
     public List<EmployeeDTO> getEmployeeList(EmployeeSearchDTO searchDTO) {
         log.info("사원 목록 조회");
