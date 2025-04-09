@@ -2,6 +2,7 @@ package kr.co.itwillbs.de.admin.dto;
 
 import java.util.List;
 
+import kr.co.itwillbs.de.common.vo.PageDTO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,6 +28,7 @@ public class LogSearchDTO {
 	
 	private String url;
 	
-	private List<CodeItemDTO> accessTypeItemList;
-	private List<CodeItemDTO> accessDeviceItemList;
+	private PageDTO pageDTO = new PageDTO();
+	
+	private List<LogDTO> list;
 }

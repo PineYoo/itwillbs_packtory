@@ -6,47 +6,17 @@
 <title>팩토리(PackTory) - 로그 관리</title>
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 	<style type="text/css">
-	/* ======================================================================== */
-	/* ---------------- 검색바 CSS(반응형 포함) ------------------------------- */
-	 /* 기본 테이블 스타일 */
-	#search-table {
-	    width: 100%;
-	    max-width: 1200px;
-	    margin: auto;
-	    border-collapse: collapse;
+	/* 검색바 중앙에 세로줄 */
+	.left-form {
+		border-right: 1px solid #e3e6f0;
 	}
 	
-	#search-table table td {
-		padding-bottom: 7px;
-	}
-	
-	/* 작은 화면에서 한 줄로 표시되도록 설정 */
 	@media (max-width: 768px) {
-	    #search-table tr {
-	      display: block;
-	    }
-	
-	    #search-table td {
-	      display: block;
-	      width: 100%;
-	    }
-	
-	    #search-table td table {
-	      display: block;
-	    }
-	    
-	    .regist-wrap {
-	    	display: block;
-	    }
-	    .regist-wrap button {
-	    	width: 100%;
-	    	margin-bottom: 7px;
-	    }
-	    
+	  .left-form {
+	    border-right: none !important;
+	  }
 	}
-	/* ---------------- 검색바 CSS(반응형 포함) 끝 ---------------------------- */
-	/* ======================================================================== */
-</style>
+	</style>
 </head>
 <body id="page-top">
 	<th:block layout:fragment="contents">
@@ -54,7 +24,7 @@
 		<div class="container-fluid">
 			<!-- Page Heading -->
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-2 text-gray-800">로그 리스트</h1>
+				<h1 class="h3 mb-2 text-gray-800">로그 관리</h1>
 			</div>
 
 			<!-- ---------- 검색바 컨테이너 ---------- -->
@@ -63,106 +33,99 @@
 					<!-- ---------- 검색바 ---------- -->
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
-
 							<div class="col pl-4 search-box">
-								<form th:action="@{/admin/log/search}" method="get" th:object="${logSearchDTO}">
-									<table id="search-table">
-										<tr>
-											<td>
-												<table style="width: 100%;">
-													<tr>
-														<th class="col-sm-12 col-md-2 search-ttl">
-															<label for="accessType">접속타입</label>
-														</th>
-														<td class="col-sm-12 col-md-3">
+								<form th:action="@{/admin/log/search}" method="get" th:object="${logSearchDTO}" id="logSearchForm">
+									<input type="hidden" th:field="*{pageDTO.page}">
+									<input type="hidden" th:field="*{pageDTO.size}">
+									<div class="container-fluid px-5">
+										<div class="row">
+											<!-- 왼쪽 컬럼 -->
+											<div class="col-md-6">
+												<!-- 사원번호 -->
+												<div class="form-group row mb-3">
+													<label for="accessType" class="col-sm-3 col-form-label">접속타입</label>
+													<div class="col-sm-9">
 															<select name="accessType" id="accessType" th:value="*{accessType}" class="form-select">
 																<option value="" th:selected="*{accessType} eq '' ">전체</option>
-																<option th:each="code : *{accessTypeItemList}" th:value="${code.minorCode}" 
+																<option th:each="code : ${accessTypeList}" th:value="${code.minorCode}" 
 																	th:text="${code.minorName}" th:selected="*{accessType} == ${code.minorCode}"></option>
 															</select>
-														</td>
-													</tr>
-													<tr>
-														<th class="col-sm-12 col-md-2 search-ttl">
-															<label for="accessDevice">접속장치</label>
-														</th>
-														<td class="col-sm-12 col-md-3">
+													</div>
+												</div>
+												<!-- 사원이름 -->
+												<div class="form-group row mb-3">
+													<label for="accessDevice" class="col-sm-3 col-form-label">접속장치</label>
+													<div class="col-sm-9">
 															<select name="accessDevice" id="accessDevice" th:value="*{accessDevice}" class="form-select">
 																<option value="" th:selected="*{accessType} eq '' ">전체</option>
-																<option th:each="code : *{accessDeviceItemList}" th:value="${code.minorCode}" 
+																<option th:each="code : ${accessDeviceList}" th:value="${code.minorCode}" 
 																		th:text="${code.minorName}" th:selected="*{accessDevice} == ${code.minorCode}"></option>
 															</select>
-														</td>
-													</tr>
-													<tr>
-														<th class="col-sm-12 col-md-2 search-ttl">
-															<label for="accessStartDate">로그일자</label>
-														</th>
-														<td class="col-sm-12 col-md-3">
-															<div class="input-group mb-3">
-																<input type="text" id="requestStartDate" th:field="*{accessStartDate}" class="form-control" autocomplete='off'>
-																<span class="input-group-text calendar-icon" data-target="#accessStartDate">
-																	<i class="fa fa-calendar"></i>
-																</span> &nbsp;&nbsp;⁓&nbsp;&nbsp;
-																<input type="text" id="accessEndDate" th:field="*{accessEndDate}" class="form-control" autocomplete='off'>
-																<span class="input-group-text calendar-icon" data-target="#requestEndDate">
-																	<i class="fa fa-calendar"></i>
-																</span>
+													</div>
+												</div>
+												<!-- 입사일자 -->
+												<div class="form-group row mb-3">
+													<label for="accessStartDate" class="col-sm-3 col-form-label">로그일자</label>
+													<div class="col-sm-9">
+														<div class="d-flex align-items-center">
+															<div class="input-group">
+																<input type="text" id="accessStartDate" th:field="*{accessStartDate}" class="form-control" autocomplete="off">
+																	<span class="input-group-text calendar-icon">
+																		<i class="fa fa-calendar"></i>
+																	</span>
 															</div>
-														</td>
-													</tr>
-												</table>
-											</td>
-											<td class="col-sm-12 col-md-1"></td>
-											<td style="border-left: 1px solid #e3e6f0;"></td>
-											<td class="col-sm-12 col-md-1"></td>
-											<td>
-												<table style="width: 100%;">
-													<tr>
-														<th class="col-sm-12 col-md-2 search-ttl">
-															<label for="accessId">사용자ID</label>
-														</th>
-														<td class="col-sm-12 col-md-3">
-															<input type="text" id="accessId" th:field="*{accessId}" class="form-control">
-														</td>
-													</tr>
-													<tr>
-														<th class="col-sm-12 col-md-2 search-ttl">
-															<label for="ip">접속IP</label>
-														</th>
-														<td class="col-sm-12 col-md-3">
-															<input type="text" id="ip" th:field="*{ip}" class="form-control">
-														</td>
-													</tr>
-													<tr>
-														<th class="col-sm-12 col-md-2 search-ttl">
-															<label for="parameters">파라미터</label>
-														</th>
-														<td class="col-sm-12 col-md-3">
-															<input type="text" id="parameters" th:field="*{parameters}" class="form-control">
-														<!-- <select name="isDeleted" id="isDeleted" th:value="*{isDeleted}" class="form-select" aria-label="Default select example">
-																<option value="" th:selected="*{isDeleted} eq '' ">전체</option>
-																<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
-																<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
-															</select> -->
-														</td>
-													</tr>
-												</table>
-											</td>
-										</tr>
-									</table>
-									<!-- 검색바 버튼 -->
-									<div class="regist-wrap">
-										<!-- <button class="btn btn-success ml-2" id="btnRegister" type="button">주문서등록</button> -->
-										<button type="submit" class="btn btn-primary ml-2" id="btnSearch">검색</button>
+															<span class="mx-2">⁓</span>
+															<div class="input-group">
+																<input type="text" id="accessEndDate" th:field="*{accessEndDate}" class="form-control" autocomplete="off">
+																	<span class="input-group-text calendar-icon">
+																		<i class="fa fa-calendar"></i>
+																	</span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											
+											<!-- 오른쪽 컬럼 -->
+											<div class="col-md-6">
+												<!-- 사용자ID -->
+												<div class="form-group row mb-3">
+													<label for="accessId" class="col-sm-3 col-form-label">사용자ID</label>
+													<div class="col-sm-9">
+														<input type="text" th:field="*{accessId}" class="form-control">
+													</div>
+												</div>
+
+												<!-- 접속IP -->
+												<div class="form-group row mb-3">
+													<label for="ip" class="col-sm-3 col-form-label">접속IP</label>
+													<div class="col-sm-9">
+														<input type="text" th:field="*{ip}" class="form-control">
+													</div>
+												</div>
+												<!-- 파라미터 -->
+												<div class="form-group row mb-3">
+													<label for="parameters" class="col-sm-3 col-form-label">파라미터</label>
+													<div class="col-sm-9">
+														<input type="text" th:field="*{parameters}" class="form-control">
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- 검색바 버튼 -->
+										<div class="row justify-content-end">
+											<div class="col-12 col-sm-auto mb-2">
+												<button type="submit" class="btn btn-primary btn-block" id="btnSearch">검색</button>
+											</div>
+										</div>
+										<!-- 검색바 버튼 끝 -->
 									</div>
-									<!-- 검색바 버튼 끝 -->
 								</form>
 							</div>
 						</section>
 					</div>
 					<!-- ---------- 검색바 끝 ---------- -->
-				</div>
+				</div> 
 			</div>
 			<!-- ---------- 검색바 컨테이너 끝 ---------- -->
 			<!-- 리스트 출력 -->
@@ -183,7 +146,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="item, status : ${logDTOList}" th:data-id="${item.idx}" class="clickable-row">
+									<tr th:each="item, status : ${logSearchDTO.list}" th:data-id="${item.idx}" class="clickable-row">
 										<!-- <th:block th:object="${item}"> -->
 										<td th:text="${status.count}"></td>
 										<td th:text="${item.accessId}"></td>
@@ -193,42 +156,83 @@
 										<td th:text="${item.url}"></td>
 										<td th:text="${#temporals.format(item.accessDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
 									</tr>
-									<tr th:if="${#lists.isEmpty(logDTOList)}" class="clickable-row menu2depth_items">
+									<tr th:if="${#lists.isEmpty(logSearchDTO.list)}" class="clickable-row menu2depth_items">
 										<td colspan="7"><span>조회 된 데이터가 없습니다.</span></td>
 									</tr>
 								</tbody>
 							</table>
 						</div>
+						<!----------페이징 시작---------->
+						<div class="row">
+							<!-- 페이징 네비게이션 -->
+							<nav aria-label="Page navigation">
+								<ul class="pagination justify-content-center">
+
+									<!-- 이전 그룹 ... -->
+									<li class="page-item"
+										th:if="${logSearchDTO.pageDTO.isHasPrevGroup()}">
+										<button type="button" class="page-link page-go"
+											th:data-page="${logSearchDTO.pageDTO.startPageGroup - 1}">...</button>
+									</li>
+
+									<!-- 페이지 번호 반복 -->
+									<li class="page-item"
+										th:each="i : ${#numbers.sequence(logSearchDTO.pageDTO.getStartPageGroup(), logSearchDTO.pageDTO.getEndPageGroup())}"
+										th:classappend="${i == logSearchDTO.pageDTO.page} ? 'active'">
+										<button type="button" class="page-link page-go"
+											th:data-page="${i}" th:text="${i}">1</button>
+									</li>
+
+									<!-- 다음 그룹 ... -->
+									<li class="page-item"
+										th:if="${logSearchDTO.pageDTO.isHasNextGroup()}">
+										<button type="button" class="page-link page-go"
+											th:data-page="${logSearchDTO.pageDTO.endPageGroup + 1}">...</button>
+									</li>
+
+								</ul>
+							</nav>
+						</div>
+						<!----------페이징 끝---------->
 					</div>
 				</div>
 			</div>
-			<script src="/js/datatables/jquery.dataTables.min.js"></script>
 			<script type="text/javascript">
 				$(document).ready(function() {
 					console.log("document ready!");
 					// init DataTable
 					$('#dataTables').DataTable({
-						lengthChange: false,
-						searching: false,
-						paging: false,
-						info: false
+						lengthChange : false,
+						searching : false,
+						paging : false,
+						info : false
 					}); // end of $('#dataTables').DataTable({
+
+					initDateRangePicker('accessStartDate', 'accessEndDate');
 				});
-				
+
 				$(function() {
-					$('#newBtn').on("click", function() {
-						location.href="/admin/log/new";
-					});
-					
+
 					$('.clickable-row').on("click", function() {
 						const id = $(this).data("id");
 						console.log("click id is %s", id);
-						if(id != undefined && "" != id) {
-							location.href=`/admin/log/${id}`;
+						if (id != undefined && "" != id) {
+							location.href = `/admin/log/${id}`;
 						}
-					});
-					
+					}); // end of $('.clickable-row').on("click", function() {
+
 				});// end of $(function() {
+					
+				// 페이징 nav 이벤트
+				document.querySelectorAll('.page-go').forEach(function(btn) {
+					btn.addEventListener('click', function(event) {
+						event.preventDefault();
+						const page = this.dataset.page;
+						const form = document.getElementById('logSearchForm');
+						form.querySelector('[name="pageDTO.page"]').value = page;
+						form.submit();
+					});
+				});
 			</script>
 		</div>
 	</th:block>
