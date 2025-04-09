@@ -45,7 +45,41 @@
 														<input type="text" name="name" class="form-control" placeholder="이름 검색" th:value="${param.name}">
 													</div>
 												</div>
+												<!-- 입사일자 -->
+												<div class="form-group row mb-3">
+													<label for="dueStartDate" class="col-sm-3 col-form-label">입사일자</label>
+													<div class="col-sm-9">
+														<div class="d-flex align-items-center">
+															<div class="input-group">
+																<input type="text" name="hireDateFrom" id="hireDateFrom" th:value="${param.hireDateFrom}" class="form-control" autocomplete="off"> <span class="input-group-text calendar-icon" data-target="#hireDateFrom"><i class="fa fa-calendar"></i></span>
+															</div>
+															<span class="mx-2">⁓</span>
+															<div class="input-group">
+																<input type="text" name="hireDateTo" id="hireDateTo" th:value="${param.hireDateTo}" class="form-control" autocomplete="off"> <span class="input-group-text calendar-icon" data-target="#hireDateFrom"><i class="fa fa-calendar"></i></span>
+															</div>
+														</div>
+													</div>
+												</div>
 
+												<!-- 퇴사일자 -->
+												<div class="form-group row mb-3">
+													<label for="dueStartDate" class="col-sm-3 col-form-label">퇴사일자</label>
+													<div class="col-sm-9">
+														<div class="d-flex align-items-center">
+															<div class="input-group">
+																<input type="text" name="resignationDateFrom" id="resignationDateFrom" th:value="${param.resignationDateFrom}" class="form-control" autocomplete="off"> <span class="input-group-text calendar-icon" data-target="#resignationDateFrom"><i class="fa fa-calendar"></i></span>
+															</div>
+															<span class="mx-2">⁓</span>
+															<div class="input-group">
+																<input type="text" name="resignationDateTo" id="resignationDateTo" th:value="${param.resignationDateTo}" class="form-control" autocomplete="off"> <span class="input-group-text calendar-icon" data-target="#resignationDateFrom"><i class="fa fa-calendar"></i></span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<!-- 오른쪽 컬럼 -->
+											<div class="col-md-6">
 												<!-- 대표 부서 -->
 												<div class="form-group row mb-3">
 													<label for="departmentCode" class="col-sm-3 col-form-label">대표 부서</label>
@@ -79,37 +113,6 @@
 													</div>
 												</div>
 											</div>
-
-											<!-- 오른쪽 컬럼 -->
-											<div class="col-md-6">
-												<!-- 입사일자 -->
-												<div class="form-group row mb-3">
-													<label class="col-sm-3 col-form-label">입사일자</label>
-													<div class="col-sm-9 d-flex align-items-center">
-														<div class="input-group me-2">
-															<input type="text" name="hireDateFrom" class="form-control" placeholder="시작일자" th:value="${param.hireDateFrom}" autocomplete="off">
-														</div>
-														<span class="mx-1">⁓</span>
-														<div class="input-group">
-															<input type="text" name="hireDateTo" class="form-control" placeholder="종료일자" th:value="${param.hireDateTo}" autocomplete="off">
-														</div>
-													</div>
-												</div>
-
-												<!-- 퇴사일자 -->
-												<div class="form-group row mb-3">
-													<label class="col-sm-3 col-form-label">퇴사일자</label>
-													<div class="col-sm-9 d-flex align-items-center">
-														<div class="input-group me-2">
-															<input type="text" name="resignationDateFrom" class="form-control" placeholder="시작일자" th:value="${param.resignationDateFrom}" autocomplete="off">
-														</div>
-														<span class="mx-1">⁓</span>
-														<div class="input-group">
-															<input type="text" name="resignationDateTo" class="form-control" placeholder="종료일자" th:value="${param.resignationDateTo}" autocomplete="off">
-														</div>
-													</div>
-												</div>
-											</div>
 										</div>
 
 										<!-- 검색바 버튼 -->
@@ -122,12 +125,14 @@
 											</div>
 										</div>
 										<!-- 검색바 버튼 끝 -->
+										
 									</div>
 								</form>
 							</div>
 						</section>
 					</div>
 					<!-- 검색폼 끝 -->
+					
 				</div>
 			</div>
 			<!-- 검색바 컨테이너 끝 -->
@@ -261,6 +266,9 @@
 			});
 		}
 		
+		initDateRangePickerMaxToday('hireDateFrom', 'hireDateTo');
+		initDateRangePickerMaxToday('resignationDateFrom', 'resignationDateTo');
+		
 		// 페이징 nav 이벤트
 		document.querySelectorAll('.page-go').forEach(function(btn) {
 			btn.addEventListener('click', function(event) {
@@ -272,6 +280,7 @@
 			});
 		});
 		});
+		
 	</script>
 	</th:block>
 </body>
