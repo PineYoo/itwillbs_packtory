@@ -256,22 +256,23 @@
 				    window.location.href = '/commute/button';
 				});
 				
+			 	// ---------------------------------------------------
 				// init DataTable
 			    $('#dataTables').DataTable({
 			        lengthChange: false,    // 건수 선택
 			        searching: false,       // 검색
 			        info: false,            // 정보 표시
-			        ordering: true,        // 정렬
+// 			        ordering: true,        // 정렬
 			        paging: false,          // 페이징
-			        responsive: true,      // 반응형
-			        autoWidth: false,      // 자동 너비 조정 해제
+// 			        responsive: true,      // 반응형
+// 			        autoWidth: false,      // 자동 너비 조정 해제
 			        dom: '<"top"<"left-length"l><"right-buttons"fB>>rt<"bottom"ip>',
 			        buttons: [
 			            { extend: 'copy', text: '복사' },
 			            { extend: 'excel', text: '엑셀', exportOptions: { columns: ':visible' } },
 			            { extend: 'print', text: '프린트' }
 			        ]
-			    });
+			    }); // end of $('#dataTables').DataTable({
 				
 			 	// ---------------------------------------------------
 				// 기간별 날짜 검색(datepicker) 함수 활용 - (공통 페이지에 있음)
@@ -305,6 +306,7 @@
 // 			    filterSubDepartments();
 			    
 			});
+			    
 		    // ------------------------------------------------------------
 			// 페이징 nav 이벤트
 			document.querySelectorAll('.page-go').forEach(function(btn) {
@@ -321,26 +323,6 @@
 		
 		
 	</div>
-	<th:block layout:fragment="script">
-		<!-- Bootstrap core JavaScript-->
-		<script src="/js/jquery-3.7.1.js"></script>
-		<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
-	    <!-- Core plugin JavaScript-->
-	    <script src="/js/jquery-easing/jquery.easing.min.js"></script>
-	    <!-- Custom scripts for all pages-->
-	    <script src="/js/sb-admin-2.min.js"></script>
-	   	<!-- Page level plugins -->
-		<script src="/js/datatables/jquery.dataTables.min.js"></script>
-		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
-		<script src="/js/demo/datatables-demo.js"></script>
-	   	<script src="/js/datepicker/moment.min.js"></script>
-	   	<script src="/js/datepicker/daterangepicker.js"></script>
-	   	<script src="/js/datatables/dataTables.buttons.min.js"></script>
-		<script src="/js/datatables/buttons.html5.min.js"></script>
-		<script src="/js/datatables/jszip.min.js"></script>
-		<script src="/js/datatables/buttons.print.min.js"></script>
-	</th:block>
-
 </body>
 
 </html>
