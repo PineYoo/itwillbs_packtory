@@ -199,8 +199,8 @@
 			<if test="memberId != null and memberId != ''">
 		   AND a.drafter_id = #{memberId}
 		    OR a.approver1 = #{memberId}
-		    OR a.approver2 = #{memberId}
-		    OR a.approver3 = #{memberId}
+		    OR (a.approver2 = #{memberId} AND a.progress_status != 1 AND a.approver1_status = 'Y')
+		    OR (a.approver3 = #{memberId} AND a.progress_status != 1 AND a.approver2_status = 'Y')
 			</if>
 		</where>
 		 ORDER
@@ -297,7 +297,7 @@
 		 WHERE a.approval_no = #{approvalNo}
 	</select>
 	
-	<update id="modifyNotice" parameterType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
+	<update id="modifyApproval" parameterType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
 		UPDATE t_approval
 			<set>
 				<if test="approvalType != null">approval_type = #{approvalType},</if>
@@ -333,6 +333,12 @@
 		    ON a.progress_status = tci2.minor_code
 		   AND tci2.major_code = 'PROGRESS_STATUS'
 		<where>
+			<if test="memberId != null and memberId != ''">
+		   AND a.drafter_id = #{memberId}
+		    OR a.approver1 = #{memberId}
+		    OR (a.approver2 = #{memberId} AND a.progress_status != 1 AND a.approver1_status = 'Y')
+		    OR (a.approver3 = #{memberId} AND a.progress_status != 1 AND a.approver2_status = 'Y')
+			</if>
 			<if test="search.drafterName != null and search.drafterName.trim() != ''">
 		   AND e.name LIKE CONCAT('%', #{search.drafterName}, '%')
 			</if>
@@ -381,11 +387,19 @@
 				AND a.drafter_id = #{memberId}
 				</when>
 				<when test="filter.equals('waiting')">
-				AND a.approver1 = #{memberId}
-				 OR a.approver1_status = 'Y' AND a.approver2 = #{memberId}
-				 OR a.approver2_status = 'Y' AND a.approver3 = #{memberId}
+				AND (
+					(a.approver1 = #{memberId} AND a.progress_status = 1)
+					OR (a.approver1_status = 'Y' AND a.approver2 = #{memberId})
+				 	OR (a.approver2_status = 'Y' AND a.approver3 = #{memberId})
+				  )
 				</when>
-				<when test="filter.equals('completed')"></when>
+				<when test="filter.equals('completed')">
+				AND (a.approver1 = #{memberId}
+				 	OR a.approver2 = #{memberId}
+				 	OR a.approver3 = #{memberId}
+				  )
+				AND a.progress_status = 3
+				</when>
 			</choose>
 		</where>
 		 ORDER
