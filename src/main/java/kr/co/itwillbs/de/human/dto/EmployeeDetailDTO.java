@@ -10,12 +10,15 @@ import lombok.ToString;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
+@RequiredSessionIds(fields = {"regId", "modId"})
 public class EmployeeDetailDTO {
     private Long idx;                    // 인덱스
     private String id;                   // 사원번호
