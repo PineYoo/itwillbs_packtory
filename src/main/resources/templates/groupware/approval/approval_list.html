@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-		layout:decorate="~{common/layouts/de_layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>팩토리(PackTory) - 전자결재</title>
 <!-- 부트스트랩 icons 가져오기 -->
 <th:block layout:fragment="headContents">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+	<link
+		href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+		rel="stylesheet">
 </th:block>
 <!-- CSS -->
 <th:block layout:fragment="css">
 	<!-- dataTables 가져오기 -->
-	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<link href="/css/datatables/dataTables.bootstrap4.min.css"
+		rel="stylesheet">
 	<link href="/css/datatables/datatables.min.css" rel="stylesheet">
 	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
 	<!-- 폰트어썸 가져오기 -->
@@ -20,72 +23,73 @@
 	<!-- CSS for Page -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
+	<link
+		href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap"
+		rel="stylesheet">
 	<link href="/css/sb-admin-2.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+	<link rel="stylesheet"
+		href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
 	<!-- 개별 CSS-->
 	<link href="/css/common.css" rel="stylesheet">
 </th:block>
 <style type="text/css">
-	.btnCommand {
-		text-align: right;
-		margin-right: 20px;
-		margin-bottom: 10px;
-	}
-	
-	.form-control[readonly] {
-		background-color: white;
-	}
-	
-	.table th, td {
-		text-align: center;
-	}
-	
-	.table .notice-title {
-		text-align: left;
-		padding-left: 30px;
-	}
-	
-	.clickable-row td:hover {
-		background-color: #edfbfc;
-	}
-	
-	.filter-tabs {
-		position: absolute;
-		top: -15px;
-		left: 15px;
-		display: flex;
-		gap: 8px;
-		z-index: 10;
-	}
-	
-	.filter-tab {
-		background-color: #f8f9fa;
-		border: 1px solid #ccc;
-		border-radius: 16px 16px 0 0;
-		padding: 5px 14px;
-		font-size: 14px;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
-	}
-	
-	.filter-tab:hover, .filter-tab.active {
-		background-color: #007bff;
-		color: white;
-		border-color: #007bff;
-	}
-	
-	.card-wrapper {
-		position: relative;
-		margin-top: 30px;
-	}
-	
-	.card {
-		overflow: visible !important;
-	}
-	
-	
+.btnCommand {
+	text-align: right;
+	margin-right: 20px;
+	margin-bottom: 10px;
+}
+
+.form-control[readonly] {
+	background-color: white;
+}
+
+.table th, td {
+	text-align: center;
+}
+
+.table .notice-title {
+	text-align: left;
+	padding-left: 30px;
+}
+
+.clickable-row td:hover {
+	background-color: #edfbfc;
+}
+
+.filter-tabs {
+	position: absolute;
+	top: -15px;
+	left: 15px;
+	display: flex;
+	gap: 8px;
+	z-index: 10;
+}
+
+.filter-tab {
+	background-color: #f8f9fa;
+	border: 1px solid #ccc;
+	border-radius: 16px 16px 0 0;
+	padding: 5px 14px;
+	font-size: 14px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-tab:hover, .filter-tab.active {
+	background-color: #007bff;
+	color: white;
+	border-color: #007bff;
+}
+
+.card-wrapper {
+	position: relative;
+	margin-top: 30px;
+}
+
+.card {
+	overflow: visible !important;
+}
 </style>
 
 
@@ -98,143 +102,158 @@
 	<div layout:fragment="contents">
 		<div class="container-fluid">
 			<!-- Page Heading -->
-			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<div
+				class="d-sm-flex align-items-center justify-content-between mb-4">
 				<h1 class="h3 mb-2 text-gray-800">전자결재</h1>
 			</div>
-			<div class="regist-wrap">
-				<input type="hidden" id="memberId" th:value="${memberId}">
-				<button class="btn btn-success ml-2" id="registerBtn" type="button">기안서 작성</button>
-			</div>
 			<!-- ---------- 검색바 컨테이너 ---------- -->
+			<div class="card-wrapper">
+				<div class="filter-tabs">
+					<div class="filter-tab active" data-filter="all">전체</div>
+					<div class="filter-tab" data-filter="drafted">기안한 문서</div>
+					<div class="filter-tab" data-filter="waiting">결재대기</div>
+					<div class="filter-tab" data-filter="complete">결재완료</div>
+				</div>
+			</div>
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<!-- ---------- 검색바 ---------- -->
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
-						
+
 							<div class="col pl-4 search-box">
-								<form th:action="@{/groupware/approval/search}" method="get" th:object="${approvalSearchDTO}">
+								<form th:action="@{/groupware/approval/search}" method="get"
+									th:object="${approvalSearchDTO}">
 									<div class="container-fluid px-5 mt-3">
 										<div class="row">
 											<div class="col-md-6 left-form">
-											
+
 												<!-- 제목 -->
 												<div class="form-group row">
-								                    <label for="title" class="col-sm-3 col-form-label">제목</label>
-								                    <div class="col-sm-9">
-								                        <input type="text" id="title" th:field="*{title}" class="form-control">
-								                    </div>
-								                </div>
-								                
+													<label for="title" class="col-sm-3 col-form-label">제목</label>
+													<div class="col-sm-9">
+														<input type="text" id="title" th:field="*{title}"
+															class="form-control">
+													</div>
+												</div>
+
 												<!-- 기안자 -->
 												<div class="form-group row">
-								                    <label for="drafterId" class="col-sm-3 col-form-label">기안자</label>
-								                    <div class="col-sm-9">
-								                        <input type="text" id="drafterName" th:field="*{drafterName}" class="form-control">
-								                    </div>
-								                </div>
-								                
-								                <!-- 진행상태 -->
-								                <div class="form-group row">
-								                    <label for="progressStatus" class="col-sm-3 col-form-label">진행상태</label>
-								                    <div class="col-sm-9">
-								                    	<select id="progressStatus" name="progressStatus" class="form-select">
-								                    		<option value="">진행상태 선택</option>
-								                    		<th:block th:each="item : *{progressStatusList}">
-								                    			<option
-								                    				th:value="${item.minorCode}"
-								                    				th:text="${item.minorName}"
-								                    				th:selected="*{progressStatus} == ${item.minorCode}"
-								                    				>
-								                    			</option>
-								                    		</th:block>
-								                    	</select>
-								                    </div>
-								                </div>
+													<label for="drafterId" class="col-sm-3 col-form-label">기안자</label>
+													<div class="col-sm-9">
+														<input type="text" id="drafterName"
+															th:field="*{drafterName}" class="form-control">
+													</div>
+												</div>
+
+												<!-- 진행상태 -->
+												<div class="form-group row">
+													<label for="progressStatus" class="col-sm-3 col-form-label">진행상태</label>
+													<div class="col-sm-9">
+														<select id="progressStatus" name="progressStatus"
+															class="form-select">
+															<option value="">진행상태 선택</option>
+															<th:block th:each="item : *{progressStatusList}">
+																<option th:value="${item.minorCode}"
+																	th:text="${item.minorName}"
+																	th:selected="*{progressStatus} == ${item.minorCode}">
+																</option>
+															</th:block>
+														</select>
+													</div>
+												</div>
 											</div>
-											
+
 											<div class="col-md-6">
 												<div class="form-group row">
 													<label for="workStartDate" class="col-sm-3 col-form-label">기안일자</label>
-								                    <div class="col-sm-9">
-								                        <div class="d-flex align-items-center">
-								                            <div class="input-group">
-								                                <input type="text" id="requestStartDate" th:field="*{requestStartDate}" class="form-control" autocomplete="off">
-								                                <div class="input-group-append">
-								                                    <span class="input-group-text calendar-icon">
-								                                        <i class="fa fa-calendar"></i>
-								                                    </span>
-								                                </div>
-								                            </div>
-								
-								                            <span class="mx-2">⁓</span>
-								
-								                            <div class="input-group">
-								                                <input type="text" id="requestEndDate" th:field="*{requestEndDate}" class="form-control" autocomplete="off">
-								                                <div class="input-group-append">
-								                                    <span class="input-group-text calendar-icon">
-								                                        <i class="fa fa-calendar"></i>
-								                                    </span>
-								                                </div>
-								                            </div>
-								                        </div>
-								                    </div>
+													<div class="col-sm-9">
+														<div class="d-flex align-items-center">
+															<div class="input-group">
+																<input type="text" id="requestStartDate"
+																	th:field="*{requestStartDate}" class="form-control"
+																	autocomplete="off">
+																<div class="input-group-append">
+																	<span class="input-group-text calendar-icon"> <i
+																		class="fa fa-calendar"></i>
+																	</span>
+																</div>
+															</div>
+
+															<span class="mx-2">⁓</span>
+
+															<div class="input-group">
+																<input type="text" id="requestEndDate"
+																	th:field="*{requestEndDate}" class="form-control"
+																	autocomplete="off">
+																<div class="input-group-append">
+																	<span class="input-group-text calendar-icon"> <i
+																		class="fa fa-calendar"></i>
+																	</span>
+																</div>
+															</div>
+														</div>
+													</div>
 												</div>
 												<div class="form-group row">
 													<label for="workStartDate" class="col-sm-3 col-form-label">마감일자</label>
-								                    <div class="col-sm-9">
-								                        <div class="d-flex align-items-center">
-								                            <div class="input-group">
-								                                <input type="text" id="dueStartDate" th:field="*{dueStartDate}" class="form-control" autocomplete="off">
-								                                <div class="input-group-append">
-								                                    <span class="input-group-text calendar-icon">
-								                                        <i class="fa fa-calendar"></i>
-								                                    </span>
-								                                </div>
-								                            </div>
-								
-								                            <span class="mx-2">⁓</span>
-								
-								                            <div class="input-group">
-								                                <input type="text" id="dueEndDate" th:field="*{dueEndDate}" class="form-control" autocomplete="off">
-								                                <div class="input-group-append">
-								                                    <span class="input-group-text calendar-icon">
-								                                        <i class="fa fa-calendar"></i>
-								                                    </span>
-								                                </div>
-								                            </div>
-								                        </div>
-								                    </div>
+													<div class="col-sm-9">
+														<div class="d-flex align-items-center">
+															<div class="input-group">
+																<input type="text" id="dueStartDate"
+																	th:field="*{dueStartDate}" class="form-control"
+																	autocomplete="off">
+																<div class="input-group-append">
+																	<span class="input-group-text calendar-icon"> <i
+																		class="fa fa-calendar"></i>
+																	</span>
+																</div>
+															</div>
+
+															<span class="mx-2">⁓</span>
+
+															<div class="input-group">
+																<input type="text" id="dueEndDate"
+																	th:field="*{dueEndDate}" class="form-control"
+																	autocomplete="off">
+																<div class="input-group-append">
+																	<span class="input-group-text calendar-icon"> <i
+																		class="fa fa-calendar"></i>
+																	</span>
+																</div>
+															</div>
+														</div>
+													</div>
 												</div>
-												
+
 												<!-- 진행상태 -->
-								                <div class="form-group row">
-								                    <label for="progressStatus" class="col-sm-3 col-form-label">문서종류</label>
-								                    <div class="col-sm-9">
-								                    	<select id="approvalType" name="approvalType" class="form-select">
-								                    		<option value="">문서종류 선택</option>
-								                    		<th:block th:each="item : *{approvalTypeList}">
-								                    			<option
-								                    				th:value="${item.minorCode}"
-								                    				th:text="${item.minorName}"
-								                    				th:selected="*{approvalType} == ${item.minorCode}"
-								                    				>
-								                    			</option>
-								                    		</th:block>
-								                    	</select>
-								                    </div>
-								                </div>
-											</div>
-											
-											<!-- 검색바 버튼 -->
-											<div>
-												<div class="row justify-content-end">
-													<div class="col-12 col-sm-auto mb-2">
-												            <button class="btn btn-primary btn-block" id="btnSearch" type="submit">검색</button>
-											        </div>
+												<div class="form-group row">
+													<label for="progressStatus" class="col-sm-3 col-form-label">문서종류</label>
+													<div class="col-sm-9">
+														<select id="approvalType" name="approvalType"
+															class="form-select">
+															<option value="">문서종류 선택</option>
+															<th:block th:each="item : *{approvalTypeList}">
+																<option th:value="${item.minorCode}"
+																	th:text="${item.minorName}"
+																	th:selected="*{approvalType} == ${item.minorCode}">
+																</option>
+															</th:block>
+														</select>
+													</div>
 												</div>
 											</div>
-											
+		
+											<!-- 검색바 버튼 -->
+											<div class="row justify-content-end">
+											    <div class="col-12 col-sm-auto mb-2">
+													<button class="btn btn-success ml-2" id="registerBtn" type="button">기안서작성</button>
+									            </div>
+									            
+											    <div class="col-12 col-sm-auto mb-2">
+									                <button class="btn btn-primary btn-block" id="btnSearch" type="submit">검색</button>
+									            </div>
+									        </div>
 										</div>
 									</div>
 								</form>
@@ -245,22 +264,15 @@
 				</div>
 			</div>
 			<!-- 검색바 컨테이너 끝 -->
-			
-			
+
+
 			<!-- 본문 컨테이너 -->
-			<div class="card-wrapper">
-				<div class="filter-tabs">
-					<div class="filter-tab active" data-filter="all">전체</div>
-					<div class="filter-tab" data-filter="drafted">기안한 문서</div>
-					<div class="filter-tab" data-filter="waiting">결재대기</div>
-					<div class="filter-tab" data-filter="complete">결재완료</div>
-				</div>
-				
 				<div class="card shadow mb-4">
 					<div class="card-body">
 						<!-- 그리드(테이블) -->
 						<div class="table-responsive">
-							<table class="table table-bordered table-hover text-center" id="approvalList" width="100%" cellspacing="0">
+							<table class="table table-bordered table-hover text-center"
+								id="approvalList" width="100%" cellspacing="0">
 								<thead>
 									<tr>
 										<th>문서번호</th>
@@ -273,11 +285,15 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="item, status : ${approvalDTOList}" th:data-id="${item.approvalNo}">
-										<td th:text="${item.approvalNo != null ? item.approvalNo : '-'}"></td>
+									<tr th:each="item, status : ${approvalDTOList}"
+										th:data-id="${item.approvalNo}">
+										<td
+											th:text="${item.approvalNo != null ? item.approvalNo : '-'}"></td>
 										<td th:text="${item.title != '' ? item.title : '-'}"></td>
-										<td th:text="${item.progressName != null ? item.progressName : '-'}"></td>
-										<td th:text="${item.approvalTypeName != null ? item.approvalTypeName : '-'}"></td>
+										<td
+											th:text="${item.progressName != null ? item.progressName : '-'}"></td>
+										<td
+											th:text="${item.approvalTypeName != null ? item.approvalTypeName : '-'}"></td>
 										<td th:text="${item.name != null ? item.name : '-'}"></td>
 										<td th:text="${item.draftDate != null ? item.draftDate : '-'}"></td>
 										<td th:text="${item.dueDate != null ? item.dueDate : '-'}"></td>
@@ -285,17 +301,16 @@
 								</tbody>
 							</table>
 						</div>
-					 </div>
+					</div>
 				</div>
 				<!-- 본문 컨테이너 끝 -->
-			</div>
-			
+
 			<!-- Scroll to Top Button-->
-		    <a class="scroll-to-top rounded" href="#page-top">
-		    	<i class="fas fa-angle-up"></i>
-		    </a>
+			<a class="scroll-to-top rounded" href="#page-top"> <i
+				class="fas fa-angle-up"></i>
+			</a>
 		</div>
-		
+
 		<script type="text/javascript">
 			$(document).ready(function() {
 				console.log("document ready!");
@@ -311,9 +326,8 @@
 				// 기안서 작성 버튼 클릭 이벤트(새창 열기)
 				$("#registerBtn").on('click', function() {
 					//로그인한 사용자 id 가져오기
-					let userId = $("#memberId").val();
 					
-					location.href = `/groupware/approval/regist/${userId}`;
+					location.href = `/groupware/approval/regist`;
 				});
 				
 				$("#approvalList tbody").on("click", 'tr', function() {
@@ -380,62 +394,61 @@
 			            document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
 			            this.classList.add("active");
 			            const selectedFilter = this.dataset.filter;
-			            let userId = $("#memberId").val();
+// 			            let userId = $("#memberId").val();
 			            
 			            
 			            $.ajax({
 			            	url: "/groupware/approval/filter",
 			            	type: "POST",
 			            	data: {
-			            		filter : selectedFilter,
-			            		memberId : userId
-			            	},
+			            		filter : selectedFilter
+// 			            		memberId : userId
+			            	}, // data
 			            	success: function(data){
-			            		console.log("성공");
-			            	},
+			            		console.log(data);
+			            		const $tbody = $("#approvalList tbody");
+			            		
+			            	    $tbody.empty(); // 기존 테이블 비우기
+
+			            	    if (data.length === 0) {
+			            	        $tbody.append("<tr><td colspan='7'>검색 결과가 없습니다.</td></tr>");
+			            	        return;
+			            	    }
+			            	    
+			            	    data.forEach(item => {
+			            	        const row = `
+			            	            <tr data-id="${item.approvalNo}">
+			            	                <td>${item.approvalNo || '-'}</td>
+			            	                <td>${item.title || '-'}</td>
+			            	                <td>${item.progressName || '-'}</td>
+			            	                <td>${item.approvalTypeName || '-'}</td>
+			            	                <td>${item.name || '-'}</td>
+			            	                <td>${item.draftDate || '-'}</td>
+			            	                <td>${item.dueDate || '-'}</td>
+			            	            </tr>
+			            	        `;
+			            	        $tbody.append(row);
+			            	    });
+
+			            	},	// success
 			            	error: function() {
 			            		console.error("오류 발생");
-			            	}
-			            });
-			            
-			            
-			            
+			            	}	// error
+			            });	// ajax
 			        });
 			    });
+			    //	------------------------------------------------------------------
 			    
 			    
-				
+			    
 			}); // document.ready 끝
 		</script>
 	</div>
 	<!-- /.container-fluid -->
 
-<!-- JS -->
-<th:block layout:fragment="script">
-	<!-- Bootstrap core JavaScript-->
-	<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<script src="/js/jquery-3.7.1.js"></script>
-    <!-- Core plugin JavaScript-->
-    <script src="/js/jquery-easing/jquery.easing.min.js"></script>
-    <!-- Custom scripts for all pages-->
-    <script src="/js/sb-admin-2.min.js"></script>
-   	<!-- Page level plugins -->
-	<script src="/js/datatables/jquery.dataTables.min.js"></script>
-	<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
-	<script src="/js/demo/datatables-demo.js"></script>
-<!-- 	<script src="/js/datatables/datatables.min.js"></script> --> <!-- 반응형 -->
-   	<script src="/js/datepicker/moment.min.js"></script>
-   	<script src="/js/datepicker/daterangepicker.js"></script>
-   	<script src="/js/datatables/dataTables.buttons.min.js"></script>
-	<script src="/js/datatables/buttons.html5.min.js"></script>
-	<script src="/js/datatables/jszip.min.js"></script>
-	<script src="/js/datatables/buttons.print.min.js"></script>
-	<!-- 개별 js -->
-<!--     <script src="/js/approval/approval.js"></script> -->
-</th:block>
 </body>
 </html>
 
 
-	
-    
+
+

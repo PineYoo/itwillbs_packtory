@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 거래처등록</title>
+
+<!-- layout:decorate="~{common/layouts/de_layout}" 빼면서 datepicker 적용 안되는 문제 -->
+<!-- <th:block th:insert="~{common/fragments/de_common::headContents}"></th:block> -->
+
+<style type="text/css">
+	.form {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+	input, select {
+        border: 1px solid #ccc;
+        padding: 5px;
+        margin: 2px;
+	}
+	.essential {
+        background-color: #fffbe6; /* 연한 노랑 */
+    }
+    .filled {
+        background-color: white;
+    }
+    
+    /* ----------------- */
+    .addressInfo {
+	    display: flex;
+	}
+    @media (max-width: 768px) {
+	    .addressInfo {
+		    display: block;
+		}
+	}
+</style>
+<!-- 다음 우편번호 API -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+
+<body id="page-top">
+	<div layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid" style="margin-top: 20px;">
+			<!-- Page Heading -->
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">거래처등록</h1>
+			</div>
+
+			<!-- ---------- 본문 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+			    <div class="card-body">
+   			    	<div class="table-responsive">
+				        <form th:action="@{/orders/client}" method="post" th:object="${clientDTO}" class="form">
+							<div class="row">
+								<div class="data-container">
+							    	<div class="row">
+								        <div class="col-sm-12 col-md-6 mb-3">
+								            <div class="addressInfo">
+								                <label class="col-sm-8 col-md-4 mt-2" for="companyNumber">사업자 등록 번호</label>
+												<div>
+									                <input type="text" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{companyNumber}" maxlength="12" placeholder="123-45-67890">
+<!-- 				                                	<button type="button" id="searchClientInfoBtn" class="btn btn-outline-primary ml-2">조회</button> -->
+												</div>
+								            </div>
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="companyName">상호명</label>
+								                <input type="text" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{companyName}">
+								            </div>
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="ownerName">대표자명</label>
+								                <input type="text" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{ownerName}">
+								            </div>
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="phoneNumber">전화번호</label>
+								                <input type="text" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{phoneNumber}" maxlength="13" placeholder="010-1234-5678">
+								            </div>
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="faxNumber">팩스번호</label>
+								                <input type="text" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{faxNumber}" maxlength="10" placeholder="02-000-0000">
+								            </div>
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="eMail">이메일</label>
+								                <input type="text" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{eMail}" placeholder="email@example.com">
+								            </div>
+								        </div>
+								        <div class="col-sm-12 col-md-6 mb-3">
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="companyCategory">업태</label>
+								                <input type="text" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{companyCategory}"autocomplete="off">
+								            </div>
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="companySubject">종목</label>
+								                <input type="text" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{companySubject}"autocomplete="off">
+								            </div>
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="creditLimit">여신한도</label>
+								                <input type="text" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{creditLimit}" autocomplete="off">
+								            </div>
+								            <div class="addressInfo">
+								                <label class="col-sm-8 col-md-4">주소</label>
+									            <div>
+									                <input type="text" class="col-sm-6 col-md-3 rounded-sm mr-2 postCode_2" th:field="*{postCode}" maxlength="5">
+									                <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2">주소찾기</button>
+									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address1_2" th:field="*{address1}" placeholder="기본주소 입력">
+									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address2_2" th:field="*{address2}" placeholder="상세주소 입력">
+									            </div>
+								            </div>
+								        </div>
+								    </div>
+							    </div>	<!-- <div class="data-container"> 끝 -->
+							    <hr>
+							    
+							    
+							    
+							</div>
+			                
+			                
+				            <div style="text-align: center; margin-top: 10px;">
+				                <button type="submit" class="btn btn-primary">등록</button>
+				                <button type="button" id="cancelBtn" class="btn btn-secondary ml-2">취소</button>
+				            </div>
+				        </form>
+			        </div>
+			    </div>
+			</div>
+			<!-- ---------- 본문 컨테이너 끝 ---------- -->			
+		</div>
+		
+		<script type="text/javascript">
+			$(document).ready(function () {
+		     	//---------------------------------------------------
+				// 휴대번호 입력
+				$('#clientPhone, #phone1, #phone2, #phoneNumber').on('input', function() {
+			        // 숫자만 남기기
+			        let value = $(this).val().replace(/\D/g, '');
+			        let formattedValue = '';
+			        // 포맷팅 로직
+			        if (value.length > 0) {
+			            if (value.length <= 10) {
+			                // 10자리 이하일 경우
+			                formattedValue += value.substring(0, 3); // 첫 3자리
+			                if (value.length > 3) {
+			                    formattedValue += '-' + value.substring(3, 6); // 중간 3자리
+			                }
+			                if (value.length > 6) {
+			                    formattedValue += '-' + value.substring(6, 10); // 마지막 4자리
+			                }
+			            } else {
+			                // 11자리 이상일 경우
+			                formattedValue += value.substring(0, 3); // 첫 3자리
+			                formattedValue += '-' + value.substring(3, 7); // 중간 4자리
+			                formattedValue += '-' + value.substring(7, 11); // 마지막 4자리
+			            }
+			        }
+					
+			     	// 포맷된 값으로 업데이트
+			        $(this).val(formattedValue);
+			    });
+				
+				// 숫자입력만 허용하는 keypress
+			    $('#clientPhone, #phone1, #phone2, #phoneNumber, #companyNumber, #faxNumber').on('keypress', function(e) {
+			    	let keyCode = event.keyCode;
+			        if (keyCode < 48 || keyCode > 57) {
+			            event.preventDefault();
+			        }
+			    });
+				
+		     	//---------------------------------------------------
+				// 주소(다음 우편번호 API 활용)
+				$("#searchAddressBtn_2, .postCode_2").click(function() {
+					new daum.Postcode({
+				        oncomplete: function(data) { 
+							// 1) 우편번호(zonecode) 가져와서 우편번호 항목(postCode)에 출력              
+				            $(".postCode_2").val(data.zonecode);
+					
+							// 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서 
+							//    기본주소 항목(address1)에 출력
+							let address = data.address;
+				            
+				            // 3) 만약, 건물명(buildingName)이 존재할 경우(= 널스트링이 아님)
+				            //    기본 주소 뒤에 건물명 결합
+				            if(data.buildingName !== ''){
+				               address += "(" + data.buildingName + ")";
+				            }
+				            
+				            // 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
+				            $(".address1_2").val(address);
+				            
+				            // 5) 상세주소 항목(address2)에 포커스 요청
+				            $(".address2_2").focus();
+				        }
+				    }).open();
+				});
+				
+		     	//---------------------------------------------------
+				// 취소버튼
+				$('#cancelBtn').on("click", function() {
+					//window.close(); // 250401 부모창에서 페이지 이동으로 변경됨
+					location.href="/orders/client";
+				});
+		        
+		    });
+		</script>
+	</div>
+	<!-- --------------------------------------------------------------------------------------------- -->
+	
+</body>
+</html>

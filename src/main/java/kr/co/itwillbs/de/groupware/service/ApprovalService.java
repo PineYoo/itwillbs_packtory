@@ -113,7 +113,7 @@ public class ApprovalService {
 		//	마감일자 세팅
 		approvalDTO.setDueDate(approvalDTO.getDueDate().split("~")[1].trim());
 		
-		int affectedRow = approvalMapper.modifyNotice(approvalDTO);
+		int affectedRow = approvalMapper.modifyApproval(approvalDTO);
 		log.info("affectedRow is {}", affectedRow);
 		//TODO 0이 나올 경우 예외처리 필요? 다음엔 좀더 예쁘게?
 		if(affectedRow < 1) {
@@ -128,8 +128,8 @@ public class ApprovalService {
 	 * @param approvalSearchDTO
 	 * @return
 	 */
-	public List<ApprovalDTO> getApprovalSearchList(ApprovalSearchDTO approvalSearchDTO) {
-		return approvalMapper.getApprovalSearchList(approvalSearchDTO);
+	public List<ApprovalDTO> getApprovalSearchList(String memberId, ApprovalSearchDTO approvalSearchDTO) {
+		return approvalMapper.getApprovalSearchList(memberId, approvalSearchDTO);
 	}
 
 	/**

@@ -49,6 +49,7 @@
 		phone_number,
 		e_mail,
 		fax_number,
+		post_code,
 		address1,
 		address2,
 		credit_limit,
@@ -63,10 +64,19 @@
 	</sql>
 	
 	<!-- 모든 거래처 목록 조회 -->
-	<select id="getClientList" resultType="kr.co.itwillbs.de.orders.dto.ClientDTO">
+	<select id="getClientList" resultType="kr.co.itwillbs.de.orders.dto.ClientDTO"
+								parameterType="kr.co.itwillbs.de.orders.dto.ClientSearchDTO">
 		SELECT
-			<include refid="t_client_columns_forSelect"></include>
+		<include refid="t_client_columns_forSelect"></include>
 		  FROM t_client
+		  <where>
+			<if test='companyNumber !=null and !("".equals(companyNumber.trim()))'>and company_number = #{companyNumber}</if>
+			<if test='companyName !=null and !("".equals(companyName.trim()))'>and company_name LIKE CONCAT('%',#{companyName},'%')</if>
+			<if test='ownerName !=null and !("".equals(ownerName.trim()))'>and owner_name LIKE CONCAT('%',#{ownerName},'%')</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>and is_deleted = #{isDeleted}</if>
+		  </where>
+		 ORDER
+			BY idx ASC
 	</select>
 	
 	<!-- 거래처 정보 입력 -->
@@ -82,45 +92,64 @@
 			   phone_number,
 			   e_mail,
 			   fax_number,
+			   post_code,
 			   address1,
 			   address2,
 			   credit_limit,
+			<if test='isDeleted !=null and !isDeleted.equals("")'>
 			   is_deleted,
+			</if>
+			<if test='memo !=null and !memo.equals("")'>
 			   memo,
+			</if>
+			<if test='status !=null and !status.equals("")'>
 			   status,
+			</if>
+			<if test='statusMessage !=null and !statusMessage.equals("")'>
 			   status_message,
-			<if test='modId !=null and !modId.equals("")'>
-			   mod_id,
-			   mod_date,
+			</if>
+			<if test='regId !=null and !regId.equals("")'>
+			   reg_id,
+			   reg_date,
 			</if>
 		</trim>
-	  ) VALUES (
-			<trim suffixOverrides=",">
-			   #{companyNumber},
-			   #{companyName},
-			   #{ownerName},
-			   #{companyCategory},
-			   #{companySubject},
-			   #{phoneNumber},
-			   #{eMail},
-			   #{faxNumber},
-			   #{address1},
-			   #{address2},
-			   #{creditLimit},
+			  ) 
+		 VALUES (
+		<trim suffixOverrides=",">
+				#{companyNumber},
+				#{companyName},
+				#{ownerName},
+				#{companyCategory},
+				#{companySubject},
+				#{phoneNumber},
+				#{eMail},
+				#{faxNumber},
+				#{postCode},
+				#{address1},
+				#{address2},
+				#{creditLimit},
+			<if test='isDeleted !=null and !isDeleted.equals("")'>
 			   #{isDeleted},
+			</if>
+			<if test='memo !=null and !memo.equals("")'>
 			   #{memo},
+			</if>
+			<if test='status !=null and !status.equals("")'>
 			   #{status}, 
+			</if>
+			<if test='statusMessage !=null and !statusMessage.equals("")'>
 			   #{statusMessage},
-			<if test='modId !=null and !modId.equals("")'>
-			   #{mod_id},
-			   #{mod_date},
+			</if>
+			<if test='regId !=null and !regId.equals("")'>
+			   #{regId},
+			   NOW(),
 			</if>
 		</trim>
 		)
 	</insert>
 	
 	<!-- 거래처 상세정보 요청 -->
-	<select id="getClient" resultType="map">
+	<select id="getClient" resultType="kr.co.itwillbs.de.orders.dto.ClientInfoDTO">
 		SELECT *
 		  FROM t_client T1 LEFT OUTER JOIN t_client_info T2
 		    ON T1.COMPANY_NUMBER = T2.COMPANY_NUMBER
@@ -138,14 +167,21 @@
 			   PHONE_NUMBER = #{phoneNumber},
 			   E_MAIL = #{eMail},
 			   FAX_NUMBER = #{faxNumber},
+			   POST_CODE = #{postCode},
 			   ADDRESS1 = #{address1},
 			   ADDRESS2 = #{address2},
 			   CREDIT_LIMIT = #{creditLimit},
 			   IS_DELETED = #{isDeleted},
+			   <if test='memo !=null and !memo.equals("")'>
 			   MEMO = #{memo},
+			   </if>
+			   <if test='status !=null and !status.equals("")'>
 			   STATUS = #{status},
+			   </if>
+			   <if test='statusMessage !=null and !statusMessage.equals("")'>
 			   STATUS_MESSAGE = #{statusMessage},
-			   MOD_ID = NULL, -- 임시로 NULL
+			   </if>
+			   MOD_ID = #{modId},
 			   MOD_DATE = NOW(),
 			</set>
 		 WHERE COMPANY_NUMBER = #{companyNumber}
@@ -163,10 +199,21 @@
 		  INTO t_client_info (
 		<trim suffixOverrides=",">
 			   COMPANY_NUMBER,
+			   <if test='clientEmployeeId !=null and !clientEmployeeId.equals("")'>
+			   CLIENT_EMPLOYEE_ID,
+			   </if>
+			   <if test='clientEmployeeName !=null and !clientEmployeeName.equals("")'>
 			   CLIENT_EMPLOYEE_NAME,
+			   </if>
+			   <if test='clientEmployeeMemo !=null and !clientEmployeeMemo.equals("")'>
 			   CLIENT_EMPLOYEE_MEMO,
+			   </if>
+			   <if test='phone1 !=null and !phone1.equals("")'>
 			   PHONE1,
+			   </if>
+			   <if test='phone2 !=null and !phone2.equals("")'>
 			   PHONE2,
+			   </if>
 			   REG_ID,
 			   REG_DATE,
 		</trim>
@@ -174,11 +221,22 @@
 		VALUES (
 		<trim suffixOverrides=",">
 			   #{companyNumber},
+			<if test='clientEmployeeId !=null and !clientEmployeeId.equals("")'>
+			   #{clientEmployeeId},
+			</if>
+				<if test='clientEmployeeName !=null and !clientEmployeeName.equals("")'>
 			   #{clientEmployeeName},
+			   </if>
+			   <if test='clientEmployeeMemo !=null and !clientEmployeeMemo.equals("")'>
 			   #{clientEmployeeMemo},
+			   </if>
+			   <if test='phone1 !=null and !phone1.equals("")'>
 			   #{phone1},
+			   </if>
+			   <if test='phone2 !=null and !phone2.equals("")'>
 			   #{phone2},
-			   NULL,	-- 최초작성자 임시로 NULL
+			   </if>
+			   #{regId},
 			   NOW(),
 		</trim>
 			 )
@@ -187,11 +245,14 @@
 	<update id="updateClientInfo">
 		UPDATE t_client_info
 			<set>
+			<if test='clientEmployeeId !=null and !clientEmployeeId.equals("")'>
+			   CLIENT_EMPLOYEE_ID = #{clientEmployeeId},
+			</if>
 			   CLIENT_EMPLOYEE_NAME = #{clientEmployeeName},
 			   CLIENT_EMPLOYEE_MEMO = #{clientEmployeeMemo},
 			   PHONE1 = #{phone1},
 			   PHONE2 = #{phone2},
-			   MOD_ID = NULL,  -- 최종수정자 임시로 NULL
+			   MOD_ID = #{modId},
 			   MOD_DATE = NOW(),
 			</set>
 		 WHERE COMPANY_NUMBER = #{companyNumber}

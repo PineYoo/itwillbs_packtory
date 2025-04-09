@@ -46,9 +46,10 @@ public interface ApprovalMapper {
 	 * @param approvalDTO
 	 * @return int
 	 */
-	int modifyNotice(ApprovalDTO approvalDTO);
+	int modifyApproval(ApprovalDTO approvalDTO);
 
-	List<ApprovalDTO> getApprovalSearchList(@Param("search") ApprovalSearchDTO approvalSearchDTO);
+	List<ApprovalDTO> getApprovalSearchList(@Param("memberId") String memberId,
+											@Param("search") ApprovalSearchDTO approvalSearchDTO);
 
 	List<ApprovalDTO> getApprovalListByFilter(@Param("filter") String filter,
 											@Param("memberId") String memberId);

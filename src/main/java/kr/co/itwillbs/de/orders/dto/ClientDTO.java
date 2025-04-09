@@ -58,4 +58,6 @@ public class ClientDTO {
 	//	최종작성일자
 	private LocalDateTime modDate;
 	
+	
+	
 }
