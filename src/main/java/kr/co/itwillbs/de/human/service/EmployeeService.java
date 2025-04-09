@@ -87,12 +87,27 @@ public class EmployeeService {
 
         // 사원 상세 정보가 있을 경우 업데이트
         if (employeeDTO.getDetail() != null) {
+            // 이메일 아이디 + 도메인 조합
+            String emailId = employeeDTO.getEmailId();
+            String emailDomain = employeeDTO.getEmailDomain();
+
+            if (emailId != null && emailDomain != null &&
+                    !emailId.isBlank() && !emailDomain.isBlank()) {
+                String fullEmail = emailId + "@" + emailDomain;
+                employeeDTO.getDetail().setEmail(fullEmail);
+                log.info("조합된 이메일: {}", fullEmail);
+            } else {
+                log.warn("이메일 정보가 불완전하여 이메일을 설정하지 않습니다.");
+                employeeDTO.getDetail().setEmail(null); // 또는 유지할 수 있도록 기존 값 유지
+            }
+
             log.info("업데이트할 사원 상세 정보: {}", employeeDTO.getDetail());
             employeeDetailMapper.updateEmployeeDetail(employeeDTO.getDetail());
         } else {
             log.warn("사원 상세 정보가 null입니다.");
         }
     }
+
 
 	// 사원 삭제 (사원 및 상세정보 soft delete)
 	@Transactional

@@ -39,4 +39,8 @@ public class EmployeeDTO {
     private LocalDateTime modDate;	   // 최종수정일
     
     private EmployeeDetailDTO detail; // 상세정보 DTO 포함
+    
+    // 이메일 처리
+    private String emailId;
+    private String emailDomain;
 }
