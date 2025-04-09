@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/de_layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>팩토리(PackTory) - 직급 등록</title>
 
@@ -26,38 +24,29 @@
 					<h5 class="card-title">직급 정보 입력</h5>
 				</div>
 				<div class="card-body">
-					<form action="#" th:action="@{/human/position/new}"
-						th:object="${positionInfoDTO}" method="post">
+					<form action="#" th:action="@{/human/position/new}" th:object="${positionInfoDTO}" method="post">
 
 						<!-- 직급 코드 입력 -->
 						<div class="mb-3">
-							<label for="positionCode" class="form-label">직급 코드</label> <select
-								class="form-control" id="positionCode"
-								th:field="*{positionCode}" required>
+							<label for="positionCode" class="form-label">직급 코드</label> <select class="form-control" id="positionCode" th:field="*{positionCode}" required>
 								<option value="">선택하세요</option>
-								<option th:each="code : ${codeItems}"
-									th:value="${code.minorName}" th:text="${code.minorName}"></option>
+								<option th:each="code : ${codeItems}" th:value="${code.minorName}" th:text="${code.minorName}"></option>
 							</select>
 						</div>
 
 						<div class="mb-3">
-							<label for="rankNumber" class="form-label">정렬 순서</label> <input
-								type="number" class="form-control" id="rankNumber"
-								th:field="*{rankNumber}" required>
+							<label for="rankNumber" class="form-label">정렬 순서</label> <input type="number" class="form-control" id="rankNumber" th:field="*{rankNumber}" required>
 						</div>
 
 						<div class="mb-3">
-							<label for="isManager" class="form-label">관리자 여부</label> <select
-								class="form-control" id="isManager" th:field="*{isManager}"
-								required>
+							<label for="isManager" class="form-label">관리자 여부</label> <select class="form-control" id="isManager" th:field="*{isManager}" required>
 								<option value="Y">Y</option>
 								<option value="N">N</option>
 							</select>
 						</div>
 
 						<!-- 버튼들 -->
-						<div
-							class="col-md-12 row align-items-center justify-content-center">
+						<div class="col-md-12 row align-items-center justify-content-center">
 							<button type="submit" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
 							<a href="/human/position" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</a>
 						</div>
@@ -69,8 +58,7 @@
 
 	<!-- 공통 스크립트 -->
 	<th:block layout:fragment="script">
-		<script
-			src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 	</th:block>
 </body>
 </html>

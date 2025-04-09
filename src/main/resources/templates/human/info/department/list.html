@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/de_layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>팩토리(PackTory) - 부서 목록</title>
 
@@ -26,8 +24,7 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<!-- Page Heading -->
-			<div
-				class="d-sm-flex align-items-center justify-content-between mb-4">
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
 				<h1 class="h3 mb-4 text-gray-800">부서 목록</h1>
 			</div>
 
@@ -37,20 +34,15 @@
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
-								<form th:action="@{/human/department/search}" method="post"
-									id="searchForm">
+								<form th:action="@{/human/department/search}" method="post" id="searchForm">
 									<div class="row">
 										<!-- 왼쪽 컬럼 -->
 										<div class="col-md-4">
 											<!-- 대표 부서 셀렉트 박스 -->
 											<div class="form-group mb-3">
-												<label for="departmentCode" class="col-form-label">대표
-													부서</label> <select name="departmentCode" class="form-control"
-													th:value="${departmentSearchDto.departmentCode}">
+												<label for="departmentCode" class="col-form-label">대표 부서</label> <select name="departmentCode" class="form-control" th:value="${departmentSearchDto.departmentCode}">
 													<option value="">대표 부서 선택</option>
-													<option th:each="code : ${codeItems}"
-														th:value="${code.minorCode}" th:text="${code.minorName}"
-														th:selected="${code.minorCode == departmentSearchDto.departmentCode}"></option>
+													<option th:each="code : ${codeItems}" th:value="${code.minorCode}" th:text="${code.minorName}" th:selected="${code.minorCode == departmentSearchDto.departmentCode}"></option>
 												</select>
 											</div>
 										</div>
@@ -59,10 +51,7 @@
 										<div class="col-md-4">
 											<!-- 하위 부서 -->
 											<div class="form-group mb-3">
-												<label for="childCode" class="col-form-label">하위 부서</label>
-												<input type="text" name="childCode" class="form-control"
-													placeholder="하위 부서"
-													th:value="${departmentSearchDto.childCode}" />
+												<label for="childCode" class="col-form-label">하위 부서</label> <input type="text" name="childCode" class="form-control" placeholder="하위 부서" th:value="${departmentSearchDto.childCode}" />
 											</div>
 										</div>
 
@@ -70,10 +59,7 @@
 										<div class="col-md-4">
 											<!-- 장소 -->
 											<div class="form-group mb-3">
-												<label for="locationIdx" class="col-form-label">장소</label> <input
-													type="text" name="locationIdx" class="form-control"
-													placeholder="장소"
-													th:value="${departmentSearchDto.locationIdx}" />
+												<label for="locationIdx" class="col-form-label">장소</label> <input type="text" name="locationIdx" class="form-control" placeholder="장소" th:value="${departmentSearchDto.locationIdx}" />
 											</div>
 										</div>
 									</div>
@@ -81,12 +67,10 @@
 									<!-- 검색바 버튼 -->
 									<div class="row justify-content-end">
 										<div class="col-12 col-sm-auto mb-2">
-											<button class="btn btn-success btn-block" id="btnRegister"
-												type="button">부서 등록</button>
+											<button class="btn btn-success btn-block" id="btnRegister" type="button">부서 등록</button>
 										</div>
 										<div class="col-12 col-sm-auto mb-2">
-											<button class="btn btn-primary btn-block" id="btnSearch"
-												type="submit">검색</button>
+											<button class="btn btn-primary btn-block" id="btnSearch" type="submit">검색</button>
 										</div>
 									</div>
 								</form>
@@ -100,8 +84,7 @@
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table table-bordered table-hover text-center"
-							id="dataTables" width="100%" cellspacing="0">
+						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead>
 								<tr>
 									<th>인덱스</th>
@@ -114,21 +97,14 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="department : ${departmentInfoDTOList}"
-									th:data-id="${department.idx}" class="department-row">
+								<tr th:each="department : ${departmentInfoDTOList}" th:data-id="${department.idx}" class="department-row">
 									<td th:text="${department.idx}"></td>
-									<td
-										th:text="${department.departmentCode != null ? department.departmentCode : '-'}"></td>
-									<td
-										th:text="${department.parentCode != null ? department.parentCode : '-'}"></td>
-									<td
-										th:text="${department.childCode != null ? department.childCode : '-'}"></td>
-									<td
-										th:text="${department.childName != null ? department.childName : '-'}"></td>
-									<td
-										th:text="${department.locationIdx != null ? department.locationIdx : '-'}"></td>
-									<td
-										th:text="${department.rankNumber != null ? department.rankNumber : '-'}"></td>
+									<td th:text="${department.departmentCode != null ? department.departmentCode : '-'}"></td>
+									<td th:text="${department.parentCode != null ? department.parentCode : '-'}"></td>
+									<td th:text="${department.childCode != null ? department.childCode : '-'}"></td>
+									<td th:text="${department.childName != null ? department.childName : '-'}"></td>
+									<td th:text="${department.locationIdx != null ? department.locationIdx : '-'}"></td>
+									<td th:text="${department.rankNumber != null ? department.rankNumber : '-'}"></td>
 								</tr>
 								<tr th:if="${#lists.isEmpty(departmentInfoDTOList)}">
 									<td colspan="8" class="text-center">조회된 데이터가 없습니다.</td>

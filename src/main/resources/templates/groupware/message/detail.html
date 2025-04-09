@@ -1,125 +1,135 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layouts/de_layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 
 <head>
-    <title>팩토리(PackTory) - 메시지 상세</title>
-    <th:block layout:fragment="css">
-        <link href="/css/sb-admin-2.css" rel="stylesheet">
-        <link href="/css/common.css" rel="stylesheet">
-    </th:block>
+<title>팩토리(PackTory) - 메시지 상세</title>
+<th:block layout:fragment="css">
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link href="/css/common.css" rel="stylesheet">
+</th:block>
 </head>
 
 <body>
-<div layout:fragment="contents">
-    <div class="container mt-5">
-        <h2 class="h3 mb-4 text-gray-800">메시지 상세</h2>
+	<div layout:fragment="contents">
+		<div class="container mt-5">
+			<h2 class="h3 mb-4 text-gray-800">메시지 상세</h2>
 
-        <form id="messageForm" th:action="@{/groupware/message/{idx}(idx=${messageDTO.idx})}" method="post">
-            <input type="hidden" name="idx" th:value="${messageDTO.idx}">
+			<form id="messageForm" th:action="@{/groupware/message/{idx}(idx=${messageDTO.idx})}" method="post">
+				<input type="hidden" name="idx" th:value="${messageDTO.idx}">
 
-            <div class="form-group">
-			    <label>알림 유형</label>
-			    <select name="type" id="type" class="form-control" disabled>
-			        <option value="">선택하세요</option>
-			        <option th:each="code : ${messageTypes}" 
-			                th:value="${code.minorName}" 
-			                th:text="${code.minorName}"
-			                th:selected="${messageDTO.type == code.minorName}">
-			        </option>
-			    </select>
-			</div>
+				<div class="form-group">
+					<label>알림 유형</label> <select name="type" id="type" class="form-control" disabled>
+						<option value="">선택하세요</option>
+						<option th:each="code : ${messageTypes}" th:value="${code.minorName}" th:text="${code.minorName}" th:selected="${messageDTO.type == code.minorName}"></option>
+					</select>
+				</div>
 
-            <div class="form-group">
-                <label>제목</label>
-                <input type="text" name="title" class="form-control" th:value="${messageDTO.title}" readonly>
-            </div>
+				<div class="form-group">
+					<label>제목</label> <input type="text" name="title" class="form-control" th:value="${messageDTO.title}" readonly>
+				</div>
 
-            <div class="form-group">
-                <label>내용</label>
-                <textarea name="contents" class="form-control" rows="5" readonly>[[${messageDTO.contents}]]</textarea>
-            </div>
+				<div class="form-group">
+					<label>내용</label>
+					<textarea name="contents" class="form-control" rows="5" readonly>[[${messageDTO.contents}]]</textarea>
+				</div>
 
-            <div class="form-group">
-                <label>수신자 ID</label>
-                <input type="text" name="receiverId" class="form-control" th:value="${messageDTO.receiverId}" readonly>
-            </div>
+				<div class="form-group">
+					<label>수신자 ID</label> <input type="text" name="receiverId" class="form-control" th:value="${messageDTO.receiverId}" readonly>
+				</div>
 
-            <div class="form-group">
-			    <label>읽음 여부</label>
-			    <span class="form-control-plaintext border px-2 py-1" th:text="${messageDTO.status}"></span>
-			</div>
+				<div class="form-group">
+					<label>읽음 여부</label> <span class="form-control-plaintext border px-2 py-1" th:text="${messageDTO.status}"></span>
+				</div>
 
-            <div class="form-group">
-			    <label>삭제 여부</label>
-			    <span class="form-control-plaintext border px-2 py-1" th:text="${messageDTO.isDeleted}"></span>
-			</div>
-			
-			<div class="form-group">
-			    <label>발신자 ID</label>
-			    <span class="form-control-plaintext border px-2 py-1" th:text="${messageDTO.senderId}"></span>
-			</div>
-			
-			<div class="form-group">
-			    <label>발신일</label>
-			    <span class="form-control-plaintext border px-2 py-1" th:text="${messageDTO.sendDate}"></span>
-			</div>
+				<div class="form-group">
+					<label>삭제 여부</label> <span class="form-control-plaintext border px-2 py-1" th:text="${messageDTO.isDeleted}"></span>
+				</div>
 
-            <div class="form-group">
-                <label>수신일</label>
-                <span id="receiveDate" th:text="${messageDTO.receiveDate != null ? messageDTO.receiveDate : '-'}" class="form-control-plaintext border px-2 py-1"></span>
-            </div>
+				<div class="form-group">
+					<label>발신자 ID</label> <span class="form-control-plaintext border px-2 py-1" th:text="${messageDTO.senderId}"></span>
+				</div>
 
-            <div class="mt-4">
-                <button type="button" id="editBtn" class="btn btn-primary">수정</button>
-                <button type="submit" id="saveBtn" class="btn btn-success d-none">저장</button>
-                <button type="button" id="deleteBtn" class="btn btn-danger" th:data-idx="${messageDTO.idx}">삭제</button>
-                <a href="/groupware/message" class="btn btn-secondary" style="float: right;">목록으로 돌아가기</a>
-            </div>
-        </form>
-    </div>
-</div>
+				<div class="form-group">
+					<label>발신일</label> <span class="form-control-plaintext border px-2 py-1" th:text="${messageDTO.sendDate}"></span>
+				</div>
 
-<th:block layout:fragment="script">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
+				<div class="form-group">
+					<label>수신일</label> <span id="receiveDate" th:text="${messageDTO.receiveDate != null ? messageDTO.receiveDate : '-'}" class="form-control-plaintext border px-2 py-1"></span>
+				</div>
 
-        // 수정 버튼 클릭 시 readonly 해제
-        $("#editBtn").click(function () {
-        	$("#messageForm select[name='type']").prop("disabled", false);
-            $("#messageForm input[name='title']").prop("readonly", false);
-            $("#messageForm textarea[name='contents']").prop("readonly", false);
-            $("#messageForm input[name='receiverId']").prop("readonly", false);
+				<div class="mt-4">
+					<button type="button" id="editBtn" class="btn btn-primary">수정</button>
+					<button type="submit" id="saveBtn" class="btn btn-success d-none">저장</button>
+					<button type="button" id="deleteBtn" class="btn btn-danger" th:data-idx="${messageDTO.idx}">삭제</button>
+					<a href="/groupware/message" class="btn btn-secondary" style="float: right;">목록으로 돌아가기</a>
+				</div>
+			</form>
+		</div>
+	</div>
 
-            $("#editBtn").addClass("d-none");
-            $("#saveBtn").removeClass("d-none");
-        });
+	<th:block layout:fragment="script">
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			$(document)
+					.ready(
+							function() {
 
-        // 삭제 버튼
-        $("#deleteBtn").click(function () {
-            const messageIdx = $(this).data("idx");
-            if (confirm("정말 삭제하시겠습니까?")) {
-                $.ajax({
-                	url: `/groupware/message/delete/${messageIdx}`,
-                    type: "DELETE",
-                    success: function (result) {
-                        if (result === "success") {
-                            alert("삭제되었습니다.");
-                            location.href = "/groupware/message";
-                        } else {
-                            alert("삭제 실패: " + result);
-                        }
-                    },
-                    error: function () {
-                        alert("오류가 발생했습니다.");
-                    }
-                });
-            }
-        });
-    });
-</script>
-</th:block>
+								// 수정 버튼 클릭 시 readonly 해제
+								$("#editBtn")
+										.click(
+												function() {
+													$(
+															"#messageForm select[name='type']")
+															.prop("disabled",
+																	false);
+													$(
+															"#messageForm input[name='title']")
+															.prop("readonly",
+																	false);
+													$(
+															"#messageForm textarea[name='contents']")
+															.prop("readonly",
+																	false);
+													$(
+															"#messageForm input[name='receiverId']")
+															.prop("readonly",
+																	false);
+
+													$("#editBtn").addClass(
+															"d-none");
+													$("#saveBtn").removeClass(
+															"d-none");
+												});
+
+								// 삭제 버튼
+								$("#deleteBtn")
+										.click(
+												function() {
+													const messageIdx = $(this)
+															.data("idx");
+													if (confirm("정말 삭제하시겠습니까?")) {
+														$
+																.ajax({
+																	url : `/groupware/message/delete/${messageIdx}`,
+																	type : "DELETE",
+																	success : function(
+																			result) {
+																		if (result === "success") {
+																			alert("삭제되었습니다.");
+																			location.href = "/groupware/message";
+																		} else {
+																			alert("삭제 실패: "
+																					+ result);
+																		}
+																	},
+																	error : function() {
+																		alert("오류가 발생했습니다.");
+																	}
+																});
+													}
+												});
+							});
+		</script>
+	</th:block>
 </body>
 </html>

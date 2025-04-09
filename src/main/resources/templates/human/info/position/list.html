@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/de_layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>팩토리(PackTory) - 직급 목록</title>
 
@@ -24,8 +22,7 @@
 <body id="page-top">
 	<div layout:fragment="contents">
 		<div class="container-fluid">
-			<div
-				class="d-sm-flex align-items-center justify-content-between mb-4">
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
 				<h1 class="h3 mb-4 text-gray-800">직급 목록</h1>
 			</div>
 
@@ -36,19 +33,15 @@
 						<div class="d-flex search-inner border">
 							<!-- 왼쪽 컬럼 -->
 							<div class="col-md-4 form-group mb-3">
-								<label for="positionCode" class="col-form-label">직급 코드</label> <select
-									name="positionCode" class="form-control"
-									th:value="${selectedCode}">
+								<label for="positionCode" class="col-form-label">직급 코드</label> <select name="positionCode" class="form-control" th:value="${selectedCode}">
 									<option value="">직급 코드 선택</option>
-									<option th:each="code : ${codeItems}"
-										th:value="${code.minorName}" th:text="${code.minorName}"></option>
+									<option th:each="code : ${codeItems}" th:value="${code.minorName}" th:text="${code.minorName}"></option>
 								</select>
 							</div>
 
 							<!-- 중간 컬럼 -->
 							<div class="col-md-4 form-group mb-3">
-								<label for="isManager" class="col-form-label">관리자 여부</label> <select
-									name="isManager" class="form-control" th:value="${isManager}">
+								<label for="isManager" class="col-form-label">관리자 여부</label> <select name="isManager" class="form-control" th:value="${isManager}">
 									<option value="">관리자 여부 선택</option>
 									<option value="Y">Y</option>
 									<option value="N">N</option>
@@ -56,11 +49,9 @@
 							</div>
 
 							<!-- 검색바 버튼 -->
-							<div
-								class="col-md-4 d-flex flex-column justify-content-center align-items-end">
+							<div class="col-md-4 d-flex flex-column justify-content-center align-items-end">
 								<div class="col-12 col-sm-auto mb-2">
-									<button class="btn btn-success" id="btnRegister" type="button">부서
-										등록</button>
+									<button class="btn btn-success" id="btnRegister" type="button">부서 등록</button>
 									<button class="btn btn-primary" id="btnSearch" type="submit">검색</button>
 								</div>
 							</div>
@@ -74,8 +65,7 @@
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table table-bordered table-hover text-center"
-							id="dataTables" width="100%" cellspacing="0">
+						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead>
 								<tr>
 									<th>인덱스</th>
@@ -88,8 +78,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="position : ${positionInfoDTOList}"
-									th:data-id="${position.idx}" class="position-row">
+								<tr th:each="position : ${positionInfoDTOList}" th:data-id="${position.idx}" class="position-row">
 									<td th:text="${position.idx}"></td>
 									<td th:text="${position.positionCode}"></td>
 									<td th:text="${position.rankNumber}"></td>
@@ -119,7 +108,7 @@
 					info : false
 				}); // end of $('#dataTables').DataTable({
 
-				// 등록 버튼(btnRegister) 클릭 시 이벤트(주문서 등록 페이지 이동)
+				// 등록 버튼(btnRegister) 클릭 시 이벤트(직급 등록)
 				$('#btnRegister').on("click", function() {
 					console.log("btnRegister click!!!");
 					location.href = "/human/position/new";

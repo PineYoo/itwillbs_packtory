@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/de_layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>팩토리(PackTory) - 사원 상세</title>
 
@@ -39,8 +37,7 @@ input, select {
 }
 </style>
 <!-- 다음 우편번호 API -->
-<script
-	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
     function clearOnce(input) {
       if (!input.dataset.cleared) {
@@ -61,8 +58,7 @@ input, select {
 			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
-					<form th:action="@{/human/employee/{id}(id=${employeeDTO.id})}"
-						th:object="${employeeDTO}" method="post">
+					<form th:action="@{/human/employee/{id}(id=${employeeDTO.id})}" th:object="${employeeDTO}" method="post">
 						<!-- hidden -->
 						<!-- -------------------------------------------------------------- -->
 						<!-- 기본 정보 -->
@@ -73,30 +69,22 @@ input, select {
 									<div class="card-body row">
 
 										<div class="form-group col-md-6">
-											<label>사원번호</label> <span th:text="${employeeDTO.id}"
-												class="form-control-plaintext"></span>
+											<label>사원번호</label> <span th:text="${employeeDTO.id}" class="form-control-plaintext"></span>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>이름</label> <span th:text="${employeeDTO.name}"
-												class="form-control-plaintext"></span>
+											<label>이름</label> <span th:text="${employeeDTO.name}" class="form-control-plaintext"></span>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>주민번호</label> <span th:text="${employeeDTO.ssn}"
-												class="form-control-plaintext"></span>
+											<label>주민번호</label> <span th:text="${employeeDTO.ssn}" class="form-control-plaintext"></span>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>성별</label> <select name="gender" class="form-control"
-												disabled>
-												<option value="" disabled
-													th:selected="${employeeDTO.detail.gender == null}">
-													성별 선택</option>
-												<option value="M"
-													th:selected="${employeeDTO.detail.gender == 'M'}">남성</option>
-												<option value="F"
-													th:selected="${employeeDTO.detail.gender == 'F'}">여성</option>
+											<label>성별</label> <select name="gender" class="form-control" disabled>
+												<option value="" disabled th:selected="${employeeDTO.detail.gender == null}">성별 선택</option>
+												<option value="M" th:selected="${employeeDTO.detail.gender == 'M'}">남성</option>
+												<option value="F" th:selected="${employeeDTO.detail.gender == 'F'}">여성</option>
 											</select>
 										</div>
 
@@ -111,24 +99,18 @@ input, select {
 
 										<div class="col-md-6 d-flex flex-column gap-1">
 											<div class="form-group">
-												<label>전화번호</label> <input type="text" name="phoneNumber"
-													th:value="${employeeDTO.detail.phoneNumber}"
-													class="form-control" readonly>
+												<label>전화번호</label> <input type="text" name="phoneNumber" th:value="${employeeDTO.detail.phoneNumber}" class="form-control" readonly>
 											</div>
 
 											<div class="form-group">
 												<label>이메일</label>
 												<div class="form-row">
 													<div class="col">
-														<input type="text" name="emailId"
-															th:value="${employeeDTO.emailId}" class="form-control"
-															placeholder="이메일 아이디" readonly>
+														<input type="text" name="emailId" th:value="${employeeDTO.emailId}" class="form-control" placeholder="이메일 아이디" readonly>
 													</div>
 													<div class="col-auto d-flex align-items-center">@</div>
 													<div class="col">
-														<input type="text" name="emailDomain" class="form-control"
-															th:value="${employeeDTO.emailDomain}" list="domainList"
-															placeholder="도메인 입력" readonly onfocus="clearOnce(this)" />
+														<input type="text" name="emailDomain" class="form-control" th:value="${employeeDTO.emailDomain}" list="domainList" placeholder="도메인 입력" readonly onfocus="clearOnce(this)" />
 														<datalist id="domainList">
 															<option value="naver.com" />
 															<option value="gmail.com" />
@@ -151,15 +133,8 @@ input, select {
 										<div class="form-group col-md-6">
 											<label>주소</label>
 											<div class="d-flex flex-column gap-2">
-												<button type="button" id="searchAddressBtn_2"
-													class="btn btn-outline-primary" disabled>주소찾기</button>
-												<input type="text" name="address1"
-													th:value="${employeeDTO.detail.address1}"
-													class="form-control address1" readonly tabindex="-1"
-													onfocus="this.blur()" placeholder="주소"> <input
-													type="text" name="address2"
-													th:value="${employeeDTO.detail.address2}"
-													class="form-control address2" readonly placeholder="상세 주소">
+												<button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary" disabled>주소찾기</button>
+												<input type="text" name="address1" th:value="${employeeDTO.detail.address1}" class="form-control address1" readonly tabindex="-1" onfocus="this.blur()" placeholder="주소"> <input type="text" name="address2" th:value="${employeeDTO.detail.address2}" class="form-control address2" readonly placeholder="상세 주소">
 											</div>
 										</div>
 
@@ -176,35 +151,22 @@ input, select {
 									<div class="card-body row">
 
 										<div class="form-group col-md-6">
-											<label>대표부서</label> <select class="form-control"
-												id="departmentCode" name="departmentCode" disabled>
+											<label>대표부서</label> <select class="form-control" id="departmentCode" name="departmentCode" disabled>
 												<option value="">선택하세요</option>
-												<option th:each="department : ${validDepartments}"
-													th:value="${department.minorCode}"
-													th:text="${department.minorName}"
-													th:selected="${department.minorCode == employeeDTO.departmentCode}">
-												</option>
+												<option th:each="department : ${validDepartments}" th:value="${department.minorCode}" th:text="${department.minorName}" th:selected="${department.minorCode == employeeDTO.departmentCode}"></option>
 											</select>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label for="subDepartmentCode" class="form-label">하위부서</label>
-											<select class="form-control" id="subDepartmentCode"
-												name="subDepartmentCode" disabled
-												th:attr="data-selected=${employeeDTO.subDepartmentCode}">
+											<label for="subDepartmentCode" class="form-label">하위부서</label> <select class="form-control" id="subDepartmentCode" name="subDepartmentCode" disabled th:attr="data-selected=${employeeDTO.subDepartmentCode}">
 												<!-- 필요 시 JS로 채워짐 -->
 											</select>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>직급코드</label> <select class="form-control"
-												name="positionCode" disabled>
+											<label>직급코드</label> <select class="form-control" name="positionCode" disabled>
 												<option value="">선택하세요</option>
-												<option th:each="position : ${validPositions}"
-													th:value="${position.idx}"
-													th:text="${position.positionCode}"
-													th:selected="${position.idx.toString() == employeeDTO.positionCode}">
-												</option>
+												<option th:each="position : ${validPositions}" th:value="${position.idx}" th:text="${position.positionCode}" th:selected="${position.idx.toString() == employeeDTO.positionCode}"></option>
 											</select>
 										</div>
 
@@ -219,15 +181,11 @@ input, select {
 									<div class="card-body row">
 
 										<div class="form-group col-md-6">
-											<label>경력</label> <input type="text" name="workExperience"
-												th:value="${employeeDTO.workExperience}"
-												class="form-control" readonly>
+											<label>경력</label> <input type="text" name="workExperience" th:value="${employeeDTO.workExperience}" class="form-control" readonly>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>퇴사일</label> <input type="date" name="resignationDate"
-												th:value="${employeeDTO.resignationDate}"
-												class="form-control" readonly>
+											<label>퇴사일</label> <input type="date" name="resignationDate" th:value="${employeeDTO.resignationDate}" class="form-control" readonly>
 										</div>
 
 									</div>
@@ -243,31 +201,19 @@ input, select {
 									<div class="card-body row">
 
 										<div class="form-group col-md-6">
-											<label>급여은행 코드</label> <input type="text"
-												name="salaryBankCode"
-												th:value="${employeeDTO.detail.salaryBankCode}"
-												class="form-control" readonly>
+											<label>급여은행 코드</label> <input type="text" name="salaryBankCode" th:value="${employeeDTO.detail.salaryBankCode}" class="form-control" readonly>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>급여은행 이름</label> <input type="text"
-												name="salaryBankName"
-												th:value="${employeeDTO.detail.salaryBankName}"
-												class="form-control" readonly>
+											<label>급여은행 이름</label> <input type="text" name="salaryBankName" th:value="${employeeDTO.detail.salaryBankName}" class="form-control" readonly>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>급여계좌번호</label> <input type="text"
-												name="salaryAccountNumber"
-												th:value="${employeeDTO.detail.salaryAccountNumber}"
-												class="form-control" readonly>
+											<label>급여계좌번호</label> <input type="text" name="salaryAccountNumber" th:value="${employeeDTO.detail.salaryAccountNumber}" class="form-control" readonly>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>급여계좌 예금주</label> <input type="text"
-												name="salaryAccountHolder"
-												th:value="${employeeDTO.detail.salaryAccountHolder}"
-												class="form-control" readonly>
+											<label>급여계좌 예금주</label> <input type="text" name="salaryAccountHolder" th:value="${employeeDTO.detail.salaryAccountHolder}" class="form-control" readonly>
 										</div>
 
 									</div>
@@ -281,36 +227,23 @@ input, select {
 									<div class="card-body row">
 
 										<div class="form-group col-md-6">
-											<label>직원 차량 여부</label> <select name="hasVehicle"
-												class="form-control" disabled>
-												<option value="" disabled
-													th:selected="${employeeDTO.detail.gender == null}">
-													차량 유무</option>
-												<option value="Y"
-													th:selected="${employeeDTO.detail.hasVehicle == 'Y'}">보유</option>
-												<option value="N"
-													th:selected="${employeeDTO.detail.hasVehicle == 'N'}">미보유</option>
+											<label>직원 차량 여부</label> <select name="hasVehicle" class="form-control" disabled>
+												<option value="" disabled th:selected="${employeeDTO.detail.gender == null}">차량 유무</option>
+												<option value="Y" th:selected="${employeeDTO.detail.hasVehicle == 'Y'}">보유</option>
+												<option value="N" th:selected="${employeeDTO.detail.hasVehicle == 'N'}">미보유</option>
 											</select>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>직원 상태 코드</label> <input type="text"
-												name="employeeStatusCode"
-												th:value="${employeeDTO.detail.employeeStatusCode}"
-												class="form-control" readonly>
+											<label>직원 상태 코드</label> <input type="text" name="employeeStatusCode" th:value="${employeeDTO.detail.employeeStatusCode}" class="form-control" readonly>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>상태 시작일</label> <input type="date"
-												name="statusStartDate"
-												th:value="${employeeDTO.detail.statusStartDate}"
-												class="form-control" readonly>
+											<label>상태 시작일</label> <input type="date" name="statusStartDate" th:value="${employeeDTO.detail.statusStartDate}" class="form-control" readonly>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>상태 종료일</label> <input type="date" name="statusEndDate"
-												th:value="${employeeDTO.detail.statusEndDate}"
-												class="form-control" readonly>
+											<label>상태 종료일</label> <input type="date" name="statusEndDate" th:value="${employeeDTO.detail.statusEndDate}" class="form-control" readonly>
 										</div>
 
 									</div>
@@ -324,23 +257,19 @@ input, select {
 								<div class="card-body row">
 
 									<div class="form-group col-md-6">
-										<label>작성자</label> <span th:text="${employeeDTO.regId}"
-											class="form-control-plaintext"></span>
+										<label>작성자</label> <span th:text="${employeeDTO.regId}" class="form-control-plaintext"></span>
 									</div>
 
 									<div class="form-group col-md-6">
-										<label>작성일자</label> <span th:text="${employeeDTO.regDate}"
-											class="form-control-plaintext"></span>
+										<label>작성일자</label> <span th:text="${employeeDTO.regDate}" class="form-control-plaintext"></span>
 									</div>
 
 									<div class="form-group col-md-6">
-										<label>최종 수정자</label> <span th:text="${employeeDTO.modId}"
-											class="form-control-plaintext"></span>
+										<label>최종 수정자</label> <span th:text="${employeeDTO.modId}" class="form-control-plaintext"></span>
 									</div>
 
 									<div class="form-group col-md-6">
-										<label>최종 수정일자</label> <span th:text="${employeeDTO.modDate}"
-											class="form-control-plaintext"></span>
+										<label>최종 수정일자</label> <span th:text="${employeeDTO.modDate}" class="form-control-plaintext"></span>
 									</div>
 
 								</div>
@@ -349,10 +278,8 @@ input, select {
 
 						<div style="text-align: center; margin: 10px 0;">
 							<button type="button" id="editBtn" class="btn btn-primary ">수정</button>
-							<button type="submit" id="submitBtn" class="btn btn-primary"
-								style="display: none;">저장</button>
-							<button type="button" id="deleteBtn" class="btn btn-danger"
-								th:data-id="${employeeDTO.id}">삭제</button>
+							<button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">저장</button>
+							<button type="button" id="deleteBtn" class="btn btn-danger" th:data-id="${employeeDTO.id}">삭제</button>
 							<a href="/human/employee" class="btn btn-secondary ml-2">목록으로</a>
 						</div>
 					</form>

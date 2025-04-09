@@ -1,99 +1,91 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layouts/de_layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 
 <head>
-    <title>팩토리(PackTory) - 규정 목록</title>
-    
-    <th:block layout:fragment="headContents">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    </th:block>
-    
-    <th:block layout:fragment="css">
-        <link href="/css/fontawesome/all.min.css" rel="stylesheet">
-        <link href="/css/sb-admin-2.css" rel="stylesheet">
-        <link href="/css/common.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    </th:block>
+<title>팩토리(PackTory) - 규정 목록</title>
 
-    <style>
-        .table tbody tr.policy-row:hover {
-            background-color: #e0e0e0 !important;
-            cursor: pointer;
-        }
-    </style>
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+
+<th:block layout:fragment="css">
+	<link href="/css/fontawesome/all.min.css" rel="stylesheet">
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link href="/css/common.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</th:block>
+
+<style>
+.table tbody tr.policy-row:hover {
+	background-color: #e0e0e0 !important;
+	cursor: pointer;
+}
+</style>
 </head>
 <body id="page-top">
-    <div layout:fragment="contents">
-        <div class="container mt-5">
-            <h2 class="h3 mb-4 text-gray-800">규정 목록</h2>
+	<div layout:fragment="contents">
+		<div class="container mt-5">
+			<h2 class="h3 mb-4 text-gray-800">규정 목록</h2>
 
-            <!-- 검색 폼 -->
-            <form th:action="@{/groupware/policy}" method="get">
-                <div class="form-row mb-3">
-                    <div class="col-md-4">
-                        <select name="type" class="form-control" th:value="${searchDTO.type}">
-                            <option value="">규정 유형 선택</option>
-                            <option th:each="code : ${policyTypes}"
-                            		th:value="${code.minorName}"
-                            		th:text="${code.minorName}"
-                            		th:selected="${searchDTO != null and searchDTO.type == code.minorName}">		
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" name="title" class="form-control" placeholder="제목 입력" 
-                        	   th:value="${searchDTO != null ? searchDTO.title : ''}">
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" name="regId" class="form-control" placeholder="작성자 입력"
-                        	   th:value="${searchDTO != null ? searchDTO.regId : ''}">
-                    </div>
-                    <div class="col-md-12 d-flex justify-content-end mt-2">
-                        <button type="submit" class="btn btn-primary">검색</button>
-                    </div>
-                </div>
-            </form>
+			<!-- 검색 폼 -->
+			<form th:action="@{/groupware/policy}" method="get">
+				<div class="form-row mb-3">
+					<div class="col-md-4">
+						<select name="type" class="form-control" th:value="${searchDTO.type}">
+							<option value="">규정 유형 선택</option>
+							<option th:each="code : ${policyTypes}" th:value="${code.minorName}" th:text="${code.minorName}" th:selected="${searchDTO != null and searchDTO.type == code.minorName}"></option>
+						</select>
+					</div>
+					<div class="col-md-4">
+						<input type="text" name="title" class="form-control" placeholder="제목 입력" th:value="${searchDTO != null ? searchDTO.title : ''}">
+					</div>
+					<div class="col-md-4">
+						<input type="text" name="regId" class="form-control" placeholder="작성자 입력" th:value="${searchDTO != null ? searchDTO.regId : ''}">
+					</div>
+					<div class="col-md-12 d-flex justify-content-end mt-2">
+						<button type="submit" class="btn btn-primary">검색</button>
+					</div>
+				</div>
+			</form>
 
-            <!-- 규정 목록 테이블 -->
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>인덱스</th>
-                        <th>규정 유형</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>최종 수정자</th>
-                        <th>게시여부</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="policy : ${policyDTOList}" th:data-id="${policy.idx}" class="policy-row">
-                        <td th:text="${policy.idx}"></td>
-                        <td th:text="${policy.type}"></td>
-                        <td th:text="${policy.title}"></td>
-                        <td th:text="${policy.regId}"></td>
-                        <td th:text="${policy.modId}"></td>
-                        <td th:text="${policy.status}"></td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(policyDTOList)}">
-                        <td colspan="6" class="text-center">조회된 데이터가 없습니다.</td>
-                    </tr>
-                </tbody>
-            </table>
+			<!-- 규정 목록 테이블 -->
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>인덱스</th>
+						<th>규정 유형</th>
+						<th>제목</th>
+						<th>작성자</th>
+						<th>최종 수정자</th>
+						<th>게시여부</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="policy : ${policyDTOList}" th:data-id="${policy.idx}" class="policy-row">
+						<td th:text="${policy.idx}"></td>
+						<td th:text="${policy.type}"></td>
+						<td th:text="${policy.title}"></td>
+						<td th:text="${policy.regId}"></td>
+						<td th:text="${policy.modId}"></td>
+						<td th:text="${policy.status}"></td>
+					</tr>
+					<tr th:if="${#lists.isEmpty(policyDTOList)}">
+						<td colspan="6" class="text-center">조회된 데이터가 없습니다.</td>
+					</tr>
+				</tbody>
+			</table>
 
-            <!-- 규정 등록 버튼 -->
-            <div class="d-flex justify-content-end">
-                <a href="/groupware/policy/new" class="btn btn-primary">규정 등록</a>
-            </div>
-        </div>
-    </div>
+			<!-- 규정 등록 버튼 -->
+			<div class="d-flex justify-content-end">
+				<a href="/groupware/policy/new" class="btn btn-primary">규정 등록</a>
+			</div>
+		</div>
+	</div>
 
-    <!-- 공통 스크립트 -->
-    <th:block layout:fragment="script">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
+	<!-- 공통 스크립트 -->
+	<th:block layout:fragment="script">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+		<script>
             document.addEventListener("DOMContentLoaded", function() {
                 // 각 규정 목록 행 클릭 시 상세 페이지로 이동
                 const rows = document.querySelectorAll('.policy-row');
@@ -109,6 +101,6 @@
                 });
             });
         </script>
-    </th:block>
+	</th:block>
 </body>
 </html>
