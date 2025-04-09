@@ -3,9 +3,12 @@ package kr.co.itwillbs.de.groupware.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.co.itwillbs.de.groupware.dto.ApprovalDTO;
+import kr.co.itwillbs.de.groupware.dto.ApprovalSearchDTO;
 import kr.co.itwillbs.de.groupware.dto.DraftDTO;
+import kr.co.itwillbs.de.groupware.dto.NoticeDTO;
 
 @Mapper
 public interface ApprovalMapper {
@@ -22,7 +25,7 @@ public interface ApprovalMapper {
 	
 	//	=========================================================
 	//	전자결재 목록 조회	
-	List<ApprovalDTO> getApprovalList();
+	List<ApprovalDTO> getApprovalList(String memberId);
 	
 	//	=========================================================
 	//	결재라인을 위한 모든 회원 목록 조회
@@ -44,6 +47,11 @@ public interface ApprovalMapper {
 	 * @return int
 	 */
 	int modifyNotice(ApprovalDTO approvalDTO);
+
+	List<ApprovalDTO> getApprovalSearchList(@Param("search") ApprovalSearchDTO approvalSearchDTO);
+
+	List<ApprovalDTO> getApprovalListByFilter(@Param("filter") String filter,
+											@Param("memberId") String memberId);
 	
 	
 }

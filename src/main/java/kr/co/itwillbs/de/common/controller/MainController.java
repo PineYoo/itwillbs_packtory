@@ -46,7 +46,7 @@ public class MainController {
 	
 	@GetMapping("/test/draft")
 	public String test() {
-		return "/approval/draft_form.html";
+		return "groupware/approval/draft_form.html";
 	}
 	
 	/**

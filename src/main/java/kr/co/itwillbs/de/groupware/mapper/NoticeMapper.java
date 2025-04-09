@@ -17,7 +17,7 @@ public interface NoticeMapper {
 	
 	int registerNotice(NoticeDTO noticeVO);
 	
-	List<NoticeDTO> getNoticeSearchList(@Param("major_code") String major_code ,
+	List<NoticeDTO> getNoticeSearchList(@Param("majorCode") String majorCode ,
 										@Param("noticeSearchDTO") NoticeSearchDTO noticeSearchDTO);
 	
 	int modifyNotice(NoticeDTO noticeDTO);

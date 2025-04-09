@@ -67,10 +67,10 @@ public class NoticeService {
 	 * @param noticeSearchDTO
 	 * @return
 	 */
-	public List<NoticeDTO> getNoticeSearchList(String major_code, NoticeSearchDTO noticeSearchDTO) {
+	public List<NoticeDTO> getNoticeSearchList(String majorCode, NoticeSearchDTO noticeSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		return noticeMapper.getNoticeSearchList(major_code, noticeSearchDTO);
+		return noticeMapper.getNoticeSearchList(majorCode, noticeSearchDTO);
 	}
 
 	/**

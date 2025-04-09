@@ -43,7 +43,7 @@
 		<div class="container-fluid">
 		
 			<!-- Page Heading -->
-			<h3 class="reg-title">기안서 상세보기</h3>
+			<h3 class="reg-title">기안서 수정</h3>
 			<!-- 본문 컨테이너 -->
 			<div class="main-container">
 				<form th:action="@{/groupware/approval/{approvalNo}(approvalNo=${approvalDTO.approvalNo})}" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${approvalDTO}" >
@@ -150,14 +150,12 @@
 			        
 			        <div class="form-div">
 			            <label th:for="content">내용</label>
-<!-- 			            <input type="text" th:field="*{content}" class="form-control"> -->
 			            <textarea id="content" th:field="*{content}" class="form-control" rows="10"></textarea>
 <!-- 			            Editor 라이브러리 일단 나중에......... -->
 			        </div>
 					
 					<div class="form-div" th:if="${fileList != null and not #lists.isEmpty(fileList)}">
 						<label th:for="file">첨부파일 목록</label>
-	<!-- 								<ul class="list-group custom-ul"> -->
 						<ul id="file" class="list-group">
 						    <li th:each="file : ${fileList}"
 						    	th:if="${file.isDeleted == 'N'}"

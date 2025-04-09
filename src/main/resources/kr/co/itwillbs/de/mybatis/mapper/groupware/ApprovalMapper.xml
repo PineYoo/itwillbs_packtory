@@ -184,13 +184,27 @@
 		<include refid="withEmpBase"></include>
 		SELECT 
 		<include refid="t_approval_join_columns_forSelect"></include>
-			 , tci.minor_name AS progressName
+			 , tci1.minor_name AS progressName
+			 , tci2.minor_name AS approvalTypeName
 		  FROM empBase e
 		  JOIN t_approval a
 		    ON e.id = a.drafter_id
-		  JOIN t_commoncode_item tci
-		    ON a.progress_status = tci.minor_code
-		   AND tci.major_code = 'PROGRESS_STATUS'
+		  JOIN t_commoncode_item tci1
+		    ON a.progress_status = tci1.minor_code
+		   AND tci1.major_code = 'PROGRESS_STATUS'
+		  JOIN t_commoncode_item tci2
+		    ON a.approval_type = tci2.minor_code
+		   AND tci2.major_code = 'APPROVAL_TYPE'
+		<where>
+			<if test="memberId != null and memberId != ''">
+		   AND a.drafter_id = #{memberId}
+		    OR a.approver1 = #{memberId}
+		    OR a.approver2 = #{memberId}
+		    OR a.approver3 = #{memberId}
+			</if>
+		</where>
+		 ORDER
+		    BY draft_date DESC
 	</select>
 	
 	<!-- ==================================================================== -->
@@ -301,7 +315,82 @@
 		 WHERE approval_no = #{approvalNo}
 	</update>
 	
+	<select id="getApprovalSearchList" resultType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
+		SELECT a.approval_no
+			 , a.title
+			 , tci1.minor_name AS approvalTypeName
+			 , tci2.minor_name AS progressName
+			 , e.name
+			 , a.draft_date
+			 , a.due_date
+		  FROM t_approval a
+		  JOIN t_employee e
+		    ON a.drafter_id = e.id
+		  JOIN t_commoncode_item tci1
+		    ON a.approval_type = tci1.minor_code
+		   AND tci1.major_code = 'APPROVAL_TYPE'
+		  JOIN t_commoncode_item tci2
+		    ON a.progress_status = tci2.minor_code
+		   AND tci2.major_code = 'PROGRESS_STATUS'
+		<where>
+			<if test="search.drafterName != null and search.drafterName.trim() != ''">
+		   AND e.name LIKE CONCAT('%', #{search.drafterName}, '%')
+			</if>
+			<if test="search.title != null and search.title.trim() != ''">
+		   AND a.title LIKE CONCAT('%', #{search.title}, '%')
+			</if>
+			<if test="search.approvalType != null and search.approvalType.trim() != ''">
+		   AND tci1.minor_code = #{search.approvalType}
+			</if>
+			<if test="search.progressStatus != null and search.progressStatus.trim() != ''">
+		   AND tci2.minor_code = #{search.progressStatus}
+			</if>
+			<if test="search.requestStartDate != null and search.requestStartDate != ''">
+		   AND DATE(a.draft_date) &gt;= #{search.requestStartDate}
+			</if>
+			<if test="search.requestEndDate != null and search.requestEndDate != ''">
+		   AND DATE(a.draft_date) &lt;= #{search.requestEndDate}
+			</if>
+			<if test="search.dueStartDate != null and search.dueStartDate != ''">
+		   AND DATE(a.due_date) &gt;= #{search.dueStartDate}
+			</if>
+			<if test="search.dueEndDate != null and search.dueEndDate != ''">
+		   AND DATE(a.due_date) &lt;= #{search.dueEndDate}
+			</if>
+		</where>
+	</select>
 	
+	<select id="getApprovalListByFilter" resultType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
+		<include refid="withEmpBase"></include>
+		SELECT 
+		<include refid="t_approval_join_columns_forSelect"></include>
+			 , tci1.minor_name AS progressName
+			 , tci2.minor_name AS approvalTypeName
+		  FROM empBase e
+		  JOIN t_approval a
+		    ON e.id = a.drafter_id
+		  JOIN t_commoncode_item tci1
+		    ON a.progress_status = tci1.minor_code
+		   AND tci1.major_code = 'PROGRESS_STATUS'
+		  JOIN t_commoncode_item tci2
+		    ON a.approval_type = tci2.minor_code
+		   AND tci2.major_code = 'APPROVAL_TYPE'
+		<where>
+			<choose>
+				<when test="filter.equals('drafted')">
+				AND a.drafter_id = #{memberId}
+				</when>
+				<when test="filter.equals('waiting')">
+				AND a.approver1 = #{memberId}
+				 OR a.approver1_status = 'Y' AND a.approver2 = #{memberId}
+				 OR a.approver2_status = 'Y' AND a.approver3 = #{memberId}
+				</when>
+				<when test="filter.equals('completed')"></when>
+			</choose>
+		</where>
+		 ORDER
+		    BY draft_date DESC
+	</select>
 	
 </mapper>
 

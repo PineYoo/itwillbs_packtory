@@ -69,7 +69,7 @@
 			 , c.minor_name AS codeName
 		  FROM t_notice n JOIN t_commoncode_item c
 		    ON n.type = c.minor_code
-		   AND c.major_code = #{major_code}
+		   AND c.major_code = #{majorCode}
 		<where>
 			<if test="noticeSearchDTO.type != null and noticeSearchDTO.type.trim() != ''">
 		   AND n.type = #{noticeSearchDTO.type}
