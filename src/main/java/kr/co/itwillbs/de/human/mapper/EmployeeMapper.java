@@ -16,6 +16,7 @@ public interface EmployeeMapper {
     public void insertEmployeeDetail(String id);
     
     public int searchEmployeesCount(EmployeeSearchDTO searchDTO);
+    
     // 사원 목록 + 검색 (조건: 이름, 부서, 직급 등)
     public List<EmployeeDTO> searchEmployees(EmployeeSearchDTO searchDTO);
 
