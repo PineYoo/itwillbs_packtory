@@ -4,39 +4,18 @@
 	  layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>팩토리(PackTory) - 출퇴근관리</title>
-<!-- 부트스트랩 icons 가져오기 -->
-<th:block layout:fragment="headContents">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-</th:block>
-<!-- CSS -->
-<th:block layout:fragment="css">
-	<!-- dataTables 가져오기 -->
-	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-	<link href="/css/datatables/datatables.min.css" rel="stylesheet">
-	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
-	<!-- 폰트어썸 가져오기 -->
-	<link href="/css/fontawesome/all.min.css" rel="stylesheet">
-	<script src="/css/fontawesome/all.min.js"></script>
-	<!-- CSS for Page -->
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
-	<link href="/css/sb-admin-2.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
-	<!-- 개별 CSS-->
-	<link href="/css/common.css" rel="stylesheet">
-</th:block>
-<style type="text/css">
-/* 검색바 중앙에 세로줄 */
-.left-form {
-	border-right: 1px solid #e3e6f0;
-}
 
-@media (max-width: 768px) {
-  .left-form {
-    border-right: none !important;
-  }
-}
+<style type="text/css">
+	/* 검색바 중앙에 세로줄 */
+	.left-form {
+		border-right: 1px solid #e3e6f0;
+	}
+	
+	@media (max-width: 768px) {
+	  .left-form {
+	    border-right: none !important;
+	  }
+	}
 </style>
 	
 </head>
@@ -258,49 +237,10 @@
 			        ]
 			    });
 				
-			 // ---------------------------------------------------
-				// 기간별 검색 필터링 제이쿼리 (datepicker)
-// 			    function initializeDateRangePicker(startInputId, endInputId) {
-// 			        var $startInput = $('#' + startInputId);
-// 			        var $endInput = $('#' + endInputId);
-// 			        var $iconStart = $('[data-target="#' + startInputId + '"]');
-// 			        var $iconEnd = $('[data-target="#' + endInputId + '"]');
-
-// 			        $startInput.daterangepicker({
-// 			            locale: {
-// 			                separator: " ~ ",
-// 			                format: 'YYYY-MM-DD',
-// 			                applyLabel: "확인",
-// 			                cancelLabel: "취소",
-// 			                daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
-// 			                monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-// 			                customRangeLabel: '기간 지정'
-// 			            },
-// 			            autoUpdateInput: false,
-// 			            timePicker: false,
-// 			            showDropdowns: true,
-// 			            autoApply: false,
-// 			            maxDate: moment(), // 오늘까지만 선택 가능하게 제한
-// 			            ranges: {
-// 			                '오늘': [moment()], // 오늘
-// 			                '이번 주': [moment().startOf('week'), moment().endOf('week')],
-// 			                '이번 달': [moment().startOf('month'), moment().endOf('month')],
-// 			                '지난 주': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-// 			                '지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-// 			            }
-// 			        }, function(start, end) {
-// 			            $startInput.val(start.format('YYYY-MM-DD'));
-// 			            $endInput.val(end.format('YYYY-MM-DD'));
-// 			        });
-
-// 			        // 아이콘과 requestEndDate를 클릭해도 캘린더 열리도록 설정
-// 			        $iconStart.add($iconEnd).add($endInput).on('click', function() {
-// 			            $startInput.trigger('click');
-// 			        });
-// 			    }
-
-			    // 날짜 적용
+			 	// ---------------------------------------------------
+				// 기간별 날짜 검색(datepicker) 함수 활용 - (공통 페이지에 있음)
 			    initDateRangePickerMaxToday('workStartDate', 'workEndDate');
+			 	
 			    // ------------------------------------------------------------
 			    // 대표부서 선택에 따른 하위부서 필터링
 // 			    function filterSubDepartments() {
