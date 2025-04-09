@@ -170,7 +170,7 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
-									<th>번호</th>
+<!-- 									<th>번호</th> -->
 									<th>날짜</th>
 									<th>사원번호</th>
 									<th>부서</th>
@@ -184,7 +184,7 @@
 							</thead>
 							<tbody>
 								<tr th:each="commute, status : ${commuteList}" th:data-id="${commute.workDate}" class="clickable-row">
-									<td th:text="${status.count}"></td>
+<!-- 									<td th:text="${status.count}"></td> -->
 									<td th:text="${commute.workDate}"></td>
 									<td th:text="${commute.employeeId}"></td>
 									<td th:text="${commute.department}"></td>
