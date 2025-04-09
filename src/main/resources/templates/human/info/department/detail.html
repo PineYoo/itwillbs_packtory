@@ -1,109 +1,154 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layouts/de_layout}">
-
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
 <head>
-    <title>팩토리(PackTory) - 부서 상세 목록</title>
+    <title>팩토리(PackTory) - 부서 상세</title>
     
-    <th:block layout:fragment="headContents">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    </th:block>
+<style type="text/css">
+	.form {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+	input, select {
+        border: 1px solid #ccc;
+        padding: 5px;
+        margin: 2px;
+/*     	width: 198px; */
+	}
+	.essential {
+        background-color: #fffbe6; /* 연한 노랑 */
+    }
+    .filled {
+        background-color: white;
+    }
+    
+    /* ----------------- */
+    .addressInfo {
+	    display: flex;
+	}
+    @media (max-width: 768px) {
+	    .addressInfo {
+		    display: block;
+		}
+	}
+</style>
 
-    <th:block layout:fragment="css">
-        <link href="/css/fontawesome/all.min.css" rel="stylesheet">
-        <link href="/css/sb-admin-2.css" rel="stylesheet">
-        <link href="/css/common.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    </th:block>
 </head>
+
 <body id="page-top">
     <div layout:fragment="contents">
         <div class="container mt-5">
             <h2 class="h3 mb-4 text-gray-800">부서 상세 목록</h2>
 
-            <!-- 수정 요청 처리 폼 -->
-            <form th:action="@{/human/department/detail/{idx}(idx=${departmentInfoDTO.idx})}" method="post" th:object="${departmentInfoDTO}" id="departmentForm">
-                <input type="hidden" th:field="*{idx}" />
-
-                <!-- 부서 정보 -->
-                <div class="mb-3">
-				    <label for="departmentCode" class="form-label">대표 부서</label>
-				    <select class="form-control" id="departmentCode" th:field="*{departmentCode}" disabled>
-				        <option value="">선택하세요</option>
-				        <option th:each="code : ${codeItems}" 
-				                th:value="${code.minorName}" 
-				                th:text="${code.minorName}"
-				                th:selected="${code.minorName == departmentInfoDTO.departmentCode}"></option>
-				    </select>
-				</div>
-
-                <div class="mb-3">
-                    <label for="parentCode" class="form-label">부모 코드</label>
-                    <input type="text" id="parentCode" th:field="*{parentCode}" class="form-control" readonly />
+            <div class="card">
+                <div class="card-header">
+                    부서 상세 정보
                 </div>
+                <div class="card-body">
+                    <form th:action="@{/human/department/detail/{idx}(idx=${departmentInfoDTO.idx})}" method="post" th:object="${departmentInfoDTO}" id="departmentForm">
+                        <input type="hidden" th:field="*{idx}" />
 
-                <div class="mb-3">
-                    <label for="childCode" class="form-label">하위 부서</label>
-                    <input type="text" id="childCode" th:field="*{childCode}" class="form-control" readonly />
+                        <!-- 부서 정보 -->
+                        <div class="form-group row">
+                            <label for="departmentCode" class="col-sm-3 col-form-label">대표 부서</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" id="departmentCode" th:field="*{departmentCode}" disabled>
+                                    <option value="">선택하세요</option>
+                                    <option th:each="code : ${codeItems}" 
+                                            th:value="${code.minorCode}" 
+                                            th:text="${code.minorName}"
+                                            th:selected="${code.minorName == departmentInfoDTO.departmentCode}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="parentCode" class="col-sm-3 col-form-label">부모 코드</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="parentCode" th:field="*{parentCode}" class="form-control" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="childCode" class="col-sm-3 col-form-label">하위 부서</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="childCode" th:field="*{childCode}" class="form-control" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="childName" class="col-sm-3 col-form-label">하위 부서 이름</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="childName" th:field="*{childName}" class="form-control" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="locationIdx" class="col-sm-3 col-form-label">근무지</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="locationIdx" th:field="*{locationIdx}" class="form-control" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="rankNumber" class="col-sm-3 col-form-label">정렬 순서</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="rankNumber" th:field="*{rankNumber}" class="form-control" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="regId" class="col-sm-3 col-form-label">작성자</label>
+                            <div class="col-sm-9">
+                                <span id="regId" th:text="${departmentInfoDTO.regId != null ? departmentInfoDTO.regId : '-'}" class="form-control-plaintext border px-2 py-1"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="regDate" class="col-sm-3 col-form-label">작성일자</label>
+                            <div class="col-sm-9">
+                                <span id="regDate" th:text="${departmentInfoDTO.regDate != null ? departmentInfoDTO.regDate : '-'}" class="form-control-plaintext border px-2 py-1"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="modId" class="col-sm-3 col-form-label">최종작성자</label>
+                            <div class="col-sm-9">
+                                <span id="modId" th:text="${departmentInfoDTO.modId}" class="form-control-plaintext border px-2 py-1"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="modDate" class="col-sm-3 col-form-label">최종작성일자</label>
+                            <div class="col-sm-9">
+                                <span id="modDate" th:text="${departmentInfoDTO.modDate}" class="form-control-plaintext border px-2 py-1"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="isDeleted" class="col-sm-3 col-form-label">삭제 유무</label>
+                            <div class="col-sm-9">
+                                <span id="isDeleted" th:text="${departmentInfoDTO.isDeleted != null ? departmentInfoDTO.isDeleted : '-'}" class="form-control-plaintext border px-2 py-1"></span>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin: 10px 0;">
+                            <!-- 부서 수정 버튼 -->
+				            <button type="button" id="editBtn" class="btn btn-primary ">수정</button>
+                            <!-- 실제 제출 버튼 (숨김) -->
+                            <button type="submit" class="btn btn-primary" style="display: none;" id="submitBtn">저장</button>
+                            <!-- 부서 삭제 버튼 -->
+                            <button type="button" class="btn btn-danger" id="deleteBtn" th:attr="data-idx=${departmentInfoDTO.idx}">삭제</button>
+                            <!-- 목록으로 돌아가기 버튼 -->
+                            <a href="/human/department" class="btn btn-secondary ml-2" style="float: right;">목록으로 돌아가기</a>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="mb-3">
-                    <label for="childName" class="form-label">하위 부서 이름</label>
-                    <input type="text" id="childName" th:field="*{childName}" class="form-control" readonly />
-                </div>
-
-                <div class="mb-3">
-                    <label for="locationIdx" class="form-label">근무지</label>
-                    <input type="text" id="locationIdx" th:field="*{locationIdx}" class="form-control" readonly />
-                </div>
-
-                <div class="mb-3">
-                    <label for="rankNumber" class="form-label">정렬 순서</label>
-                    <input type="text" id="rankNumber" th:field="*{rankNumber}" class="form-control" readonly />
-                </div>
-
-				<div class="mb-3">
-				    <label for="regId" class="form-label">작성자</label>
-				    <span id="regId" th:text="${departmentInfoDTO.regId != null ? departmentInfoDTO.regId : '-'}" class="form-control-plaintext border px-2 py-1"></span>
-				</div>
-				
-				<div class="mb-3">
-				    <label for="regDate" class="form-label">작성일자</label>
-				    <span id="regDate" th:text="${departmentInfoDTO.regDate != null ? departmentInfoDTO.regDate : '-'}" class="form-control-plaintext border px-2 py-1"></span>
-				</div>
-				
-				<div class="mb-3">
-				    <label for="modId" class="form-label">최종작성자</label>
-				    <span id="modId" th:text="${departmentInfoDTO.modId != null ? departmentInfoDTO.modId : '-'}" class="form-control-plaintext border px-2 py-1"></span>
-				</div>
-				
-				<div class="mb-3">
-				    <label for="modDate" class="form-label">최종작성일자</label>
-				    <span id="modDate" th:text="${departmentInfoDTO.modDate != null ? departmentInfoDTO.modDate : '-'}" class="form-control-plaintext border px-2 py-1"></span>
-				</div>
-				
-				<div class="mb-3">
-				    <label for="isDeleted" class="form-label">삭제 유무</label>
-				    <span id="isDeleted" th:text="${departmentInfoDTO.isDeleted != null ? departmentInfoDTO.isDeleted : '-'}" class="form-control-plaintext border px-2 py-1"></span>
-				</div>
-
-                <!-- 부서 수정 버튼 -->
-                <button type="button" class="btn btn-primary" id="editBtn">수정</button>
-
-                <!-- 수정된 내용을 제출하는 실제 제출 버튼 (숨겨짐) -->
-                <button type="submit" class="btn btn-primary" style="display: none; ;" id="submitBtn">저장</button>
-                
-                <!-- 부서 삭제 버튼 -->
-                <button type="button" class="btn btn-danger" id="deleteBtn" th:attr="data-idx=${departmentInfoDTO.idx}">삭제</button>
-
-				<!-- 목록으로 돌아가기 버튼 -->
-                <a href="/human/department" class="btn btn-secondary" style="float: right;">목록으로 돌아가기</a>
-            </form>
+            </div>
         </div>
     </div>
 
-    <!-- 공통 스크립트 -->
     <th:block layout:fragment="script">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -111,57 +156,43 @@
             $(document).ready(function() {
                 // 수정 버튼 클릭 시 수정 필드 활성화
                 $("#editBtn").on("click", function() {
-                    try {
-                        // 모든 입력 필드의 readonly 속성을 제거
-                        $("input[readonly]").prop("readonly", false);  
-                        $("select[disabled]").prop("disabled", false); // select 태그도 활성화
+                    // 모든 입력 필드의 readonly 속성을 제거
+                    $("input[readonly]").prop("readonly", false);
+                    $("select[disabled]").prop("disabled", false); // select 태그도 활성화
 
-                        // 삭제 유무, 작성자, 작성일자, 최종작성자, 최종작성일자 필드는 readonly 유지
-                        $("#isDeleted, #regId, #regDate, #modId, #modDate").prop("readonly", true);
+                    // 삭제 유무, 작성자, 작성일자, 최종작성자, 최종작성일자 필드는 readonly 유지
+                    $("#isDeleted, #regId, #regDate, #modId, #modDate").prop("readonly", true);
 
-                        // 수정 버튼을 숨기고 저장 버튼을 표시
-                        $(this).hide(); 
-                        $("#submitBtn").show(); // 제출 버튼을 보여줍니다 (숨겨져있다면)
-                    } catch (error) {
-                        console.error("수정 버튼 클릭 시 오류 발생:", error);
-                        alert("수정 버튼 처리 중 오류가 발생했습니다.");
-                    }
+                    // 수정 버튼을 숨기고 저장 버튼을 표시
+                    $(this).hide();
+                    $("#submitBtn").show(); // 제출 버튼을 보여줌
                 });
 
                 // 삭제 버튼 클릭 시
                 $("#deleteBtn").on("click", function() {
-                    try {
-                        const departmentIdx = $(this).attr("data-idx"); // 데이터 속성 가져오기
-                        console.log("삭제할 부서 ID:", departmentIdx); // 콘솔 로그로 확인
+                    const departmentIdx = $(this).attr("data-idx");
 
-                        if (!departmentIdx) {
-                            console.error("부서 ID가 존재하지 않습니다.");
-                            alert("잘못된 부서 ID입니다.");
-                            return;
-                        }
+                    if (!departmentIdx) {
+                        alert("잘못된 부서 ID입니다.");
+                        return;
+                    }
 
-                        if (confirm("정말 삭제하시겠습니까?")) {
-                            $.ajax({
-                                url: `human/department/detail/${departmentIdx}`, // 삭제 경로
-                                type: "DELETE", // DELETE 방식으로 요청
-                                success: function(response) {
-                                    console.log("삭제 성공 응답:", response); // 응답 확인
-                                    if(response === "success") {
-                                        alert("부서 삭제 성공!");
-                                        location.href = "/department"; // 삭제 후 부서 목록 페이지로 이동
-                                    } else {
-                                        alert("삭제 실패: " + response);
-                                    }
-                                },
-                                error: function(error) {
-                                    console.error("삭제 중 오류 발생:", error);
-                                    alert("삭제 과정에서 오류가 발생했습니다.");
+                    if (confirm("정말 삭제하시겠습니까?")) {
+                        $.ajax({
+                            url: `human/department/detail/${departmentIdx}`,
+                            type: "DELETE",
+                            success: function(response) {
+                                if (response === "success") {
+                                    alert("부서 삭제 성공!");
+                                    location.href = "/human/department";
+                                } else {
+                                    alert("삭제 실패: " + response);
                                 }
-                            });
-                        }
-                    } catch (error) {
-                        console.error("삭제 버튼 클릭 시 오류 발생:", error);
-                        alert("삭제 버튼 처리 중 오류가 발생했습니다.");
+                            },
+                            error: function(error) {
+                                alert("삭제 중 오류 발생.");
+                            }
+                        });
                     }
                 });
             });

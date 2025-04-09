@@ -1,110 +1,144 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layouts/de_layout}">
-
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/de_layout}">
 <head>
-    <title>팩토리(PackTory) - 직급 목록</title>
-    
-    <th:block layout:fragment="headContents">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    </th:block>
-    
-    <th:block layout:fragment="css">
-        <link href="/css/fontawesome/all.min.css" rel="stylesheet">
-        <link href="/css/sb-admin-2.css" rel="stylesheet">
-        <link href="/css/common.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    </th:block>
+<title>팩토리(PackTory) - 직급 목록</title>
 
-    <style>
-        .table tbody tr.position-row:hover {
-            background-color: #e0e0e0 !important;
-            cursor: pointer;
-        }
-    </style>
+<style>
+.left-form {
+	border-right: 1px solid #e3e6f0;
+}
+
+@media ( max-width : 768px) {
+	.left-form {
+		border-right: none !important;
+	}
+}
+
+.table th, .table td {
+	vertical-align: middle;
+}
+</style>
 </head>
 <body id="page-top">
-    <div layout:fragment="contents">
-        <div class="container mt-5">
-            <h2 class="h3 mb-4 text-gray-800">직급 목록</h2>
+	<div layout:fragment="contents">
+		<div class="container-fluid">
+			<div
+				class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-4 text-gray-800">직급 목록</h1>
+			</div>
 
-             <!-- 검색 폼 -->
-            <form th:action="@{/human/position}" method="get">
-                <div class="form-row mb-3">
-                    <div class="col-md-4">
-                        <select name="positionCode" class="form-control" th:value="${selectedCode}">
-                            <option value="">직급 코드 선택</option>
-                            <option th:each="code : ${codeItems}" th:value="${code.minorName}" th:text="${code.minorName}"></option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <select name="isManager" class="form-control" th:value="${isManager}">
-                            <option value="">관리자 여부 선택</option>
-                            <option value="Y">Y</option>
-                            <option value="N">N</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4 d-flex justify-content-end">
-    					<button type="submit" class="btn btn-primary">검색</button>
+			<!-- 검색 폼 컨테이너 -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<form th:action="@{/human/position}" method="get">
+						<div class="d-flex search-inner border">
+							<!-- 왼쪽 컬럼 -->
+							<div class="col-md-4 form-group mb-3">
+								<label for="positionCode" class="col-form-label">직급 코드</label> <select
+									name="positionCode" class="form-control"
+									th:value="${selectedCode}">
+									<option value="">직급 코드 선택</option>
+									<option th:each="code : ${codeItems}"
+										th:value="${code.minorName}" th:text="${code.minorName}"></option>
+								</select>
+							</div>
+
+							<!-- 중간 컬럼 -->
+							<div class="col-md-4 form-group mb-3">
+								<label for="isManager" class="col-form-label">관리자 여부</label> <select
+									name="isManager" class="form-control" th:value="${isManager}">
+									<option value="">관리자 여부 선택</option>
+									<option value="Y">Y</option>
+									<option value="N">N</option>
+								</select>
+							</div>
+
+							<!-- 검색바 버튼 -->
+							<div
+								class="col-md-4 d-flex flex-column justify-content-center align-items-end">
+								<div class="col-12 col-sm-auto mb-2">
+									<button class="btn btn-success" id="btnRegister" type="button">부서
+										등록</button>
+									<button class="btn btn-primary" id="btnSearch" type="submit">검색</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+
+
+			<!-- 직급 목록 테이블 -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered table-hover text-center"
+							id="dataTables" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>인덱스</th>
+									<th>직급 코드</th>
+									<th>정렬 순서</th>
+									<th>관리자 여부</th>
+									<th>삭제 여부</th>
+									<th>작성자</th>
+									<th>최종 작성자</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="position : ${positionInfoDTOList}"
+									th:data-id="${position.idx}" class="position-row">
+									<td th:text="${position.idx}"></td>
+									<td th:text="${position.positionCode}"></td>
+									<td th:text="${position.rankNumber}"></td>
+									<td th:text="${position.isManager}"></td>
+									<td th:text="${position.isDeleted}"></td>
+									<td th:text="${position.regId}"></td>
+									<td th:text="${position.modId}"></td>
+								</tr>
+								<tr th:if="${#lists.isEmpty(positionInfoDTOList)}">
+									<td colspan="7" class="text-center">조회된 데이터가 없습니다.</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
-                </div>
-            </form>
+				</div>
+			</div>
+		</div>
 
-            <!-- 직급 목록 테이블 -->
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>인덱스</th>
-                        <th>직급 코드</th>
-                        <th>정렬 순서</th>
-                        <th>관리자 여부</th>
-                        <th>삭제 여부</th>
-                        <th>작성자</th>
-                        <th>최종 작성자</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="position : ${positionInfoDTOList}" th:data-id="${position.idx}" class="position-row">
-                        <td th:text="${position.idx}"></td>
-                        <td th:text="${position.positionCode}"></td>
-                        <td th:text="${position.rankNumber}"></td>
-                        <td th:text="${position.isManager}"></td>
-                        <td th:text="${position.isDeleted}"></td>
-                        <td th:text="${position.regId}"></td>
-                        <td th:text="${position.modId}"></td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(positionInfoDTOList)}">
-                        <td colspan="8" class="text-center">조회된 데이터가 없습니다.</td>
-                    </tr>
-                </tbody>
-            </table>
+		<!-- 공통 스크립트 -->
+		<script type="text/javascript">
+			$(document).ready(function() {
+				// init DataTable
+				$('#dataTables').DataTable({
+					lengthChange : false,
+					searching : false,
+					paging : false,
+					info : false
+				}); // end of $('#dataTables').DataTable({
 
-            <!-- 직급 등록 버튼 -->
-            <a href="/human/position/new" class="btn btn-primary">직급 등록</a>
-        </div>
-    </div>
+				// 등록 버튼(btnRegister) 클릭 시 이벤트(주문서 등록 페이지 이동)
+				$('#btnRegister').on("click", function() {
+					console.log("btnRegister click!!!");
+					location.href = "/human/position/new";
+				});
 
-    <!-- 공통 스크립트 -->
-    <th:block layout:fragment="script">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                // 각 직급 목록 행 클릭 시 상세 페이지로 이동
-                const rows = document.querySelectorAll('.position-row');
-                
-                rows.forEach(row => {
-                    row.addEventListener('click', function() {
-                        const positionId = this.getAttribute('data-id');
-                        if (positionId) {
-                            // 해당 직급의 디테일 페이지로 리디렉션
-                            window.location.href = '/human/position/detail/' + positionId;
-                        }
-                    });
-                });
-            });
-        </script>
-    </th:block>
+				// 부서 리스트 각 행 클릭 시 (상세 보기 페이지 이동)
+				$("#dataTables tbody").on('click', 'tr', function() {
+					console.log("dataTables tbody click!!");
+					var documentNumber = $(this).data('id');
 
+					if (!documentNumber) {
+						return; // 페이지 이동 막기
+					}
+
+					// 수정된 부분: idx가 아닌 documentNumber를 사용
+					location.href = "/human/position/detail/" + documentNumber;
+				});
+			});
+		</script>
+	</div>
 </body>
 </html>
