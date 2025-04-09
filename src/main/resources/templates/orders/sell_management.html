@@ -156,7 +156,7 @@
 							<thead class="table-light">
 								<tr>
 									<!-- <th>■</th> -->
-									<th>번호</th>
+<!-- 									<th>번호</th> -->
 									<th>주문번호</th>
 									<th>주문일자</th>
 									<th>거래처명</th>
@@ -170,7 +170,7 @@
 							<tbody>
 								<tr th:each="item, status : ${orderDTOList}" th:data-id="${item.documentNumber}">
 									<!-- <td><input type="checkbox"></td> -->
-									<td th:text="${status.count}"></td>
+<!-- 									<td th:text="${status.count}"></td> -->
 									<td th:text="${item.documentNumber != null and item.documentNumber != '' ? item.documentNumber : '-'}"></td>
 									<td th:text="${item.regDate != null and item.regDate != '' ? #temporals.format(item.regDate, 'yyyy-MM-dd') : '-'}"></td>
 									<td th:text="${item.companyName != null and item.companyName != '' ? item.companyName : '-'}"></td>
