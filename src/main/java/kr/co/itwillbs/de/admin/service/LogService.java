@@ -47,10 +47,12 @@ public class LogService {
 	 * @param logSearchDTO
 	 * @return List<LogDTO>
 	 */
-	public List<LogDTO> getLogSearchList(LogSearchDTO logSearchDTO) {
+	public LogSearchDTO getLogSearchList(LogSearchDTO logSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		logSearchDTO.getPageDTO().setTotalCount(logMapper.getLogSearchCountForPaging(logSearchDTO));
+		logSearchDTO.setList(logMapper.getLogSearchList(logSearchDTO));
 		
-		return logMapper.getLogSearchList(logSearchDTO);
+		return logSearchDTO;
 	}
 
 	/**

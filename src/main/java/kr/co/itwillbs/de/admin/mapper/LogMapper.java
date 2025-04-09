@@ -24,6 +24,12 @@ public interface LogMapper {
 	List<LogDTO> getLogList();
 
 	/**
+	 * 페이징 카운트가져오기
+	 * @param logSearchDTO
+	 * @return
+	 */
+	int getLogSearchCountForPaging(LogSearchDTO logSearchDTO);
+	/**
 	 * 로그 리스트 검색조건 가져오기
 	 * @param logSearchDTO
 	 * @return List<LogDTO>

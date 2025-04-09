@@ -37,15 +37,22 @@
 	
 	<script>
 		$(function() {
+			/*
 			setInterval(updateClock, 1000);
 			updateClock();
 			// 서버의 시간을 가져와서
 			// 클라이언트에서 흘러가게 해주세요.
+			*/
+			
+			//시간 흐르는 함수! 서버에서 시간 가져오게 바꿔야 함!
 			function updateClock() {
 				const now = new Date();
-				$("#clock").text(now.toLocaleTimeString()); // jQuery 방식으로 수정
+				document.querySelector('#clock').textContent = now.toLocaleTimeString();
+				requestAnimationFrame(updateClock);
 			}
 			
+			//실행하기!
+			requestAnimationFrame(updateClock);
 			$('#logoutAnker').on("click", function() {
 				console.log("logoutAnker click!");
 				if(!confirm("로그아웃 하시겠습니까?")) {
