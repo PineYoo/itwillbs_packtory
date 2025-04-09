@@ -15,13 +15,19 @@ import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 @Mapper
 public interface SellMapper {
 
+	/**
+	 * 페이징용 카운트
+	 */
+	int getOrderCountForPaging(OrderSearchDTO orderSearchDTO);
+	
     /**
      * 수주/발주 정보 조건 검색 가져오기
      * SELECT FROM t_order inner join t_order_detail where orderSearchDTO
      * @param orderSearchDTO 리스트 화면 검색필드 DTO
      * @return List<OrderDTO>
      */
-    List<OrderDTO> getOrderList(OrderSearchDTO orderSearchDTO);
+	List<OrderDTO> getOrderList(OrderSearchDTO orderSearchDTO);
+	
     
     // -------------------------------------------------------------------
     /**

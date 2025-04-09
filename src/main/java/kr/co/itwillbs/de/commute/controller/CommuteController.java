@@ -79,6 +79,9 @@ public class CommuteController {
         // 출퇴근 목록 조회(같은 부서, 더 낮은 직급인 사원만 조회 - 본인포함)
 		List<CommuteListDTO> commuteList = commuteService.getCommuteList(id, commuteSearchDTO);
 		log.info("commuteList : " + commuteList);
+		// 페이징용 카운트 가져오기
+		commuteSearchDTO.getPageDTO().setTotalCount(commuteService.getCommuteCountForPaging(id, commuteSearchDTO));
+		model.addAttribute("commuteSearchDTO", commuteSearchDTO);
 		model.addAttribute("commuteList",commuteList);
 		
 		return "commute/commute_management";
@@ -117,6 +120,11 @@ public class CommuteController {
 		// 출퇴근 조건 검색 리스트 조회 요청(SELECT) - 재사용
 		List<CommuteListDTO> commuteList = commuteService.getCommuteList(id, commuteSearchDTO);
 		log.info("commuteList : " + commuteList);
+		
+		// 페이징용 카운트 가져오기
+		commuteSearchDTO.getPageDTO().setTotalCount(commuteService.getCommuteCountForPaging(id, commuteSearchDTO));
+		
+		model.addAttribute("commuteSearchDTO", commuteSearchDTO);
 		model.addAttribute("commuteList", commuteList);
 		
 		return "commute/commute_management";
