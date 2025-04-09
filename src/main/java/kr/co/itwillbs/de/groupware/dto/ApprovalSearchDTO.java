@@ -2,11 +2,11 @@ package kr.co.itwillbs.de.groupware.dto;
 
 import java.util.List;
 
-import groovy.transform.ToString;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -15,14 +15,27 @@ import lombok.Setter;
 public class ApprovalSearchDTO {
 	
 	private String documentNumber;
-	private String dueDate;
+	
+	private String drafterName;
+	private String progressStatus;
+	private String approvalType;
+	private String title;
+	
+	//	기안일자
 	private String requestStartDate;
 	private String requestEndDate;
+	
+	//	마감일자
 	private String dueStartDate;
 	private String dueEndDate;
+	
 	private String isDeleted;
 	
-	private List<CodeItemDTO> codeItemList;
+	//	--------- 공통코드 -------------
+	//	결재진행상태
+	private List<CodeItemDTO> progressStatusList;
+	//	문서타입
+	private List<CodeItemDTO> approvalTypeList;
 	
 }
 

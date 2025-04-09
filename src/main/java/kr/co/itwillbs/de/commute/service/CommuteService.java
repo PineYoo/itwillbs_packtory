@@ -25,6 +25,17 @@ public class CommuteService {
 	private CommuteMapper commuteMapper;
 
 	/**
+	 * 출퇴근 목록 조회 요청(SELECT) 카운트 페이징용
+	 * @param id
+	 * @param commuteSearchDTO
+	 * @return List<CommuteListDTO>
+	 */
+	public int getCommuteCountForPaging(String id, CommuteSearchDTO commuteSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return commuteMapper.getCommuteCountForPaging(id, commuteSearchDTO);
+	}
+	
+	/**
 	 * 출퇴근 목록 조회 요청(SELECT)
 	 * @param id
 	 * @param commuteSearchDTO

@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
+import kr.co.itwillbs.de.common.service.FileService;
+import kr.co.itwillbs.de.common.vo.FileVO;
 import kr.co.itwillbs.de.groupware.dto.ApprovalDTO;
+import kr.co.itwillbs.de.groupware.dto.ApprovalSearchDTO;
 import kr.co.itwillbs.de.groupware.dto.DraftDTO;
+import kr.co.itwillbs.de.groupware.dto.NoticeDTO;
 import kr.co.itwillbs.de.groupware.mapper.ApprovalMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +25,9 @@ public class ApprovalService {
 	private ApprovalMapper approvalMapper;
 	@Autowired
 	private CommonService commonService;
-
+	@Autowired
+	private FileService fileService;
+	
 	
 	//	=====================================================================================
 	//	보라씨 작업
@@ -64,10 +70,10 @@ public class ApprovalService {
 	
 	//	------------------------------------------------------------
 	//	결재서류 전체 목록 조회
-	public List<ApprovalDTO> getApprovalList() {
+	public List<ApprovalDTO> getApprovalList(String memberId) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		return approvalMapper.getApprovalList();
+		return approvalMapper.getApprovalList(memberId);
 	}
 
 	//	=====================================================================================
@@ -115,6 +121,46 @@ public class ApprovalService {
 		}
 		
 		
+	}
+
+	/**
+	 * 검색 키워드로 문서 목록 조회
+	 * @param approvalSearchDTO
+	 * @return
+	 */
+	public List<ApprovalDTO> getApprovalSearchList(ApprovalSearchDTO approvalSearchDTO) {
+		return approvalMapper.getApprovalSearchList(approvalSearchDTO);
+	}
+
+	/**
+	 * 전자결재 파일 개별 삭제(AJAX) 
+	 * @param idx
+	 */
+	@LogExecution // 로그 남길 서비스
+	public void removeFile(String idx) throws Exception {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		FileVO fileVO = new FileVO();
+		
+		//	받아온 idx 세팅
+		fileVO.setIdx(idx);
+		//	ENUM 대신 임시로 Y값 하드코딩
+		fileVO.setIsDeleted("Y");
+		
+		int affectedRow = fileService.removeFile(fileVO);
+		log.info("affectedRow is {}", affectedRow);
+		if(affectedRow < 1) {
+			throw new Exception("업데이트할 샘플 데이터가 존재하지 않습니다.");
+		}
+	}
+
+	/**
+	 * 필터를 기준으로 approval 목록 가져오기
+	 * @param filter
+	 * @param memberId
+	 * @return List<ApprovalDTO>
+	 */
+	public List<ApprovalDTO> getApprovalListByFilter(String filter, String memberId) {
+		return approvalMapper.getApprovalListByFilter(filter, memberId);
 	}
 
 	

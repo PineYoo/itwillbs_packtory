@@ -15,6 +15,13 @@ import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
 @Mapper
 public interface CommuteMapper {
 
+	
+	/**
+	 * 페이징용 카운트 쿼리
+	 */
+	int getCommuteCountForPaging(@Param("id") String id, 
+								@Param("search") CommuteSearchDTO commuteSearchDTO);
+	
 	/**
 	 * 출퇴근 목록 조회(SELECT)
 	 * @param id

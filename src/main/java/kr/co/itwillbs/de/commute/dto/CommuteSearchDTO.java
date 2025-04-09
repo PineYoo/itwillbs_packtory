@@ -3,6 +3,7 @@ package kr.co.itwillbs.de.commute.dto;
 import java.util.List;
 
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
+import kr.co.itwillbs.de.common.vo.PageDTO;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,8 @@ public class CommuteSearchDTO {
 	
 	// 검색 키워드
 	private String searchKeyword;	// 키워드
+
+	private PageDTO pageDTO = new PageDTO();
 	
 	private List<DepartmentInfoDTO> departmentInfo;	// 부서
 

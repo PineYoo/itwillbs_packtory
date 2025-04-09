@@ -117,7 +117,27 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 	//---------------------------------------------------
 	
-	
+	$(".fileDeleteButton").on("click", function() {
+		let idx = $(this).data("id");
+		let listItem = $("#file-" + idx);
+
+		if (confirm("삭제하시겠습니까?")) {
+			$.ajax({
+				url: `/groupware/approval/fileDelete/${idx}`,
+				type: "POST",
+				success: function(result) {
+					alert(result.message);
+					listItem.fadeOut(300, function() {
+						$(this).remove();
+					})
+				},
+				fail: function(response) {
+					alert(response.message);
+				}
+
+			});
+		}
+	});
 	
 	
 	

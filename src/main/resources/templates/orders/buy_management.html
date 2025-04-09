@@ -36,7 +36,9 @@
 						<section class="d-flex search-inner">
 						
 							<div class="col pl-4 search-box">
-								<form th:action="@{/orders/buy/search}" method="get" th:object="${orderSearchDTO}">
+								<form th:action="@{/orders/buy/search}" method="get" th:object="${orderSearchDTO}" id="SearchForm">
+								    <input type="hidden" th:field="*{pageDTO.page}">
+									<input type="hidden" th:field="*{pageDTO.size}">
 								    <div class="container-fluid px-5 mt-3">
 								        <div class="row">
 								            <!-- 왼쪽 컬럼 -->
@@ -177,6 +179,38 @@
 							</tbody>
 						</table>
 					</div>
+					<!----------페이징 시작---------->
+					<div class="row">
+						<!-- 페이징 네비게이션 -->
+						<nav aria-label="Page navigation">
+							<ul class="pagination justify-content-center">
+
+								<!-- 이전 그룹 ... -->
+								<li class="page-item"
+									th:if="${orderSearchDTO.pageDTO.isHasPrevGroup()}">
+									<button type="button" class="page-link page-go"
+										th:data-page="${orderSearchDTO.pageDTO.startPageGroup - 1}">...</button>
+								</li>
+
+								<!-- 페이지 번호 반복 -->
+								<li class="page-item"
+									th:each="i : ${#numbers.sequence(orderSearchDTO.pageDTO.getStartPageGroup(), orderSearchDTO.pageDTO.getEndPageGroup())}"
+									th:classappend="${i == orderSearchDTO.pageDTO.page} ? 'active'">
+									<button type="button" class="page-link page-go"
+										th:data-page="${i}" th:text="${i}">1</button>
+								</li>
+
+								<!-- 다음 그룹 ... -->
+								<li class="page-item"
+									th:if="${orderSearchDTO.pageDTO.isHasNextGroup()}">
+									<button type="button" class="page-link page-go"
+										th:data-page="${orderSearchDTO.pageDTO.endPageGroup + 1}">...</button>
+								</li>
+
+							</ul>
+						</nav>
+					</div>
+					<!----------페이징 끝---------->
 				</div>
 			</div>
 			<!-- ---------- 본문 컨테이너 끝 ---------- -->			
@@ -215,52 +249,28 @@
 
 
 				// ---------------------------------------------------
-				// 기간별 검색 필터링 제이쿼리 (datepicker)
-			    function initializeDateRangePicker(startInputId, endInputId) {
-			        var $startInput = $('#' + startInputId);
-			        var $endInput = $('#' + endInputId);
-			        var $iconStart = $('[data-target="#' + startInputId + '"]');
-			        var $iconEnd = $('[data-target="#' + endInputId + '"]');
-
-			        $startInput.daterangepicker({
-			            locale: {
-			                separator: " ~ ",
-			                format: 'YYYY-MM-DD',
-			                applyLabel: "확인",
-			                cancelLabel: "취소",
-			                daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
-			                monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-			                customRangeLabel: '기간 지정'
-			            },
-			            autoUpdateInput: false,
-			            timePicker: false,
-			            showDropdowns: true,
-			            autoApply: false,
-			            ranges: {
-			                '오늘': [moment()], // 오늘
-			                '이번 주': [moment().startOf('week'), moment().endOf('week')],
-			                '이번 달': [moment().startOf('month'), moment().endOf('month')],
-			                '지난 주': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-			                '지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-			            }
-			        }, function(start, end) {
-			            $startInput.val(start.format('YYYY-MM-DD'));
-			            $endInput.val(end.format('YYYY-MM-DD'));
-			        });
-
-			        // 아이콘과 requestEndDate를 클릭해도 캘린더 열리도록 설정
-			        $iconStart.add($iconEnd).add($endInput).on('click', function() {
-			            $startInput.trigger('click');
-			        });
-			    }
-
-			    // 요청일자 적용
-			    initializeDateRangePicker('requestStartDate', 'requestEndDate');
+				// ---------------------------------------------------
+  				// 기간별 날짜 검색(datepicker) 함수 활용 - (공통 페이지에 있음)
+				// 요청일자 적용
+			    initDateRangePicker('requestStartDate', 'requestEndDate');
 			    
 			    // 마감일자 적용
-			    initializeDateRangePicker('dueStartDate', 'dueEndDate');
+			    initDateRangePicker('dueStartDate', 'dueEndDate');
+
 			    // ------------------------------------------------------------
 			    
+			});
+				
+		    // ------------------------------------------------------------
+			// 페이징 nav 이벤트
+			document.querySelectorAll('.page-go').forEach(function(btn) {
+				btn.addEventListener('click', function(event) {
+					event.preventDefault();
+					const page = this.dataset.page;
+					const form = document.getElementById('SearchForm');
+					form.querySelector('[name="pageDTO.page"]').value = page;
+					form.submit();
+				});
 			});
 		</script>
 	</th:block>
