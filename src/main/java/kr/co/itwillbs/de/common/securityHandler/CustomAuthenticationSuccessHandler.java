@@ -3,12 +3,16 @@ package kr.co.itwillbs.de.common.securityHandler;
 import java.io.IOException;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import kr.co.itwillbs.de.admin.dto.LogDTO;
 import kr.co.itwillbs.de.admin.mapper.LogMapper;
 import kr.co.itwillbs.de.common.util.ServletRequestUtil;
@@ -23,40 +27,44 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
 	private final LogMapper logMapper;
 	private final ServletRequestUtil servletRequestUtil;
-	
+
 	public CustomAuthenticationSuccessHandler(LogMapper logMapper, ServletRequestUtil servletRequestUtil) {
 		this.logMapper = logMapper;
 		this.servletRequestUtil = servletRequestUtil;
 	}
-	
+
 	private final String LOG_ACCESS_TYPE_LOGIN = "9";
-	
+
 	@Override
-	public void onAuthenticationSuccess(HttpServletRequest request, 
-										HttpServletResponse response,
-										Authentication authentication) throws IOException, ServletException {
+	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+			Authentication authentication) throws IOException, ServletException {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		// 로그인 한 사용자의 인증 정보가 Authentication 타입 파라미터로 전달 됨.
 		String memberId = authentication.getName();
-		log.info("login process succeeded && memberId is {}",memberId);
-		
+		log.info("login process succeeded && memberId is {}", memberId);
+		// SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		// SecurityContext에 인증 정보 수동 설정
+//		SecurityContext context = SecurityContextHolder.createEmptyContext();
+//		context.setAuthentication(authentication);
+//		SecurityContextHolder.setContext(context);
+
+		// 세션에도 저장 (중요)
+//		HttpSession session = request.getSession(true);
+//		session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+
 		// DB에 로그인 기록
-		
+
 		try {
-			LogDTO logDTO = LogDTO.builder()
-				.accessId(memberId)
-				.accessType(LOG_ACCESS_TYPE_LOGIN)
-				.accessDevice(servletRequestUtil.getDeviceType(request))
-				.ip(servletRequestUtil.getClientIp(request))
-				.url("/login")
-				.parameters("loginSuccess")
-				.build();
-				
+			LogDTO logDTO = LogDTO.builder().accessId(memberId).accessType(LOG_ACCESS_TYPE_LOGIN)
+					.accessDevice(servletRequestUtil.getDeviceType(request)).ip(servletRequestUtil.getClientIp(request))
+					.url("/login").parameters("loginSuccess").build();
+
 			logMapper.registerLog(logDTO);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			log.error("Failed to write login log to database {}", e.getMessage());
 		}
-		
+
 //		Member member = (Member) authentication.getPrincipal();
 //		
 //		// 세션에 데이터 저장을 위해 httpServletRequest 객체로부터 HttpSession 객체 추출

@@ -12,7 +12,12 @@
 	<ul class="navbar-nav ml-auto">
 		<li class="nav-item dropdown no-arrow">
 			<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<span class="mr-2 d-none d-lg-inline text-gray-600 small">인사과 홍길동</span>
+				<!-- <span class="mr-2 d-none d-lg-inline text-gray-600 small">인사과 홍길동</span> -->
+				<span class="mr-2 d-none d-lg-inline text-gray-600 small">
+					<span th:text="${#authentication.principal.departmentName}">부서명</span>&nbsp;
+					<span th:text="${#authentication.principal.subDepartmentName}">부서명</span>&nbsp;
+					<span th:text="${#authentication.principal.name}">이름</span>
+				</span>
 				<img class="img-profile rounded-circle" src="/img/temp/undraw_profile.svg">
 			</a>
 			<!-- Dropdown - User Information -->

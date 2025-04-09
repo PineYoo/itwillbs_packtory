@@ -22,24 +22,24 @@ public class PageDTO {
 		return (page - 1) * size;
 	}
 	
-    public int getTotalPage() {
-        return (int) Math.ceil((double) totalCount / size);
-    }
+	public int getTotalPage() {
+		return (int) Math.ceil((double) totalCount / size);
+	}
 
-    public int getStartPageGroup() {
-        return ((page - 1) / groupSize) * groupSize + 1;
-    }
+	public int getStartPageGroup() {
+		return ((page - 1) / groupSize) * groupSize + 1;
+	}
 
-    public int getEndPageGroup() {
-        int end = getStartPageGroup() + groupSize - 1;
-        return Math.min(end, getTotalPage());
-    }
+	public int getEndPageGroup() {
+		int end = getStartPageGroup() + groupSize - 1;
+		return Math.min(end, getTotalPage());
+	}
 
-    public boolean isHasPrevGroup() {
-        return getStartPageGroup() > 1;
-    }
+	public boolean isHasPrevGroup() {
+		return getStartPageGroup() > 1;
+	}
 
-    public boolean isHasNextGroup() {
-        return getEndPageGroup() < getTotalPage();
-    }
+	public boolean isHasNextGroup() {
+		return getEndPageGroup() < getTotalPage();
+	}
 }

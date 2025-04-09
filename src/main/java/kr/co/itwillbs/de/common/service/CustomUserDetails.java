@@ -13,6 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CustomUserDetails implements UserDetails {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1279266109310525957L;
+	
 	private final LoginVO loginVO;
 	
 	public CustomUserDetails(LoginVO loginVO) {
@@ -99,4 +104,25 @@ public class CustomUserDetails implements UserDetails {
 		return loginVO.getMemberId();
 	}
 	
+	public String getName() {
+		return loginVO.getName();
+	}
+	public String getDepartmentName() {
+		return loginVO.getDepartmentName();
+	}
+	public String getSubDepartmentName() {
+		return loginVO.getSubDepartmentName();
+	}
+	public String getHireDate() {
+		return loginVO.getHireDate();
+	}
+	public String getPositionName() {
+		return loginVO.getPositionName();
+	}
+	public String getBirthDay() {
+		return loginVO.getSsn().substring(0, 6);
+	}
+	public String getRoleDescription() {
+		return loginVO.getRoleDescription();
+	}
 }
