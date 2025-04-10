@@ -99,7 +99,7 @@
 				<div class="col-xl-6 col-md-6 mb-4">
 					<div class="card border-left-primary shadow h-100 py-2">
 						<div class="card-body">
-							<strong class="me-2">📢 공지사항:</strong>
+							<strong class="me-2">📢 공지사항</strong>
 							<swiper-container autoplay-delay="3000"
 											  autoplay-disable-on-interaction="false"
 											  loop="true"
@@ -115,11 +115,6 @@
 								       th:text="${item.title}">
 								    </a>
 								</swiper-slide>
-							<!--/*<span th:each="notice : ${notices}"> <a
-							th:href="@{/notice/detail/{id}(id=${notice.id})}"
-							class="me-4 text-decoration-none text-dark">
-								[[${notice.title}]]</a>
-						</span> */--> 
 							</swiper-container>
 						</div>
 					</div>
@@ -272,27 +267,47 @@
 					events : [
 					// 나중에 서버에서 JSON 받아서 동적으로 처리 가능
 					{
-						title : '졸려1',
+						title : '프로젝트 1차 마무리중..',
 						start : '2025-04-07',
 						end : '2025-04-11'
 					},
 					{
-						title : '졸려2',
-						start : '2025-04-08',
-						end : '2025-04-11'
+						title : '1차 발표일',
+						start : '2025-04-10',
+					    backgroundColor: '#FF4C4C',	// 배경색
+					    borderColor: '#FF4C4C'      // 테두리색
 					},
 					{
-						title : '졸려3',
-						start : '2025-04-09',
-						end : '2025-04-11'
+						title : '창립기념일 10주년',
+						start : '2025-04-15',
+					    backgroundColor: '#FFA500',	// 배경색
+					    borderColor: '#FFA500'      // 테두리색
 					},
 					{
-						title : '진짜? 1차야?',
-						start : '2025-04-10'
+						title : 'MES 시작 ㅎ',
+						start : '2025-04-11',
+// 					    textColor: '#000000',       // 글자색
+					    backgroundColor: '#B39DDB',	// 배경색
+					    borderColor: '#B39DDB'     	// 테두리색
 					},
 					{
-						title : '2차...',
-						start : '2025-05-07'
+						title : 'A거래처와 미팅',
+						start : '2025-04-18',
+					    backgroundColor: '#B39DDB',	// 배경색
+					    borderColor: '#B39DDB'     	// 테두리색
+					},
+					{
+						title : '휴가.. 가고싶다',
+						start : '2025-04-30',
+						end : '2025-05-03',
+					    backgroundColor: '#2ECC71',	// 배경색
+					    borderColor: '#2ECC71'     	// 테두리색
+					},
+					{
+						title : '2차 발표일',
+						start : '2025-05-07',
+					    backgroundColor: '#FF4C4C',	// 배경색
+					    borderColor: '#FF4C4C'      // 테두리색
 					} 
 					]
 				});
