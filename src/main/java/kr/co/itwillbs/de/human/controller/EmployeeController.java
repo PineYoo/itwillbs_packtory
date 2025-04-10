@@ -3,8 +3,10 @@ package kr.co.itwillbs.de.human.controller;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.common.service.CustomUserDetails;
+import kr.co.itwillbs.de.common.service.LoginService;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.human.dto.DepartmentCodeDTO;
@@ -42,6 +45,9 @@ public class EmployeeController {
 	// 공통코드 주입
 	private final CommonCodeUtil commonCodeUtil;
 	private final CommonService commonService;
+	private final LoginService loginService;
+	
+	
 
 	// 사원 등록 폼
 	@GetMapping("/new")
@@ -174,7 +180,18 @@ public class EmployeeController {
 
 		// 사원 정보와 상세 정보를 업데이트
 		employeeService.updateEmployeeWithDetail(employeeDTO);
-
+		
+		// =================================================================
+		// 1) 기존 인증 정보 조회
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		LoginVO loginVO = ((CustomUserDetails) authentication.getPrincipal()).getLoginVO();
+		
+		// 2) 기존 인증 정보로 인증 수행한 후 수정된 인증정보로 갱신
+		UserDetails newPrincipal = loginService.loadUserByUsername(loginVO.getMemberId());
+		UsernamePasswordAuthenticationToken newAuthToken = new UsernamePasswordAuthenticationToken(newPrincipal, authentication.getCredentials(), newPrincipal.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(newAuthToken);
+		// =================================================================
+		
 		return "redirect:/human/employee/" + id;
 	}
 
