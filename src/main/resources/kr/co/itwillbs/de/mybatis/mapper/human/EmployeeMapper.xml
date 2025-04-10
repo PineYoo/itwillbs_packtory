@@ -107,13 +107,13 @@
 			AND name LIKE CONCAT('%', #{name}, '%')
 		</if>
 		<if test="departmentCode != null and departmentCode != ''">
-			AND department_code = #{departmentCode}
+			AND e.department_code = #{departmentCode, jdbcType=INTEGER}
 		</if>
 		<if test="subDepartmentCode != null and subDepartmentCode != ''">
-			AND sub_department_code = #{subDepartmentCode}
+			AND e.sub_department_code = #{subDepartmentCode, jdbcType=INTEGER}
 		</if>
 		<if test="positionCode != null and positionCode != ''">
-			AND position_code = #{positionCode}
+			AND e.position_code = #{positionCode, jdbcType=INTEGER}
 		</if>
 
 		<choose>
