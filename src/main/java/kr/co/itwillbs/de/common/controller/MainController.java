@@ -24,6 +24,8 @@ import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.commute.dto.CommuteDTO;
 import kr.co.itwillbs.de.commute.service.CommuteService;
+import kr.co.itwillbs.de.groupware.dto.NoticeDTO;
+import kr.co.itwillbs.de.groupware.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -33,8 +35,12 @@ public class MainController {
 	@Autowired
 	private CommuteService commuteService;
 	@Autowired
+	private NoticeService noticeService;
+	@Autowired
 	private CommonCodeUtil commonCodeUtil;
 	
+	private final String COMMON_MAJOR_CODE_NOTICE_TYPE = "NOTICE_TYPE";
+
 	private final String COMMON_MAJOR_CODE_TRADE = "WORK_STATUS_CODE";
 	private final String CHECKIN_NAME_KR = "출근";
 	private final String LATE_NAME_KR = "지각";
@@ -110,7 +116,13 @@ public class MainController {
 			model.addAttribute("userDetails", userDetails);
 			model.addAttribute("loginVO", loginVO);
 		}
-
+		// [ 공지사항 ]
+		List<NoticeDTO> noticeList = noticeService.getNoticeList(COMMON_MAJOR_CODE_NOTICE_TYPE);
+		model.addAttribute("noticeList", noticeList);
+		
+		
+		// =================================================================================
+		// [ 근태 ]
 		// 출퇴근 기록 코드
 		List<CodeItemDTO> codeItemList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
 		log.info("codeItemList : " + codeItemList);
