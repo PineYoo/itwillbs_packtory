@@ -3,59 +3,69 @@
 <head>
 <title>팩토리(PackTory) - 규정 등록</title>
 
-<th:block layout:fragment="headContents">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-</th:block>
+<style>
+.form-label {
+	font-weight: bold;
+}
 
-<th:block layout:fragment="css">
-	<link href="/css/fontawesome/all.min.css" rel="stylesheet">
-	<link href="/css/sb-admin-2.css" rel="stylesheet">
-	<link href="/css/common.css" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</th:block>
-
+.card-body {
+	padding: 2rem;
+}
+</style>
 </head>
 <body id="page-top">
 	<div layout:fragment="contents">
 		<div class="container mt-5">
 			<h2 class="h3 mb-4 text-gray-800">규정 등록</h2>
-			<form th:action="@{/groupware/policy/new}" th:object="${policyDTO}" method="post" enctype="multipart/form-data">
-				<!-- 규정 유형 -->
-				<div class="mb-3">
-					<label for="type" class="form-label">규정 유형</label> <select class="form-control" id="type" th:field="*{type}" required>
-						<option value="">선택하세요</option>
-						<option th:each="code : ${policyTypes}" th:value="${code.minorName}" th:text="${code.minorName}"></option>
-					</select>
-				</div>
 
-				<!-- 규정 제목 -->
-				<div class="mb-3">
-					<label for="title" class="form-label">제목</label> <input type="text" class="form-control" id="title" th:field="*{title}" required>
+			<!-- 카드 형태로 등록 폼 구성 -->
+			<div class="card">
+				<div class="card-header">
+					<h5 class="card-title">규정 입력</h5>
 				</div>
+				<div class="card-body">
+					<form th:action="@{/groupware/policy/new}" th:object="${policyDTO}" method="post" enctype="multipart/form-data">
+						<!-- 규정 유형 -->
+						<div class="mb-3">
+							<label for="type" class="form-label">규정 유형</label> <select class="form-control" id="type" th:field="*{type}" required>
+								<option value="">선택하세요</option>
+								<option th:each="code : ${policyTypes}" th:value="${code.minorName}" th:text="${code.minorName}"></option>
+							</select>
+						</div>
 
-				<!-- 규정 내용 -->
-				<div class="mb-3">
-					<label for="contents" class="form-label">내용</label>
-					<textarea class="form-control" id="contents" th:field="*{contents}" rows="5" required></textarea>
+						<!-- 규정 제목 -->
+						<div class="mb-3">
+							<label for="title" class="form-label">제목</label> <input type="text" class="form-control" id="title" th:field="*{title}" required>
+						</div>
+
+						<!-- 규정 내용 -->
+						<div class="mb-3">
+							<label for="contents" class="form-label">내용</label>
+							<textarea class="form-control" id="contents" th:field="*{contents}" rows="5" required></textarea>
+						</div>
+
+						<!-- 상태 -->
+						<div class="mb-3">
+							<label for="status" class="form-label">게시여부</label> <select class="form-control" id="status" th:field="*{status}" required>
+								<option value="Y">Y</option>
+								<option value="N">N</option>
+							</select>
+						</div>
+
+						<!-- 파일 업로드 (여러 개 가능) -->
+						<div class="mb-3">
+							<label for="policyFiles" class="form-label">첨부 파일</label> <input type="file" class="form-control" id="policyFiles" name="policyFiles" multiple>
+						</div>
+
+
+						<!-- 버튼들 -->
+						<div class="col-md-12 row align-items-center justify-content-center">
+							<button type="submit" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+							<a href="/groupware/policy" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</a>
+						</div>
+					</form>
 				</div>
-
-				<!-- 상태 -->
-				<div class="mb-3">
-					<label for="status" class="form-label">게시여부</label> <select class="form-control" id="status" th:field="*{status}" required>
-						<option value="Y">Y</option>
-						<option value="N">N</option>
-					</select>
-				</div>
-
-				<!-- 파일 업로드 (여러 개 가능) -->
-				<div class="mb-3">
-					<label for="policyFiles" class="form-label">첨부 파일</label> <input type="file" class="form-control" id="policyFiles" name="policyFiles" multiple>
-				</div>
-
-				<!-- 등록 버튼 -->
-				<button type="submit" class="btn btn-success">등록</button>
-				<a href="/groupware/policy" class="btn btn-secondary ml-2">목록으로</a>
-			</form>
+			</div>
 		</div>
 	</div>
 
