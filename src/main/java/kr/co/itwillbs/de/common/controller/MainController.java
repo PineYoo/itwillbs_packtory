@@ -1,20 +1,26 @@
 package kr.co.itwillbs.de.common.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
+import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.commute.dto.CommuteDTO;
 import kr.co.itwillbs.de.commute.service.CommuteService;
@@ -30,6 +36,9 @@ public class MainController {
 	private CommonCodeUtil commonCodeUtil;
 	
 	private final String COMMON_MAJOR_CODE_TRADE = "WORK_STATUS_CODE";
+	private final String CHECKIN_NAME_KR = "출근";
+	private final String LATE_NAME_KR = "지각";
+	
 	/**
 	 * 브라우저 주소창에 Host:port 만 입력 했을 때 들어오는 페이지 <br>
 	 * 예시)localhost:8080 또는 localhost:8080/ 둘다 index.html 로 연결 시켜주기 위함 <br>
@@ -124,13 +133,65 @@ public class MainController {
 		// 마지막 기록
 		CommuteDTO lastCommuteRecord = commuteService.getTodayLastCommute(id, today);
 		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		
 		log.info("checkInTime : " + checkInRecord);
-		model.addAttribute("checkInTime", checkInRecord != null ? checkInRecord.getRegDate().toLocalTime() : null);	// 오늘 출근기록 있을 경우 출근시간
-		model.addAttribute("checkOutTime", checkOutRecord != null ? checkOutRecord.getRegDate().toLocalTime() : null);	// 오늘 퇴근기록 있을 경우 퇴근시간
+		model.addAttribute("checkInTime", checkInRecord != null ? checkInRecord.getRegDate().toLocalTime().format(formatter) : null);	// 오늘 출근기록 있을 경우 출근시간
+		model.addAttribute("checkOutTime", checkOutRecord != null ? checkOutRecord.getRegDate().toLocalTime().format(formatter) : null);	// 오늘 퇴근기록 있을 경우 퇴근시간
 		log.info("lastCommuteRecord : " + lastCommuteRecord);	// 오늘 출퇴근 마지막 기록
 		model.addAttribute("lastCommuteRecord", lastCommuteRecord);	// 오늘 출퇴근 마지막 기록
 		
 		return "/main/main";
 	}
+	
+	// ----------------------------------------------------
+	// 출퇴근 버튼 클릭 시 저장 ajax
+	@PostMapping("/commute/save")	// "/commute/save"
+	@ResponseBody
+	public ResponseEntity<String> saveCommute(@RequestBody CommuteDTO commuteDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("commuteDTO : {}", StringUtil.objToString(commuteDTO));
+	    
+//		commuteDTO.setEmployeeId(id);	// 사번
+		LocalDateTime now = LocalDateTime.now();
+		commuteDTO.setRegDate(now); // 현재 시간 등록
 
+		// 코드 리스트 조회 (WORK_STATUS_CODE)
+		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
+		String checkInCode = getMinorCodeByMinorName(tradeCode, CHECKIN_NAME_KR); // "출근(1)"
+		String lateCode = getMinorCodeByMinorName(tradeCode, LATE_NAME_KR);       // "지각(5)"
+		log.info("checkInCode : " + checkInCode + ", lateCode : " + lateCode);
+		
+		
+ 		// 출근이면 지각 여부 확인
+		if (checkInCode.equals(commuteDTO.getWorkStatusCode())) {
+			LocalTime standardTime = LocalTime.of(9, 10); // 오전 9시 10분 기준
+			if (now.toLocalTime().isAfter(standardTime)) {
+				commuteDTO.setWorkStatusCode(lateCode); // 지각 처리
+				log.info("※ 지각 처리됨!!!!!!!!!: {}", lateCode);
+			}
+		}
+		
+		log.info("commuteDTO22 : {}", StringUtil.objToString(commuteDTO));
+		
+		// 출퇴근 기록 요청(insert)
+		commuteService.saveCommuteInfo(commuteDTO);
+	    return ResponseEntity.ok("저장 완료");
+	}
+	
+	// ===================================================================
+	/**
+	 * 특정 minorName을 가진 minorCode를 반환하는 유틸 메서드
+	 * @param codeList
+	 * @param targetName(한글명)
+	 * @return
+	 */
+	private String getMinorCodeByMinorName(List<CodeItemDTO> codeList, String targetName) {
+		for (CodeItemDTO item : codeList) {
+			if (targetName.equals(item.getMinorName())) {
+				return item.getMinorCode();
+			}
+		}
+		return null;
+	}
 }
