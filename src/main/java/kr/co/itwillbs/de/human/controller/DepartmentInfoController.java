@@ -92,16 +92,16 @@ public class DepartmentInfoController {
 	public String getDepartmentList(Model model) {
 		log.info("getDepartmentList --- start");
 
-		// 부서 목록 조회
-		List<DepartmentInfoDTO> departmentList = departmentInfoService.getDepartmentList();
+		// 공통 코드 유틸을 활용하여 major_code가 "DEPARTMENT_CODE"인 코드 아이템 목록 조회
+		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("DEPARTMENT_CODE");
+		model.addAttribute("codeItems", codeItems);
+
+		// 부서 목록 조회 (codeItems 넘겨줌)
+		List<DepartmentInfoDTO> departmentList = departmentInfoService.getDepartmentList(codeItems);
 
 		// 부서 목록과 검색 폼 초기화
 		model.addAttribute("departmentInfoDTOList", departmentList);
 		model.addAttribute("departmentSearchDto", new DepartmentInfoSearchDTO());
-
-		// 공통 코드 유틸을 활용하여 major_code가 "DEPARTMENT_CODE"인 코드 아이템 목록 조회
-		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("DEPARTMENT_CODE");
-		model.addAttribute("codeItems", codeItems);
 
 		// list.html 뷰 페이지로 이동
 		return "human/info/department/list";

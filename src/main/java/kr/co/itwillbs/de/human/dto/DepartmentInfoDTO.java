@@ -23,6 +23,8 @@ public class DepartmentInfoDTO {
     @NotEmpty(message = "대표부서코드는 필수 입력 값입니다.")
     private String departmentCode;
     
+    private String departmentName;
+    
     @NotEmpty(message = "부모코드는 필수 입력 값입니다.")
     private String parentCode;
     
@@ -82,4 +84,22 @@ public class DepartmentInfoDTO {
                 .modDate(modDate)
                 .build();
     }
+
+	public static DepartmentInfoDTO fromEntity(DepartmentInfo entity) {
+		DepartmentInfoDTO dto = new DepartmentInfoDTO();
+	    dto.setIdx(entity.getIdx());
+	    dto.setDepartmentCode(entity.getDepartmentCode());
+	    dto.setParentCode(entity.getParentCode());
+	    dto.setChildCode(entity.getChildCode());
+	    dto.setChildName(entity.getChildName());
+	    dto.setRankNumber(entity.getRankNumber());
+	    dto.setIsDeleted(entity.getIsDeleted());
+	    dto.setLocationIdx(entity.getLocationIdx());
+	    dto.setRegId(entity.getRegId());
+	    dto.setRegDate(entity.getRegDate());
+	    dto.setModId(entity.getModId());
+	    dto.setModDate(entity.getModDate());
+		return dto;
+	}
+
 }
