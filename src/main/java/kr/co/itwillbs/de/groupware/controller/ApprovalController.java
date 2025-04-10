@@ -77,10 +77,12 @@ public class ApprovalController {
 			approvalSearchDTO.setDrafterId(memberId);
 			//	--------------------------------------------
 			
-//			approvalSearchDTO.getPageDTO().setTotalCount(approvalService.getApprovalCountBySearchDTO(approvalSearchDTO));
-			approvalSearchDTO.setProgressStatusList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_PROGRESS_TYPE));
-			approvalSearchDTO.setApprovalTypeList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
-			model.addAttribute("approvalSearchDTO", approvalSearchDTO);
+			approvalSearchDTO.getPageDTO().setTotalCount(approvalService.getApprovalCountBySearchDTO(approvalSearchDTO));
+			model.addAttribute("progressStatusList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_PROGRESS_TYPE));
+			model.addAttribute("approvalTypeList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
+//			approvalSearchDTO.setProgressStatusList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_PROGRESS_TYPE));
+//			approvalSearchDTO.setApprovalTypeList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
+			
 			
 			List<ApprovalDTO> approvalDTOList = approvalService.getApprovalList(approvalSearchDTO);
 			model.addAttribute("approvalDTOList", approvalDTOList);
@@ -315,20 +317,20 @@ public class ApprovalController {
 		String memberId = userDetails.getUsername();
 		approvalSearchDTO.setDrafterId(memberId);
 		//	------------------------------------------------------
-		
-		
+		//	페이지용 카운트 세기
+		approvalSearchDTO.getPageDTO().setTotalCount(approvalService.getApprovalCountBySearchDTO(approvalSearchDTO));
+		model.addAttribute("noticeSearchDTO", approvalSearchDTO);
+		//	결재 진행상태 값 List 넘기기
+		model.addAttribute("progressStatusList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_PROGRESS_TYPE));
+		//	문서 타입 값 List 넘기기
+		model.addAttribute("approvalTypeList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
 		List<ApprovalDTO> approvalDTOList = approvalService.getApprovalList(approvalSearchDTO);
-		log.info("noticeDTOList : {} ", approvalDTOList.toString());
 		
 		// 조회 결과 값 뷰에 전달
 		model.addAttribute("approvalDTOList", approvalDTOList);
 		
-		// 검색 조건 값 뷰에 전달
-		approvalSearchDTO.setProgressStatusList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_PROGRESS_TYPE));
-		approvalSearchDTO.setApprovalTypeList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
 		log.info("noticeDTOList : {} ", approvalSearchDTO.toString());
 		
-		model.addAttribute("noticeSearchDTO", approvalSearchDTO);
 		
 		return "groupware/approval/approval_list";
 	}

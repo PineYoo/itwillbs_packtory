@@ -231,6 +231,7 @@
 		</where>
 		 ORDER
 		    BY a.draft_date DESC
+		 LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
 	<!-- ==================================================================== -->
@@ -433,44 +434,53 @@
 		    BY draft_date DESC
 	</select>
 	
-<!-- 	<select id="getApprovalCountBySearchDTO" parameterType="kr.co.itwillbs.de.groupware.dto.ApprovalSearchDTO" -->
-<!-- 												resultType="int"> -->
-<!-- 		SELECT COUNT(*) -->
-<!-- 		  FROM t_approval -->
-<!-- 		<where> -->
-<!-- 			<if test="drafterId != null and drafterId != ''"> -->
-<!-- 		   AND (a.drafter_id = #{drafterId} -->
-<!-- 		    OR a.approver1 = #{drafterId} -->
-<!-- 		    OR (a.approver2 = #{drafterId} AND a.progress_status != 1 AND a.approver1_status = 'Y') -->
-<!-- 		    OR (a.approver3 = #{drafterId} AND a.progress_status != 1 AND a.approver2_status = 'Y') -->
-<!-- 		     ) -->
-<!-- 			</if> -->
-<!-- 			<if test="drafterName != null and drafterName.trim() != ''"> -->
-<!-- 		   AND e.name LIKE CONCAT('%', #{drafterName}, '%') -->
-<!-- 			</if> -->
-<!-- 			<if test="title != null and title.trim() != ''"> -->
-<!-- 		   AND a.title LIKE CONCAT('%', #{title}, '%') -->
-<!-- 			</if> -->
-<!-- 			<if test="progressStatus != null and progressStatus.trim() != ''"> -->
-<!-- 		   AND tci1.minor_code = #{progressStatus} -->
-<!-- 			</if> -->
-<!-- 			<if test="approvalType != null and approvalType.trim() != ''"> -->
-<!-- 		   AND tci2.minor_code = #{approvalType} -->
-<!-- 			</if> -->
-<!-- 			<if test="requestStartDate != null and requestStartDate != ''"> -->
-<!-- 		   AND DATE(a.draft_date) &gt;= #{requestStartDate} -->
-<!-- 			</if> -->
-<!-- 			<if test="requestEndDate != null and requestEndDate != ''"> -->
-<!-- 		   AND DATE(a.draft_date) &lt;= #{requestEndDate} -->
-<!-- 			</if> -->
-<!-- 			<if test="dueStartDate != null and dueStartDate != ''"> -->
-<!-- 		   AND DATE(a.due_date) &gt;= #{dueStartDate} -->
-<!-- 			</if> -->
-<!-- 			<if test="dueEndDate != null and dueEndDate != ''"> -->
-<!-- 		   AND DATE(a.due_date) &lt;= #{dueEndDate} -->
-<!-- 			</if> -->
-<!-- 		</where> -->
-<!-- 	</select> -->
+	<select id="getApprovalCountBySearchDTO" parameterType="kr.co.itwillbs.de.groupware.dto.ApprovalSearchDTO"
+												resultType="int">
+		<include refid="withEmpBase"></include>
+		SELECT COUNT(*)
+		  FROM empBase e
+		  JOIN t_approval a
+		    ON e.id = a.drafter_id
+		  JOIN t_commoncode_item tci1
+		    ON a.progress_status = tci1.minor_code
+		   AND tci1.major_code = 'PROGRESS_STATUS'
+		  JOIN t_commoncode_item tci2
+		    ON a.approval_type = tci2.minor_code
+		   AND tci2.major_code = 'APPROVAL_TYPE' 
+		<where>
+			<if test="drafterId != null and drafterId != ''">
+		   AND (a.drafter_id = #{drafterId}
+		    OR a.approver1 = #{drafterId}
+		    OR (a.approver2 = #{drafterId} AND a.progress_status != 1 AND a.approver1_status = 'Y')
+		    OR (a.approver3 = #{drafterId} AND a.progress_status != 1 AND a.approver2_status = 'Y')
+		     )
+			</if>
+			<if test="drafterName != null and drafterName.trim() != ''">
+		   AND e.name LIKE CONCAT('%', #{drafterName}, '%')
+			</if>
+			<if test="title != null and title.trim() != ''">
+		   AND a.title LIKE CONCAT('%', #{title}, '%')
+			</if>
+			<if test="progressStatus != null and progressStatus.trim() != ''">
+		   AND tci1.minor_code = #{progressStatus}
+			</if>
+			<if test="approvalType != null and approvalType.trim() != ''">
+		   AND tci2.minor_code = #{approvalType}
+			</if>
+			<if test="requestStartDate != null and requestStartDate != ''">
+		   AND DATE(a.draft_date) &gt;= #{requestStartDate}
+			</if>
+			<if test="requestEndDate != null and requestEndDate != ''">
+		   AND DATE(a.draft_date) &lt;= #{requestEndDate}
+			</if>
+			<if test="dueStartDate != null and dueStartDate != ''">
+		   AND DATE(a.due_date) &gt;= #{dueStartDate}
+			</if>
+			<if test="dueEndDate != null and dueEndDate != ''">
+		   AND DATE(a.due_date) &lt;= #{dueEndDate}
+			</if>
+		</where>
+	</select>
 	
 	
 </mapper>

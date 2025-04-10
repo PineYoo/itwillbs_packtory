@@ -124,9 +124,13 @@
 							<div class="col pl-4 search-box">
 								<form th:action="@{/groupware/approval/search}" method="get"
 									th:object="${approvalSearchDTO}" id="searchForm">
+									<!-- 페이징 히든 변수 -->
+									<input type="hidden" th:field="*{pageDTO.page}">
+									<input type="hidden" th:field="*{pageDTO.size}">
+									<!-- 페이징 히든 변수 -->
 									<div class="container-fluid px-5 mt-3">
 										<div class="row">
-										
+											<!-- 왼쪽 컬럼 -->
 											<div class="col-md-6 left-form">
 												<!-- 제목 -->
 												<div class="form-group row">
@@ -150,10 +154,9 @@
 												<div class="form-group row">
 													<label for="progressStatus" class="col-sm-3 col-form-label">진행상태</label>
 													<div class="col-sm-9">
-														<select id="progressStatus" name="progressStatus"
-															class="form-select">
+														<select name="progressStatus" th:value="*{progressStatus}" class="form-select">
 															<option value="">진행상태 선택</option>
-															<th:block th:each="item : *{progressStatusList}">
+															<th:block th:each="item : ${progressStatusList}">
 																<option th:value="${item.minorCode}"
 																	th:text="${item.minorName}"
 																	th:selected="*{progressStatus} == ${item.minorCode}">
@@ -230,10 +233,9 @@
 												<div class="form-group row">
 													<label for="progressStatus" class="col-sm-3 col-form-label">문서종류</label>
 													<div class="col-sm-9">
-														<select id="approvalType" name="approvalType"
-															class="form-select">
+														<select name="approvalType" th:value="*{approvalType}" class="form-select">
 															<option value="">문서종류 선택</option>
-															<th:block th:each="item : *{approvalTypeList}">
+															<th:block th:each="item : ${approvalTypeList}">
 																<option th:value="${item.minorCode}"
 																	th:text="${item.minorName}"
 																	th:selected="*{approvalType} == ${item.minorCode}">
@@ -301,17 +303,16 @@
 										<td th:text="${item.draftDate != null ? item.draftDate : '-'}"></td>
 										<td th:text="${item.dueDate != null ? item.dueDate : '-'}"></td>
 									</tr>
+									<tr th:if="${#lists.isEmpty(approvalDTOList)}" class="clickable-row menu2depth_items">
+										<td colspan="7"><span>조회 된 데이터가 없습니다.</span></td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
+						<div th:replace="~{common/fragments/de_pagination :: pagination(${approvalSearchDTO})}"></div>
 					</div>
 				</div>
 				<!-- 본문 컨테이너 끝 -->
-
-			<!-- Scroll to Top Button-->
-			<a class="scroll-to-top rounded" href="#page-top"> <i
-				class="fas fa-angle-up"></i>
-			</a>
 		</div>
 
 		<script type="text/javascript">
