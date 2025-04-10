@@ -32,9 +32,13 @@ public class NoticeDTO {
 	
 	private String regId;
 	
+	private String regName;
+	
 	private String regDate;
 	
 	private String modId;
+	
+	private String modName;
 	
 	private String modDate;
 	

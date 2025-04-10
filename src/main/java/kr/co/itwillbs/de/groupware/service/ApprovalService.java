@@ -70,10 +70,10 @@ public class ApprovalService {
 	
 	//	------------------------------------------------------------
 	//	결재서류 전체 목록 조회
-	public List<ApprovalDTO> getApprovalList(String memberId) {
+	public List<ApprovalDTO> getApprovalList(ApprovalSearchDTO approvalSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		return approvalMapper.getApprovalList(memberId);
+		return approvalMapper.getApprovalList(approvalSearchDTO);
 	}
 
 	//	=====================================================================================
@@ -161,6 +161,17 @@ public class ApprovalService {
 	 */
 	public List<ApprovalDTO> getApprovalListByFilter(String filter, String memberId) {
 		return approvalMapper.getApprovalListByFilter(filter, memberId);
+	}
+
+	/**
+	 * SELECT count(*) FROM t_approval
+	 * @param approvalSearchDTO
+	 * @return
+	 */
+	public int getApprovalCountBySearchDTO(ApprovalSearchDTO approvalSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return approvalMapper.getApprovalCountBySearchDTO(approvalSearchDTO);
 	}
 
 	

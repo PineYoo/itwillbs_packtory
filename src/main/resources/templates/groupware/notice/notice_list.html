@@ -1,34 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/de_layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>팩토리(PackTory) - 공지사항</title>
 <!-- 부트스트랩 icons 가져오기 -->
-<th:block layout:fragment="headContents">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-</th:block>
-<!-- dataTables 가져오기 -->
-<th:block layout:fragment="css">
-	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-</th:block>
 
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-	
 <style type="text/css">
-	.btnCommand {
-		text-align: right;
-		margin-right: 20px;
-		margin-bottom: 10px;
-	}
-	
-	.form-control[readonly] {
-		background-color: white;
-	}
-	
-	.table th, td {
-		text-align: center;
+	/* 검색바 중앙에 세로줄 */
+	.left-form {
+		border-right: 1px solid #e3e6f0;
 	}
 	
 	.table .notice-title {
@@ -36,10 +17,11 @@
 		padding-left: 30px;
 	}
 	
-	.clickable-row td:hover {
-		background-color: #edfbfc;
+	@media (max-width: 768px) {
+	  .left-form {
+	    border-right: none !important;
+	  }
 	}
-	
 </style>
 </head>
 <body id="page-top">
@@ -47,84 +29,129 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<!-- Page Heading -->
-			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<div
+				class="d-sm-flex align-items-center justify-content-between mb-4">
 				<h1 class="h3 mb-2 text-gray-800">공지사항</h1>
 			</div>
 			<!-- btnCommand Area -->
-			
+
 			<!-- ---------- 검색바 컨테이너 ---------- -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
-					
-					<!-- 주문서 등록 버튼 -->
-					<div class="btnCommand">
-						<button type="button" id="newBtn" class="btn btn-success">공지사항 등록</button>
-					</div>
 					<!-- ---------- 검색바 ---------- -->
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
 							<!-- 주문상태별 검색-->
 							<div class="col pl-4 search-box">
-							<form th:action="@{/groupware/notice/search}" method="get" th:object="${noticeSearchDTO}" id="noticeSearchForm">
-								<table class="table table-borderd">
-									<tr>
-										<td class="col-sm-12 col-md-2"><label for="type">분류</label></td>
-										<td class="col-sm-12 col-md-3"><th:block th:with="type=*{type}">
-																			<select name="type" id="type" th:value="*{type}" class="form-select" aria-label="Default select example">
-																				<option value="" th:selected="${type} eq '' ">전체</option>
-																				<option th:each="item : *{codeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}"></option>
-																			</select>
-																		</th:block>
-										</td>
-										<td class="col-sm-12 col-md-2"><label for="title">제목</label></td>
-										<td class="col-sm-12 col-md-3"><input type="text" id="title" th:field="*{title}" class="form-control rounded-sm mr-2" placeholder="공지사항 제목">
-										</td>
-									</tr>
-									<tr>
-										<td class="col-sm-12 col-md-2"><label for="isDeleted">삭제유무</label></td>
-										<td class="col-sm-12 col-md-3"><select name="isDeleted" id="isDeleted" th:value="*{isDeleted}" class="form-select" aria-label="Default select example">
-																	<option value="" th:selected="*{isDeleted} eq '' ">전체</option>
-																	<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
-																	<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
-																</select>
-										</td>
-										<td class="col-sm-12 col-md-2"><label for="regStartDate">등록일</label></td>
-										<td class="col-sm-12 col-md-3"><div class="input-group mb-3">
-																		<input type="text" id="regStartDate" th:field="*{regStartDate}" class="form-control">
-																		<span class="input-group-text calendar-icon" data-target="#regStartDate">
-															                <i class="fa fa-calendar"></i>
-															            </span>
-															            
-																		~
-																		
-																		<input type="text" id="regEndDate" th:field="*{regEndDate}" class="form-control">
-																		<span class="input-group-text calendar-icon" data-target="#regEndDate">
-															                <i class="fa fa-calendar"></i>
-															            </span>
-																	</div>
-										</td>
-									</tr>
-								</table>
-								<div class="btnCommand">
-									<button type="submit" id="searchBtn" class="btn btn-primary">검색</button>
-								</div>
-							</form>
+								<form th:action="@{/groupware/notice/search}" method="get" th:object="${noticeSearchDTO}" id="searchForm">
+									<!-- 페이징 히든 변수 -->
+									<input type="hidden" th:field="*{pageDTO.page}">
+									<input type="hidden" th:field="*{pageDTO.size}">
+									<!-- 페이징 히든 변수 -->
+									<div class="container-fluid px-5">
+										<div class="row">
+											<!-- 왼쪽 컬럼 -->
+											<div class="col-md-6 left-form">
+												<!-- 분류 -->
+												<div class="form-group row mb-3">
+													<label for="type" class="col-sm-3 col-form-label">분류</label>
+													<div class="col-sm-9">
+															<select name="type" th:value="*{type}" class="form-select">
+																<option value="">전체</option>
+																<option th:each="item : ${type}"
+																	th:value="${item.minorCode}"
+																	th:text="${item.minorName}"
+																	th:selected="*{type} == ${item.minorCode}"></option>
+															</select>
+													</div>
+												</div>
+												<!-- 삭제유무 -->
+												<div class="form-group row mb-3">
+													<label for="isDeleted" class="col-sm-3 col-form-label">삭제유무</label>
+													<div class="col-sm-9">
+														<select name="isDeleted" id="isDeleted"
+															th:value="*{isDeleted}" class="form-select">
+															<option value="" th:selected="*{isDeleted} eq '' ">전체</option>
+															<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
+															<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
+														</select>
+													</div>
+												</div>
+											</div>
+
+											<!-- 오른쪽 컬럼 -->
+											<div class="col-md-6">
+												<!-- 제목 -->
+												<div class="form-group row mb-3">
+													<label for="title" class="col-sm-3 col-form-label">제목</label>
+													<div class="col-sm-9">
+														<input type="text" th:field="*{title}"
+															class="form-control">
+													</div>
+												</div>
+												<!-- 등록일자 -->
+												<div class="form-group row mb-3">
+													<label for="requestStartDate"
+														class="col-sm-3 col-form-label">등록일자</label>
+													<div class="col-sm-9">
+														<div class="d-flex align-items-center">
+															<div class="input-group">
+																<input type="text" id="regStartDate"
+																	th:field="*{regStartDate}" class="form-control"
+																	autocomplete="off"> <span
+																	class="input-group-text calendar-icon"
+																	data-target="#requestStartDate"><i
+																	class="fa fa-calendar"></i></span>
+															</div>
+															<span class="mx-2">⁓</span>
+															<div class="input-group">
+																<input type="text" id="regEndDate"
+																	th:field="*{regEndDate}" class="form-control"
+																	autocomplete="off"> <span
+																	class="input-group-text calendar-icon"
+																	data-target="#requestStartDate"><i
+																	class="fa fa-calendar"></i></span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<!-- 검색바 버튼 -->
+										<div class="row justify-content-end">
+											<div class="col-12 col-sm-auto mb-2">
+												<button type="button" class="btn btn-success btn-block"
+													id="newBtn">등록</button>
+											</div>
+											<div class="col-12 col-sm-auto mb-2">
+												<button type="button" class="btn btn-warning btn-block"
+													onclick="formReset('searchForm');">초기화</button>
+											</div>
+											<div class="col-12 col-sm-auto mb-2">
+												<button type="submit" class="btn btn-primary btn-block"
+													id="btnSearch">검색</button>
+											</div>
+										</div>
+										<!-- 검색바 버튼 끝 -->
+									</div>
+								</form>
 							</div>
-						
+
 						</section>
 					</div>
 					<!-- ---------- 검색바 끝 ---------- -->
 				</div>
 			</div>
 			<!-- ---------- 검색바 컨테이너 끝 ---------- -->
-			
+
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
+						<table class="table table-bordered table-hover text-center"
+							id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
-<!-- 									<th class="checkHead">#</th> -->
 									<th class="w-50">제목</th>
 									<th>분류</th>
 									<th>작성자</th>
@@ -133,76 +160,61 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item, status : ${noticeDTOlist}" th:if="${item.isDeleted == 'N'}" th:data-id="${item.idx}" class="clickable-row">
-<!-- 									<td><input type="checkbox"></td> -->
+								<tr th:each="item, status : ${noticeDTOlist}"
+									th:if="${item.isDeleted == 'N'}" th:data-id="${item.idx}"
+									class="clickable-row">
 									<td th:text="${item.title}" class="notice-title"></td>
 									<td th:text="${item.codeName}"></td>
-									<td th:text="${item.regId}"></td>
+									<td th:text="${item.regName}"></td>
 									<td th:text="${item.regDate}"></td>
 									<td th:text="${item.readCount}"></td>
+								</tr>
+								<tr th:if="${#lists.isEmpty(noticeDTOlist)}" class="clickable-row menu2depth_items">
+									<td colspan="7"><span>조회 된 데이터가 없습니다.</span></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
+					<div th:replace="~{common/fragments/de_pagination :: pagination(${noticeSearchDTO})}"></div>
 				</div>
 			</div>
 			<!-- ------------- 본문 컨테이너 끝 ---------- -->
 		</div>
-		
+
 		<script type="text/javascript">
 			$(document).ready(function() {
 				// init DataTable
 				$('#dataTables').DataTable({
-					lengthChange: false,
-					searching: false,
-					paging: false,
-					info: false
-// 					destroy: true
+					lengthChange : false,
+					searching : false,
+					paging : false,
+					info : false,
+					order : [3, 'desc']
+				// 					destroy: true
 				}); // end of $('#dataTables').DataTable({
 				
-				$("#regStartDate, #regEndDate").flatpickr({
-	                dateFormat: "Y-m-d",
-	                allowInput: true, // input 창 readOnly 해제
-	                clickOpens: false // input 창 눌렀을 때 달력 출력 해제
-	            });
-				
-				$(".calendar-icon").on("click", function() {
-	                let targetInput = $(this).data("target"); // 해당 아이콘의 data-target 속성 값 가져오기
-	                $(targetInput).flatpickr().open(); // 해당 input의 달력 열기
-	            });
-				
-				$("#noticeSearchForm").on("submit", function(event) {
-		            $("#regStartDate, #regEndDate").each(function() {
-		            	let originalDate = $(this).val();
-// 		            	let cleanDate = $(this).val().replace(/[.\-\/]/g, ""); // 기호 제거
-		                $(this).val(cleanDate); // 정리된 값으로 변경
-		            });
-		        });
+				// ---------------------------------------------------
+  				// 기간별 날짜 검색(datepicker) 함수 활용 - (공통 페이지에 있음)
+				// 등록일자 적용
+			    initDateRangePicker('regStartDate', 'regEndDate');
+			    // ------------------------------------------------------------
 				
 			});
-				
+
 			$(function() {
 				$("#newBtn").on("click", function() {
 					location.href = "/groupware/notice/new";
 				});
-				
+
 				$(".clickable-row").on("click", function() {
 					let idx = $(this).data("id");
-					location.href=`/groupware/notice/${idx}`;
+					location.href = `/groupware/notice/${idx}`;
 				});
-				
+
 			})
 		</script>
 	</th:block>
 	<!-- ------------------------------------------------------------------------------- -->
-	
-	<!-- JS -->
-	<th:block layout:fragment="script">
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-		<script src="/js/datatables/jquery.dataTables.min.js"></script>
-		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
-		<script src="/js/demo/datatables-demo.js"></script>
-	</th:block>
 </body>
 
 </html>

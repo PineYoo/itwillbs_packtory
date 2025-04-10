@@ -53,49 +53,41 @@
 		n.mod_date
 	</sql>
 	
-	<select id="getNoticeList" resultType="kr.co.itwillbs.de.groupware.dto.NoticeDTO">
+	<select id="getNoticeList" parameterType="kr.co.itwillbs.de.groupware.dto.NoticeSearchDTO" 
+								resultType="kr.co.itwillbs.de.groupware.dto.NoticeDTO">
 		SELECT
 			<include refid="t_notice_columns_forSelect"></include>
 			 , c.minor_name AS codeName
-		  FROM t_notice n JOIN t_commoncode_item c
+			 , e.name AS regName
+		  FROM t_notice n
+		  JOIN t_commoncode_item c
 		    ON n.type = c.minor_code
-		   AND c.major_code = #{major_code}
-	</select>
-	
-	<select id="getNoticeSearchList" parameterType="kr.co.itwillbs.de.groupware.dto.NoticeSearchDTO"
-									resultType="kr.co.itwillbs.de.groupware.dto.NoticeDTO">
-		SELECT
-			<include refid="t_notice_columns_forSelect"></include>
-			 , c.minor_name AS codeName
-		  FROM t_notice n JOIN t_commoncode_item c
-		    ON n.type = c.minor_code
-		   AND c.major_code = #{majorCode}
+		   AND c.major_code = "NOTICE_TYPE"
+		  JOIN t_employee e
+		    ON n.reg_id = e.id
 		<where>
-			<if test="noticeSearchDTO.type != null and noticeSearchDTO.type.trim() != ''">
-		   AND n.type = #{noticeSearchDTO.type}
-			</if>
-			<if test="noticeSearchDTO.title != null and noticeSearchDTO.title.trim() != ''">
-		   AND n.title LIKE CONCAT('%', #{noticeSearchDTO.title}, '%') 
-			</if>
-			<if test="noticeSearchDTO.isDeleted != null and noticeSearchDTO.isDeleted.trim() != ''">
-		   AND n.is_deleted = #{noticeSearchDTO.isDeleted}
-			</if>
+			<if test='type !=null and !("".equals(type.trim()))'>and type = #{type}</if>
+			<if test='title !=null and !("".equals(title.trim()))'>and title LIKE CONCAT('%',#{title},'%')</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>and is_deleted = #{isDeleted}</if>
 			<choose>
-				<when test="(noticeSearchDTO.regStartDate != null and noticeSearchDTO.regStartDate.trim() != '')
-							and (noticeSearchDTO.regEndDate != null and noticeSearchDTO.regEndDate.trim() != '')">
-					AND n.reg_date BETWEEN STR_TO_DATE(CONCAT(#{noticeSearchDTO.regStartDate}, '000000'),'%Y-%m-%d%H%i%S') 
-										AND STR_TO_DATE(CONCAT(#{noticeSearchDTO.regEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				<when test="(regStartDate != null and regStartDate.trim() != '')
+							and (regEndDate != null and regEndDate.trim() != '')">
+					AND n.reg_date BETWEEN STR_TO_DATE(CONCAT(#{regStartDate}, '000000'),'%Y-%m-%d%H%i%S') 
+										AND STR_TO_DATE(CONCAT(#{regEndDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
-				<when test="(noticeSearchDTO.regStartDate != null and noticeSearchDTO.regStartDate.trim() != '')
-							and (noticeSearchDTO.regEndDate == null or noticeSearchDTO.regEndDate.trim() == '')">
-					AND n.reg_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{noticeSearchDTO.regStartDate}, '000000'),'%Y-%m-%d%H%i%S')
+				<when test="(regStartDate != null and regStartDate.trim() != '')
+							and (regEndDate == null or regEndDate.trim() == '')">
+					AND n.reg_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{regStartDate}, '000000'),'%Y-%m-%d%H%i%S')
 				</when>
-				<when test="(noticeSearchDTO.regStartDate == null or noticeSearchDTO.regStartDate.trim() == '')
-							and (noticeSearchDTO.regEndDate != null and noticeSearchDTO.regEndDate.trim() != '')">
-					AND n.reg_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{noticeSearchDTO.regEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				<when test="(regStartDate == null or regStartDate.trim() == '')
+							and (regEndDate != null and regEndDate.trim() != '')">
+					AND n.reg_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{regEndDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 		</where>
+		ORDER
+		   BY reg_date DESC
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
 	<insert id="registerNotice" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.groupware.dto.NoticeDTO">
@@ -163,6 +155,33 @@
 			</set>
 		where idx = #{idx}
 	</update>
+	
+	<select id="getNoticeCountBySearchDTO" parameterType="kr.co.itwillbs.de.groupware.dto.NoticeSearchDTO"
+									resultType="int">
+		SELECT COUNT(*)
+		  FROM t_notice
+		<where>
+			<if test='type !=null and !("".equals(type.trim()))'>and type = #{type}</if>
+			<if test='title !=null and !("".equals(title.trim()))'>and title LIKE CONCAT('%',#{title},'%')</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>and is_deleted = #{isDeleted}</if>
+			<choose>
+				<when test="(regStartDate != null and regStartDate.trim() != '')
+							and (regEndDate != null and regEndDate.trim() != '')">
+					AND reg_date BETWEEN STR_TO_DATE(CONCAT(#{regStartDate}, '000000'),'%Y-%m-%d%H%i%S') 
+										AND STR_TO_DATE(CONCAT(#{regEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(regStartDate != null and regStartDate.trim() != '')
+							and (regEndDate == null or regEndDate.trim() == '')">
+					AND reg_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{regStartDate}, '000000'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when test="(regStartDate == null or regStartDate.trim() == '')
+							and (regEndDate != null and regEndDate.trim() != '')">
+					AND reg_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{regEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+				</when>
+			</choose>
+		</where>
+	</select>
+	
 	
 </mapper>
 

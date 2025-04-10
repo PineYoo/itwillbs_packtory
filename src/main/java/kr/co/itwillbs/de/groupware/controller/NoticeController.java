@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.itwillbs.de.common.service.CommonService;
+import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.service.FileService;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.FileUtil;
@@ -60,10 +63,15 @@ public class NoticeController {
 	 * @return approval/notice/notice_register_form
 	 */
 	@GetMapping(value={"/new"})
-	public String noticeRegisterForm(Model model) {
+	public String noticeRegisterForm(@ModelAttribute NoticeDTO noticeDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		model.addAttribute("noticeDTO", new NoticeDTO());
+		//	----------------------------------------------------------
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		String memberId = userDetails.getUsername();
+		noticeDTO.setRegId(memberId);
+		//	----------------------------------------------------------
+		model.addAttribute("noticeDTO", noticeDTO);
 		//	공통코드 가져오기
 		model.addAttribute("codeType", commonService.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
 		
@@ -134,15 +142,18 @@ public class NoticeController {
 	 * @return approval/notice/notice_list
 	 */
 	@GetMapping(value={"","/"})
-	public String getNoticeList(Model model) {
+	public String getNoticeList(@ModelAttribute NoticeSearchDTO noticeSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		List<NoticeDTO> noticeDTOlist = noticeService.getNoticeList(COMMON_MAJOR_CODE_NOTICE_TYPE);
-		model.addAttribute("noticeDTOlist", noticeDTOlist);
-		
-		NoticeSearchDTO noticeSearchDTO = new NoticeSearchDTO();
-		noticeSearchDTO.setCodeItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
+		//	리스트 검색 DTO 뷰에 전달
+		noticeSearchDTO.getPageDTO().setTotalCount(noticeService.getNoticeCountBySearchDTO(noticeSearchDTO));
 		model.addAttribute("noticeSearchDTO", noticeSearchDTO);
+		//	notice type select 용 리스트 뷰에 전달
+		model.addAttribute("type", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
+		
+		//	리스트 결과 DTOlist 뷰에 전달
+		List<NoticeDTO> noticeDTOlist = noticeService.getNoticeList(noticeSearchDTO);
+		model.addAttribute("noticeDTOlist", noticeDTOlist);
 		
 		return "groupware/notice/notice_list";
 	}
@@ -158,17 +169,15 @@ public class NoticeController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestData : {} ", noticeSearchDTO.toString());
-		
-		List<NoticeDTO> noticeDTOList = noticeService.getNoticeSearchList(COMMON_MAJOR_CODE_NOTICE_TYPE, noticeSearchDTO);
-		log.info("noticeDTOList : {} ", noticeDTOList.toString());
-		
-		// 조회 결과 값 뷰에 전달
-		model.addAttribute("noticeDTOlist", noticeDTOList);
-		
-		// 검색 조건 값 뷰에 전달
-		noticeSearchDTO.setCodeItemList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
-		log.info("noticeDTOList : {} ", noticeSearchDTO.toString());
+		//	리스트 검색 DTO 뷰에 전달
+		noticeSearchDTO.getPageDTO().setTotalCount(noticeService.getNoticeCountBySearchDTO(noticeSearchDTO));
 		model.addAttribute("noticeSearchDTO", noticeSearchDTO);
+		//	notice type select 용 리스트 뷰에 전달
+		model.addAttribute("type", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
+		
+		//	리스트 결과 DTOlist 뷰에 전달
+		List<NoticeDTO> noticeDTOList = noticeService.getNoticeList(noticeSearchDTO);
+		model.addAttribute("noticeDTOlist", noticeDTOList);
 		
 		return "groupware/notice/notice_list";
 	}

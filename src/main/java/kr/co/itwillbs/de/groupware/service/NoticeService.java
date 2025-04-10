@@ -28,10 +28,10 @@ public class NoticeService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<NoticeDTO> getNoticeList(String major_code) {
+	public List<NoticeDTO> getNoticeList(NoticeSearchDTO noticeSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		return noticeMapper.getNoticeList(major_code);
+		return noticeMapper.getNoticeList(noticeSearchDTO);
 	}
 	
 	/**
@@ -54,24 +54,13 @@ public class NoticeService {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// 나중엔 regId와 modId를 세션에서 가져와 작업할 예정이기에 지금은 하드코딩처리함
-		noticeDTO.setRegId("testUser");
+//		noticeDTO.setRegId("testUser");
 		
 		int generatedIdx = noticeMapper.registerNotice(noticeDTO);
 		log.info("generated Idx value : {}", generatedIdx, noticeDTO.getIdx());
 		return noticeDTO.getIdx();
 	}
 
-	/**
-	 * 공지사항 검색 조건 조회
-	 * @param major_code 
-	 * @param noticeSearchDTO
-	 * @return
-	 */
-	public List<NoticeDTO> getNoticeSearchList(String majorCode, NoticeSearchDTO noticeSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		return noticeMapper.getNoticeSearchList(majorCode, noticeSearchDTO);
-	}
 
 	/**
 	 * 공지사항 업데이트
@@ -140,9 +129,16 @@ public class NoticeService {
 		}
 		
 	}
-	
-	
-	
-	
+
+	/**
+	 * SELECT count(*) FROM t_notice
+	 * @param noticeSearchDTO
+	 * @return int
+	 */
+	public int getNoticeCountBySearchDTO(NoticeSearchDTO noticeSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return noticeMapper.getNoticeCountBySearchDTO(noticeSearchDTO);
+	}
 
 }

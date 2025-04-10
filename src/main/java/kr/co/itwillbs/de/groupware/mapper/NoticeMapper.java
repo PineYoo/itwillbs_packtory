@@ -11,20 +11,19 @@ import kr.co.itwillbs.de.groupware.dto.NoticeSearchDTO;
 
 @Mapper
 public interface NoticeMapper {
-	List<NoticeDTO> getNoticeList(String major_code);
+	List<NoticeDTO> getNoticeList(NoticeSearchDTO noticeSearchDTO);
 	
 	NoticeDTO getNotice(String idx);
 	
 	int registerNotice(NoticeDTO noticeVO);
-	
-	List<NoticeDTO> getNoticeSearchList(@Param("majorCode") String majorCode ,
-										@Param("noticeSearchDTO") NoticeSearchDTO noticeSearchDTO);
 	
 	int modifyNotice(NoticeDTO noticeDTO);
 	
 	int removeNotice(NoticeDTO noticeDTO);
 
 	int removeFile(FileVO fileVO);
+
+	int getNoticeCountBySearchDTO(NoticeSearchDTO noticeSearchDTO);
 	
 	
 }
