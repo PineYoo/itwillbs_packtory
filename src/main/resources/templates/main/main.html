@@ -194,11 +194,9 @@
 						</div>
 						<div class="card-body">
 							<!-- hidden ! -->
-							<input type="hidden" id="modelCheckInTime"
-								th:value="${checkInTime}"> <input type="hidden"
-								id="modelCheckOutTime" th:value="${checkOutTime}"> <input
-								type="hidden" id="modelLastStatus"
-								th:value="${lastCommuteRecord != null ? lastCommuteRecord.workStatusCode : ''}">
+							<input type="hidden" id="modelCheckInTime" th:value="${checkInTime}"> 
+							<input type="hidden" id="modelCheckOutTime" th:value="${checkOutTime}">
+							<input type="hidden" id="modelLastStatus" th:value="${lastCommuteRecord != null ? lastCommuteRecord.workStatusCode : ''}">
 
 							<div class="commute-container">
 								<div class="commute-line">
@@ -246,235 +244,236 @@
 			<hr>
 			<span>세션 디버깅</span>
 			<span th:text="${loginVO}"></span>
-			<script type="text/javascript">
-				document.addEventListener('DOMContentLoaded', function() {
-					var calendarEl = document.getElementById('calendar');
-					var calendar = new FullCalendar.Calendar(calendarEl, {
-						initialView : 'dayGridMonth',
-						locale : 'ko',
-						headerToolbar : {
-							left : 'prev,next today',
-							center : 'title',
-							right : 'dayGridMonth,timeGridWeek'
-						},
-						events : [
-						// 나중에 서버에서 JSON 받아서 동적으로 처리 가능
-						{
-							title : '졸려1',
-							start : '2025-04-07',
-							end : '2025-04-11'
-						},
-						{
-							title : '졸려2',
-							start : '2025-04-08',
-							end : '2025-04-11'
-						},
-						{
-							title : '졸려3',
-							start : '2025-04-09',
-							end : '2025-04-11'
-						},
-						{
-							title : '진짜? 1차야?',
-							start : '2025-04-10'
-						},
-						{
-							title : '2차...',
-							start : '2025-05-07'
-						} 
-						]
-					});
-					calendar.render();
-					
-					
-					// -------------------------------------------------
-					// 출퇴근버튼
-					// 초기 버튼 상태 설정
-				    const checkInBtn = $("#출근");
-				    const checkOutBtn = $("#퇴근");
-				    const outSideBtn = $("#외근");
-				    const comeBackBtn = $("#복귀");
+		</div> <!-- /.container-fluid -->
 		
-				    const modelCheckInTime = $('#modelCheckInTime').val();		// 출근 시간
-				    const modelCheckOutTime = $('#modelCheckOutTime').val();	// 퇴근 시간
-				    const modelLastStatus = $('#modelLastStatus').val();   		// 마지막 근무 상태 코드
-		
-				    // 초기 시간 세팅
-				    if (modelCheckInTime) {	// 출근시간
-				        $('#checkInTime').val(modelCheckInTime);
-				    }
-				    if (modelCheckOutTime) {	// 퇴근시간
-				        $('#checkOutTime').val(modelCheckOutTime);
-				    }
-		
-				    // workStatusCode(=minorCode)를 기반으로 minorName 찾기
-				    // => codeItemList를 JSON 문자열로 가져옴
-				    let lastStatusName = null;
-				    if (modelLastStatus) {
-				        const statusItem = codeItemList.find(item => item.minorCode == modelLastStatus);
-				        if (statusItem) {
-				            lastStatusName = statusItem.minorName;
-				        }
-				    }
-				    console.log("lastStatusName:", lastStatusName);
-
-				    
-				    
-				    // ---------------------------------------------------------------------------------
-				    // 버튼 초기 상태 설정
-				    function initButtonState(statusName) {
-				    	// 모든 버튼 비활성화
-				        checkInBtn.prop("disabled", true);
-				        checkOutBtn.prop("disabled", true);
-				        outSideBtn.prop("disabled", true);
-				        comeBackBtn.prop("disabled", true);
-		
-				     	// 출근 전
-				        if (!statusName) {
-				            checkInBtn.show().prop("disabled", false);
-				            return;
-				        }
-
-			            const now = new Date();
-			            const today = now.toISOString().slice(0, 10); // 오늘 날짜
-			            
-				        // 출근은 했고 퇴근 전이면 (상태가 출근/외근/복귀 관계없이)
-				        if (modelCheckInTime && !modelCheckOutTime) {
-				            const checkIn = new Date(`${today}T${modelCheckInTime}`);
-//	 		                const checkOutTime = new Date(checkIn.getTime() + 9 * 60 * 60 * 1000);	// 9시간
-				            const checkOutTime = new Date(checkIn.getTime() + 30 * 1000);	// 테스트용 (30초 후 퇴근 가능)
-			                const delay = checkOutTime - now;	// 퇴근까지 남은시간
-							
-	                        checkOutBtn.show();	// 퇴근 버튼
-	                        outSideBtn.show();	// 외근 버튼
-	                        comeBackBtn.show();	// 복귀 버튼
-
-	                        // 퇴근 버튼 처리
-				            if (now >= checkOutTime) {	// 퇴근시간이 되었을 경우
-				                checkOutBtn.prop("disabled", false);
-				            } else {	// 아직 퇴근시간 아닐 경우
-				                setTimeout(() => checkOutBtn.prop("disabled", false), delay);
-				            }
-	                        
-				            console.log("상태명:", statusName);
-	                        
-				            // 외근 버튼 처리 (출근/지각/복귀 상태, 퇴근 시간 도달 전, 퇴근 기록 없어야 함)
-//	 			            if ((statusName === '출근' || statusName === '지각' || statusName === '복귀') && now < checkOutTime && !modelCheckOutTime) {
-				            if (['출근', '지각', '복귀'].includes(statusName) && now < checkOutTime && !modelCheckOutTime) {
-				                outSideBtn.prop("disabled", false);	// 외근 O
-				            }
-				        }
-
-				     	// 복귀 버튼은 상태가 외근일 때만
-				        if (statusName === '외근') {
-				            comeBackBtn.prop("disabled", false);	// 복귀 O
-				        }
-				     	
-			            // 퇴근 후: 퇴근버튼 외 아무 버튼도 안 보이게
-				        if (modelCheckOutTime) {
-				            checkInBtn.hide();
-				            checkOutBtn.show();
-				            outSideBtn.hide();
-				            comeBackBtn.hide();
-				        }
-				    }
-		
-				    initButtonState(lastStatusName);
-		
-				    // ---------------------------------------------------------------------------------
-				    // 출퇴근시간 포맷 함수(hh:mm:ss)
-				    function formatTime(date) {
-				        const hh = String(date.getHours()).padStart(2, '0');
-				        const mm = String(date.getMinutes()).padStart(2, '0');
-				        const ss = String(date.getSeconds()).padStart(2, '0');
-				        return `${hh}:${mm}:${ss}`;
-				    }
-				    
-				    // 버튼 클릭 이벤트
-				    $('.work-btn').on('click', function () {
-				        const $btn = $(this);
-				        let workStatusCode = $btn.data('code');	// minorCode
-				        let workStatusName = $btn.data('name');	// minorName
-		
-				        const now = new Date();
-				        if (workStatusName === '출근') {
-				            $('#checkInTime').val(formatTime(now));		// hh:mm:ss
-				        } else if (workStatusName === '퇴근') {
-				            $('#checkOutTime').val(formatTime(now));	// hh:mm:ss
-				        }
-		
-				        // 버튼 상태 변경
-				        switch (workStatusName) {
-				            case '출근':
-				                checkInBtn.hide().prop("disabled", true);	// 출근 : 숨기고 비활성화
-				                checkOutBtn.show();							// 퇴근 : 보이기(비활성화)
-				                outSideBtn.show().prop("disabled", false);	// 외근 : 보이고 활성화
-				                comeBackBtn.show();							// 복귀 : 보이기(비활성화)
-				                
-				             	// 테스트용: 30초 뒤 퇴근 버튼 활성화
-				                const futureTime = new Date(now.getTime() + 30 * 1000);	// 9시간 : 9 * 60 * 60 * 1000
-				                const delay = futureTime.getTime() - now.getTime();
-
-				                setTimeout(() => {
-				                    checkOutBtn.prop("disabled", false);	// 출근 O
-				                    outSideBtn.prop("disabled", true);		// 외근 X
-				                }, delay);
-				                break;
-		
-				            case '외근':
-				                outSideBtn.prop("disabled", true);
-				                comeBackBtn.prop("disabled", false);
-				                break;
-		
-				            case '복귀':
-				                comeBackBtn.prop("disabled", true);
-				             	
-				                // 복귀 로직 - 출근 시간 기준으로 퇴근 시간 비교
-				                const checkInTime = $('#checkInTime').val();
-				                if (checkInTime) {
-				                    const today = now.toISOString().slice(0, 10);  // YYYY-MM-DD
-				                    const checkInDate = new Date(`${today}T${checkInTime}`); // 출근 시각
-				                    const futureTimeForComeback = new Date(checkInDate.getTime() + 30 * 1000); // 출근 30초 후가 퇴근 시간 기준
-				                    const nowForComeback = new Date();
-
-				                    if (nowForComeback < futureTimeForComeback) {   // 퇴근시간 전
-				                        outSideBtn.prop("disabled", false); // 외근 O
-				                    } else {    // 퇴근시간 이후
-				                        outSideBtn.prop("disabled", true);  // 외근 X
-				                    }
-				                }
-				                break;
-		
-				            case '퇴근':
-				                checkOutBtn.prop("disabled", true);			// 퇴근 : 비활성화
-				                outSideBtn.hide().prop("disabled", true);	// 외근 : 숨기고 비활성화
-				                comeBackBtn.hide().prop("disabled", true);	// 복귀 : 숨기고 비활성화
-				                break;
-				        }
-		
-				        // AJAX 전송
-				        $.ajax({
-				            url: '/commute/save',
-				            type: 'POST',
-				            contentType: 'application/json',
-				            data: JSON.stringify({
-				                workStatusCode: workStatusCode
-				            }),
-				            success: function (response) {
-				                alert('처리 완료: ' + workStatusName);
-				                console.log(response);
-				            },
-				            error: function (xhr, status, error) {
-				                alert('전송 실패');
-				                console.error(error);
-				            }
-				        });
-				    });
-				    // -----------------------------------------------------------
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				var calendarEl = document.getElementById('calendar');
+				var calendar = new FullCalendar.Calendar(calendarEl, {
+					initialView : 'dayGridMonth',
+					locale : 'ko',
+					headerToolbar : {
+						left : 'prev,next today',
+						center : 'title',
+						right : 'dayGridMonth,timeGridWeek'
+					},
+					events : [
+					// 나중에 서버에서 JSON 받아서 동적으로 처리 가능
+					{
+						title : '졸려1',
+						start : '2025-04-07',
+						end : '2025-04-11'
+					},
+					{
+						title : '졸려2',
+						start : '2025-04-08',
+						end : '2025-04-11'
+					},
+					{
+						title : '졸려3',
+						start : '2025-04-09',
+						end : '2025-04-11'
+					},
+					{
+						title : '진짜? 1차야?',
+						start : '2025-04-10'
+					},
+					{
+						title : '2차...',
+						start : '2025-05-07'
+					} 
+					]
 				});
-			</script>	
-		<!-- /.container-fluid -->
-	</th:block>
+				calendar.render();
+				
+				
+				// -------------------------------------------------
+				// 출퇴근버튼
+				// 초기 버튼 상태 설정
+			    const checkInBtn = $("#출근");
+			    const checkOutBtn = $("#퇴근");
+			    const outSideBtn = $("#외근");
+			    const comeBackBtn = $("#복귀");
+	
+			    const modelCheckInTime = $('#modelCheckInTime').val();		// 출근 시간
+			    const modelCheckOutTime = $('#modelCheckOutTime').val();	// 퇴근 시간
+			    const modelLastStatus = $('#modelLastStatus').val();   		// 마지막 근무 상태 코드
+	
+			    // 초기 시간 세팅
+			    if (modelCheckInTime) {	// 출근시간
+			        $('#checkInTime').val(modelCheckInTime);
+			    }
+			    if (modelCheckOutTime) {	// 퇴근시간
+			        $('#checkOutTime').val(modelCheckOutTime);
+			    }
+	
+			    // workStatusCode(=minorCode)를 기반으로 minorName 찾기
+			    // => codeItemList를 JSON 문자열로 가져옴
+			    let lastStatusName = null;
+			    if (modelLastStatus) {
+			        const statusItem = codeItemList.find(item => item.minorCode == modelLastStatus);
+			        if (statusItem) {
+			            lastStatusName = statusItem.minorName;
+			        }
+			    }
+			    console.log("lastStatusName:", lastStatusName);
+
+			    
+			    
+			    // ---------------------------------------------------------------------------------
+			    // 버튼 초기 상태 설정
+			    function initButtonState(statusName) {
+			    	// 모든 버튼 비활성화
+			        checkInBtn.prop("disabled", true);
+			        checkOutBtn.prop("disabled", true);
+			        outSideBtn.prop("disabled", true);
+			        comeBackBtn.prop("disabled", true);
+	
+			     	// 출근 전
+			        if (!statusName) {
+			            checkInBtn.show().prop("disabled", false);
+			            return;
+			        }
+
+		            const now = new Date();
+		            const today = now.toISOString().slice(0, 10); // 오늘 날짜
+		            
+			        // 출근은 했고 퇴근 전이면 (상태가 출근/외근/복귀 관계없이)
+			        if (modelCheckInTime && !modelCheckOutTime) {
+			            const checkIn = new Date(`${today}T${modelCheckInTime}`);
+//	 		            const checkOutTime = new Date(checkIn.getTime() + 9 * 60 * 60 * 1000);	// 9시간
+			            const checkOutTime = new Date(checkIn.getTime() + 30 * 1000);	// 테스트용 (30초 후 퇴근 가능)
+		                const delay = checkOutTime - now;	// 퇴근까지 남은시간
+						
+                        checkOutBtn.show();	// 퇴근 버튼
+                        outSideBtn.show();	// 외근 버튼
+                        comeBackBtn.show();	// 복귀 버튼
+
+                        // 퇴근 버튼 처리
+			            if (now >= checkOutTime) {	// 퇴근시간이 되었을 경우
+			                checkOutBtn.prop("disabled", false);
+			            } else {	// 아직 퇴근시간 아닐 경우
+			                setTimeout(() => checkOutBtn.prop("disabled", false), delay);
+			            }
+                        
+			            console.log("상태명:", statusName);
+                        
+			            // 외근 버튼 처리 (출근/지각/복귀 상태, 퇴근 시간 도달 전, 퇴근 기록 없어야 함)
+//	 			        if ((statusName === '출근' || statusName === '지각' || statusName === '복귀') && now < checkOutTime && !modelCheckOutTime) {
+			            if (['출근', '지각', '복귀'].includes(statusName) && now < checkOutTime && !modelCheckOutTime) {
+			                outSideBtn.prop("disabled", false);	// 외근 O
+			            }
+			        }
+
+			     	// 복귀 버튼은 상태가 외근일 때만
+			        if (statusName === '외근') {
+			            comeBackBtn.prop("disabled", false);	// 복귀 O
+			        }
+			     	
+		            // 퇴근 후: 퇴근버튼 외 아무 버튼도 안 보이게
+			        if (modelCheckOutTime) {
+			            checkInBtn.hide();
+			            checkOutBtn.show();
+			            outSideBtn.hide();
+			            comeBackBtn.hide();
+			        }
+			    }
+	
+			    initButtonState(lastStatusName);
+	
+			    // ---------------------------------------------------------------------------------
+			    // 출퇴근시간 포맷 함수(hh:mm:ss)
+			    function formatTime(date) {
+			        const hh = String(date.getHours()).padStart(2, '0');
+			        const mm = String(date.getMinutes()).padStart(2, '0');
+			        const ss = String(date.getSeconds()).padStart(2, '0');
+			        return `${hh}:${mm}:${ss}`;
+			    }
+			    
+			    // 버튼 클릭 이벤트
+			    $('.work-btn').on('click', function () {
+			        const $btn = $(this);
+			        let workStatusCode = $btn.data('code');	// minorCode
+			        let workStatusName = $btn.data('name');	// minorName
+	
+			        const now = new Date();
+			        if (workStatusName === '출근') {
+			            $('#checkInTime').val(formatTime(now));		// hh:mm:ss
+			        } else if (workStatusName === '퇴근') {
+			            $('#checkOutTime').val(formatTime(now));	// hh:mm:ss
+			        }
+	
+			        // 버튼 상태 변경
+			        switch (workStatusName) {
+			            case '출근':
+			                checkInBtn.hide().prop("disabled", true);	// 출근 : 숨기고 비활성화
+			                checkOutBtn.show();							// 퇴근 : 보이기(비활성화)
+			                outSideBtn.show().prop("disabled", false);	// 외근 : 보이고 활성화
+			                comeBackBtn.show();							// 복귀 : 보이기(비활성화)
+			                
+			             	// 테스트용: 30초 뒤 퇴근 버튼 활성화
+			                const futureTime = new Date(now.getTime() + 30 * 1000);	// 9시간 : 9 * 60 * 60 * 1000
+			                const delay = futureTime.getTime() - now.getTime();
+
+			                setTimeout(() => {
+			                    checkOutBtn.prop("disabled", false);	// 출근 O
+			                    outSideBtn.prop("disabled", true);		// 외근 X
+			                }, delay);
+			                break;
+	
+			            case '외근':
+			                outSideBtn.prop("disabled", true);
+			                comeBackBtn.prop("disabled", false);
+			                break;
+	
+			            case '복귀':
+			                comeBackBtn.prop("disabled", true);
+			             	
+			                // 복귀 로직 - 출근 시간 기준으로 퇴근 시간 비교
+			                const checkInTime = $('#checkInTime').val();
+			                if (checkInTime) {
+			                    const today = now.toISOString().slice(0, 10);  // YYYY-MM-DD
+			                    const checkInDate = new Date(`${today}T${checkInTime}`); // 출근 시각
+			                    const futureTimeForComeback = new Date(checkInDate.getTime() + 30 * 1000); // 출근 30초 후가 퇴근 시간 기준
+			                    const nowForComeback = new Date();
+
+			                    if (nowForComeback < futureTimeForComeback) {   // 퇴근시간 전
+			                        outSideBtn.prop("disabled", false); // 외근 O
+			                    } else {    // 퇴근시간 이후
+			                        outSideBtn.prop("disabled", true);  // 외근 X
+			                    }
+			                }
+			                break;
+	
+			            case '퇴근':
+			                checkOutBtn.prop("disabled", true);			// 퇴근 : 비활성화
+			                outSideBtn.hide().prop("disabled", true);	// 외근 : 숨기고 비활성화
+			                comeBackBtn.hide().prop("disabled", true);	// 복귀 : 숨기고 비활성화
+			                break;
+			        }
+	
+			        // AJAX 전송
+			        $.ajax({
+			            url: '/commute/save',
+			            type: 'POST',
+			            contentType: 'application/json',
+			            data: JSON.stringify({
+			                workStatusCode: workStatusCode
+			            }),
+			            success: function (response) {
+			                alert('처리 완료: ' + workStatusName);
+			                console.log(response);
+			            },
+			            error: function (xhr, status, error) {
+			                alert('전송 실패');
+			                console.error(error);
+			            }
+			        });
+			    });
+			    // -----------------------------------------------------------
+			});
+		</script>	
+	</th:block> <!-- </th:block layout:fragment="contents"> -->
 
 	<th:block layout:fragment="script">
 		<!-- codeItemList를 JSON 문자열로 넘기기 -->

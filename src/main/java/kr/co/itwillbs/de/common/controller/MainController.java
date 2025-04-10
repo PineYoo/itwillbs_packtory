@@ -3,12 +3,12 @@ package kr.co.itwillbs.de.common.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -133,9 +133,11 @@ public class MainController {
 		// 마지막 기록
 		CommuteDTO lastCommuteRecord = commuteService.getTodayLastCommute(id, today);
 		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		
 		log.info("checkInTime : " + checkInRecord);
-		model.addAttribute("checkInTime", checkInRecord != null ? checkInRecord.getRegDate().toLocalTime() : null);	// 오늘 출근기록 있을 경우 출근시간
-		model.addAttribute("checkOutTime", checkOutRecord != null ? checkOutRecord.getRegDate().toLocalTime() : null);	// 오늘 퇴근기록 있을 경우 퇴근시간
+		model.addAttribute("checkInTime", checkInRecord != null ? checkInRecord.getRegDate().toLocalTime().format(formatter) : null);	// 오늘 출근기록 있을 경우 출근시간
+		model.addAttribute("checkOutTime", checkOutRecord != null ? checkOutRecord.getRegDate().toLocalTime().format(formatter) : null);	// 오늘 퇴근기록 있을 경우 퇴근시간
 		log.info("lastCommuteRecord : " + lastCommuteRecord);	// 오늘 출퇴근 마지막 기록
 		model.addAttribute("lastCommuteRecord", lastCommuteRecord);	// 오늘 출퇴근 마지막 기록
 		
