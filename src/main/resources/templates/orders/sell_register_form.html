@@ -65,23 +65,55 @@
 								                <label class="col-sm-8 col-md-4" for="requestDate">요청예정일자</label>
 								                <input type="text" id="requestDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{orderDTO.requestDate}" placeholder="날짜 선택" autocomplete="off">
 								            </div>
+								        </div>
+								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="dueDate">요청마감일자</label>
 								                <input type="text" id="dueDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{orderDTO.dueDate}" placeholder="날짜 선택" autocomplete="off">
 								            </div>
 								        </div>
+								    </div>
+							    </div>
+							    
+							    <!-- ------------------------------------------------------------------------------------------------------- -->
+							    <hr>
+								<div class="data-container">
+								    <div class="row">
+							            <div>
+							                <button type="button" id="resetSteps" class="btn btn-secondary mt-2">선택 초기화</button>
+							            </div>
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
-								                <label class="col-sm-8 col-md-4" for="clientName">담당자</label>
-								                <input type="text" id="clientName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{orderDetailDTO.clientName}">
+								                <label class="col-sm-8 col-md-4" for="departmentCode">담당자 부서</label>
+								                <select id="departmentCode" name="departmentCode" class="col-sm-12 col-md-6 rounded-sm mr-2">
+								                    <option value="">부서를 선택하세요</option>
+								                </select>
 								            </div>
 								            <div>
+								                <label class="col-sm-8 col-md-4" for="subDepartmentCode">담당자 하위부서</label>
+								                <select id="subDepartmentCode" name="subDepartmentCode" class="col-sm-12 col-md-6 rounded-sm mr-2">
+								                    <option value="">하위부서를 선택하세요</option>
+								                </select>
+								            </div>
+								        </div>
+								        <div class="col-sm-12 col-md-6 mb-3">
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="clientId">담당자</label>
+											    <select id="clientId" name="clientId" class="col-sm-12 col-md-6 rounded-sm mr-2">
+											        <option value="">담당자를 선택하세요</option>
+											    </select>
+								                <!-- hidden - 담당자는 id가 아닌 name 으로 저장하기 위함 -->
+								                <input type="hidden" name="clientName" id="clientNameHidden" th:field="*{orderDetailDTO.clientName}">
+								            </div>
+											
+								            <div>
 								                <label class="col-sm-8 col-md-4" for="clientPhone">담당자 전화번호</label>
-								                <input type="text" id="clientPhone" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{orderDetailDTO.clientPhone}" maxlength="13" placeholder="010-1234-5678">
+								                <input type="text" id="clientPhone" class="col-sm-12 col-md-6 rounded-sm mr-2"
+								                       th:field="*{orderDetailDTO.clientPhone}" maxlength="13" placeholder="010-1234-5678" readonly>
 								            </div>
 								        </div>
 								    </div>
-							    </div>
+								</div>
 							    
 							    <!-- ------------------------------------------------------------------------------------------------------- -->
 							    <hr>
@@ -133,12 +165,15 @@
 								<div class="data-container">
 							    	<div class="row">
 								        <div class="col-sm-12 col-md-6 mb-3">
-								            <div class="addressInfo">
+								            <div>
 								                <label class="col-sm-8 col-md-4 mt-2" for="companyNumber">사업자 등록 번호</label>
-												<div>
-									                <input type="text" id="companyNumber" class="col-sm-14 col-md-7 rounded-sm mr-2" th:field="*{orderDTO.companyNumber}" maxlength="12" placeholder="123-45-67890">
-				                                	<button type="button" id="searchClientInfoBtn" class="btn btn-outline-primary ml-2" disabled>조회</button>
-												</div>
+												<select id="companyNumberSelect" name="companyNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{orderDTO.companyNumber}">
+											        <option value="">사업자 등록번호를 선택하세요</option>
+											        <option th:each="client : ${clientList}"
+											                th:value="${client.companyNumber}"
+											                th:text="${client.companyNumber}">
+											        </option>
+											    </select>
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="companyName">상호명</label>
@@ -233,6 +268,108 @@
 		
 		<script type="text/javascript">
 			$(document).ready(function () {
+			    // 부서 목록 조회 함수 호출
+			    loadMainDepartments();
+	
+			    // 부서 선택 시 이벤트
+			    $('#departmentCode').on('change', function () {
+			        const departmentCode = $(this).val();
+			        if (!departmentCode) return;
+	
+			        // 하위부서, 담당자 선택 초기화
+			        $('#subDepartmentCode').empty().append(`<option value="">하위부서를 선택하세요</option>`);
+			        $('#clientName').empty().append(`<option value="">담당자를 선택하세요</option>`);
+			        clearEmployeeInfo();
+	
+			        // 하위부서 불러오는 ajax
+			        $.ajax({
+			            url: '/orders/api/departments/sub',
+			            type: 'GET',
+			            data: { departmentCode: departmentCode },
+			            success: function (data) {
+			                updateSelectBox('#subDepartmentCode', data, '하위부서를 선택하세요');
+			            }
+			        });
+			    });
+	
+			    // 하위 부서 선택 시 이벤트
+			    $('#subDepartmentCode').on('change', function () {
+			        const departmentCode = $('#departmentCode').val();
+			        const subDepartmentCode = $(this).val();
+			        if (!subDepartmentCode) return;
+	
+			        // 담당자 선택 초기화
+			        $('#clientName').empty().append(`<option value="">담당자를 선택하세요</option>`);
+			        clearEmployeeInfo();
+	
+			        // 해당 하위부서의 직원 불러오는 ajax
+			        $.ajax({
+			            url: '/orders/api/employees/by-sub-dept',
+			            type: 'GET',
+			            data: {
+			                departmentCode: departmentCode,
+			                subDepartmentCode: subDepartmentCode
+			            },
+			            success: function (data) {
+			                updateSelectBox('#clientId', data, '담당자를 선택하세요');
+			            }
+			        });
+			    });
+	
+			    // 담당자 선택 시 이벤트
+			    $('#clientId').on('change', function () {
+				    const employeeId = $(this).val();
+				    const employeeName = $(this).find('option:selected').text(); // 선택된 이름
+				
+				    if (!employeeId) return;
+				
+				    $.ajax({
+				        url: '/orders/api/employees/info',
+				        type: 'GET',
+				        data: { employeeId: employeeId },
+				        success: function (data) {
+				            $('#clientPhone').val(data.phone);
+				            $('#clientNameHidden').val(employeeName); // 이름을 hidden input에 저장
+				        }
+				    });
+				});
+	
+			    // 초기화 버튼 클릭 시 이벤트
+			    $('#resetSteps').on('click', function () {
+			        $('#departmentCode').val('');
+			        $('#subDepartmentCode').empty().append(`<option value="">하위부서를 선택하세요</option>`);
+			        $('#clientId').empty().append(`<option value="">담당자를 선택하세요</option>`);
+			        clearEmployeeInfo();
+			        loadMainDepartments();
+			    });
+	
+			    // 동적 select 박스 옵션 채우는 함수
+			    function updateSelectBox(selector, list, placeholder) {
+			        const $select = $(selector);
+			        $select.empty();
+			        $select.append(`<option value="">${placeholder}</option>`);
+			        list.forEach(item => {
+			            $select.append(`<option value="${item.code}">${item.name}</option>`);
+			        });
+			    }
+	
+			    // 부서 목록 조회 함수
+			    function loadMainDepartments() {
+			        $.ajax({
+			            url: '/orders/api/departments/main',
+			            type: 'GET',
+			            success: function (data) {
+			                updateSelectBox('#departmentCode', data, '부서를 선택하세요');
+			            }
+			        });
+			    }
+	
+			    // 전화번호 비우는 함수
+			    function clearEmployeeInfo() {
+			        $('#clientPhone').val('');
+			    }
+				
+		     	//---------------------------------------------------
 				// 휴대번호 입력
 				$('#clientPhone, #phone1, #phone2, #phoneNumber').on('input', function() {
 			        // 숫자만 남기기
@@ -420,12 +557,46 @@
 			        }
 			    });
 		     	
-		        
+		        // --------------------------------------------------------
+			    // 사업자 번호 선택 시 이벤트
+		        $('#companyNumberSelect').on('change', function () {
+			        const selectedNumber = $(this).val();
+			        const client = clientList.find(c => c.companyNumber === selectedNumber);
+
+			        if (client) {
+			            $('#companyName').val(client.companyName);	// 상호명(거래처명)
+			            $('#ownerName').val(client.ownerName);		// 대표자명
+			            $('#phoneNumber').val(client.phoneNumber);	// 전화번호
+			            $('#faxNumber').val(client.faxNumber);		// 팩스번호
+			            $('#eMail').val(client.eMail);				// 이메일
+
+			            // 주소
+			            $('#postCode_2').val(client.postCode);
+			            $('.address1_2').val(client.address1);
+			            $('.address2_2').val(client.address2);
+			        } else {
+			            $('#companyName').val('');	// 상호명(거래처명)
+			            $('#ownerName').val('');	// 대표자명
+			            $('#phoneNumber').val('');	// 전화번호
+			            $('#faxNumber').val('');	// 팩스번호
+			            $('#eMail').val('');		// 이메일
+
+			            // 주소
+			            $('.postCode_2').val('');
+			            $('.address1_2').val('');
+			            $('.address2_2').val('');
+			        }
+			    });
 		        
 		    });
 		</script>
 	</div>
 	<!-- --------------------------------------------------------------------------------------------- -->
-	
+	<th:block layout:fragment="script">
+		<!-- clientList를 JSON 문자열로 넘기기 -->
+		<script th:inline="javascript">
+		    const clientList = /*[[${clientList}]]*/ null;
+		</script>
+	</th:block>
 </body>
 </html>

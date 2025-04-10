@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import jakarta.validation.Valid;
-import kr.co.itwillbs.de.human.dto.EmployeeDTO;
+import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.OrderCodeDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
@@ -30,7 +30,13 @@ public interface SellMapper {
 	
     
     // -------------------------------------------------------------------
-    /**
+	/**
+	 * 거래처 정보 조회(SELECT)
+	 * @return List<ClientDTO>
+	 */
+	List<ClientDTO> getClientList();
+
+	/**
 	 * 수주/발주 주문 정보 등록(INSERT) >> orderDTO
 	 * @param orderDTO
 	 * @return 
@@ -71,11 +77,12 @@ public interface SellMapper {
 	// -------------------------------------------------------------------
 	List<OrderCodeDTO> getDepartmentList();
 
-	List<OrderCodeDTO> getSubDepartmentList(String mainDeptCode);
+	List<OrderCodeDTO> getSubDepartmentList(String departmentCode);
 
-	List<OrderCodeDTO> getEmployeeList(@Param("mainDeptCode") String mainDeptCode, @Param("subDeptCode") String subDeptCode);
+	List<OrderCodeDTO> getEmployeeList(@Param("departmentCode") String departmentCode, @Param("subDepartmentCode") String subDepartmentCode);
 
 	OrderCodeDTO getEmployeeInfo(String employeeId);
+
 	
 	
 	

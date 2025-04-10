@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
-import kr.co.itwillbs.de.human.dto.EmployeeDTO;
+import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.OrderCodeDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
@@ -48,6 +48,16 @@ public class SellService {
 	}
 	
 	// ------------------------------------------------------------------------------------
+	/**
+	 * 거래처 정보 조회(SELECT)
+	 * @return List<ClientDTO>
+	 */
+	public List<ClientDTO> getClientList() {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+
+		return sellMapper.getClientList();
+	}
+
 	/**
 	 * 수주/발주 주문 정보 등록(INSERT) >> orderDTO
 	 * @param orderDTO
@@ -115,14 +125,14 @@ public class SellService {
 		return sellMapper.getDepartmentList();
 	}
 
-	public List<OrderCodeDTO> getSubDepartmentList(String mainDeptCode) {
+	public List<OrderCodeDTO> getSubDepartmentList(String departmentCode) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return sellMapper.getSubDepartmentList(mainDeptCode);
+		return sellMapper.getSubDepartmentList(departmentCode);
 	}
 
-	public List<OrderCodeDTO> getEmployeeList(String mainDeptCode, String subDeptCode) {
+	public List<OrderCodeDTO> getEmployeeList(String departmentCode, String subDepartmentCode) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return sellMapper.getEmployeeList(mainDeptCode, subDeptCode);
+		return sellMapper.getEmployeeList(departmentCode, subDepartmentCode);
 	}
 
 	public OrderCodeDTO getEmployeeInfo(String employeeId) {

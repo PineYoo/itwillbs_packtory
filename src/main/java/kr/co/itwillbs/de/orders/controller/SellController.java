@@ -16,12 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
-import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
-import kr.co.itwillbs.de.human.dto.EmployeeDTO;
+import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.OrderCodeDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
@@ -127,7 +125,12 @@ public class SellController {
 		
 		// 뷰 페이지에서 OrderDTO, OrderDetailDTO 에 기술된 Validation 항목 체크를 위해 빈 DTO 객체를 함께 전달
 		model.addAttribute("orderFormDTO", new OrderFormDTO());
-
+		
+		// client 정보 가져오기
+		List<ClientDTO> clientList = sellService.getClientList();
+		System.out.println("clientList : " + clientList);
+		model.addAttribute("clientList", clientList);
+		
 		return COMMON_PATH + "/" + tradeName +"_register_form";	// "orders/sell_register_form" or "orders/buy_register_form"
 	}
 	
@@ -223,18 +226,18 @@ public class SellController {
 	// 하위 부서 목록
 	@GetMapping("/api/departments/sub")
 	@ResponseBody
-	public List<OrderCodeDTO> getSubDepartmentList(@RequestParam("mainDeptCode") String mainDeptCode) {
+	public List<OrderCodeDTO> getSubDepartmentList(@RequestParam("departmentCode") String departmentCode) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-	    return sellService.getSubDepartmentList(mainDeptCode); // 하위 minor_code
+	    return sellService.getSubDepartmentList(departmentCode); // 하위 minor_code
 	}
 
 	// 부서별 직원 목록
 	@GetMapping("/api/employees/by-sub-dept")
 	@ResponseBody
-	public List<OrderCodeDTO> getEmployeeList(@RequestParam("mainDeptCode") String mainDeptCode,
-											  @RequestParam("subDeptCode") String subDeptCode) {
+	public List<OrderCodeDTO> getEmployeeList(@RequestParam("departmentCode") String departmentCode,
+											  @RequestParam("subDepartmentCode") String subDepartmentCode) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-	    return sellService.getEmployeeList(mainDeptCode, subDeptCode);
+	    return sellService.getEmployeeList(departmentCode, subDepartmentCode);
 	}
 
 	// 직원 전화번호 조회

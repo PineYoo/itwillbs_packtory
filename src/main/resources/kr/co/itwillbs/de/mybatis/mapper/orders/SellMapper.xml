@@ -131,6 +131,12 @@
 	</select>
 	
 	<!-- ============================================================= -->
+	<!-- 거래처 정보 조회(SELECT) -->
+	<select id="getClientList" resultType="kr.co.itwillbs.de.orders.dto.ClientDTO">
+		SELECT *
+		  FROM t_client
+	</select>
+	
 	<!-- 주문서 등록(order) -->
 	<insert id="insertOrder">
 		INSERT INTO t_order
@@ -277,14 +283,14 @@
 	<select id="getSubDepartmentList" resultType="kr.co.itwillbs.de.orders.dto.OrderCodeDTO">
 		SELECT child_code AS code, child_name AS name
 		  FROM t_department_info
-		 WHERE parent_code = #{mainDeptCode}
+		 WHERE parent_code = #{departmentCode}
 	</select>
 	
 	<select id="getEmployeeList" resultType="kr.co.itwillbs.de.orders.dto.OrderCodeDTO">
 		SELECT id AS code, name AS name
 	      FROM t_employee
-	     WHERE department_code = #{mainDeptCode}
-	       AND sub_department_code = #{subDeptCode}
+	     WHERE department_code = #{departmentCode}
+	       AND sub_department_code = #{subDepartmentCode}
 	</select>
 	
 	<select id="getEmployeeInfo" resultType="kr.co.itwillbs.de.orders.dto.OrderCodeDTO">
