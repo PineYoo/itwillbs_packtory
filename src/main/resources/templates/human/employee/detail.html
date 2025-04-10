@@ -81,7 +81,7 @@ input, select {
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>성별</label> <select name="gender" class="form-control" disabled>
+											<label>성별</label> <select name="gender" class="form-select" disabled>
 												<option value="" disabled th:selected="${employeeDTO.detail.gender == null}">성별 선택</option>
 												<option value="M" th:selected="${employeeDTO.detail.gender == 'M'}">남성</option>
 												<option value="F" th:selected="${employeeDTO.detail.gender == 'F'}">여성</option>
@@ -110,7 +110,7 @@ input, select {
 													</div>
 													<div class="col-auto d-flex align-items-center">@</div>
 													<div class="col">
-														<input type="text" name="emailDomain" class="form-control" th:value="${employeeDTO.emailDomain}" list="domainList" placeholder="도메인 입력" readonly onfocus="clearOnce(this)" />
+														<input type="text" name="emailDomain" class="form-selectl" th:value="${employeeDTO.emailDomain}" list="domainList" placeholder="도메인 입력" disabled onfocus="clearOnce(this)" />
 														<datalist id="domainList">
 															<option value="naver.com" />
 															<option value="gmail.com" />
@@ -151,20 +151,20 @@ input, select {
 									<div class="card-body row">
 
 										<div class="form-group col-md-6">
-											<label>대표부서</label> <select class="form-control" id="departmentCode" name="departmentCode" disabled>
+											<label>대표부서</label> <select class="form-select" id="departmentCode" name="departmentCode" disabled>
 												<option value="">선택하세요</option>
 												<option th:each="department : ${validDepartments}" th:value="${department.minorCode}" th:text="${department.minorName}" th:selected="${department.minorCode == employeeDTO.departmentCode}"></option>
 											</select>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label for="subDepartmentCode" class="form-label">하위부서</label> <select class="form-control" id="subDepartmentCode" name="subDepartmentCode" disabled th:attr="data-selected=${employeeDTO.subDepartmentCode}">
+											<label for="subDepartmentCode" class="form-label">하위부서</label> <select class="form-select" id="subDepartmentCode" name="subDepartmentCode" disabled th:attr="data-selected=${employeeDTO.subDepartmentCode}">
 												<!-- 필요 시 JS로 채워짐 -->
 											</select>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>직급코드</label> <select class="form-control" name="positionCode" disabled>
+											<label>직급코드</label> <select class="form-select" name="positionCode" disabled>
 												<option value="">선택하세요</option>
 												<option th:each="position : ${validPositions}" th:value="${position.idx}" th:text="${position.positionCode}" th:selected="${position.idx.toString() == employeeDTO.positionCode}"></option>
 											</select>
@@ -179,6 +179,10 @@ input, select {
 								<div class="card mb-4 h-100">
 									<div class="card-header">고용 정보</div>
 									<div class="card-body row">
+
+										<div class="form-group col-md-6">
+											<label>입사일</label> <input type="date" name="hireDate" th:value="${employeeDTO.hireDate}" class="form-control" readonly>
+										</div>
 
 										<div class="form-group col-md-6">
 											<label>경력</label> <input type="text" name="workExperience" th:value="${employeeDTO.workExperience}" class="form-control" readonly>
@@ -227,7 +231,7 @@ input, select {
 									<div class="card-body row">
 
 										<div class="form-group col-md-6">
-											<label>직원 차량 여부</label> <select name="hasVehicle" class="form-control" disabled>
+											<label>직원 차량 여부</label> <select name="hasVehicle" class="form-select" disabled>
 												<option value="" disabled th:selected="${employeeDTO.detail.gender == null}">차량 유무</option>
 												<option value="Y" th:selected="${employeeDTO.detail.hasVehicle == 'Y'}">보유</option>
 												<option value="N" th:selected="${employeeDTO.detail.hasVehicle == 'N'}">미보유</option>
@@ -301,6 +305,7 @@ input, select {
             // 공통 입력 필드 상태 토글
             function toggleFieldState(isReadOnly) {
                 $("input[readonly]").prop("readonly", isReadOnly);  
+                $("input[disabled]").prop("disabled", isReadOnly);  
                 $("select[disabled]").prop("disabled", isReadOnly);
                 
              	// 주소찾기 버튼 활성화/비활성화

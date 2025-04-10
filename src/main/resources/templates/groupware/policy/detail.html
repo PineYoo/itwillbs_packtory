@@ -80,10 +80,13 @@ input, select {
 						<!-- 첨부 파일 -->
 						<div class="mb-3">
 							<label>첨부 파일</label>
+							<div class="list-group">
 							<ul id="fileList">
-								<li th:each="file : ${policyDTO.fileList}" th:if="${file.isDeleted ne 'Y'}"><span th:text="${file.fileName}"></span>
-									<button type="button" class="btn btn-sm btn-danger deleteFileBtn" th:data-file-id="${file.idx}" style="display: none;">삭제</button></li>
+								<li th:each="file : ${policyDTO.fileList}" th:if="${file.isDeleted ne 'Y'}">
+								<a th:text="${file.fileOriginalName}"></a>
+								<button type="button" class="btn btn-sm btn-danger deleteFileBtn" th:data-file-id="${file.idx}" style="display: none;">삭제</button></li>
 							</ul>
+								</div>
 						</div>
 
 						<!-- 파일 업로드 -->
