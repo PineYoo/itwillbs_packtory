@@ -40,7 +40,8 @@
 										<div class="col-md-4">
 											<!-- 대표 부서 셀렉트 박스 -->
 											<div class="form-group mb-3">
-												<label for="departmentCode" class="col-form-label">대표 부서</label> <select name="departmentCode" class="form-control" th:value="${departmentSearchDto.departmentCode}">
+												<label for="departmentCode" class="col-form-label">대표 부서</label> 
+												<select id="departmentCode"name="departmentCode" class="form-control" th:value="${departmentSearchDto.departmentCode}">
 													<option value="">대표 부서 선택</option>
 													<option th:each="code : ${codeItems}" th:value="${code.minorCode}" th:text="${code.minorName}" th:selected="${code.minorCode == departmentSearchDto.departmentCode}"></option>
 												</select>
@@ -51,7 +52,11 @@
 										<div class="col-md-4">
 											<!-- 하위 부서 -->
 											<div class="form-group mb-3">
-												<label for="childCode" class="col-form-label">하위 부서</label> <input type="text" name="childCode" class="form-control" placeholder="하위 부서" th:value="${departmentSearchDto.childCode}" />
+												<label for="subDepartmentCode" class="col-form-label">하위 부서</label> 
+												<select id="childCode" name="childCode" class="form-select">
+													<option value="">하위부서 선택</option>
+													<!-- JS로 동적으로 처리 예정 -->
+												</select>
 											</div>
 										</div>
 
@@ -99,12 +104,12 @@
 							<tbody>
 								<tr th:each="department : ${departmentInfoDTOList}" th:data-id="${department.idx}" class="department-row">
 									<td th:text="${department.idx}"></td>
-									<td th:text="${department.departmentCode != null ? department.departmentCode : '-'}"></td>
-									<td th:text="${department.parentCode != null ? department.parentCode : '-'}"></td>
-									<td th:text="${department.childCode != null ? department.childCode : '-'}"></td>
-									<td th:text="${department.childName != null ? department.childName : '-'}"></td>
-									<td th:text="${department.locationIdx != null ? department.locationIdx : '-'}"></td>
-									<td th:text="${department.rankNumber != null ? department.rankNumber : '-'}"></td>
+									<td th:text="${department.departmentCode}"></td>
+									<td th:text="${department.parentCode}"></td>
+									<td th:text="${department.childCode}"></td>
+									<td th:text="${department.childName}"></td>
+									<td th:text="${department.locationIdx}"></td>
+									<td th:text="${department.rankNumber}"></td>
 								</tr>
 								<tr th:if="${#lists.isEmpty(departmentInfoDTOList)}">
 									<td colspan="8" class="text-center">조회된 데이터가 없습니다.</td>
@@ -118,6 +123,8 @@
 		<script type="text/javascript">
 			$(document).ready(
 					function() {
+						let isEditing = false;						
+						
 						// init DataTable
 						$('#dataTables').DataTable({
 							lengthChange : false,
@@ -148,6 +155,43 @@
 									location.href = "/human/department/detail/"
 											+ documentNumber;
 								});
+						
+						// 하위 부서 불러오기
+						$('#departmentCode').on("change", function() {
+							const selectedCode = $(this).val();
+							loadSubDepartments(selectedCode); // 하위 부서 로딩
+						});
+
+						// 검색 후 하위 부서 유지
+						const selectedDepartmentCode = $('#departmentCode').val();
+						const selectedSubDepartmentCode = new URLSearchParams(window.location.search).get('subDepartmentCode');
+						if (selectedDepartmentCode) {
+							loadSubDepartments(selectedDepartmentCode, selectedSubDepartmentCode);
+						}
+
+						// 하위 부서 로딩 함수
+						function loadSubDepartments(departmentCode, selectedCode = '') {
+							if (!departmentCode) {
+								$('#childCode').html('<option value="">하위 부서를 선택하세요</option>');
+								return;
+							}
+
+							$.ajax({
+								url: '/human/department/subDepartments',
+								type: 'GET',
+								data: { departmentCode: departmentCode },
+								success: function(data) {
+									let html = '<option value="">하위 부서 선택</option>';
+									data.forEach(function(item) {
+										html += `<option value="${item.childCode}" ${item.childCode === selectedCode ? 'selected' : ''}>${item.childName}</option>`;
+									});
+									$('#childCode').html(html);
+								},
+								error: function() {
+									alert("하위 부서 정보를 불러오는 데 실패했습니다.");
+								}
+							});
+						}
 					});
 		</script>
 	</th:block>
