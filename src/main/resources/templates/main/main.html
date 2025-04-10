@@ -6,6 +6,8 @@
 <title>팩토리(PackTory)</title>
 	<!-- FullCalendar CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/main.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+	
 	<!-- FullCalendar JS -->
 	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
@@ -87,9 +89,9 @@
 		<div class="container-fluid">
 		
 			<!-- Page Heading -->
-			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">메인!</h1>
-			</div>
+<!-- 			<div class="d-sm-flex align-items-center justify-content-between mb-4"> -->
+<!-- 				<h1 class="h3 mb-4 text-gray-800">메인!</h1> -->
+<!-- 			</div> -->
 
 			<!-- Content Row -->
 			<div class="row">
@@ -98,11 +100,21 @@
 					<div class="card border-left-primary shadow h-100 py-2">
 						<div class="card-body">
 							<strong class="me-2">📢 공지사항:</strong>
-							<swiper-container>
-								<swiper-slide>테스트 공지사항</swiper-slide>
-								<swiper-slide>테스트테스트트세트세트테스트</swiper-slide>
-								<swiper-slide>이건 아무도 못볼거야</swiper-slide>
-								<swiper-slide>그냥 잘까?</swiper-slide>
+							<swiper-container autoplay-delay="3000"
+											  autoplay-disable-on-interaction="false"
+											  loop="true"
+											  speed="600">
+<!-- 								<swiper-slide>테스트 공지사항</swiper-slide> -->
+<!-- 								<swiper-slide>테스트테스트트세트세트테스트</swiper-slide> -->
+<!-- 								<swiper-slide>이건 아무도 못볼거야</swiper-slide> -->
+<!-- 								<swiper-slide>그냥 잘까?</swiper-slide> -->
+								<swiper-slide th:each="item, status : ${noticeList}"
+								              th:if="${status.index < 5}">
+								    <a th:href="@{/groupware/notice/{id}(id=${item.idx})}"
+								       class="me-4 text-decoration-none text-dark"
+								       th:text="${item.title}">
+								    </a>
+								</swiper-slide>
 							<!--/*<span th:each="notice : ${notices}"> <a
 							th:href="@{/notice/detail/{id}(id=${notice.id})}"
 							class="me-4 text-decoration-none text-dark">
