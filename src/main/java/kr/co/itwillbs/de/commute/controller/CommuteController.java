@@ -186,38 +186,38 @@ public class CommuteController {
 	}
 	
 	// 출퇴근 버튼 클릭 시 저장 ajax
-	@PostMapping("/save")
-	@ResponseBody
-	public ResponseEntity<String> saveCommute(@RequestBody CommuteDTO commuteDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("commuteDTO : {}", StringUtil.objToString(commuteDTO));
-	    
-//		commuteDTO.setEmployeeId(id);	// 사번
-		LocalDateTime now = LocalDateTime.now();
-		commuteDTO.setRegDate(now); // 현재 시간 등록
-
-		// 코드 리스트 조회 (WORK_STATUS_CODE)
-		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
-		String checkInCode = getMinorCodeByMinorName(tradeCode, CHECKIN_NAME_KR); // "출근(1)"
-		String lateCode = getMinorCodeByMinorName(tradeCode, LATE_NAME_KR);       // "지각(5)"
-		log.info("checkInCode : " + checkInCode + ", lateCode : " + lateCode);
-		
-		
- 		// 출근이면 지각 여부 확인
-		if (checkInCode.equals(commuteDTO.getWorkStatusCode())) {
-			LocalTime standardTime = LocalTime.of(9, 10); // 오전 9시 10분 기준
-			if (now.toLocalTime().isAfter(standardTime)) {
-				commuteDTO.setWorkStatusCode(lateCode); // 지각 처리
-				log.info("※ 지각 처리됨!!!!!!!!!: {}", lateCode);
-			}
-		}
-		
-		log.info("commuteDTO22 : {}", StringUtil.objToString(commuteDTO));
-		
-		// 출퇴근 기록 요청(insert)
-		commuteService.saveCommuteInfo(commuteDTO);
-	    return ResponseEntity.ok("저장 완료");
-	}
+//	@PostMapping("/save")	// "/commute/save"
+//	@ResponseBody
+//	public ResponseEntity<String> saveCommute(@RequestBody CommuteDTO commuteDTO) {
+//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+//		log.info("commuteDTO : {}", StringUtil.objToString(commuteDTO));
+//	    
+////		commuteDTO.setEmployeeId(id);	// 사번
+//		LocalDateTime now = LocalDateTime.now();
+//		commuteDTO.setRegDate(now); // 현재 시간 등록
+//
+//		// 코드 리스트 조회 (WORK_STATUS_CODE)
+//		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
+//		String checkInCode = getMinorCodeByMinorName(tradeCode, CHECKIN_NAME_KR); // "출근(1)"
+//		String lateCode = getMinorCodeByMinorName(tradeCode, LATE_NAME_KR);       // "지각(5)"
+//		log.info("checkInCode : " + checkInCode + ", lateCode : " + lateCode);
+//		
+//		
+// 		// 출근이면 지각 여부 확인
+//		if (checkInCode.equals(commuteDTO.getWorkStatusCode())) {
+//			LocalTime standardTime = LocalTime.of(9, 10); // 오전 9시 10분 기준
+//			if (now.toLocalTime().isAfter(standardTime)) {
+//				commuteDTO.setWorkStatusCode(lateCode); // 지각 처리
+//				log.info("※ 지각 처리됨!!!!!!!!!: {}", lateCode);
+//			}
+//		}
+//		
+//		log.info("commuteDTO22 : {}", StringUtil.objToString(commuteDTO));
+//		
+//		// 출퇴근 기록 요청(insert)
+//		commuteService.saveCommuteInfo(commuteDTO);
+//	    return ResponseEntity.ok("저장 완료");
+//	}
 	
 	// ===================================================================
 	/**

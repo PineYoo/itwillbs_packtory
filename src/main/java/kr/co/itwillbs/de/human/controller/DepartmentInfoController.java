@@ -1,6 +1,7 @@
 package kr.co.itwillbs.de.human.controller;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.vo.LoginVO;
+import kr.co.itwillbs.de.human.dto.DepartmentCodeDTO;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoSearchDTO;
 import kr.co.itwillbs.de.human.service.DepartmentInfoService;
@@ -67,6 +70,22 @@ public class DepartmentInfoController {
         departmentInfoService.registerDepartment(departmentInfoDTO);  // 부서 등록 처리
         return "redirect:/human/department";  // 등록 후 부서 목록 페이지로 리다이렉트
     }
+    
+    // 하위 부서 코드 조회
+ 	@GetMapping("/subDepartments")
+ 	@ResponseBody
+ 	public List<DepartmentCodeDTO> getSubDepartments(@RequestParam("departmentCode") String departmentCode) {
+ 		log.info("하위 부서 코드 조회 요청: {}", departmentCode);
+
+ 		List<DepartmentCodeDTO> result = departmentInfoService.getSubDepartmentCodes(departmentCode);
+ 		if (result == null) {
+ 			log.warn("하위 부서 결과가 null입니다.");
+ 			return Collections.emptyList();
+ 		}
+
+ 		log.info("하위 부서 개수: {}", result.size());
+ 		return result;
+ 	}
 
     // 부서 목록 조회
     @GetMapping("")
