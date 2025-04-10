@@ -46,8 +46,6 @@ public class EmployeeController {
 	private final CommonCodeUtil commonCodeUtil;
 	private final CommonService commonService;
 	private final LoginService loginService;
-	
-	
 
 	// 사원 등록 폼
 	@GetMapping("/new")

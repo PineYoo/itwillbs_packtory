@@ -1,85 +1,130 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
-
 <head>
 <title>팩토리(PackTory) - 규정 상세</title>
 
-<th:block layout:fragment="css">
-	<link href="/css/sb-admin-2.css" rel="stylesheet">
-	<link href="/css/common.css" rel="stylesheet">
-</th:block>
+<style type="text/css">
+.form {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+input, select {
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 2px;
+	/*     	width: 198px; */
+}
+
+.essential {
+	background-color: #fffbe6; /* 연한 노랑 */
+}
+
+.filled {
+	background-color: white;
+}
+
+/* ----------------- */
+.addressInfo {
+	display: flex;
+}
+
+@media ( max-width : 768px) {
+	.addressInfo {
+		display: block;
+	}
+}
+</style>
+
 </head>
 
 <body id="page-top">
 	<div layout:fragment="contents">
 		<div class="container mt-5">
-			<h2 class="h3 mb-4 text-gray-800">규정 상세</h2>
-			<form id="policyForm" th:action="@{/groupware/policy/detail/{idx}(idx=${policyDTO.idx})}" method="post" enctype="multipart/form-data">
-				<div class="form-group">
-					<label>규정 유형</label> <select name="type" id="type" class="form-control" disabled>
-						<option value="">선택하세요</option>
-						<option th:each="code : ${policyTypes}" th:value="${code.minorName}" th:text="${code.minorName}" th:selected="${policyDTO.type == code.minorName}"></option>
-					</select>
+			<h2 class="h3 mb-4 text-gray-800">규정 상세 목록</h2>
+
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">규정 상세 정보</h6>
 				</div>
 
-				<div class="form-group">
-					<label>제목</label> <input type="text" id="title" name="title" class="form-control" th:value="${policyDTO.title}" readonly>
-				</div>
+				<div class="card-body">
+					<!-- 수정 요청 처리 폼 -->
+					<form id="policyForm" th:action="@{/groupware/policy/detail/{idx}(idx=${policyDTO.idx})}" method="post" enctype="multipart/form-data">
+						<input type="hidden" th:field="*{idx}" />
 
-				<div class="form-group">
-					<label>내용</label>
-					<textarea id="contents" name="contents" class="form-control" rows="5" readonly>[[${policyDTO.contents}]]</textarea>
-				</div>
+						<!-- 규정 유형 -->
+						<div class="mb-3">
+							<label>규정 유형</label> <select name="type" id="type" class="form-control" disabled>
+								<option value="">선택하세요</option>
+								<option th:each="code : ${policyTypes}" th:value="${code.minorName}" th:text="${code.minorName}" th:selected="${policyDTO.type == code.minorName}"></option>
+							</select>
+						</div>
 
-				<div class="form-group">
-					<label>게시 여부</label> <span th:text="${policyDTO.status}" class="form-control-plaintext"></span>
-				</div>
+						<!-- 제목 -->
+						<div class="mb-3">
+							<label>제목</label> <input type="text" id="title" name="title" class="form-control" th:value="${policyDTO.title}" readonly>
+						</div>
 
-				<div class="form-group">
-					<label>첨부 파일</label>
-					<ul id="fileList">
-						<li th:each="file : ${policyDTO.fileList}" th:if="${file.isDeleted ne 'Y'}"><span th:text="${file.fileName}"></span>
-							<button type="button" class="btn btn-sm btn-danger deleteFileBtn" th:data-file-id="${file.idx}" style="display: none;">삭제</button></li>
-					</ul>
-				</div>
+						<!-- 내용 -->
+						<div class="mb-3">
+							<label>내용</label>
+							<textarea id="contents" name="contents" class="form-control" rows="5" readonly>[[${policyDTO.contents}]]</textarea>
+						</div>
 
-				<div class="form-group">
-					<label>파일 업로드</label>
-					<!-- ✅ disabled 제거! -->
-					<input type="file" id="uploadFiles" name="uploadFiles" multiple class="form-control">
-				</div>
+						<!-- 게시 여부 -->
+						<div class="mb-3">
+							<label>게시 여부</label> <span th:text="${policyDTO.status}" class="form-control-plaintext"></span>
+						</div>
 
-				<div class="form-group">
-					<label>작성자</label> <span th:text="${policyDTO.regId}" class="form-control-plaintext"></span>
-				</div>
+						<!-- 첨부 파일 -->
+						<div class="mb-3">
+							<label>첨부 파일</label>
+							<ul id="fileList">
+								<li th:each="file : ${policyDTO.fileList}" th:if="${file.isDeleted ne 'Y'}"><span th:text="${file.fileName}"></span>
+									<button type="button" class="btn btn-sm btn-danger deleteFileBtn" th:data-file-id="${file.idx}" style="display: none;">삭제</button></li>
+							</ul>
+						</div>
 
-				<div class="form-group">
-					<label>작성일자</label> <span th:text="${policyDTO.regDate}" class="form-control-plaintext"></span>
-				</div>
+						<!-- 파일 업로드 -->
+						<div class="mb-3">
+							<label>파일 업로드</label> <input type="file" id="uploadFiles" name="uploadFiles" multiple class="form-control" disabled>
+						</div>
 
-				<div class="form-group">
-					<label>최종작성자</label> <span th:text="${policyDTO.modId}" class="form-control-plaintext"></span>
-				</div>
+						<!-- 작성자 -->
+						<div class="mb-3">
+							<label>작성자</label> <span th:text="${policyDTO.regId}" class="form-control-plaintext"></span>
+						</div>
 
-				<div class="form-group">
-					<label>작성일자</label> <span th:text="${policyDTO.modDate}" class="form-control-plaintext"></span>
-				</div>
+						<!-- 작성일자 -->
+						<div class="mb-3">
+							<label>작성일자</label> <span th:text="${policyDTO.regDate}" class="form-control-plaintext"></span>
+						</div>
 
-				<button type="button" id="editBtn" class="btn btn-warning">수정</button>
-				<button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">저장</button>
-				<button type="button" id="deleteBtn" class="btn btn-danger" th:attr="data-idx=${policyDTO.idx}">삭제</button>
-				<a href="/groupware/policy" class="btn btn-secondary" style="float: right;">목록으로 돌아가기</a>
-			</form>
+						<!-- 최종작성자 -->
+						<div class="mb-3">
+							<label>최종작성자</label> <span th:text="${policyDTO.modId}" class="form-control-plaintext"></span>
+						</div>
+
+						<!-- 작성일자 -->
+						<div class="mb-3">
+							<label>작성일자</label> <span th:text="${policyDTO.modDate}" class="form-control-plaintext"></span>
+						</div>
+						<!-- 버튼들 -->
+						<div style="text-align: center; margin: 10px 0;">
+							<button type="button" id="editBtn" class="btn btn-primary ">수정</button>
+							<button type="submit" class="btn btn-primary" style="display: none;" id="submitBtn">저장</button>
+							<button type="button" class="btn btn-danger" id="deleteBtn" th:attr="data-idx=${policyDTO.idx}">삭제</button>
+							<a href="/groupware/policy" class="btn btn-secondary" style="float: right;">목록으로 돌아가기</a>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
-	</div>
 
-	<th:block layout:fragment="script">
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 		<script type="text/javascript">
-    $(document).ready(function() {
+    	$(document).ready(function() {
         let editMode = false;
-
         // 수정 버튼 클릭 시 수정 필드 활성화
         $("#editBtn").on("click", function() {
             $("input[readonly], textarea[readonly]").prop("readonly", false);
@@ -163,7 +208,7 @@
             $(this).parent().remove();
         });
     });
-</script>
-	</th:block>
+	</script>
+	</div>
 </body>
 </html>

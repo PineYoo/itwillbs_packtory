@@ -66,7 +66,7 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
-							<thead>
+							<thead class="table-light">
 								<tr>
 									<th>인덱스</th>
 									<th>직급 코드</th>
@@ -99,35 +99,35 @@
 
 		<!-- 공통 스크립트 -->
 		<script type="text/javascript">
-			$(document).ready(function() {
-				// init DataTable
-				$('#dataTables').DataTable({
-					lengthChange : false,
-					searching : false,
-					paging : false,
-					info : false
-				}); // end of $('#dataTables').DataTable({
+            $(document).ready(function() {
+                // init DataTable
+                $('#dataTables').DataTable({
+                    lengthChange : false,
+                    searching : false,
+                    paging : false,
+                    info : false
+                }); // end of $('#dataTables').DataTable({
 
-				// 등록 버튼(btnRegister) 클릭 시 이벤트(직급 등록)
-				$('#btnRegister').on("click", function() {
-					console.log("btnRegister click!!!");
-					location.href = "/human/position/new";
-				});
+                // 등록 버튼(btnRegister) 클릭 시 이벤트(직급 등록)
+                $('#btnRegister').on("click", function() {
+                    console.log("btnRegister click!!!");
+                    location.href = "/human/position/new";
+                });
 
-				// 부서 리스트 각 행 클릭 시 (상세 보기 페이지 이동)
-				$("#dataTables tbody").on('click', 'tr', function() {
-					console.log("dataTables tbody click!!");
-					var documentNumber = $(this).data('id');
+                // 부서 리스트 각 행 클릭 시 (상세 보기 페이지 이동)
+                $("#dataTables tbody").on('click', 'tr', function() {
+                    console.log("dataTables tbody click!!");
+                    var documentNumber = $(this).data('id');
 
-					if (!documentNumber) {
-						return; // 페이지 이동 막기
-					}
+                    if(!documentNumber) {
+                        return; // 페이지 이동 막기
+                    }
 
-					// 수정된 부분: idx가 아닌 documentNumber를 사용
-					location.href = "/human/position/detail/" + documentNumber;
-				});
-			});
-		</script>
+                    // 수정된 부분: idx가 아닌 documentNumber를 사용
+                    location.href = "/human/position/detail/" + documentNumber;
+                });
+            });
+        </script>
 	</div>
 </body>
 </html>

@@ -40,8 +40,7 @@
 										<div class="col-md-4">
 											<!-- 대표 부서 셀렉트 박스 -->
 											<div class="form-group mb-3">
-												<label for="departmentCode" class="col-form-label">대표 부서</label> 
-												<select id="departmentCode"name="departmentCode" class="form-control" th:value="${departmentSearchDto.departmentCode}">
+												<label for="departmentCode" class="col-form-label">대표 부서</label> <select id="departmentCode" name="departmentCode" class="form-control" th:value="${departmentSearchDto.departmentCode}">
 													<option value="">대표 부서 선택</option>
 													<option th:each="code : ${codeItems}" th:value="${code.minorCode}" th:text="${code.minorName}" th:selected="${code.minorCode == departmentSearchDto.departmentCode}"></option>
 												</select>
@@ -52,8 +51,7 @@
 										<div class="col-md-4">
 											<!-- 하위 부서 -->
 											<div class="form-group mb-3">
-												<label for="subDepartmentCode" class="col-form-label">하위 부서</label> 
-												<select id="childCode" name="childCode" class="form-select">
+												<label for="subDepartmentCode" class="col-form-label">하위 부서</label> <select id="childCode" name="childCode" class="form-select">
 													<option value="">하위부서 선택</option>
 													<!-- JS로 동적으로 처리 예정 -->
 												</select>
@@ -90,7 +88,7 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
-							<thead>
+							<thead class="table-light">
 								<tr>
 									<th>인덱스</th>
 									<th>대표 부서</th>
