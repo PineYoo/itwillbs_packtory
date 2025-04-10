@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +26,7 @@ import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.commute.dto.CommuteDTO;
 import kr.co.itwillbs.de.commute.service.CommuteService;
 import kr.co.itwillbs.de.groupware.dto.NoticeDTO;
+import kr.co.itwillbs.de.groupware.dto.NoticeSearchDTO;
 import kr.co.itwillbs.de.groupware.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,8 +40,6 @@ public class MainController {
 	private NoticeService noticeService;
 	@Autowired
 	private CommonCodeUtil commonCodeUtil;
-	
-	private final String COMMON_MAJOR_CODE_NOTICE_TYPE = "NOTICE_TYPE";
 
 	private final String COMMON_MAJOR_CODE_TRADE = "WORK_STATUS_CODE";
 	private final String CHECKIN_NAME_KR = "출근";
@@ -103,7 +103,7 @@ public class MainController {
 	 * @return
 	 */
 	@GetMapping(value = { "/main", "/main/" })
-	public String packtoryMainView(Model model) {
+	public String packtoryMainView(@ModelAttribute NoticeSearchDTO noticeSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -117,7 +117,7 @@ public class MainController {
 			model.addAttribute("loginVO", loginVO);
 		}
 		// [ 공지사항 ]
-		List<NoticeDTO> noticeList = noticeService.getNoticeList(COMMON_MAJOR_CODE_NOTICE_TYPE);
+		List<NoticeDTO> noticeList = noticeService.getNoticeList(noticeSearchDTO);
 		model.addAttribute("noticeList", noticeList);
 		
 		

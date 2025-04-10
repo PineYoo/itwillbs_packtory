@@ -74,15 +74,17 @@ public class ApprovalController {
 		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 			String memberId = userDetails.getUsername();
-			model.addAttribute("memberId", memberId);
+			approvalSearchDTO.setDrafterId(memberId);
 			//	--------------------------------------------
-			List<ApprovalDTO> approvalDTOList = approvalService.getApprovalList(memberId);
-	//		List<ApprovalDTO> approvalDTOList = approvalService.getApprovalList();
-			model.addAttribute("approvalDTOList", approvalDTOList);
 			
+//			approvalSearchDTO.getPageDTO().setTotalCount(approvalService.getApprovalCountBySearchDTO(approvalSearchDTO));
 			approvalSearchDTO.setProgressStatusList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_PROGRESS_TYPE));
 			approvalSearchDTO.setApprovalTypeList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
 			model.addAttribute("approvalSearchDTO", approvalSearchDTO);
+			
+			List<ApprovalDTO> approvalDTOList = approvalService.getApprovalList(approvalSearchDTO);
+			model.addAttribute("approvalDTOList", approvalDTOList);
+			
 		
 		}
 		
@@ -91,18 +93,20 @@ public class ApprovalController {
 	//------------------------------------------------------------------------------------------------
 	// 기안서 작성 페이지 매핑 (GET)
 	@GetMapping(value={"/regist"})
-	public String apporvalRegisterForm(Model model) {
+	public String apporvalRegisterForm(@ModelAttribute ApprovalDTO approvalDTO, Model model) {
 //	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
+		//	------------------------------------------------------------
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		LoginVO loginVO = userDetails.getLoginVO();
 		String memberId = userDetails.getUsername();
-		log.info("기안자ID : " + memberId);
+		//	------------------------------------------------------------
 		
-		// 기안자ID 값으로 사원정보 가져오기
-		ApprovalDTO approvalDTO = approvalService.getEmployeeInfo(memberId);
-		log.info("draftDTO : " + approvalDTO);
+		approvalDTO.setDrafterId(loginVO.getId());
+		approvalDTO.setName(loginVO.getName());
+		approvalDTO.setDepartmentName(loginVO.getDepartmentName());
+		approvalDTO.setPositionName(loginVO.getPositionName());
 		
 		//	공통코드 가져와서 approval_type 넣기
 		List<CodeItemDTO> approvalTypeList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE);
@@ -290,7 +294,7 @@ public class ApprovalController {
 			fileService.registerFile(fileVO);
 		}
 		
-		return "redirect:/groupware/approval/" + approvalNo;
+		return "redirect:/groupware/approval";
 	}
 	
 	/**
@@ -305,11 +309,15 @@ public class ApprovalController {
 		
 		log.info("requestData : {} ", approvalSearchDTO.toString());
 		
+		//	------------------------------------------------------
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		String memberId = userDetails.getUsername();
+		approvalSearchDTO.setDrafterId(memberId);
+		//	------------------------------------------------------
 		
-		List<ApprovalDTO> approvalDTOList = approvalService.getApprovalSearchList(memberId, approvalSearchDTO);
+		
+		List<ApprovalDTO> approvalDTOList = approvalService.getApprovalList(approvalSearchDTO);
 		log.info("noticeDTOList : {} ", approvalDTOList.toString());
 		
 		// 조회 결과 값 뷰에 전달
@@ -359,19 +367,20 @@ public class ApprovalController {
 	@PostMapping("/filter")
 	@ResponseBody
 //	public List<ApprovalDTO> approvalFilter(@RequestParam("filter") String filter, @RequestParam("memberId") String memberId) {
-	public List<ApprovalDTO> approvalFilter(@RequestParam("filter") String filter) {
+	public List<ApprovalDTO> approvalFilter(@ModelAttribute ApprovalSearchDTO approvalSearchDTO, @RequestParam("filter") String filter) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		String memberId = userDetails.getUsername();
+		approvalSearchDTO.setDrafterId(memberId);
 		log.info(">>>>>>>>>>>>>>>>>>>>>>filter 값 : {}, memberID 값 : {}", filter, memberId);
 		
 		
 		List<ApprovalDTO> approvalDTOList = new ArrayList<>();
 		switch (filter) {
 		case "all": 
-			approvalDTOList = approvalService.getApprovalList(memberId);
+			approvalDTOList = approvalService.getApprovalList(approvalSearchDTO);
 			break;
 			
 		case "drafted":

@@ -140,6 +140,12 @@ document.addEventListener("DOMContentLoaded", function(){
 	});
 	
 	
+	$("#cancelBtn").on("click", function() {
+		location.href = "/groupware/approval"
+	});
+	
+	
+	
 	
 }); // DOMContentLoaded 끝
 

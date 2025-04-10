@@ -25,7 +25,7 @@ public interface ApprovalMapper {
 	
 	//	=========================================================
 	//	전자결재 목록 조회	
-	List<ApprovalDTO> getApprovalList(String memberId);
+	List<ApprovalDTO> getApprovalList(ApprovalSearchDTO approvalSearchDTO);
 	
 	//	=========================================================
 	//	결재라인을 위한 모든 회원 목록 조회
@@ -53,6 +53,8 @@ public interface ApprovalMapper {
 
 	List<ApprovalDTO> getApprovalListByFilter(@Param("filter") String filter,
 											@Param("memberId") String memberId);
+
+	int getApprovalCountBySearchDTO(ApprovalSearchDTO approvalSearchDTO);
 	
 	
 }
