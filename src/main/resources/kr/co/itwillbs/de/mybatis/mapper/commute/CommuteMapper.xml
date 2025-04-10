@@ -163,7 +163,8 @@
 		</where>
 		
 		 -- 오라클에서는 GROUP BY 절에 포함되지 않은 컬럼을 SELECT 절에서 사용할 수 없으므로, 모든 비집계 컬럼을 GROUP BY 절에 추가해야함
-		 GROUP BY DATE(c.reg_date), c.employee_id, ci2.minor_name, di.child_name, ci3.minor_name, e.name
+		 GROUP BY DATE(c.reg_date), 
+		 		  c.employee_id, ci2.minor_name, di.child_name, ci3.minor_name, e.name
 		 ORDER BY work_date DESC, c.employee_id
  		 LIMIT #{search.pageDTO.size} OFFSET #{search.pageDTO.offset}
 	</select>
