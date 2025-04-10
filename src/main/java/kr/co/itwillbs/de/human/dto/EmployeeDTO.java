@@ -43,4 +43,9 @@ public class EmployeeDTO {
     // 이메일 처리
     private String emailId;
     private String emailDomain;
+    
+    // 한글 처리
+    private String departmentName;
+    private String subDepartmentName;
+    private String positionName;
 }
