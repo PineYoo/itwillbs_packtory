@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
+import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
@@ -126,9 +129,8 @@ public class SellController {
 		// 뷰 페이지에서 OrderDTO, OrderDetailDTO 에 기술된 Validation 항목 체크를 위해 빈 DTO 객체를 함께 전달
 		model.addAttribute("orderFormDTO", new OrderFormDTO());
 		
-		// client 정보 가져오기
+		// 거래처 정보 가져오기
 		List<ClientDTO> clientList = sellService.getClientList();
-		System.out.println("clientList : " + clientList);
 		model.addAttribute("clientList", clientList);
 		
 		return COMMON_PATH + "/" + tradeName +"_register_form";	// "orders/sell_register_form" or "orders/buy_register_form"
@@ -154,24 +156,13 @@ public class SellController {
 			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미수금"));	//(2)
 		}
 		
-		System.out.println(">>>>>>>>>" + orderFormDTO.getOrderDTO());
-		System.out.println(">>>>>>>>>" + orderFormDTO.getOrderDetailDTO());
-		
 		// 주문서 등록 요청(INSERT)
-		// >>>>>>>>>>> 작성자 등록 위한 id 가져가야함
-		sellService.registerOrder(orderFormDTO.getOrderDTO());
+		sellService.registerOrder(orderFormDTO);
 		
-		// t_order에 insert한 document_number 들고와서 t_order_detail 테이블에도 넣어야함
-		// document_number만 들어간 컬럼이라도 만들어놔야 나중에 update만 하면된다 !
-		String documentNumber = orderFormDTO.getOrderDTO().getDocumentNumber();
-		orderFormDTO.getOrderDetailDTO().setDocumentNumber(documentNumber);
-		// >>>>>>>>>> 작성자 등록 위한 id 가져가야함 <<<<<<<<<<
-		sellService.registerOrderDetail(orderFormDTO.getOrderDetailDTO());
-
 		// >>>>>>>>>> 상품 선택 및 등록은 나중에  <<<<<<<<<<
 
 		// 주문서 등록 후 주문서 상세 페이지로 이동
-		return "redirect:" + COMMON_PATH + "/" + tradeName + "/" + documentNumber;	// "orders/sell/100001" or "orders/buy/100002"
+		return "redirect:" + COMMON_PATH + "/" + tradeName + "/" + orderFormDTO.getOrderDTO().getDocumentNumber();	// "orders/sell/100001" or "orders/buy/100002"
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -181,6 +172,10 @@ public class SellController {
 								 @PathVariable("documentNumber") String documentNumber, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		System.out.println("documentNumber : "  + documentNumber);
+		
+		// 거래처 정보 가져오기
+		List<ClientDTO> clientList = sellService.getClientList();
+		model.addAttribute("clientList", clientList);
 		
 		OrderDTO orderDTO = sellService.getOrderByDocumentNumber(documentNumber);
 		// 수주 혹은 발주만 남은 codeItemList를 orderDTO에 set
@@ -202,13 +197,9 @@ public class SellController {
 
 		System.out.println("orderDTO : " + orderDTO);
 		System.out.println("orderDetailDTO : " + orderDetailDTO);
-		
+
 		// 주문 정보 수정
-		// >>>>>>>>>> 최종 작성자 수정 위한 id 가져가야함 <<<<<<<<<<
-		sellService.modifyOrder(orderDTO);
-		// 주문 상세 정보 수정
-		// >>>>>>>>>> 최종 작성자 수정 위한 id 가져가야함 <<<<<<<<<<
-		sellService.modifyOrderDetail(orderDetailDTO);
+		sellService.modifyOrder(orderDTO, orderDetailDTO);
 		
 		return "redirect:" + COMMON_PATH + "/" + tradeName + "/" + orderDTO.getDocumentNumber();
 	}

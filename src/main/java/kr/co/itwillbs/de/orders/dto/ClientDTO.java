@@ -2,6 +2,8 @@ package kr.co.itwillbs.de.orders.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +31,11 @@ public class ClientDTO {
 	private String companySubject;
 	//	전화번호
 	private String phoneNumber;
-	//	E-mail
+	// E-mail
+	// Jackson이 직렬화(또는 역직렬화)할 때 
+	// 내부적으로 "카멜 케이스"를 다시 정의하면서 email로 바뀜
+	// @JsonProperty 사용 시 JSON에서도 eMail로 보이게 됨
+    @JsonProperty("eMail")	
 	private String eMail;
 	//	팩스번호
 	private String faxNumber;

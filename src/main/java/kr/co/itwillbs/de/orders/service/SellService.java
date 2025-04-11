@@ -12,6 +12,7 @@ import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.OrderCodeDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
+import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 import kr.co.itwillbs.de.orders.mapper.SellMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -60,28 +61,21 @@ public class SellService {
 
 	/**
 	 * 수주/발주 주문 정보 등록(INSERT) >> orderDTO
-	 * @param orderDTO
+	 * @param orderFormDTO
 	 * @return 
 	 */
 	@LogExecution // 로그 남길 서비스
-	public void registerOrder(@Valid OrderDTO orderDTO) {
+	public void registerOrder(@Valid OrderFormDTO orderFormDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// MySQL DB에서 시퀀스 가져와서 document_number에 넣기
-		orderDTO.setDocumentNumber(commonService.getSeqOrderNumberfromMySQL());
-		sellMapper.insertOrder(orderDTO);
-	}
-
-	/**
-	 * 수주/발주 주문 정보 등록(INSERT) >> orderDetailDTO
-	 * @param orderDetailDTO
-	 * @return 
-	 */
-	@LogExecution // 로그 남길 서비스
-	public void registerOrderDetail(OrderDetailDTO orderDetailDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		sellMapper.insertOrderDetail(orderDetailDTO);
+		orderFormDTO.getOrderDTO().setDocumentNumber(commonService.getSeqOrderNumberfromMySQL());
+		sellMapper.insertOrder(orderFormDTO.getOrderDTO());
 		
+		// orderDTO에 들어간 documentNumber 가져오기
+		String documentNumber = orderFormDTO.getOrderDTO().getDocumentNumber();	
+		orderFormDTO.getOrderDetailDTO().setDocumentNumber(documentNumber);
+		sellMapper.insertOrderDetail(orderFormDTO.getOrderDetailDTO());
 	}
 
 	// ------------------------------------------------------------------------------------
@@ -98,24 +92,15 @@ public class SellService {
 
 	// ------------------------------------------------------------------------------------
 	/**
-	 * 수주/발주 주문 정보 수정(UPDATE) >> orderDTO
+	 * 수주/발주 주문 정보 수정(UPDATE)
 	 * @param orderDTO
-	 * @return 
-	 */
-	@LogExecution // 로그 남길 서비스
-	public void modifyOrder(OrderDTO orderDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		sellMapper.updateOrder(orderDTO);
-	}
-	
-	/**
-	 * 수주/발주 주문 정보 수정(UPDATE) >> orderDetailDTO
 	 * @param orderDetailDTO
 	 * @return 
 	 */
 	@LogExecution // 로그 남길 서비스
-	public void modifyOrderDetail(OrderDetailDTO orderDetailDTO) {
+	public void modifyOrder(OrderDTO orderDTO, OrderDetailDTO orderDetailDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		sellMapper.updateOrder(orderDTO);
 		sellMapper.updateOrderDetail(orderDetailDTO);
 	}
 	

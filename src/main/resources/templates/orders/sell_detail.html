@@ -57,14 +57,72 @@
 							<!-- -------------------------------------------------------------- -->
 							<div class="row">
 							    <div class="data-container">
+								    <div class="row">
+							            <div>
+							                <button type="button" id="resetSteps" class="btn btn-secondary mt-2">선택 초기화</button>
+							            </div>
+								        <div class="col-sm-12 col-md-6 mb-3">
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="departmentCode">담당자 부서</label>
+								                <select id="departmentCode" name="departmentCode" class="col-sm-12 col-md-6 rounded-sm mr-2" 
+								                		th:field="*{departmentCode}"
+							                	        th:attr="data-selected=*{departmentCode}">
+								                    <option value="">부서를 선택하세요</option>
+								                </select>
+								            </div>
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="subDepartmentCode">담당자 하위부서</label>
+								                <select id="subDepartmentCode" name="subDepartmentCode" class="col-sm-12 col-md-6 rounded-sm mr-2" 
+								                		th:field="*{subDepartmentCode}"
+						                		        th:attr="data-selected=*{subDepartmentCode}">
+								                    <option value="">하위부서를 선택하세요</option>
+								                </select>
+								            </div>
+								        </div>
+								        <div class="col-sm-12 col-md-6 mb-3">
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="clientId">담당자</label>
+											    <select id="clientId" name="clientId" class="col-sm-12 col-md-6 rounded-sm mr-2"
+						                		        th:attr="data-selected=*{clientName}">
+											        <option value="">담당자를 선택하세요</option>
+											    </select>
+								                <!-- hidden - 담당자는 id가 아닌 name 으로 저장하기 위함 -->
+								                <input type="hidden" name="clientName" id="clientNameHidden" th:field="*{clientName}">
+								            </div>
+											
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="clientPhone">담당자 전화번호</label>
+								                <input type="text" id="clientPhone" class="col-sm-12 col-md-6 rounded-sm mr-2"
+								                       th:field="*{clientPhone}" maxlength="13" placeholder="010-1234-5678" readonly>
+								            </div>
+								        </div>
+								    </div>
+								</div>
+							    
+							    <!-- ------------------------------------------------------------------------------------------------------- -->
+							    <hr>
+							    <div class="data-container">
 							    	<div class="row">
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
-								                <label class="col-sm-8 col-md-4" for="statusCode">주문상태</label>
-								                <select name="statusCode" id="statusCode" class="col-sm-12 col-md-6 rounded-sm mr-2">
-								                    <option th:each="item : *{codeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}" th:selected="${item.minorCode.equals(orderDTO.statusCode)}"></option>
-								                </select>
+								                <label class="col-sm-8 col-md-4" for="requestDate">요청예정일자</label>
+								                <input type="text" id="requestDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{requestDate}" autocomplete="off">
 								            </div>
+								        </div>
+								        <div class="col-sm-12 col-md-6 mb-3">
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="dueDate">요청마감일자</label>
+								                <input type="text" id="dueDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{dueDate}" autocomplete="off">
+								            </div>
+								        </div>
+								    </div>
+							    </div>
+							    
+							    <!-- ------------------------------------------------------------------------------------------------------- -->
+							    <hr>
+							    <div class="data-container">
+							    	<div class="row">
+								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="expectedDate">예정일</label>
 								                <input type="text" id="expectedDate" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{expectedDate}" autocomplete="off">
@@ -76,12 +134,10 @@
 								        </div>
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
-								                <label class="col-sm-8 col-md-4" for="companyName">거래처명</label>
-								                <input type="text" id="companyName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{companyName}" disabled>
-								            </div>
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="companyNumber">사업자번호</label>
-								                <input type="text" id="companyNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{companyNumber}" disabled>
+								                <label class="col-sm-8 col-md-4" for="statusCode">주문상태</label>
+								                <select name="statusCode" id="statusCode" class="col-sm-12 col-md-6 rounded-sm mr-2">
+								                    <option th:each="item : *{codeItemList}" th:value="${item.minorCode}" th:text="${item.minorName}" th:selected="${item.minorCode.equals(orderDTO.statusCode)}"></option>
+								                </select>
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="isDeleted">삭제유무</label>
@@ -92,33 +148,6 @@
 								            </div>
 								        </div>
 							    	</div>
-							    </div>
-							    
-							    <!-- ------------------------------------------------------------------------------------------------------- -->
-							    <hr>
-							    <div class="data-container">
-							    	<div class="row">
-								        <div class="col-sm-12 col-md-6 mb-3">
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="requestDate">요청예정일자</label>
-								                <input type="text" id="requestDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{requestDate}" autocomplete="off">
-								            </div>
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="dueDate">요청마감일자</label>
-								                <input type="text" id="dueDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{dueDate}" autocomplete="off">
-								            </div>
-								        </div>
-								        <div class="col-sm-12 col-md-6 mb-3">
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="clientName">담당자</label>
-								                <input type="text" id="clientName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientName}">
-								            </div>
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="clientPhone">담당자 전화번호</label>
-								                <input type="text" id="clientPhone" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientPhone}" maxlength="13">
-								            </div>
-								        </div>
-								    </div>
 							    </div>
 							    
 							    <!-- ------------------------------------------------------------------------------------------------------- -->
@@ -156,7 +185,7 @@
 								            <div class="addressInfo">
 								                <label class="col-sm-8 col-md-4">납품주소</label>
 									            <div>
-									                <input type="text" id="postCode" class="col-sm-6 col-md-3 rounded-sm mr-2 postCode_1 essential" th:field="*{postCode}" maxlength="5">
+									                <input type="text" id="postCode" class="col-sm-8 col-md-4 rounded-sm mr-2 postCode_1 essential" th:field="*{postCode}" maxlength="5">
 									                <button type="button" id="searchAddressBtn_1" class="btn btn-outline-primary ml-2">주소찾기</button>
 									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address1_1 essential" th:field="*{address1}">
 									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address2_1 essential" th:field="*{address2}">
@@ -172,32 +201,40 @@
 							    	<div class="row">
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
+								            	<p>[[*{companyNumber}]]</p>
 								                <label class="col-sm-8 col-md-4" for="companyNumber">사업자 등록 번호</label>
-								                <input type="text" id="companyNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{companyNumber}" disabled>
+												<select id="companyNumberSelect" name="companyNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{companyNumber}">
+											        <option value="">사업자 등록번호를 선택하세요</option>
+											        <option th:each="client : ${clientList}"
+											                th:value="${client.companyNumber}"
+													        th:text="${client.companyNumber + ' (' + client.companyName + ')'}"
+													        th:selected="${client.companyNumber} == *{companyNumber}">
+											        </option>
+											    </select>
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="companyName">상호명</label>
-								                <input type="text" id="companyName" class="col-sm-12 col-md-6 rounded-sm mr-2" disabled>
+								                <input type="text" id="companyName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{companyName}" readonly>
 <!-- 								                <input type="text" id="companyName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.companyName}"> -->
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="ownerName">대표자명</label>
-								                <input type="text" id="ownerName" class="col-sm-12 col-md-6 rounded-sm mr-2" disabled>
+								                <input type="text" id="ownerName" class="col-sm-12 col-md-6 rounded-sm mr-2" readonly>
 <!-- 								                <input type="text" id="ownerName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.ownerName}"> -->
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="phoneNumber">전화번호</label>
-								                <input type="text" id="phoneNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" disabled>
+								                <input type="text" id="phoneNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" readonly>
 <!-- 								                <input type="text" id="phoneNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.phoneNumber}"> -->
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="faxNumber">팩스번호</label>
-								                <input type="text" id="faxNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" disabled>
+								                <input type="text" id="faxNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" readonly>
 <!-- 								                <input type="text" id="faxNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.faxNumber}" maxlength="10"> -->
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="eMail">이메일</label>
-								                <input type="text" id="eMail" class="col-sm-12 col-md-6 rounded-sm mr-2" disabled>
+								                <input type="text" id="eMail" class="col-sm-12 col-md-6 rounded-sm mr-2" readonly>
 <!-- 								                <input type="text" id="eMail" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.eMail}"> -->
 								            </div>
 								        </div>
@@ -205,12 +242,11 @@
 								            <div class="addressInfo">
 								                <label class="col-sm-8 col-md-4">주소</label>
 									            <div>
-									                <input type="text" id="postCode" class="col-sm-6 col-md-3 rounded-sm mr-2 postCode_2" maxlength="5" disabled>
-									                <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2" disabled>주소찾기</button>
-									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address1_2" disabled>
-									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address2_2" disabled>
-<!-- 									                <input type="text" id="postCode" class="col-sm-6 col-md-3 rounded-sm mr-2 postCode_2" th:field="*{clientDTO.postCode}" maxlength="5"> -->
-<!-- 									                <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2" disabled>주소찾기</button> -->
+									                <input type="text" id="postCode" class="col-sm-8 col-md-4 rounded-sm mr-2 postCode_2" maxlength="5" readonly>
+									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address1_2" readonly>
+									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address2_2" readonly>
+<!-- 									                <input type="text" id="postCode" class="col-sm-8 col-md-4 rounded-sm mr-2 postCode_2" th:field="*{clientDTO.postCode}" maxlength="5"> -->
+<!-- 									                <button typreadonlyn" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2" disabled>주소찾기</button> -->
 <!-- 									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address1_2" th:field="*{clientDTO.address1}"> -->
 <!-- 									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address2_2" th:field="*{clientDTO.address2}"> -->
 									            </div>
@@ -270,6 +306,149 @@
 		
 		<script type="text/javascript">
 			$(function() {
+				const $departmentSelect = $('#departmentCode');
+				const $subDepartmentSelect = $('#subDepartmentCode');
+				const $clientSelect = $('#clientId');
+
+				// 초기값 설정
+				const selectedDeptCode = $departmentSelect.data('selected');
+				const selectedSubDeptCode = $subDepartmentSelect.data('selected');
+				const selectedClientName = $clientSelect.data('selected'); // 이름 기준
+				
+				// 부서 목록 불러오기 + 선택 반영
+				function loadMainDepartments() {
+				    $.ajax({
+				        url: '/orders/api/departments/main',
+				        type: 'GET',
+				        success: function (data) {
+				            updateSelectBox('#departmentCode', data, '부서를 선택하세요', selectedDeptCode);
+
+				            if (selectedDeptCode) {
+				                loadSubDepartments(selectedDeptCode, selectedSubDeptCode);
+				            }
+				        }
+				    });
+				}
+
+				// 하위부서 목록 불러오기 + 선택 반영
+				function loadSubDepartments(departmentCode, selectedSubCode) {
+				    $.ajax({
+				        url: '/orders/api/departments/sub',
+				        type: 'GET',
+				        data: { departmentCode },
+				        success: function (data) {
+				            updateSelectBox('#subDepartmentCode', data, '하위부서를 선택하세요', selectedSubCode);
+
+				            if (selectedSubCode) {
+				                loadClientList(departmentCode, selectedSubCode, selectedClientName);
+				            }
+				        }
+				    });
+				}
+
+				// 담당자 목록 불러오기 + 선택 반영
+				function loadClientList(deptCode, subDeptCode, selectedClientName = '') {
+				    $.ajax({
+				        url: '/orders/api/employees/by-sub-dept',
+				        type: 'GET',
+				        data: {
+				            departmentCode: deptCode,
+				            subDepartmentCode: subDeptCode
+				        },
+				        success: function (data) {
+				            const $select = $('#clientId');
+				            $select.empty().append(`<option value="">담당자를 선택하세요</option>`);
+
+				            let matchedId = '';
+
+				            data.forEach(item => {
+				                const selected = item.name === selectedClientName ? 'selected' : '';
+				                if (selected) matchedId = item.code;
+				                $select.append(`<option value="${item.code}" ${selected}>${item.name}</option>`);
+				            });
+
+				            if (matchedId) {
+				                loadClientInfo(matchedId);
+				            }
+				        }
+				    });
+				}
+
+				// 담당자 상세정보
+				function loadClientInfo(employeeId) {
+				    const employeeName = $('#clientId').find('option:selected').text();
+
+				    $.ajax({
+				        url: '/orders/api/employees/info',
+				        type: 'GET',
+				        data: { employeeId },
+				        success: function (data) {
+				            $('#clientPhone').val(data.phone);
+				            $('#clientNameHidden').val(employeeName); // 이름을 hidden input에 저장
+				        }
+				    });
+				}
+
+				// 공통 옵션 추가 함수
+				function updateSelectBox(selector, list, placeholder, selectedValue = '') {
+				    const $select = $(selector);
+				    $select.empty().append(`<option value="">${placeholder}</option>`);
+				    list.forEach(item => {
+				        const selected = item.code == selectedValue ? 'selected' : '';
+				        $select.append(`<option value="${item.code}" ${selected}>${item.name}</option>`);
+				    });
+				}
+
+				// 전화번호 비우기
+				function clearEmployeeInfo() {
+				    $('#clientPhone').val('');
+				    $('#clientNameHidden').val('');
+				}
+
+				// 초기화 버튼
+				$('#resetSteps').on('click', function () {
+				    $('#departmentCode').val('');
+				    $('#subDepartmentCode').empty().append(`<option value="">하위부서를 선택하세요</option>`);
+				    $('#clientId').empty().append(`<option value="">담당자를 선택하세요</option>`);
+				    clearEmployeeInfo();
+				    loadMainDepartments();
+				});
+
+				// 부서 변경 이벤트
+				$('#departmentCode').on('change', function () {
+				    const deptCode = $(this).val();
+				    if (!deptCode) return;
+
+				    $('#subDepartmentCode').empty().append(`<option value="">하위부서를 선택하세요</option>`);
+				    $('#clientId').empty().append(`<option value="">담당자를 선택하세요</option>`);
+				    clearEmployeeInfo();
+
+				    loadSubDepartments(deptCode, '');
+				});
+
+				// 하위부서 변경 이벤트
+				$('#subDepartmentCode').on('change', function () {
+				    const deptCode = $('#departmentCode').val();
+				    const subDeptCode = $(this).val();
+				    if (!subDeptCode) return;
+
+				    $('#clientId').empty().append(`<option value="">담당자를 선택하세요</option>`);
+				    clearEmployeeInfo();
+
+				    loadClientList(deptCode, subDeptCode, '');
+				});
+
+				// 담당자 변경 이벤트
+				$('#clientId').on('change', function () {
+				    const employeeId = $(this).val();
+				    if (!employeeId) return;
+				    loadClientInfo(employeeId);
+				});
+
+				// 페이지 로딩 시 자동 실행
+				loadMainDepartments();
+				
+		     	//---------------------------------------------------
 				// 휴대번호 입력
 				$('#clientPhone, #phone1, #phone2, #phoneNumber').on('input', function() {
 			        // 숫자만 남기기
@@ -331,32 +510,6 @@
 				            
 				            // 5) 상세주소 항목(address2)에 포커스 요청
 				            $(".address2_1").focus();
-				        }
-				    }).open();
-				});
-				
-				// 주소(다음 우편번호 API 활용)
-				$("#searchAddressBtn_2, .postCode_2").click(function() {
-					new daum.Postcode({
-				        oncomplete: function(data) { 
-							// 1) 우편번호(zonecode) 가져와서 우편번호 항목(postCode)에 출력              
-				            $(".postCode_2").val(data.zonecode);
-					
-							// 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서 
-							//    기본주소 항목(address1)에 출력
-							let address = data.address;
-				            
-				            // 3) 만약, 건물명(buildingName)이 존재할 경우(= 널스트링이 아님)
-				            //    기본 주소 뒤에 건물명 결합
-				            if(data.buildingName !== ''){
-				               address += "(" + data.buildingName + ")";
-				            }
-				            
-				            // 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
-				            $(".address1_2").val(address);
-				            
-				            // 5) 상세주소 항목(address2)에 포커스 요청
-				            $(".address2_2").focus();
 				        }
 				    }).open();
 				});
@@ -438,13 +591,50 @@
 			        });
 			    });
 		     	// ===== 캘린더 끝 ============================================
-		        
+			 	
+		     	// --------------------------------------------------------
+			    // 사업자번호 변경 시
+				$('#companyNumberSelect').on('change', function () {
+				    const selectedNumber = $(this).val();
+				    updateClientInfoByNumber(selectedNumber);
+				});
+		     	
+				// 페이지 로드시 초기값 자동 입력
+				updateClientInfoByNumber($('#companyNumberSelect').val());
+		     	
+		     	// 사업자 번호 선택 시 함수
+		        function updateClientInfoByNumber(selectedNumber) {
+				    const client = clientList.find(c => c.companyNumber === selectedNumber);
+				
+				    if (client) {
+				        console.log("팩스번호:", client.faxNumber);
+				        console.log("이메일 값:", client.eMail);
+				        console.log("clientList 전체 확인:", client);
+				
+				        $('#companyName').val(client.companyName);
+				        $('#ownerName').val(client.ownerName);
+				        $('#phoneNumber').val(client.phoneNumber);
+				        $('#faxNumber').val(client.faxNumber);
+				        $('#eMail').val(client.eMail);
+				        $('.postCode_2').val(client.postCode);
+				        $('.address1_2').val(client.address1);
+				        $('.address2_2').val(client.address2);
+				    } else {
+				        $('#companyName, #ownerName, #phoneNumber, #faxNumber, #eMail').val('');
+				        $('.postCode_2, .address1_2, .address2_2').val('');
+				    }
+				}
 		        
 		        
 		    });
 		</script>
 	</div>
 	<!-- --------------------------------------------------------------------------------------------- -->
-	
+	<th:block layout:fragment="script">
+		<!-- clientList를 JSON 문자열로 넘기기 -->
+		<script th:inline="javascript">
+		    const clientList = /*[[${clientList}]]*/ [];
+		</script>
+	</th:block>
 </body>
 </html>

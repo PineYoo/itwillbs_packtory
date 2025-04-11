@@ -59,25 +59,6 @@
 							<!-- -------------------------------------------------------------- -->
 							<div class="row">
 								<div class="data-container">
-							    	<div class="row">
-								        <div class="col-sm-12 col-md-6 mb-3">
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="requestDate">요청예정일자</label>
-								                <input type="text" id="requestDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{orderDTO.requestDate}" placeholder="날짜 선택" autocomplete="off">
-								            </div>
-								        </div>
-								        <div class="col-sm-12 col-md-6 mb-3">
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="dueDate">요청마감일자</label>
-								                <input type="text" id="dueDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{orderDTO.dueDate}" placeholder="날짜 선택" autocomplete="off">
-								            </div>
-								        </div>
-								    </div>
-							    </div>
-							    
-							    <!-- ------------------------------------------------------------------------------------------------------- -->
-							    <hr>
-								<div class="data-container">
 								    <div class="row">
 							            <div>
 							                <button type="button" id="resetSteps" class="btn btn-secondary mt-2">선택 초기화</button>
@@ -85,13 +66,13 @@
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="departmentCode">담당자 부서</label>
-								                <select id="departmentCode" name="departmentCode" class="col-sm-12 col-md-6 rounded-sm mr-2">
+								                <select id="departmentCode" name="departmentCode" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{orderDetailDTO.departmentCode}">
 								                    <option value="">부서를 선택하세요</option>
 								                </select>
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="subDepartmentCode">담당자 하위부서</label>
-								                <select id="subDepartmentCode" name="subDepartmentCode" class="col-sm-12 col-md-6 rounded-sm mr-2">
+								                <select id="subDepartmentCode" name="subDepartmentCode" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{orderDetailDTO.subDepartmentCode}">
 								                    <option value="">하위부서를 선택하세요</option>
 								                </select>
 								            </div>
@@ -114,6 +95,25 @@
 								        </div>
 								    </div>
 								</div>
+							    
+							    <!-- ------------------------------------------------------------------------------------------------------- -->
+							    <hr>
+								<div class="data-container">
+							    	<div class="row">
+								        <div class="col-sm-12 col-md-6 mb-3">
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="requestDate">요청예정일자</label>
+								                <input type="text" id="requestDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{orderDTO.requestDate}" placeholder="날짜 선택" autocomplete="off">
+								            </div>
+								        </div>
+								        <div class="col-sm-12 col-md-6 mb-3">
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="dueDate">요청마감일자</label>
+								                <input type="text" id="dueDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{orderDTO.dueDate}" placeholder="날짜 선택" autocomplete="off">
+								            </div>
+								        </div>
+								    </div>
+							    </div>
 							    
 							    <!-- ------------------------------------------------------------------------------------------------------- -->
 							    <hr>
@@ -150,7 +150,7 @@
 								            <div class="addressInfo">
 								                <label class="col-sm-8 col-md-4">납품주소</label>
 									            <div>
-									                <input type="text" id="postCode" class="col-sm-6 col-md-3 rounded-sm mr-2 postCode_1 essential" th:field="*{orderDTO.postCode}" maxlength="5">
+									                <input type="text" id="postCode" class="col-sm-8 col-md-4 rounded-sm mr-2 postCode_1 essential" th:field="*{orderDTO.postCode}" maxlength="5">
 									                <button type="button" id="searchAddressBtn_1" class="btn btn-outline-primary ml-2">주소찾기</button>
 									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address1_1 essential" th:field="*{orderDTO.address1}" placeholder="기본주소 입력">
 									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address2_1 essential" th:field="*{orderDTO.address2}" placeholder="상세주소 입력">
@@ -171,39 +171,46 @@
 											        <option value="">사업자 등록번호를 선택하세요</option>
 											        <option th:each="client : ${clientList}"
 											                th:value="${client.companyNumber}"
-											                th:text="${client.companyNumber}">
+													        th:text="${client.companyNumber + ' (' + client.companyName + ')'}"> <!-- 사업자번호(사업자명) -->
 											        </option>
 											    </select>
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="companyName">상호명</label>
-								                <input type="text" id="companyName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.companyName}">
+								                <input type="text" id="companyName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{orderDTO.companyName}" readonly>
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="ownerName">대표자명</label>
-								                <input type="text" id="ownerName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.ownerName}">
+<!-- 								                <input type="text" id="ownerName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.ownerName}"> -->
+								                <input type="text" id="ownerName" class="col-sm-12 col-md-6 rounded-sm mr-2" readonly>
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="phoneNumber">전화번호</label>
-								                <input type="text" id="phoneNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.phoneNumber}" maxlength="13" placeholder="010-1234-5678">
+<!-- 								                <input type="text" id="phoneNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.phoneNumber}" maxlength="13" placeholder="010-1234-5678"> -->
+								                <input type="text" id="phoneNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" maxlength="13" placeholder="010-1234-5678" readonly>
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="faxNumber">팩스번호</label>
-								                <input type="text" id="faxNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.faxNumber}" maxlength="10" placeholder="02-000-0000">
+<!-- 								                <input type="text" id="faxNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.faxNumber}" maxlength="10" placeholder="02-000-0000"> -->
+								                <input type="text" id="faxNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" maxlength="10" placeholder="02-000-0000" readonly>
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="eMail">이메일</label>
-								                <input type="text" id="eMail" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{clientDTO.eMail}" placeholder="email@example.com">
+<!-- 								                <input type="text" id="eMail" class="col-sm-12 col-md-6 rounded-sm mr-2 eMail" th:field="*{clientDTO.eMail}" placeholder="email@example.com"> -->
+								                <input type="text" id="eMail" class="col-sm-12 col-md-6 rounded-sm mr-2 eMail" placeholder="email@example.com" readonly>
 								            </div>
 								        </div>
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div class="addressInfo">
 								                <label class="col-sm-8 col-md-4">주소</label>
 									            <div>
-									                <input type="text" id="postCode" class="col-sm-6 col-md-3 rounded-sm mr-2 postCode_2" th:field="*{clientDTO.postCode}" maxlength="5">
-									                <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2" disabled>주소찾기</button>
-									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address1_2" th:field="*{clientDTO.address1}" placeholder="기본주소 입력">
-									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address2_2" th:field="*{clientDTO.address2}" placeholder="상세주소 입력">
+<!-- 									                <input type="text" class="col-sm-6 col-md-3 rounded-sm mr-2 postCode_2" th:field="*{clientDTO.postCode}" maxlength="5"> -->
+									                <input type="text" class="col-sm-8 col-md-4 rounded-sm mr-2 postCode_2" maxlength="5" readonly>
+<!-- 									                <button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary ml-2" disabled>주소찾기</button> -->
+<!-- 									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address1_2" th:field="*{clientDTO.address1}" placeholder="기본주소 입력"> -->
+<!-- 									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address2_2" th:field="*{clientDTO.address2}" placeholder="상세주소 입력"> -->
+									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address1_2" placeholder="기본주소 입력" readonly>
+									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address2_2" placeholder="상세주소 입력" readonly>
 									            </div>
 								            </div>
 								        </div>
@@ -564,27 +571,24 @@
 			        const client = clientList.find(c => c.companyNumber === selectedNumber);
 
 			        if (client) {
-			            $('#companyName').val(client.companyName);	// 상호명(거래처명)
+			        	console.log("팩스번호:", client.faxNumber);
+			        	console.log("이메일 값:", client.eMail);
+			        	console.log("clientList 전체 확인:", client);
+
+			        	
+			        	$('#companyName').val(client.companyName);	// 상호명(거래처명)
 			            $('#ownerName').val(client.ownerName);		// 대표자명
 			            $('#phoneNumber').val(client.phoneNumber);	// 전화번호
 			            $('#faxNumber').val(client.faxNumber);		// 팩스번호
 			            $('#eMail').val(client.eMail);				// 이메일
 
 			            // 주소
-			            $('#postCode_2').val(client.postCode);
-			            $('.address1_2').val(client.address1);
-			            $('.address2_2').val(client.address2);
+			            $('.postCode_2').val(client.postCode);		// 우편번호
+			            $('.address1_2').val(client.address1);		// 주소1
+			            $('.address2_2').val(client.address2);		// 주소2
 			        } else {
-			            $('#companyName').val('');	// 상호명(거래처명)
-			            $('#ownerName').val('');	// 대표자명
-			            $('#phoneNumber').val('');	// 전화번호
-			            $('#faxNumber').val('');	// 팩스번호
-			            $('#eMail').val('');		// 이메일
-
-			            // 주소
-			            $('.postCode_2').val('');
-			            $('.address1_2').val('');
-			            $('.address2_2').val('');
+			        	$('#companyName, #ownerName, #phoneNumber, #faxNumber, #eMail').val('');
+				        $('.postCode_2, .address1_2, .address2_2').val('');
 			        }
 			    });
 		        
@@ -595,7 +599,7 @@
 	<th:block layout:fragment="script">
 		<!-- clientList를 JSON 문자열로 넘기기 -->
 		<script th:inline="javascript">
-		    const clientList = /*[[${clientList}]]*/ null;
+		    const clientList = /*[[${clientList}]]*/ [];
 		</script>
 	</th:block>
 </body>
