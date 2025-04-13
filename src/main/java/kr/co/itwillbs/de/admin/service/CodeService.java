@@ -2,11 +2,10 @@ package kr.co.itwillbs.de.admin.service;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
@@ -91,8 +90,7 @@ public class CodeService {
 	 * @param codeSearchDTO
 	 * @return CodeDTO
 	 */
-	@LogExecution
-	public CodeDTO getCodeByIdx(CodeSearchDTO codeSearchDTO) {
+	public CodeDTO getCodeByIdx(CodeSearchDTO codeSearchDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		return codeMapper.getCodeByIdx(codeSearchDTO);
@@ -103,7 +101,7 @@ public class CodeService {
 	 * @param codeSearchDTO
 	 * @return List<CodeItemDTO>
 	 */
-	public List<CodeItemDTO> getCodeItemsByMajorCode(CodeSearchDTO codeSearchDTO) {
+	public List<CodeItemDTO> getCodeItemsByMajorCode(CodeSearchDTO codeSearchDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		return codeMapper.getCodeItemsByMajorCode(codeSearchDTO);
@@ -132,6 +130,7 @@ public class CodeService {
 	 */
 	@LogExecution // 로그 남길 서비스
 	@CacheEvict(value = "codeItems", key = "#itemList.get(0).majorCode")
+	@Transactional
 	public void registerCodeItems(List<CodeItemDTO> itemList) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		

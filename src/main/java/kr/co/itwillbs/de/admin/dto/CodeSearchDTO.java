@@ -1,5 +1,7 @@
 package kr.co.itwillbs.de.admin.dto;
 
+import java.util.List;
+
 import kr.co.itwillbs.de.common.vo.PageDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,8 @@ public class CodeSearchDTO {
 	private String regId;
 	private String minDate;
 	private String maxDate;
+	
+	private List<CodeDTO> codeList;
 	
 	// 페이징용 DTO composition
 	private PageDTO pageDTO = new PageDTO();

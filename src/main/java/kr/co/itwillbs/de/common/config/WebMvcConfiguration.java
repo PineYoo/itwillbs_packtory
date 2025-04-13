@@ -6,7 +6,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -40,6 +39,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer{
 	 * 여기도 참고해보자 : https://goldswan.tistory.com/42
 	 * @return
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
 	public FilterRegistrationBean hiddenHttpMethodFilter() {
 		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new HiddenHttpMethodFilter());

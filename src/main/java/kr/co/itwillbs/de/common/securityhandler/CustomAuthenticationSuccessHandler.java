@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.common.securityHandler;
+package kr.co.itwillbs.de.common.securityhandler;
 
 import java.io.IOException;
 
@@ -56,9 +56,14 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		// DB에 로그인 기록
 
 		try {
-			LogDTO logDTO = LogDTO.builder().accessId(memberId).accessType(LOG_ACCESS_TYPE_LOGIN)
-					.accessDevice(servletRequestUtil.getDeviceType(request)).ip(servletRequestUtil.getClientIp(request))
-					.url("/login").parameters("loginSuccess").build();
+			LogDTO logDTO = LogDTO.builder()
+					.accessId(memberId)
+					.accessType(LOG_ACCESS_TYPE_LOGIN)
+					.accessDevice(servletRequestUtil.getDeviceType(request))
+					.ip(servletRequestUtil.getClientIp(request))
+					.url("/login")
+					.parameters("loginSuccess")
+					.build();
 
 			logMapper.registerLog(logDTO);
 		} catch (Exception e) {

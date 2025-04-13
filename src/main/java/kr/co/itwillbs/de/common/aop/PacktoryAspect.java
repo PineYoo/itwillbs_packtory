@@ -82,9 +82,14 @@ public class PacktoryAspect {
 			String arguments = Arrays.toString(joinPoint.getArgs());
 
 			// 로그 DTO 생성
-			LogDTO logDTO = LogDTO.builder().accessId(memberId).accessType(servletRequestUtil.getAccessType(request))
-					.parameters(arguments).accessDevice(servletRequestUtil.getDeviceType(request))
-					.ip(servletRequestUtil.getClientIp(request)).url(request.getRequestURI()).build();
+			LogDTO logDTO = LogDTO.builder()
+					.accessId(memberId)
+					.accessType(servletRequestUtil.getAccessType(request))
+					.parameters(arguments)
+					.accessDevice(servletRequestUtil.getDeviceType(request))
+					.ip(servletRequestUtil.getClientIp(request))
+					.url(request.getRequestURI())
+					.build();
 			/*
 			 * .accessId(memberId) .accessType(LOG_ACCESS_TYPE_LOGIN)
 			 * .accessDevice(servletRequestUtil.getDeviceType(request))
@@ -182,8 +187,8 @@ public class PacktoryAspect {
 					} catch (IllegalAccessException e) {
 						log.error("{} 필드 접근 중 오류 발생: {}", fieldName, e.getMessage());
 					}
-				}
-			}
+				} // end of for (String fieldName : fields) {
+			} // end of if (memberId != null) {
 		} catch (Exception e) {
 			log.error("memberId 주입 중 오류 발생: {}", e.getMessage());
 		}

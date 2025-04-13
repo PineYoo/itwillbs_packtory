@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.admin.dto.CodeSearchDTO;
@@ -59,10 +62,11 @@ public class CodeController {
 	 * @param logDTO
 	 * @return
 	 */
-	@PostMapping(value={"","/"})
-	public String registerCode(@ModelAttribute("codeDTO") CodeDTO codeDTO) {
+//	public String registerCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO,
+//			 					BindingResult bindingResult, Model model) {
+	@PostMapping(value={"","/"}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE) // 이녀석 만고 필요 없...던데? 
+	public String registerCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
 		log.info("requestDTO : {}", StringUtil.objToString(codeDTO));
 		
 		if(codeService.registerCode(codeDTO) < 1) {
@@ -82,9 +86,8 @@ public class CodeController {
 		
 		// 리스트 검색 DTO 뷰에 전달
 		codeSearchDTO.getPageDTO().setTotalCount(codeService.getCodesCountBySearchDTO(codeSearchDTO));
-		model.addAttribute("codeSearchDTO", codeSearchDTO);
-		// 리스트 공통코드 select 용 리스트 뷰에 전달
-		model.addAttribute("codeList", commonCodeUtil.getCodes());
+		// 검색폼 공통코드 리스트 셋
+		model.addAttribute("codeSearchDTO", this.setSearchDTOcodeList(codeSearchDTO));
 		
 		List<CodeDTO> codeDTOList = codeService.getCodesBySearchDTO(codeSearchDTO);
 		model.addAttribute("codeDTOList", codeDTOList);
@@ -106,13 +109,10 @@ public class CodeController {
 		log.info("request codeSearchDTO : {}", StringUtil.objToString(codeSearchDTO));
 		// 리스트 검색 DTO 뷰에 전달
 		codeSearchDTO.getPageDTO().setTotalCount(codeService.getCodesCountBySearchDTO(codeSearchDTO));
-		model.addAttribute("codeSearchDTO", codeSearchDTO);
-		// 리스트 공통코드 select 용 리스트 뷰에 전달
-		model.addAttribute("codeList", commonCodeUtil.getCodes());
-		
+		// 검색폼 공통코드 리스트 셋
+		model.addAttribute("codeSearchDTO", this.setSearchDTOcodeList(codeSearchDTO));
 		// 리스트 결과 DTOlist 뷰에 전달
-		List<CodeDTO> codeDTOList = codeService.getCodesBySearchDTO(codeSearchDTO);
-		model.addAttribute("codeDTOList", codeDTOList);
+		model.addAttribute("codeDTOList", codeService.getCodesBySearchDTO(codeSearchDTO));
 		
 		return CODE_PATH+"/code_list";
 	}
@@ -140,15 +140,15 @@ public class CodeController {
 			// t_commoncode 테이블 조회를 하기 위해 idx 셋
 			codeSearchDTO.setIdx(idx);
 			CodeDTO codeDTO = codeService.getCodeByIdx(codeSearchDTO);
-			if(codeDTO != null) { 
+			if(codeDTO != null) {
+				// 공통코드 셋
 				model.addAttribute("codeDTO", codeDTO);
 				// 공통 코드 가져오기(TEST) codeDTO.getMajorCode()
 //				model.addAttribute("codeItems", commonCodeUtil.getCodeItems(codeDTO.getMajorCode()));
-				
 				// 조회된 결과 값에서 하위 공통코드 조회를 위해 majorCode 셋
 				codeSearchDTO.setMajorCode(codeDTO.getMajorCode());
 				log.info("codeDTO.getMajorCode() {}", codeDTO.getMajorCode());
-				// t_commoncode_item where major_code 조회 하기
+				// 하위코드 조회하기 근데 내가 왜 SearchDTO 에 담아서 보냈는지 이해가 되질 않네?
 				model.addAttribute("codeItemDTOList", codeService.getCodeItemsByMajorCode(codeSearchDTO));
 			}
 		} catch (Exception e) {
@@ -168,7 +168,8 @@ public class CodeController {
 	 */
 	@PutMapping("/modifyCode")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> modifyCode(@RequestBody CodeDTO codeDTO,  Model model) {
+	public ResponseEntity<Map<String, Object>> modifyCode(@RequestBody @Valid CodeDTO codeDTO,
+															BindingResult bindingResult, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestBody : {}", codeDTO);
@@ -218,4 +219,11 @@ public class CodeController {
 		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아닐까 하는 생각에 이렇게 리턴 객체 만듦
 		return ResponseEntity.ok(response);
 	}
+	
+	private CodeSearchDTO setSearchDTOcodeList(CodeSearchDTO codeSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		codeSearchDTO.setCodeList(codeService.getCodes());
+		return codeSearchDTO;
+	}
+	
 }

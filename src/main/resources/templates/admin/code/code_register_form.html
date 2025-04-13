@@ -52,22 +52,26 @@
 							<div class="col-md-6">
 								<label class="mb-1" for="majorCode">그룹 코드</label>
 								<input type="text" class="form-control" th:field="*{majorCode}" placeholder="그룹 코드">
+								<div th:if="${#fields.hasErrors('majorCode')}" th:errors="*{majorCode}" class="text-danger"></div>
 							</div>
 							<div class="col-md-6">
 								<label class="mb-1" for="name">코드 이름</label>
 								<input type="text" class="form-control" th:field="*{name}" placeholder="코드 이름">
+								<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
 							</div>
 							<div class="col-md-6">
 								<label class="mb-1" for="description">코드 설명</label>
 								<input type="text" class="form-control" th:field="*{description}" placeholder="코드 설명">
+								<div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
 							</div>
 							<div class="col-md-6 mb-4">
 								<label for="isDeleted" class="form-label">삭제유무</label>
-								<select id="isDeleted" name="isDeleted" class="form-select" th:field="*{isDeleted}">
+								<select class="form-select" th:field="*{isDeleted}">
 									<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
 									<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
 <!-- 									<option value="" th:selected="*{isDeleted} eq '' ">선택</option> -->
 								</select>
+								<div th:if="${#fields.hasErrors('isDeleted')}" th:errors="*{isDeleted}" class="text-danger"></div>
 							</div>
 							
 							<div class="col-md-12 row align-items-center justify-content-center">

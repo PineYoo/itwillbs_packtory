@@ -32,6 +32,11 @@ public class SimpleCacheConfig {
 //		this.cacheManager = cacheManager;
 //	}
 
+	
+	/* 삽질하면서 이거까지 만들었는데... 
+	 * 사실 만들 필요가 있었나 싶다. 만들지 않아도 잘 돌아간다던데...
+	 * 그냥 명시적으로 우리는 어떤캐시를 쓰고 있다? 정도로 해두자!
+	 */
 	@Bean
 	public CacheManager cacheManager() {
 		SimpleCacheManager cacheManager = new SimpleCacheManager();

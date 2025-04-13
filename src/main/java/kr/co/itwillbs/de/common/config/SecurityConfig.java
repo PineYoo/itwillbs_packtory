@@ -10,9 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import jakarta.annotation.PostConstruct;
-import kr.co.itwillbs.de.common.securityHandler.CustomAuthenticationFailureHandler;
-import kr.co.itwillbs.de.common.securityHandler.CustomAuthenticationSuccessHandler;
-import kr.co.itwillbs.de.common.securityHandler.CustomLogoutHandler;
+import kr.co.itwillbs.de.common.securityhandler.CustomAuthenticationFailureHandler;
+import kr.co.itwillbs.de.common.securityhandler.CustomAuthenticationSuccessHandler;
+import kr.co.itwillbs.de.common.securityhandler.CustomLogoutHandler;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -48,7 +48,7 @@ public class SecurityConfig {
 								"/actuator/**"
 								).permitAll()
 				.requestMatchers("/admin/**").hasAuthority("ADMIN") //.hasRole("ADMIN") // 이녀석은 ROLE_접두사가 붙은 문자열로 표현 hasAuthority는 접두사 붙이지 않음
-				//.requestMatchers("/manager/**").hasRole("MANAGER")
+				//.requestMatchers("/manager/**").hasRole("MANAGER") // 스프링에서는 hasRole로 ROLE_ 접두사가 붙는걸 권장한다고 한다. 일단 그렇다고요. 알아 두자
 				//.requestMatchers("/employee/**").hasRole("EMPLOYEE")
 				.anyRequest()
 				.authenticated()

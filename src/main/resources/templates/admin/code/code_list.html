@@ -48,7 +48,7 @@
 													<div class="col-sm-9">
 														<select name="majorCode" id="majorCode" th:value="*{majorCode}" class="form-select">
 															<option value="">전체</option>
-															<option th:each="item : ${codeList}" th:value="${item.majorCode}" th:text="${item.name}" th:selected="*{majorCode} eq ${item.majorCode}"></option>
+															<option th:each="item : ${codeSearchDTO.codeList}" th:value="${item.majorCode}" th:text="${item.name}" th:selected="*{majorCode} eq ${item.majorCode}"></option>
 														</select>
 													</div>
 												</div>

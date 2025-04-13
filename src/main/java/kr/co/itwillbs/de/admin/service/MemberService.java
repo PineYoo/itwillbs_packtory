@@ -11,7 +11,6 @@ import kr.co.itwillbs.de.admin.dto.MemberDTO;
 import kr.co.itwillbs.de.admin.dto.MemberSearchDTO;
 import kr.co.itwillbs.de.admin.mapper.MemberMapper;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
-import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -113,7 +112,6 @@ public class MemberService {
 	 * @return
 	 */
 	@LogExecution // 로그 남길 서비스
-	@RequiredSessionIds
 	public void registerMembersPartTwo(List<MemberDTO> memberDTOList) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		if(memberDTOList.size() > 0) {

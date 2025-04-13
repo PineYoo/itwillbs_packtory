@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.common.securityHandler;
+package kr.co.itwillbs.de.common.securityhandler;
 
 import java.io.IOException;
 
@@ -60,7 +60,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 			log.error("Failed to write login log to database {}", e.getMessage());
 		}
 		
-		// 로그인 실패 메시지 세션에 저장
+		// 로그인 실패 메시지 세션에 저장 어 ? 이거 선생님 코드였나?;; 난 세션 안쓰기로 했는데..?
 		HttpSession session = request.getSession();
 		session.setAttribute("errorMessage", "아이디 또는 비밀번호가 올바르지 않습니다.");
 		// 로그인 페이지로 리디렉션
