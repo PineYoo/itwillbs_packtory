@@ -1,11 +1,6 @@
 package kr.co.itwillbs.de.common.mapper;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
-
-import kr.co.itwillbs.de.admin.dto.CodeDTO;
-import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 
 @Mapper
 public interface CommonMapper {
@@ -52,18 +47,4 @@ public interface CommonMapper {
 	 */
 	String getApprovalNoFromMySQL();
 	
-	/**
-	 * SELECT t_commoncode where is_deleted = 'N' 
-	 * @param majorCode
-	 * @return
-	 */
-	List<CodeDTO> getCodes();
-
-	/**
-	 * SELECT t_commoncode_item where is_deleted = 'N' and mojor_code = #{majorCode}
-	 * @param majorCode
-	 * @return
-	 */
-	List<CodeItemDTO> getCodeItems(String majorCode);
-
 }

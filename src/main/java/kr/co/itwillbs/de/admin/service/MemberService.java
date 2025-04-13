@@ -198,7 +198,6 @@ public class MemberService {
 		
 		//memberDTO 에 password값이 넘어왔을 때 다시 암호화해서 DB에 입력해야한다.
 		if(!StringUtils.hasLength(memberDTO.getPassword())) {
-			//TODO 패스워드 암호화할 부분
 			memberDTO.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
 		}
 		

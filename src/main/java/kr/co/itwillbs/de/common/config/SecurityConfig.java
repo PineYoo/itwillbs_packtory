@@ -44,7 +44,8 @@ public class SecurityConfig {
 				.requestMatchers("/",
 								"/login",
 								"/error/**",
-								"/js/**", "/css/**", "/img/**"
+								"/js/**", "/css/**", "/img/**",
+								"/actuator/**"
 								).permitAll()
 				.requestMatchers("/admin/**").hasAuthority("ADMIN") //.hasRole("ADMIN") // 이녀석은 ROLE_접두사가 붙은 문자열로 표현 hasAuthority는 접두사 붙이지 않음
 				//.requestMatchers("/manager/**").hasRole("MANAGER")

@@ -23,24 +23,22 @@ import lombok.extern.slf4j.Slf4j;
 public class FileUtil {
 
 	// 이 클래스 밖으로 알리고 싶지 않은 변수이기에 private 선언 -> 다른 common.util 패키지내에서 써야 할 경우 private 지우거나 package 선언
-	@Value("${spring.servlet.multipart.location}")
-	public String UPLOAD_DIR;
+	public static String UPLOAD_DIR;
 	
-//	public void setUPLOAD_DIR(String str) {
-//		UPLOAD_DIR = str;
-//	}
+	@Value("${spring.servlet.multipart.location}")
+	public void setUPLOAD_DIR(String str) {
+		UPLOAD_DIR = str;
+	}
 	/**
 	 * 멀티파트 파일 받아서 처리하기
 	 * <pre>
-	 * <br>(위에 선언된)uploadDir(separator)yyyy(separator)mm(separator)dd(separator)UUID.fileExtension
-	 * <br>에 저장을 하고 저장된 경로(filePath), 파일명(fileName) 를 리턴함
-	 * <br>임시로 map에 담아서 전달
-	 * <br>TODO 25.03.18 객체가 결정 될 시 변동 있음
-	 * <pre>
+	 * (위에 선언된)uploadDir(separator)yyyy(separator)mm(separator)dd(separator)UUID.fileExtension
+	 * 에 저장을 하고 저장된 경로(filePath), 파일명(fileName) 를 리턴함
+	 * </pre>
 	 * @param mfile
 	 * @throws Exception 
 	 */
-	public FileVO setFile(MultipartFile mfile) throws Exception {
+	public static FileVO setFile(MultipartFile mfile) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("uploadDir {}, separator {}, pathSeparator {}", UPLOAD_DIR, File.separator, File.pathSeparator);
 		

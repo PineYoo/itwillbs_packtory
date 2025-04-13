@@ -13,6 +13,8 @@ public class StringTest {
 		}
 		
 		
-		System.out.println(!"Y".equalsIgnoreCase("N"));
+		System.out.println(!"y".equalsIgnoreCase("N"));
+		System.out.println("n".equalsIgnoreCase("n"));
+		System.out.println("n".equalsIgnoreCase("N"));
 	}
 }

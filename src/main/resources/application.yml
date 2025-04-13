@@ -11,6 +11,9 @@ spring:
 # 개발 셋팅 - Mysql 시작
 server:
   port: 8080
+  servlet:
+    session:
+      persistent: false # Exception loading sessions from persistent storage java.lang.ClassCastException: class java.io.ObjectStreamClass cannot be cast to class java.lang.String
 
 spring:
   config:
@@ -69,4 +72,14 @@ spring:
       idle-timeout: 600000
       max-lifetime: 300000
       auto-commit: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, caches, metrics  # or include: "*"
+
+  endpoint:
+    caches:
+      enabled: true
 # 공통 설정 끝

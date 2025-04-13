@@ -2,6 +2,10 @@ package kr.co.itwillbs.de.admin.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import kr.co.itwillbs.de.admin.dto.CodeDTO;
@@ -27,6 +31,7 @@ public class CodeService {
 	 * @return
 	 */
 	@LogExecution
+	@CacheEvict(value = "majorCodes", allEntries = true) // 캐시 삭제! true: 메서드 호출 전 실행, false: 메서드 호출 후 실행
 	public int registerCode(CodeDTO codeDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -39,10 +44,24 @@ public class CodeService {
 	 * SELECT t_commoncode 
 	 * @return List<CodeDTO>
 	 */
+	@Cacheable(value = "majorCodes") // 캐시 저장 기능 value의 이름이 존재/미존재 시 모두 헤서드 호출 후 실행? 맞아?
 	public List<CodeDTO> getCodes() {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		return codeMapper.getCodes();
+	}
+	
+	/**
+	 * SELECT t_commoncode_item where is_deleted = 'N' and mojor_code = #{majorCode}
+	 * @param majorCode
+	 * @return
+	 */
+	@Cacheable(value = "codeItems", key = "#p0") // #majorCode로 매핑이 될 것 같았는데 계속 Null 이라고 나온다. 기절하겠넹
+	public List<CodeItemDTO> getCodeItems(String majorCode) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("Caching with key: {}", majorCode);
+		
+		return codeMapper.getCodeItems(majorCode);
 	}
 	
 	/**
@@ -96,6 +115,7 @@ public class CodeService {
 	 * @throws Exception 
 	 */
 	@LogExecution
+	@CacheEvict(value = "codeItems", key = "#codeDTO.majorCode")
 	public void modifyCode(CodeDTO codeDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -111,6 +131,7 @@ public class CodeService {
 	 * @throws Exception 
 	 */
 	@LogExecution // 로그 남길 서비스
+	@CacheEvict(value = "codeItems", key = "#itemList.get(0).majorCode")
 	public void registerCodeItems(List<CodeItemDTO> itemList) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -120,10 +141,6 @@ public class CodeService {
 			affectedRow = codeMapper.removeCodeItems((CodeItemDTO)itemList.get(0));
 			log.info("after removeCodeItems, affectedRow is {}", affectedRow);
 		}
-		//TODO 세션에서 reg_id 가져와서 셋		
-		/*
-		 * for (CodeItemDTO itemDTO : itemList) { itemDTO.setRegId("superUser"); }
-		 */
 		
 		affectedRow = 0;
 		affectedRow = codeMapper.registerCodeItems(itemList);

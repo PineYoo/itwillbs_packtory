@@ -89,16 +89,31 @@
 	</insert>
 	
 	<select id="getCodes" resultType="kr.co.itwillbs.de.admin.dto.CodeDTO">
-		select 
-			<include refid="t_commonCode_columns_forSelect" />
-		from t_commoncode
+		SELECT 
+			major_code,
+			name,
+			description
+		FROM t_commoncode
+		WHERE is_deleted = 'N'
+	</select>
+	
+	<select id="getCodeItems" parameterType="string"
+								resultType="kr.co.itwillbs.de.admin.dto.CodeItemDTO">
+		SELECT 
+			major_code,
+			minor_code,
+			minor_name,
+			description
+		FROM t_commoncode_item
+		WHERE is_deleted = 'N'
+		AND major_code = UPPER(#{majorCode})
 	</select>
 	
 	<select id="getCodesCountBySearchDTO" parameterType="kr.co.itwillbs.de.admin.dto.CodeSearchDTO"
 									resultType="int">
-		select 
+		SELECT 
 			count(*)
-		from t_commoncode
+		FROM t_commoncode
 		<where>
 			<if test='majorCode !=null and !("".equals(majorCode.trim()))'>and major_code = #{majorCode}</if>
 			<if test='name !=null and !("".equals(name.trim()))'>and name LIKE CONCAT('%',#{name},'%')</if>
@@ -110,9 +125,9 @@
 	
 	<select id="getCodesBySearchDTO" parameterType="kr.co.itwillbs.de.admin.dto.CodeSearchDTO"
 									resultType="kr.co.itwillbs.de.admin.dto.CodeDTO">
-		select 
+		SELECT 
 			<include refid="t_commonCode_columns_forSelect" />
-		from t_commoncode
+		FROM t_commoncode
 		<where>
 			<if test='majorCode !=null and !("".equals(majorCode.trim()))'>and major_code = #{majorCode}</if>
 			<if test='name !=null and !("".equals(name.trim()))'>and name LIKE CONCAT('%',#{name},'%')</if>
@@ -125,9 +140,9 @@
 	
 	<select id="getCodeByIdx" parameterType="kr.co.itwillbs.de.admin.dto.CodeSearchDTO"
 								resultType="kr.co.itwillbs.de.admin.dto.CodeDTO">
-		select 
+		SELECT 
 			<include refid="t_commonCode_columns_forSelect" />
-		from t_commoncode
+		FROM t_commoncode
 			<where>
 				<if test="idx != null">AND idx = #{idx} </if>
 			</where>
@@ -135,16 +150,16 @@
 	
 	<select id="getCodeItemsByMajorCode" parameterType="kr.co.itwillbs.de.admin.dto.CodeSearchDTO"
 								resultType="kr.co.itwillbs.de.admin.dto.CodeItemDTO">
-		select 
+		SELECT 
 			<include refid="t_commonCode_item_columns_forSelect" />
-		from t_commoncode_item
+		FROM t_commoncode_item
 			<where>
 				<if test="idx != null">AND major_code = #{majorCode} </if>
 			</where>
 	</select>
 
 	<update id="modifyCode" parameterType="kr.co.itwillbs.de.admin.dto.CodeDTO">
-		update t_commoncode
+		UPDATE t_commoncode
 			<set>
 				<if test="majorCode != null">major_code = #{majorCode},</if>
 				<if test="name != null">name = #{name},</if>
@@ -153,16 +168,16 @@
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 			</set> 
-		where idx = #{idx}
+		WHERE idx = #{idx}
 	</update>
 	
 	<delete id="removeCodeItems" parameterType="kr.co.itwillbs.de.admin.dto.CodeItemDTO">
-		delete from t_commoncode_item 
-		where major_code = #{majorCode}
+		DELETE from t_commoncode_item 
+		WHERE major_code = #{majorCode}
 	</delete>
 	
 	<insert id="registerCodeItems" parameterType="kr.co.itwillbs.de.admin.dto.CodeItemDTO">
-		insert into t_commoncode_item (
+		INSERT into t_commoncode_item (
 		<trim suffixOverrides=",">
 			major_code,
 			minor_code,
@@ -173,7 +188,7 @@
 			reg_id,
 			reg_date,
 		</trim>
-		) values 
+		) VALUES 
 		<foreach item="item" index="index" collection="list" separator=",">
 			(UPPER(#{item.majorCode}), #{item.minorCode}, #{item.minorName}, #{item.description}, #{item.isDeleted}, #{item.rankNumber}, #{item.regId}, now())
 		</foreach>

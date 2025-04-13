@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +30,7 @@ public class MenuService {
 	private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 	
 	//@Autowired
-	public MenuService(MenuMapper menuMapper, RequestMappingHandlerMapping requestMappingHandlerMapping) {
+	public MenuService(MenuMapper menuMapper, @Qualifier("requestMappingHandlerMapping")RequestMappingHandlerMapping requestMappingHandlerMapping) {
 		this.menuMapper = menuMapper;
 		this.requestMappingHandlerMapping = requestMappingHandlerMapping;
 	}

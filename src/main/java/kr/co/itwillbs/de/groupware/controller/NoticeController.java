@@ -73,7 +73,7 @@ public class NoticeController {
 		//	----------------------------------------------------------
 		model.addAttribute("noticeDTO", noticeDTO);
 		//	공통코드 가져오기
-		model.addAttribute("codeType", commonService.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
+		model.addAttribute("codeType", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
 		
 		return "groupware/notice/notice_register_form";
 	}
@@ -232,7 +232,7 @@ public class NoticeController {
 		log.info(idx);
 		model.addAttribute("noticeDTO", noticeService.getNotice(idx));
 		model.addAttribute("fileList", fileService.getFilesByMajorIdx(FILE_COMMON_TYPE, Long.parseLong(idx)));
-		model.addAttribute("codeType", commonService.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
+		model.addAttribute("codeType", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_NOTICE_TYPE));
 		return "groupware/notice/notice_modify_form";
 	}
 	

@@ -73,6 +73,9 @@ Validation
 	
 	// Tomcat을 외부에서 제공받을 것이므로 provided로 설정
 	providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
+	
+	// 캐시 모니터링 구성
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {

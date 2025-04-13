@@ -14,7 +14,6 @@ public class IPv6ToIPv4 {
 		try {
 			System.out.println(getIp(ip));
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

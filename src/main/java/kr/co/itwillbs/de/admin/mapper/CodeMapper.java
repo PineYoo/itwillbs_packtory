@@ -3,6 +3,7 @@ package kr.co.itwillbs.de.admin.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
@@ -24,7 +25,14 @@ public interface CodeMapper {
 	 * @return List<CodeDTO>
 	 */
 	List<CodeDTO> getCodes();
-
+	
+	/**
+	 * SELECT t_commoncode_item where is_deleted = 'N' and mojor_code = #{majorCode}
+	 * @param majorCode
+	 * @return
+	 */
+	List<CodeItemDTO> getCodeItems(@Param("majorCode")String majorCode);
+	
 	/**
 	 * SELECT count(*) t_commonCode where codeSearchDTO
 	 * @param codeSearchDTO
