@@ -1,6 +1,6 @@
 package kr.co.itwillbs.de.mes.dto;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 
 import kr.co.itwillbs.de.common.vo.PageDTO;
 import lombok.Getter;
@@ -16,12 +16,9 @@ public class ProductSearchDTO {
 	private String type; // 타입
 	private String name; // 이름
 	private String unit; // 단위
-	private String positionCode; // 직급 코드
 
-	private LocalDate hireDateFrom; // 입사일 범위 시작
-	private LocalDate hireDateTo; // 입사일 범위 끝
-	private LocalDate resignationDateFrom; // 퇴사일 범위 시작
-	private LocalDate resignationDateTo; // 퇴사일 범위 끝
+	private BigDecimal minPrice; // 최소 가격
+	private BigDecimal maxPrice; // 최대 가격
 
 	private PageDTO pageDTO = new PageDTO();
 }

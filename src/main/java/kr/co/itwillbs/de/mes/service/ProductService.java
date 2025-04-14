@@ -19,61 +19,52 @@ public class ProductService {
 
 	private final ProductMapper productMapper;
 
-	// 상품 등록 처리
+	// 상품 등록
 	@LogExecution
 	@Transactional
 	public String registerProduct(ProductDTO productDTO) {
 		log.info("상품 등록 요청: {}", productDTO);
-		
-		// 상품 정보 등록
-        productMapper.insertProduct(productDTO);
-        log.info("상품 등록 완료 - name: {}", productDTO.getName());
-
+		productMapper.insertProduct(productDTO);
+		log.info("상품 등록 완료 - name: {}", productDTO.getName());
 		return "redirect:/mes/product";
 	}
 
-	// 상품 목록 페이징
+	// 상품 총 개수 (검색 조건 포함)
 	public int searchProductCount(ProductSearchDTO searchDTO) {
-		log.info("상품 목록 조회");
+		log.info("상품 개수 조회 - 검색 조건: {}", searchDTO);
 		return productMapper.searchProductCount(searchDTO);
 	}
 
-	// 상품 목록 조회
+	// 상품 목록 조회 (검색 + 페이징)
 	public List<ProductDTO> getProductList(ProductSearchDTO searchDTO) {
-		log.info("상품 목록 조회", searchDTO);
-		
+		log.info("상품 목록 조회 - 검색 조건: {}", searchDTO);
 		return productMapper.searchProduct(searchDTO);
 	}
 
 	// 상품 상세 조회
 	public ProductDTO getProductByIdx(Long idx) {
-		log.info("상품 + 상세정보 조회 - id: {}", idx);
-		
-		ProductDTO product = productMapper.getProductByIdx(idx);
-
-		return product;
+		log.info("상품 상세 조회 - idx: {}", idx);
+		return productMapper.getProductByIdx(idx);
 	}
 
-	// 상품 정보 업데이트 서비스 메서드
+	// 상품 수정
 	@LogExecution
 	@Transactional
 	public void updateProduct(ProductDTO productDTO) {
-		log.info("상품 + 상세정보 수정 - idx: {}", productDTO.getIdx());
-		
-		// 사원 기본 정보 업데이트
-        if (productDTO != null) {
-            productMapper.updateProduct(productDTO);
-        } else {
-            log.warn("상품 기본 정보가 null입니다.");
-        }
+		log.info("상품 수정 요청 - idx: {}", productDTO.getIdx());
 
+		if (productDTO != null) {
+			productMapper.updateProduct(productDTO);
+			log.info("상품 수정 완료 - name: {}", productDTO.getName());
+		} else {
+			log.warn("수정 요청된 상품 정보가 null입니다.");
+		}
 	}
 
-	// 상품 삭제 (상품 및 상세정보 soft delete)
+	// 상품 삭제 (Soft delete)
 	@Transactional
 	public void deleteProduct(Long idx) {
-		log.info("상품 삭제 요청 - id: {}", idx);
-		
+		log.info("상품 삭제 요청 - idx: {}", idx);
 		productMapper.deleteProduct(idx);
 	}
 }

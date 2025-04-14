@@ -25,6 +25,6 @@ public class ProductVO {
 
 	private String regId; 			// 최초등록자
 	private LocalDateTime regDate; 	// 최초등록일
-	private String modId; 			// 최종수정자w
+	private String modId; 			// 최종수정자
 	private LocalDateTime modDate; 	// 최종수정일
 }
