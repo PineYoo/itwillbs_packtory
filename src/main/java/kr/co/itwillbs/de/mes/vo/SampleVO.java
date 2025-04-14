@@ -1,4 +1,4 @@
-package kr.co.itwillbs.de.mes.dto;
+package kr.co.itwillbs.de.mes.vo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
