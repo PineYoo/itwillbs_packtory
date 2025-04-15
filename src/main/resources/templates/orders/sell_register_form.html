@@ -52,7 +52,7 @@
 			<div class="card shadow mb-4">
 			    <div class="card-body">
    			    	<div class="table-responsive">
-				        <form th:action="@{/orders/sell/regist}" method="post" th:object="${orderFormDTO}" class="form">
+				        <form th:action="@{/orders/sell/regist}" method="post" th:object="${orderFormDTO}" class="form" id="registerForm">
 				        	<!-- hidden -->
 <!-- 							<input type="hidden" th:field="*{orderDTO.tradeCode}" value="1" alt="수주 코드" /> -->
 <!-- 							<input type="hidden" th:field="*{orderDTO.statusCode}" value="1" alt="수주_미출고" /> -->
@@ -103,13 +103,30 @@
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="requestDate">요청예정일자</label>
-								                <input type="text" id="requestDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{orderDTO.requestDate}" placeholder="날짜 선택" autocomplete="off">
+								                <input type="text"
+								                	   th:id="'orderDTO.requestDate'"
+												       th:name="'orderDTO.requestDate'"
+								                	   class="col-sm-12 col-md-6 rounded-sm mr-2 essential" 
+								                	   th:field="*{orderDTO.requestDate}" 
+								                	   placeholder="날짜 선택" 
+								                	   th:attr="data-required=true, data-name='요청예정일자', data-type='String'"
+								                	   autocomplete="off" />
+								            	<div th:id="|orderDTO.requestDateError|" class="text-danger"></div>
+								            	
 								            </div>
 								        </div>
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="dueDate">요청마감일자</label>
-								                <input type="text" id="dueDate" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{orderDTO.dueDate}" placeholder="날짜 선택" autocomplete="off">
+								                <input type="text"
+								                	   th:id="'orderDTO.dueDate'"
+												       th:name="'orderDTO.dueDate'"
+								                	   class="col-sm-12 col-md-6 rounded-sm mr-2 essential" 
+								                	   th:field="*{orderDTO.dueDate}" 
+								                	   placeholder="날짜 선택" 
+								                	   th:attr="data-required=true, data-name='요청마감일자', data-type='String'"
+								                	   autocomplete="off" />
+								            	<div th:id="|orderDTO.dueDateError|" class="text-danger"></div>
 								            </div>
 								        </div>
 								    </div>
@@ -122,30 +139,41 @@
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="destinationName">목적지명</label>
-								                <input type="text" id="destinationName" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{orderDTO.destinationName}">
+								                <input type="text" 
+								                	   th:id="'orderDTO.destinationName'"
+												       th:name="'orderDTO.destinationName'"
+								                	   class="col-sm-12 col-md-6 rounded-sm mr-2 essential" 
+								                	   th:field="*{orderDTO.destinationName}"
+													   th:attr="data-required=true, data-name='목적지명', data-type='String'" />
+								            	<div th:id="|orderDTO.destinationNameError|" class="text-danger"></div>
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="receiver">받는사람</label>
-								                <input type="text" id="receiver" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{orderDTO.receiver}">
+								                <input type="text" 
+								                	   th:id="'orderDTO.receiver'"
+											           th:name="'orderDTO.receiver'"
+											           class="col-sm-12 col-md-6 rounded-sm mr-2 essential" 
+											           th:field="*{orderDTO.receiver}"
+											           th:attr="data-required=true, data-name='받는사람', data-type='String'" />
+								            	<div th:id="|orderDTO.receiverError|" class="text-danger"></div>
+
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="phone1">전화번호1</label>
-								                <input type="text" id="phone1" class="col-sm-12 col-md-6 rounded-sm mr-2 essential" th:field="*{orderDTO.phone1}" maxlength="13" placeholder="010-1234-5678">
+								                <input type="text" 
+								                	   th:id="'orderDTO.phone1'"
+												       th:name="'orderDTO.phone1'"
+												       class="col-sm-12 col-md-6 rounded-sm mr-2 essential" 
+												       th:field="*{orderDTO.phone1}" 
+												       th:attr="data-required=true, data-name='전화번호1', data-type='String'"
+												       maxlength="13" placeholder="010-1234-5678" />
+												<div th:id="|orderDTO.phone1Error|" class="text-danger"></div>
 								            </div>
 								            <div>
 								                <label class="col-sm-8 col-md-4" for="phone2">전화번호2</label>
 								                <input type="text" id="phone2" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{orderDTO.phone2}" maxlength="13" placeholder="010-1234-5678">
 								            </div>
 								        </div>
-							<!-- 	        <div class="col-sm-12 col-md-6 row"> -->
-							<!-- 	            <div class="col-sm-8 col-md-4">납품주소</div> -->
-							<!-- 	            <div class="col-sm-12 col-md-6 mb-3"> -->
-							<!-- 	                <input type="text" id="postCode" class="col-sm-12 col-md-6 rounded-sm mr-2 postCode_1 essential" th:field="*{postCode}" maxlength="5"> -->
-							<!-- 	                <button type="button" id="searchAddressBtn_1" class="btn btn-outline-primary ml-2">주소찾기</button> -->
-							<!-- 	                <input type="text" class="col-sm-24 col-md-12 rounded-sm mr-2 address1_1 essential" th:field="*{address1}"> -->
-							<!-- 	                <input type="text" class="col-sm-24 col-md-12 rounded-sm mr-2 address2_1 essential" th:field="*{address2}"> -->
-							<!-- 	            </div> -->
-							<!-- 	        </div> -->
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div class="addressInfo">
 								                <label class="col-sm-8 col-md-4">납품주소</label>
@@ -262,9 +290,10 @@
 			                	
 			                </div>
 			                
-				            <div style="text-align: center; margin-top: 10px;">
-				                <button type="submit" class="btn btn-primary">등록</button>
-				                <button type="button" id="cancelBtn" class="btn btn-secondary ml-2">취소</button>
+							<div class="col-md-12 row align-items-center justify-content-center">
+<!-- 				                <button type="submit" class="btn btn-primary">등록</button> -->
+				       			<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+				                <button type="button" id="cancelBtn" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">취소</button>
 				            </div>
 				        </form>
 			        </div>
@@ -441,32 +470,6 @@
 				    }).open();
 				});
 				
-				// 주소(다음 우편번호 API 활용)
-				$("#searchAddressBtn_2, .postCode_2").click(function() {
-					new daum.Postcode({
-				        oncomplete: function(data) { 
-							// 1) 우편번호(zonecode) 가져와서 우편번호 항목(postCode)에 출력              
-				            $(".postCode_2").val(data.zonecode);
-					
-							// 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서 
-							//    기본주소 항목(address1)에 출력
-							let address = data.address;
-				            
-				            // 3) 만약, 건물명(buildingName)이 존재할 경우(= 널스트링이 아님)
-				            //    기본 주소 뒤에 건물명 결합
-				            if(data.buildingName !== ''){
-				               address += "(" + data.buildingName + ")";
-				            }
-				            
-				            // 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
-				            $(".address1_2").val(address);
-				            
-				            // 5) 상세주소 항목(address2)에 포커스 요청
-				            $(".address2_2").focus();
-				        }
-				    }).open();
-				});
-				
 		     	//---------------------------------------------------
 				// 취소버튼
 				$('#cancelBtn').on("click", function() {
@@ -545,24 +548,71 @@
 		     	// ===== 캘린더 끝 ============================================
 		        
 		     	//---------------------------------------------------
-			    $("form").submit(function(event) {
-			        let isValid = true;
-			        
-			        // 필수 입력 필드 검사
-			        $(".essential").each(function() {
-			            if ($(this).val().trim() === "") {
-			                isValid = false;
-			                $(this).css("border", "2px solid red"); // 테두리 강조
-			            } else {
-			                $(this).css("border", "1px solid #ccc"); // 정상일 경우 원래대로
-			            }
-			        });
+			    // 주문서 등록(submit)
+				$('#btnSubmitForm').on("click", function() {
+					console.group('click! #btnSubmitForm!');
+					// error 내용 삭제
+					$("div[id$='Error']").text("")
+					// 만세 폼이다!
+					const _serializedData = $('#registerForm').serialize();
+					// 문자열을 '&' 기준z으로 분리하여 배열로 변환
+					const _pairs = _serializedData.split('&');
+					// 빈 객체를 생성하여 데이터를 담을 준비
+					const _jsonObj = {};
+					// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
+					_pairs.forEach(pair => {
+						const [key, value] = pair.split('=');
+						_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
+					});
 
-			        if (!isValid) {
-			            alert("필수 항목을 입력하세요.");
-			            event.preventDefault(); // 제출 막기
-			        }
-			    });
+					// orderDTO와 orderDetailDTO로 분리
+					const orderDTO = {};
+					const orderDetailDTO = {};
+
+					// 필요한 필드 이름에 따라 분리
+					for (let key in _jsonObj) {
+						if (key.startsWith("orderDTO.")) {
+							orderDTO[key.replace("orderDTO.", "")] = _jsonObj[key];
+						} else if (key.startsWith("orderDetailDTO.")) {
+							orderDetailDTO[key.replace("orderDetailDTO.", "")] = _jsonObj[key];
+						}
+					}
+					
+					// 데이터 확인
+					console.log(_jsonObj);
+					// JSON 데이터를 서버로 전송
+					fetch("/orders/sell/regist", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+// 						body: JSON.stringify(_jsonObj)
+						body: JSON.stringify({ orderDTO, orderDetailDTO })
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.status === "success") {
+							alert(data.message);
+							location.reload(); // 현재 페이지 새로 고침
+						} else if(data.status === "validFail") {
+							console.log("hello validFail!1");
+							//alert(data.message);
+							let _errors = data.errors;
+							console.log(_errors);
+							for (let field in _errors) {
+								$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
+							} // end of for (let field in errors) {
+						}
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						alert("요청 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해 주시기 바랍니다.");
+					});
+					
+					console.groupEnd();
+				}); // end of $('#btnSubmitForm').on("click", function() {
+				
 		     	
 		        // --------------------------------------------------------
 			    // 사업자 번호 선택 시 이벤트

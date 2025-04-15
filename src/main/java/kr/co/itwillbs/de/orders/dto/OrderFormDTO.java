@@ -1,5 +1,6 @@
 package kr.co.itwillbs.de.orders.dto;
 
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,8 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class OrderFormDTO {	// Wrapper DTO로 묶어버림
+	
+    @Valid
     private OrderDTO orderDTO;				// 주문DTO
     private OrderDetailDTO orderDetailDTO;	// 주문 상세DTO
     private OrderItemsDTO orderItemsDTO;	// 주문 아이템DTO
