@@ -33,7 +33,7 @@
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
-								<form th:action="@{/admin/code/search}" method="get" th:object="${bomSearchDTO}" id="searchForm">
+								<form th:action="@{/mes/bom/search}" method="get" th:object="${bomSearchDTO}" id="searchForm">
 									<!-- 페이징 히든 변수 -->
 									<input type="hidden" th:field="*{pageDTO.page}">
 									<input type="hidden" th:field="*{pageDTO.size}">
