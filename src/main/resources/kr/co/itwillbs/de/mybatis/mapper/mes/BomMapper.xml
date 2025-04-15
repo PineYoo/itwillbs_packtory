@@ -186,6 +186,8 @@
 				<if test='unit !=null and !("".equals(unit.trim()))'>unit = #{unit},</if>
 				<if test='quantity !=null'>quantity = #{quantity},</if>
 				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 			</set>
 		WHERE idx = #{idx}
 	</update>
