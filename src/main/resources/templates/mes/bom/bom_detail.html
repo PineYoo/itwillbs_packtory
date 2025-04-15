@@ -47,7 +47,7 @@
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<form th:action="@{/admin/code}" method="post" th:object="${bomDTO}" class="form row g-3" id="registerForm">
+						<form th:action="@{/mes/bom}" method="post" th:object="${bomDTO}" class="form row g-3" id="registerForm">
 							<input type="hidden" th:field="*{idx}" />
 							<div class="col-md-12">
 								<div th:replace="~{common/fragments/de_form :: inputText('productIdx','상품코드',true,'string')}"></div>
