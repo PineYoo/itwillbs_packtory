@@ -3,8 +3,6 @@ package kr.co.itwillbs.de.common.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Order(Ordered.LOWEST_PRECEDENCE)
+//@Order(Ordered.LOWEST_PRECEDENCE)
 @RestControllerAdvice
 public class GlobalRestExceptionHandler {
 /**
@@ -42,7 +40,7 @@ public class GlobalRestExceptionHandler {
 	
 		// 응답 구조 정의
 		Map<String, Object> response = new HashMap<>();
-		response.put("status", "fail");
+		response.put("status", "validFail");
 		response.put("errors", errorMap);
 		
 		log.info("response is {}", response);

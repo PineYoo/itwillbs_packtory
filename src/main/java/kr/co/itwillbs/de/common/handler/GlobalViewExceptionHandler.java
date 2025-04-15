@@ -3,8 +3,6 @@ package kr.co.itwillbs.de.common.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,7 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Order(Ordered.HIGHEST_PRECEDENCE)
+//@Order(Ordered.HIGHEST_PRECEDENCE)
 /*
  * @Valid BindingResult 처리분기가 form enctype="application/x-www-form-urlencoded"
  * 인데도 여기로 오지 않고 @RestControllerAdvice 로 가버려서 우선순위를 넣게 됨 스프링부트야 넌 진짜 RestApi가
@@ -55,10 +53,28 @@ public class GlobalViewExceptionHandler {
 		// 에러 메시지 map을 모델에 담아서 뷰로 전달
 		model.addAttribute("errorMap", errorMap);
 		// 원래 입력값 전달
-		model.addAttribute("codeDTO", bindingResult.getTarget());
+		model.addAttribute("registerDTO", bindingResult.getTarget());
 
 		// 기본적으로 폼 페이지로 다시 보내기 (뷰 이름은 상황에 맞게 수정)
-		return "redirect:" + toMakeRefererURIForView(request);
+		/* 알고 있었지만 답에서 다시 멀어졌다.
+		 RequestMapping 선언된 String 값을 맞춰봤자, 이제 그 메서드 안에서
+		 ViewResolver로 던지는 HTML (경로+파일명)이 일치하지 않쟎아!!
+		 그럴려면 모든 @RequestMapping("blabla"), @GetMapping("foobar") 같은 값들과 
+		 그 메서드에서 ViewResolver로 던지는 값을 return "blabla", "foobar"로 같이하게 규칙을 정해놓고
+		 프로젝트를 진행해야겠다. (효율? 비효율?) 그냥 이런 고민 안하는 Ajax POST 콜이 나을것 같기도 하다.
+		 오늘까지의 고민은 이렇게 정리하고, 다음에 더 좋은 방법이나 패턴을 찾으면 확실히 해보자.
+		 Model 명도 통일해야 하고, 확실히 룰을 잡고 해야되는것 같다.
+		 */
+		
+		String viewPath = toMakeRefererURIForView(request);
+		String resolverPath = "";
+		switch(viewPath) {
+		case "/mes/bom/new":
+			resolverPath = "mes/bom/bom_register_form";
+			break;
+		}
+		
+		return resolverPath;
 	}
 
 	private String toMakeRefererURIForView(HttpServletRequest request) {

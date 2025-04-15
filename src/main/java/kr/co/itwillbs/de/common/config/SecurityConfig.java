@@ -9,7 +9,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import jakarta.annotation.PostConstruct;
 import kr.co.itwillbs.de.common.securityhandler.CustomAuthenticationFailureHandler;
 import kr.co.itwillbs.de.common.securityhandler.CustomAuthenticationSuccessHandler;
 import kr.co.itwillbs.de.common.securityhandler.CustomLogoutHandler;

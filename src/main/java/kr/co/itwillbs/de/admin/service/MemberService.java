@@ -194,9 +194,16 @@ public class MemberService {
 	public void modifyMember(MemberDTO memberDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		log.info("password is {}", memberDTO.getPassword());
 		//memberDTO 에 password값이 넘어왔을 때 다시 암호화해서 DB에 입력해야한다.
-		if(!StringUtils.hasLength(memberDTO.getPassword())) {
+		if(StringUtils.hasLength(memberDTO.getPassword())) {
+			log.info("패스워드가 있데?");
 			memberDTO.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
+		} else {
+			log.info("패스워드가 없어야하는데?");
+			// 그렇지 않으면 마이 바티스 업데이트를 하지 않기 위한 처리
+			// <if test="password !=null and !(''.equals(password.trim()))">password = #{password},</if>
+			memberDTO.setPassword(null);
 		}
 		
 		int affectedRow = memberMapper.modifyMember(memberDTO);

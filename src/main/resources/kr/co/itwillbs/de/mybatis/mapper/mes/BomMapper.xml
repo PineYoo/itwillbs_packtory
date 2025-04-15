@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.mes.mapper.BomMapper">
+
+	<!-- href: https://mybatis.org/mybatis-3/ko/dynamic-sql.html -->
+	<select id="templates" >
+		<![CDATA[]]><!-- Character DATA(CDATA) 는 <![CDATA[문자열]]> 파싱되지 않고 그대로 출력을 위함, 쿼리에서 이스케이프 문자를 사용하지 않기 위해 썼음 -->
+		<!-- 예시) 컬럼명 &gt;(&lt;) #{필드명} -> 컬럼명<![CDATA[>(<)]]> #{필드명} -->
+		<if test="blabla != null"></if><!-- mybatis가 동적쿼리가 되는 시작 점. -->
+		
+		<choose><!-- mybatis switch 문 -->
+			<when test="bla != null">
+			</when>
+			<when test="bla != null and blabla != null">
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		
+		<where></where><!-- where 엘리먼트는 태그에 의해 컨텐츠가 리턴되면 단순히 “WHERE”만을 추가한다. 게다가 컨텐츠가 “AND”나 “OR”로 시작한다면 그 “AND”나 “OR”를 지워버린다. -->
+		<trim prefix="WHERE" prefixOverrides="AND |OR "></trim><!-- 위의<where>의 <trim>버전 -->
+		
+		<set></set><!--  set 엘리먼트는 동적으로 SET 키워드를 붙히고 필요없는 콤마를 제거한다. -->
+		<trim prefix="SET" suffixOverrides=","></trim><!-- 위의<set>의 <trim>버전 -->
+		
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")" nullable="true">
+			#{item}
+		</foreach>
+		
+		<foreach item="item" index="index" collection="list">
+			(#{item.index}, #{item.id}, #{item.name}, #{item.isDeleted})
+		</foreach>
+	</select>
+	
+	<sql id="t_bom_columns_forSelect">
+		idx,
+		type,
+		product_idx,
+		parents_idx,
+		code,
+		name,
+		description,
+		spec,
+		unit,
+		quantity,
+		is_deleted,
+		reg_id,
+		reg_date,
+		mod_id,
+		mod_date
+	</sql>
+	
+		<!-- useGeneratedKeys : true 일때, keyProperty : idx >> affectRow가 아닌 생성된 idx가 리턴타입에 셋 mysql은 확인됨 -->
+	<insert id="registerBom" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.BomDTO">
+		INSERT INTO t_bom (
+			<trim suffixOverrides=",">
+			type,
+			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
+			product_idx,
+			</if>
+			<if test='parentsIdx !=null and !("".equals(parentsIdx.trim()))'>
+			parents_idx,
+			</if>
+			<if test='code !=null and !("".equals(code.trim()))'>
+			code,
+			</if>
+			<if test='name !=null and !("".equals(name.trim()))'>
+			name,
+			</if>
+			<if test='description !=null and !("".equals(description.trim()))'>
+			description,
+			</if>
+			<if test='spec !=null and !("".equals(spec.trim()))'>
+			spec,
+			</if>
+			<if test='unit !=null and !("".equals(unit.trim()))'>
+			unit,
+			</if>
+			<if test='quantity !=null and !("".equals(quantity.trim()))'>
+			quantity,
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+			is_deleted,
+			</if>
+			reg_id,
+			reg_date,
+<!-- 			<if test='modId !=null and !("".equals(modId.trim()))'>
+			mod_id,
+			mod_date,
+			</if> -->
+			</trim>
+		) VALUES (
+			<trim suffixOverrides=",">
+			#{type},
+			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
+			#{productIdx},
+			</if>
+			<if test='parentsIdx !=null and !("".equals(parentsIdx.trim()))'>
+			#{parentsIdx},
+			</if>
+			<if test='code !=null and !("".equals(code.trim()))'>
+			#{code},
+			</if>
+			<if test='name !=null and !("".equals(name.trim()))'>
+			#{name},
+			</if>
+			<if test='description !=null and !("".equals(description.trim()))'>
+			#{description},
+			</if>
+			<if test='spec !=null and !("".equals(spec.trim()))'>
+			#{spec},
+			</if>
+			<if test='unit !=null and !("".equals(unit.trim()))'>
+			#{unit},
+			</if>
+			<if test='quantity !=null and !("".equals(quantity.trim()))'>
+			#{quantity},
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+			#{isDeleted},
+			</if>
+			#{regId},
+			now(),
+			<!-- <if test='modId !=null and !("".equals(modId.trim()))'>
+			#{modId},
+			now(),
+			</if> -->
+			</trim>
+			)
+	</insert>
+	
+	<select id="getBomsCountBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.BomSearchDTO"
+										resultType="int">
+		SELECT 
+			count(*)
+		FROM t_bom
+		<where>
+			<if test='type !=null and !("".equals(type.trim()))'>AND type = #{type}</if>
+			<if test='code !=null and !("".equals(code.trim()))'>AND code LIKE CONCAT('%',#{code},'%')</if>
+			<if test='name !=null and !("".equals(name.trim()))'>AND name LIKE CONCAT('%',#{name},'%')</if>
+			<if test='spec !=null and !("".equals(spec.trim()))'>AND spec LIKE CONCAT('%',#{spec},'%')</if>
+			<if test='description !=null and !("".equals(description.trim()))'>AND description LIKE CONCAT('%',#{description},'%')</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
+		</where>
+	</select>
+
+	<select id="getBomsBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.BomSearchDTO"
+									resultType="kr.co.itwillbs.de.mes.dto.BomDTO">
+		SELECT 
+			<include refid="t_bom_columns_forSelect"></include> 
+		FROM t_bom
+		<where>
+			<if test='type !=null and !("".equals(type.trim()))'>AND type = #{type}</if>
+			<if test='code !=null and !("".equals(code.trim()))'>AND code LIKE CONCAT('%',#{code},'%')</if>
+			<if test='name !=null and !("".equals(name.trim()))'>AND name LIKE CONCAT('%',#{name},'%')</if>
+			<if test='spec !=null and !("".equals(spec.trim()))'>AND spec LIKE CONCAT('%',#{spec},'%')</if>
+			<if test='description !=null and !("".equals(description.trim()))'>AND description LIKE CONCAT('%',#{description},'%')</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
+		</where>
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+	
+	<select id="getBomByIdx" parameterType="string"
+									resultType="kr.co.itwillbs.de.mes.dto.BomDTO">
+		SELECT 
+			<include refid="t_bom_columns_forSelect"></include> 
+		FROM t_bom
+		where idx = #{idx}
+	</select>
+	
+	
+	
+	<!-- <set>이 분명 마지막 , 를 제거해준다고 알고 있다? 맞나? -->
+	<update id="modifyBom" parameterType="kr.co.itwillbs.de.mes.dto.BomDTO">
+		UPDATE t_bom
+			<set>
+				<if test='type !=null and !("".equals(type.trim()))'>type = #{type},</if>
+				<if test='productIdx !=null and !("".equals(productIdx.trim()))'>product_idx = #{productIdx},</if>
+				<if test='parentsIdx !=null and !("".equals(parentsIdx.trim()))'>parents_idx = #{parentsIdx},</if>
+				<if test='code !=null and !("".equals(code.trim()))'>code = #{code},</if>
+				<if test='name !=null and !("".equals(name.trim()))'>name = #{name},</if>
+				<if test='description !=null and !("".equals(description.trim()))'>description = #{description},</if>
+				<if test='spec !=null and !("".equals(spec.trim()))'>spec = #{spec},</if>
+				<if test='unit !=null and !("".equals(unit.trim()))'>unit = #{unit},</if>
+				<if test='quantity !=null and !("".equals(quantity.trim()))'>quantity = #{quantity},</if>
+				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+			</set>
+		WHERE idx = #{idx}
+	</update>
+	
+	<update id="removeSample" parameterType="kr.co.itwillbs.de.sample.dto.SampleSearchDTO">
+		update t_demo
+			<set>
+				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+			</set>
+		where idx = #{idx}
+	</update>
+	
+</mapper>

@@ -103,7 +103,7 @@ public class CodeController {
 	 * @throws Exception
 	 */
 	@GetMapping("/search")
-	public String getCodesBySearchDTO(@ModelAttribute CodeSearchDTO codeSearchDTO, Model model) throws Exception {
+	public String getCodesBySearchDTO(@ModelAttribute CodeSearchDTO codeSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("request codeSearchDTO : {}", StringUtil.objToString(codeSearchDTO));

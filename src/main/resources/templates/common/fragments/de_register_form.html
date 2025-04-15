@@ -1,0 +1,52 @@
+<!-- templates/common/fragments/pagination.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<th:block th:fragment="inputText(fieldName, labelText, isRequired, dataType)">
+		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
+		<input type="text"
+			class="form-control"
+			th:id="${fieldName}"
+			th:name="${fieldName}"
+			th:placeholder="${labelText}"
+			th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+		<div th:id="|${fieldName}Error|" class="text-danger"></div>
+	</th:block>
+	
+	<th:block th:fragment="inputNumber(fieldName, labelText, isRequired, dataType)">
+		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
+		<input type="number"
+			class="form-control"
+			th:id="${fieldName}"
+			th:name="${fieldName}"
+			th:placeholder="${labelText}"
+			th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+		<div th:id="|${fieldName}Error|" class="text-danger"></div>
+	</th:block>
+	
+	<th:block th:fragment="isDeleted(fieldName, labelText, isRequired, dataType)">
+		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
+		<select class="form-select"
+				th:id="${fieldName}"
+				th:name="${fieldName}"
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+			<option value="">선택하세요</option>
+			<option value="N">사용</option>
+			<option value="Y">미사용</option>
+		</select>
+		<div th:id="|${fieldName}Error|" class="text-danger"></div>
+	</th:block>
+	
+	<th:block th:fragment="selectCodeItems(fieldName, labelText, isRequired, dataType, options)">
+		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
+		<select class="form-select"
+				th:id="${fieldName}"
+				th:name="${fieldName}"
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+			<option value="">선택하세요</option>
+			<option th:each="item : ${options}" th:value="${item.minorCode}" th:text="${item.minorName}">
+		</select>
+		<div th:id="|${fieldName}Error|" class="text-danger"></div>
+	</th:block>
+</body>
+</html>
