@@ -136,7 +136,7 @@
         WHERE idx = #{idx}
     </update>
 
-    <!-- 원자재 정보 단건 조회 -->
+    <!-- 원자재 정보 들고가기 -->
     <select id="selectRawMaterialById" parameterType="Long" resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
         SELECT * FROM t_product
         WHERE idx = #{idx}
