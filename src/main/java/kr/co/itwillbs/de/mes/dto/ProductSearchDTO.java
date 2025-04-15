@@ -13,12 +13,14 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class ProductSearchDTO {
-	private String type; // 타입
-	private String name; // 이름
-	private String unit; // 단위
+	private String type; 			// 타입
+	private String name; 			// 이름
 
-	private BigDecimal minPrice; // 최소 가격
-	private BigDecimal maxPrice; // 최대 가격
+	private Integer minQuantity;   	// 최소 수량
+	private Integer maxQuantity;   	// 최대 수량
+	
+	private BigDecimal minPrice; 	// 최소 가격
+	private BigDecimal maxPrice; 	// 최대 가격
 
 	private PageDTO pageDTO = new PageDTO();
 }
