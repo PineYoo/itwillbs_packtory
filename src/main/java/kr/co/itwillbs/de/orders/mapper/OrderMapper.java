@@ -13,7 +13,7 @@ import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 
 @Mapper
-public interface SellMapper {
+public interface OrderMapper {
 
 	/**
 	 * 페이징용 카운트

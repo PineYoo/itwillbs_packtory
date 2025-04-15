@@ -1,105 +1,130 @@
 package kr.co.itwillbs.de.orders.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
+import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
-import kr.co.itwillbs.de.orders.dto.ClientInfoDTO;
-import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
-import kr.co.itwillbs.de.orders.mapper.ClientMapper;
+import kr.co.itwillbs.de.orders.dto.OrderCodeDTO;
+import kr.co.itwillbs.de.orders.dto.OrderDTO;
+import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
+import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
+import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
+import kr.co.itwillbs.de.orders.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
-
-//	log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 @Slf4j
 @Service
 public class OrderService {
+	@Autowired
+	private OrderMapper orderMapper;
 	
 	@Autowired
-	private ClientMapper clientMapper;
-	
+	private CommonService commonService;
+
 	/**
-	 * 모든 거래처 목록 조회
+	 * 수주/발주 정보 조건 카운트 가져오기 페이징용
+	 * @param orderSearchDTO
 	 * @return
 	 */
-	public List<ClientDTO> getClientList(ClientSearchDTO clientSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return clientMapper.getClientList(clientSearchDTO);
-	}
-
-	/**
-	 * 거래처 등록
-	 * @param clientDTO 
-	 */
-	@LogExecution // 로그 남길 서비스
-	public int insertClient(ClientDTO clientDTO) {
+	public int getOrderCountForPaging(OrderSearchDTO orderSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		return clientMapper.insertClient(clientDTO);
+		return orderMapper.getOrderCountForPaging(orderSearchDTO);
 	}
-
+	
 	/**
-	 * 거래처 상세정보 요청
-	 * @param businessNumber
-	 * @return Map<String, Object>
+	 * 수주/발주 정보 조건 검색 가져오기
+	 * @param orderSearchDTO
+	 * @return List<OrderDTO>
 	 */
-	public ClientInfoDTO getClient(String businessNumber) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return clientMapper.getClient(businessNumber);
-	}
-
-	/**
-	 * 거래처 정보 수정
-	 * @param clientDTO
-	 */
-	@LogExecution // 로그 남길 서비스
-	public void updateClient(ClientInfoDTO clientInfoDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		clientMapper.updateClient(clientInfoDTO);
-	}
-
-	/**
-	 * 거래처_부가정보 수정
-	 * @param clientInfoDTO
-	 */
-	@LogExecution // 로그 남길 서비스
-	public void updateClientInfo(ClientInfoDTO clientInfoDTO) {
+	public List<OrderDTO> getOrderList(OrderSearchDTO orderSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		if(clientMapper.getClientInfo(clientInfoDTO.getCompanyNumber()) > 0) { // 사업자 번호로 T_CLIENT_INFO 테이블 조회
-			//	조회결과가 있을 시 UPDATE
-			log.info(">>>>>>>>>>>>>>>>>>>>>>>>>updateClientInfo");
-			clientMapper.updateClientInfo(clientInfoDTO);
-		} else {
-			//	조회결과가 없을 시 INSERT
-			log.info(">>>>>>>>>>>>>>>>>>>>>>>>insertClientInfo");
-			clientMapper.insertClientInfo(clientInfoDTO);
-		}
-		
+		return orderMapper.getOrderList(orderSearchDTO);
+	}
+	
+	// ------------------------------------------------------------------------------------
+	/**
+	 * 거래처 정보 조회(SELECT)
+	 * @return List<ClientDTO>
+	 */
+	public List<ClientDTO> getClientList() {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+
+		return orderMapper.getClientList();
 	}
 
+	/**
+	 * 수주/발주 주문 정보 등록(INSERT) >> orderDTO
+	 * @param orderFormDTO
+	 * @return 
+	 */
+	@LogExecution // 로그 남길 서비스
+	public void registerOrder(@Valid OrderFormDTO orderFormDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		// MySQL DB에서 시퀀스 가져와서 document_number에 넣기
+		orderFormDTO.getOrderDTO().setDocumentNumber(commonService.getSeqOrderNumberfromMySQL());
+		orderMapper.insertOrder(orderFormDTO.getOrderDTO());
+		
+		// orderDTO에 들어간 documentNumber 가져오기
+		String documentNumber = orderFormDTO.getOrderDTO().getDocumentNumber();	
+		orderFormDTO.getOrderDetailDTO().setDocumentNumber(documentNumber);
+		orderMapper.insertOrderDetail(orderFormDTO.getOrderDetailDTO());
+	}
+
+	// ------------------------------------------------------------------------------------
+	/**
+	 * 수주/발주 상세 정보 가져오기
+	 * @param documentNumber
+	 * @return OrderDTO
+	 */
+	public OrderDTO getOrderByDocumentNumber(String documentNumber) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return orderMapper.getOrderByDocumentNumber(documentNumber);
+	}
+
+	// ------------------------------------------------------------------------------------
+	/**
+	 * 수주/발주 주문 정보 수정(UPDATE)
+	 * @param orderDTO
+	 * @param orderDetailDTO
+	 * @return 
+	 */
+	@LogExecution // 로그 남길 서비스
+	public void modifyOrder(OrderDTO orderDTO, OrderDetailDTO orderDetailDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		orderMapper.updateOrder(orderDTO);
+		orderMapper.updateOrderDetail(orderDetailDTO);
+	}
+	
+	// ------------------------------------------------------------------------------------
+	public List<OrderCodeDTO> getDepartmentList() {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return orderMapper.getDepartmentList();
+	}
+
+	public List<OrderCodeDTO> getSubDepartmentList(String departmentCode) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return orderMapper.getSubDepartmentList(departmentCode);
+	}
+
+	public List<OrderCodeDTO> getEmployeeList(String departmentCode, String subDepartmentCode) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return orderMapper.getEmployeeList(departmentCode, subDepartmentCode);
+	}
+
+	public OrderCodeDTO getEmployeeInfo(String employeeId) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return orderMapper.getEmployeeInfo(employeeId);
+	}
+	
+	
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
