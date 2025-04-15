@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 사원 등록</title>
+
+<style>
+.form-label {
+	font-weight: bold;
+}
+
+.card-header {
+	background-color: #f8f9fc;
+	font-weight: bold;
+}
+
+.card-body {
+	padding: 2rem;
+}
+</style>
+</head>
+<body id="page-top">
+
+	<!-- 페이지 내용 -->
+	<div layout:fragment="contents">
+		<div class="container mt-5">
+			<!-- 카드 형식 -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">사원 등록</h6>
+				</div>
+				<div class="card-body">
+					<form action="#" th:action="@{/human/employee/new}" th:object="${employeeDTO}" method="post">
+						<div class="mb-3">
+							<label for="name" class="form-label">이름</label> <input type="text" class="form-control" id="name" th:field="*{name}" required>
+						</div>
+
+						<div class="mb-3">
+							<label for="ssn" class="form-label">주민등록번호</label> <input type="text" class="form-control" id="ssn" th:field="*{ssn}" maxlength="14" required placeholder="YYYYMMDD-XXXXXXX">
+						</div>
+
+						<div class="mb-3">
+							<label for="departmentCode" class="form-label">대표부서</label> <select class="form-control" id="departmentCode" th:field="*{departmentCode}" required>
+								<option value="">선택하세요</option>
+								<option th:each="department : ${validDepartments}" th:value="${department.minorCode}" th:text="${department.minorName}"></option>
+							</select>
+						</div>
+
+						<div class="mb-3">
+							<label for="subDepartmentCode" class="form-label">하위부서</label> <select class="form-control" id="subDepartmentCode" th:field="*{subDepartmentCode}" required></select>
+						</div>
+
+						<div class="mb-3">
+							<label for="positionCode" class="form-label">직급</label> <select class="form-control" id="positionCode" th:field="*{positionCode}" required>
+								<option value="">선택하세요</option>
+								<option th:each="position : ${validPositions}" th:value="${position.idx}" th:text="${position.positionCode}"></option>
+							</select>
+						</div>
+
+						<div class="mb-3">
+							<label for="hireDate" class="form-label">입사일</label> <input type="date" class="form-control" id="hireDate" th:field="*{hireDate}" required>
+						</div>
+
+						<div class="mb-3">
+							<label for="workExperience" class="form-label">경력</label> <input type="text" class="form-control" id="workExperience" th:field="*{workExperience}">
+						</div>
+
+						<div class="col-md-12 row align-items-center justify-content-center">
+							<button type="submit" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+							<a href="/human/employee" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- 공통 스크립트 -->
+		<script type="text/javascript">
+            // 주민등록번호 하이픈 자동 추가 및 마스킹 처리
+            document.addEventListener('DOMContentLoaded', function() {
+                const ssnInput = document.getElementById('ssn');
+
+                if(ssnInput) {
+                    ssnInput.addEventListener('input', function(e) {
+                        let value = e.target.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+                        if(value.length > 6) {
+                            value = value.slice(0, 6) + '-' + value.slice(6, 13); // 6자리 후에 하이픈 추가
+                        }
+                        e.target.value = value;
+                    });
+                }
+            });
+
+            $(function() {
+                let isLoading = false;
+
+                $('#departmentCode').on("change", function() {
+                    const selectedCode = $(this).val();
+                    console.log("선택된 부서코드:", selectedCode);
+
+                    if(!selectedCode) {
+                        $('#subDepartmentCode').empty().append('<option value="">하위 부서를 선택하세요</option>');
+                        return;
+                    }
+
+                    isLoading = true;
+
+                    // Ajax 요청
+                    $.ajax({
+                        url : '/human/employee/subDepartments',
+                        type : 'GET',
+                        data : {
+                            departmentCode : selectedCode
+                        },
+                        success : function(data) {
+                            console.log("받은 하위 부서 목록:", data);
+                            let html = '<option value="">하위 부서를 선택하세요</option>';
+                            data.forEach(function(item) {
+                                html += `<option value="${item.childCode}">${item.childName}</option>`;
+                            });
+                            $('#subDepartmentCode').html(html);
+                        },
+                        error : function(xhr, status, error) {
+                            console.error("하위 부서 조회 실패:", error);
+                            alert("하위 부서 정보를 불러오는 데 실패했습니다.");
+                        },
+                        complete : function() {
+                            isLoading = false;
+                        }
+                    });
+                });
+
+                // form submit 전에 로딩 체크
+                $('form').on('submit', function(e) {
+                    if(isLoading) {
+                        alert("하위 부서를 불러오는 중입니다. 잠시만 기다려 주세요.");
+                        e.preventDefault();
+                    }
+                });
+            });
+        </script>
+	</div>
+</body>
+</html>
