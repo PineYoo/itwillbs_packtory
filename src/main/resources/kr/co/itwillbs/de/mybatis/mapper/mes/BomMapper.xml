@@ -184,7 +184,7 @@
 				<if test='description !=null and !("".equals(description.trim()))'>description = #{description},</if>
 				<if test='spec !=null and !("".equals(spec.trim()))'>spec = #{spec},</if>
 				<if test='unit !=null and !("".equals(unit.trim()))'>unit = #{unit},</if>
-				<if test='quantity !=null and !("".equals(quantity.trim()))'>quantity = #{quantity},</if>
+				<if test='quantity !=null'>quantity = #{quantity},</if>
 				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
 			</set>
 		WHERE idx = #{idx}

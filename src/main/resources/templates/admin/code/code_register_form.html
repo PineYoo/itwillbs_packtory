@@ -51,7 +51,7 @@
 							<input type="hidden" id="menuId" name="menuId" value="0">
 							<div class="col-md-6">
 								<label class="mb-1" for="majorCode">그룹 코드</label>
-								<input type="text" class="form-control" th:field="*{majorCode}" placeholder="그룹 코드">
+								<input type="text" class="form-control" th:field="*{majorCode}" placeholder="그룹 코드" data-required="true" data-name="그룹 코드" data-type="string">
 								<div th:if="${#fields.hasErrors('majorCode')}" th:errors="*{majorCode}" class="text-danger"></div>
 							</div>
 							<div class="col-md-6">

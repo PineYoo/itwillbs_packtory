@@ -40,7 +40,7 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">BOM 등록</h1>
+				<h1 class="h3 mb-4 text-gray-800">BOM 상세</h1>
 			</div>
 			
 			<!-- ---------- 본문 컨테이너 ---------- -->
@@ -48,6 +48,7 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<form th:action="@{/admin/code}" method="post" th:object="${bomDTO}" class="form row g-3" id="registerForm">
+							<input type="hidden" th:field="*{idx}" />
 							<div class="col-md-12">
 								<div th:replace="~{common/fragments/de_form :: inputText('productIdx','상품코드',true,'string')}"></div>
 							</div>
@@ -85,7 +86,7 @@
 							</div>
 							
 							<div class="col-md-12 row align-items-center justify-content-center">
-								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
 								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">취소</button>
 							</div>
 						</form>
@@ -123,8 +124,8 @@
 					// 데이터 확인
 					console.log(_jsonObj);
 					// JSON 데이터를 서버로 전송
-					fetch("/mes/bom/", {
-						method: "POST",
+					fetch("/mes/bom/modifyBom", {
+						method: "PUT",
 						headers: {
 							"Content-Type": "application/json"
 						},
@@ -135,14 +136,12 @@
 						console.log("서버 응답:", data);
 						if(data.status === "success") {
 							alert(data.message);
-							location.href="/mes/bom";
+							location.reload(); // 현재 페이지 새로 고침
 						} else if(data.status === "validFail") {
 							console.log("hello validFail!");
-							//alert(data.message);
-							let _errors = data.errors;
-							console.log(_errors);
-							for (let field in _errors) {
-								$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
+							let _errorList = data.errors;
+							for (let field in _errorList) {
+								$("#" + field + "Error").text(_errorList[field]); // ex: majorCodeError div에 메시지 출력
 							} // end of for (let field in errors) {
 						}
 					})

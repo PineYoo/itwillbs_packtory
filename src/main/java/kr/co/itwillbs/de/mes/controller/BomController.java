@@ -135,6 +135,12 @@ public class BomController {
 		return BOM_PATH+"/bom_list";
 	}
 	
+	/**
+	 * MES > BOM > BOM 검색 조건 조회 
+	 * @param bomSearchDTO
+	 * @param model
+	 * @return
+	 */
 	@GetMapping(value= {"/search", "/search/"})
 	public String getBomsBySearchDTO(@ModelAttribute BomSearchDTO bomSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -148,6 +154,13 @@ public class BomController {
 		return BOM_PATH+"/bom_list";
 	}
 	
+	/**
+	 * MES > BOM > BOM 상세 조회
+	 * @param idx
+	 * @param bomSearchDTO
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/{idx}")
 	public String getBom(@PathVariable("idx") String idx,
 							@ModelAttribute BomSearchDTO bomSearchDTO, Model model) {
@@ -166,6 +179,11 @@ public class BomController {
 		return BOM_PATH+"/bom_detail";
 	}
 	
+	/**
+	 * MES > BOM > BOM 상세 업데이트
+	 * @param bomDTO
+	 * @return
+	 */
 	@PutMapping("/modifyBom")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> modifyBom(@RequestBody @Valid BomDTO bomDTO) {

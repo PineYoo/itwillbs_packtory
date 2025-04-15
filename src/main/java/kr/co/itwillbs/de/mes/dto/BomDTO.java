@@ -30,7 +30,7 @@ public class BomDTO {
 	private String unit;
 	@PositiveOrZero(message = "수량은 0개 이상만 입력 가능합니다.")
 	private int quantity;
-	@Pattern(regexp = "^[YN]$")
+	@Pattern(regexp = "^[YN]$", message = "사용 유무는 필수 입력 값입니다.")
 	private String isDeleted;
 	
 	private String regId;
