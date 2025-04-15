@@ -67,4 +67,19 @@ public class ProductService {
 		log.info("상품 삭제 요청 - idx: {}", idx);
 		productMapper.deleteProduct(idx);
 	}
+	
+	/*
+	 * =================================================================
+	 * 필요하면 쓰세요
+	 */
+	// 상품 정보 담아 가기
+	public ProductDTO getProductById(Long idx) {
+		log.info("상품 들고 가기 - idx: {}", idx);
+		return productMapper.selectProductById(idx);
+		/*
+		 * ex)
+		 * ProductDTO product = productService.getProductById(productIdx);
+		 */
+	}
+	
 }

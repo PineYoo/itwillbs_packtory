@@ -101,4 +101,11 @@
 		WHERE idx = #{idx}
 	</update>
 
+	<!-- 상품 정보 들고가기 -->
+	<select id="selectProductById" resultType="ko.co.itwillbs.de.mes.dto.ProductDTO">
+		SELECT *
+		FROM t_product
+		WHERE idx = #{idx}
+	</select>
+
 </mapper>

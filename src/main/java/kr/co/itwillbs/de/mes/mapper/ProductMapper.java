@@ -27,5 +27,9 @@ public interface ProductMapper {
 
 	// 상품 삭제
 	public void deleteProduct(Long idx);
+	
+	// --------------------------------------
+	// 상푸 정보 들고 가기
+	public ProductDTO selectProductById(Long idx);
 
 }
