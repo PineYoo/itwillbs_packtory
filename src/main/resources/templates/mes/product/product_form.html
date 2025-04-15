@@ -43,9 +43,9 @@
 								<div th:replace="~{common/fragments/de_form :: inputText('name', '상품 이름', true, 'string')}"></div>
 							</div>
 
-							<!-- 상품 수량 -->
+							<!-- 값 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '상품 수량', true, 'number')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '값', true, 'number')}"></div>
 							</div>
 
 							<!-- 상품 단위 -->
@@ -60,8 +60,8 @@
 							<hr>
 							<!-- 버튼들 -->
 							<div class="col-md-12 row align-items-center justify-content-center">
-								<button type="submit" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
-								<a href="/mes/product" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</a>
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
 							</div>
 						</form>
 					</div>

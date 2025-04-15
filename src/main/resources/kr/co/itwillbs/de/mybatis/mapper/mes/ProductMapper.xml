@@ -73,6 +73,8 @@
 		<if test="maxPrice != null">
 			AND price &lt;= #{maxPrice}
 		</if>
+
+		ORDER BY idx ASC
 	</select>
 
 	<!-- 상품 검색 + 목록 조회 -->
@@ -83,13 +85,10 @@
 		p.*,
 		c.minor_name AS type_name
 		FROM t_product p
-		LEFT JOIN
-		t_commoncode_item c
+		LEFT JOIN t_commoncode_item c
 		ON p.type = c.minor_code
-		AND c.major_code =
-		'PRODUCT_TYPE'
+		AND c.major_code = 'PRODUCT_TYPE'
 		WHERE p.is_deleted = 'N'
-
 		<if test="type != null and type != ''">
 			AND p.type = #{type}
 		</if>
@@ -97,10 +96,10 @@
 			AND p.name LIKE CONCAT('%', #{name}, '%')
 		</if>
 		<if test="minQuantity != null">
-			AND quantity &gt;= #{minQuantity}
+			AND p.quantity &gt;= #{minQuantity}
 		</if>
 		<if test="maxQuantity != null">
-			AND quantity &lt;= #{maxQuantity}
+			AND p.quantity &lt;= #{maxQuantity}
 		</if>
 		<if test="minPrice != null">
 			AND p.price &gt;= #{minPrice}
@@ -108,6 +107,7 @@
 		<if test="maxPrice != null">
 			AND p.price &lt;= #{maxPrice}
 		</if>
+
 		ORDER BY p.idx ASC
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
