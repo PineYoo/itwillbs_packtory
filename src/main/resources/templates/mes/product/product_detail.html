@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
+<meta charset="UTF-8">
 <title>팩토리(PackTory) - 상품 상세</title>
-
-<!-- CSS -->
 <style type="text/css">
 .form {
 	max-width: 800px;
@@ -14,175 +13,148 @@ input, select {
 	border: 1px solid #ccc;
 	padding: 5px;
 	margin: 2px;
-	/*     	width: 198px; */
 }
 
 .essential {
-	background-color: #fffbe6; /* 연한 노랑 */
+	background-color: #fffbe6;
 }
 
 .filled {
 	background-color: white;
 }
-
-/* ----------------- */
-.addressInfo {
-	display: flex;
-}
-
-@media ( max-width : 768px) {
-	.addressInfo {
-		display: block;
-	}
-}
 </style>
-
 </head>
-
 <body id="page-top">
 	<div layout:fragment="contents">
-		<!-- Begin Page Content -->
-		<div class="container mt-5">
-			<!-- Page Heading -->
-			<h2 class="h3 mb-4 text-gray-800">상품 상세 목록</h2>
-			
+		<div class="container-fluid">
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-4 text-gray-800">상품 상세</h1>
+			</div>
+
 			<div class="card shadow mb-4">
-				<div class="card-header py-3">
-					<h6 class="m-0 font-weight-bold text-primary">상품 상세 정보</h6>
-				</div>
-
-			<!-- ---------- 본문 컨테이너 ---------- -->
 				<div class="card-body">
-					<!-- 수정 요청 처리 폼 -->
-					<form th:action="@{/mes/product/{idx}(idx=${productDTO.idx})}" th:object="${productDTO}" method="post">
-						<input type="hidden" th:field="*{idx}" />
+					<div class="table-responsive">
+						<form th:action="@{/mes/product}" method="post" th:object="${productDTO}" class="form row g-3" id="registerForm">
+							<input type="hidden" th:field="*{idx}" id="idx" />
+							<!-- idx ID 추가 -->
 
-						<!-- 타입 -->
-						<div class="mb-3">
-						    <label for="type" class="form-label">타입</label> 
-						    <select class="form-select" id="type" th:field="*{type}" required disabled>
-						        <option value="">선택하세요</option>
-						        <option th:each="code : ${codeItems}" 
-						                th:value="${code.minorCode}" 
-						                th:text="${code.minorName}"
-						                th:selected="${productDTO.type == code.minorCode ? 'selected' : ''}">
-						        </option>
-						    </select>
-						</div>
+							<!-- 상품 타입 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type', '상품 타입', true, 'string', ${codeItems})}"></div>
+							</div>
 
-						<!-- 이름 -->
-						<div class="mb-3">
-							<label for="name" class="col-sm-3 col-form-label">이름</label> 
-							<input type="text" id="name" th:field="*{name}" class="form-control" readonly />
-						</div>
-						
-						<!-- 개수 -->
-						<div class="mb-3">
-							<label for="quantity" class="col-sm-3 col-form-label">개수</label> 
-							<input type="text" id="quantity" th:field="*{quantity}" class="form-control" readonly />
-						</div>
+							<!-- 상품명 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('name','상품명',true,'string')}"></div>
+							</div>
 
-						<!-- 단위 -->
-						<div class="mb-3">
-							<label for="unit" class="col-sm-3 col-form-label">단위</label> 
-							<input type="text" id="unit" th:field="*{unit}" class="form-control" readonly />
-						</div>
+							<!-- 값 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '값', true, 'number')}"></div>
+							</div>
 
-						<!-- 가격 -->
-						<div class="mb-3">
-							<label for="price" class="col-sm-3 col-form-label">가격</label> 
-							<input type="number" id="price" th:field="*{price}" class="form-control" readonly />
-						</div>
+							<!-- 단위 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('unit','단위',true,'string')}"></div>
+							</div>
 
-						<!-- 작성자 -->
-						<div class="mb-3">
-							<label for="regId" class="col-sm-3 col-form-label">작성자</label> 
-							<span id="regId" th:text="${productDTO.regId != null ? productDTO.regId : '-'}" class="form-control-plaintext border px-2 py-1"></span>
-						</div>
-
-						<!-- 작성일자 -->
-						<div class="mb-3">
-							<label for="regDate" class="col-sm-3 col-form-label">작성일자</label> 
-							<span id="regDate" th:text="${productDTO.regDate != null ? productDTO.regDate : '-'}" class="form-control-plaintext border px-2 py-1"></span>
-						</div>
-
-						<!-- 최종작성자 -->
-						<div class="mb-3">
-							<label for="modId" class="col-sm-3 col-form-label">최종작성자</label> 
-							<span id="modId" th:text="${productDTO.modId}" class="form-control-plaintext border px-2 py-1"></span>
-						</div>
-
-						<!-- 최종작성일자 -->
-						<div class="mb-3">
-							<label for="modDate" class="col-sm-3 col-form-label">최종작성일자</label> 
-							<span id="modDate" th:text="${productDTO.modDate}" class="form-control-plaintext border px-2 py-1"></span>
-						</div>
-
-						<!-- 삭제 유무 -->
-						<div class="mb-3">
-						    <label for="isDeleted" class="col-sm-3 col-form-label">삭제 유무</label> 
-						    <span id="isDeleted" 
-						          th:text="${productDTO.isDeleted == 'Y' ? '삭제됨' : '삭제되지 않음'}" 
-						          class="form-control-plaintext border px-2 py-1"></span>
-						</div>
-
-						<div style="text-align: center; margin: 10px 0;">
-							<button type="button" id="editBtn" class="btn btn-primary ">수정</button>
-							<button type="submit" class="btn btn-primary" style="display: none;" id="submitBtn">저장</button>
-							<button type="button" class="btn btn-danger" id="deleteBtn" th:attr="data-idx=${productDTO.idx}">삭제</button>
-							<a href="/mes/product" class="btn btn-secondary ml-2" style="float: right;">목록으로 돌아가기</a>
-						</div>
-					</form>
+							<!-- 가격 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputNumber('price','가격',true,'string')}"></div>
+							</div>
+							
+							<hr>
+							
+							<div class="col-md-12 row align-items-center justify-content-center">
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
+								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+								<button type="button" id="deleteBtn" class="btn btn-danger btn-lg d-block col-3 ml-2 mb-3">삭제</button>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>
-		<!-- 본문 컨테이너 끝 -->
-		<script type="text/javascript" th:inline="javascript">
-        $(document).ready(function () {
-            
-            // 공통 입력 필드 상태 토글
-            function toggleFieldState(isReadOnly) {
-                $("input[readonly]").prop("readonly", isReadOnly);  
-                $("input[disabled]").prop("disabled", isReadOnly);  
-                $("select[disabled]").prop("disabled", isReadOnly);
-            }
-			
-            // 1. 입력 필드 수정
-            $("#editBtn").on("click", function () {
-                try {
-                    toggleFieldState(false);
-                    $(this).hide();
-                    $("#submitBtn").show();
-                } catch (error) {
-                    console.error("수정 버튼 클릭 시 오류 발생:", error);
-                    alert("수정 버튼 처리 중 오류가 발생했습니다.");
-                }
-            });
 
-            // 2. 삭제 버튼 클릭
-            $("#deleteBtn").on("click", function () {
-                const prdIdx = $(this).data("id");
-                confirmDelete(prdIdx);
-            });
+		<script type="text/javascript">
+	    $(function () {
+	        // 목록 버튼 클릭 시
+	        $('#btnList').on("click", function () {
+	            location.href = "/mes/product";  // 상품 목록 페이지로 이동
+	        });
+	
+	        // 수정 폼 제출 시
+	        $('#btnSubmitForm').on("click", function () {
+	            // 에러 메시지 초기화
+	            $("div[id$='Error']").text("");
+	            
+	            // 폼 데이터 직렬화
+	            const _serializedData = $('#registerForm').serialize();
+	            const _pairs = _serializedData.split('&');
+	            const _jsonObj = {};
+	            _pairs.forEach(pair => {
+	                const [key, value] = pair.split('=');
+	                _jsonObj[decodeURIComponent(key)] = decodeURIComponent(value);
+	            });
+	
+	            // 숫자 필드 처리
+	            if (_jsonObj['price']) {
+	                _jsonObj['price'] = parseInt(_jsonObj['price']);
+	            }
+	
+	            // idx를 실제 페이지 URL에서 받아오기
+	            const idx = $('#idx').val();  // 수정된 부분: id를 #idx로 수정
+	
+	            fetch(`/mes/product/${idx}`, {
+	                method: "PUT",
+	                headers: {
+	                    "Content-Type": "application/json"
+	                },
+	                body: JSON.stringify(_jsonObj)  // JSON 형식으로 요청 본문 전달
+	            })
+	            .then(response => response.json())
+	            .then(data => {
+	                if (data.status === "success") {
+	                    alert(data.message);  // 성공 메시지
+	                    location.reload();  // 페이지 새로고침
+	                } else if (data.status === "validFail") {
+	                    const errors = data.errors;
+	                    for (let field in errors) {
+	                        $("#" + field + "Error").text(errors[field]);  // 유효성 검사 실패 시 에러 메시지 표시
+	                    }
+	                }
+	            })
+	            .catch(error => {
+	                console.error("서버 오류:", error);
+	                alert("요청 처리 중 문제가 발생했습니다.");
+	            });
+	        });
+	        
+	     	// 삭제 버튼 클릭 시
+	        $('#deleteBtn').on("click", function () {
+	            if (!confirm("정말 삭제하시겠습니까?")) return;
 
-            // 1. 삭제 처리
-            function confirmDelete(prdIdx) {
-                if (confirm("정말 삭제하시겠습니까?")) {
-                    $.ajax({
-                        url: `/mes/product/${prdIdx}`,
-                        type: "DELETE",
-                        success: function (response) {
-                            response === "success" ? alert("삭제 완료!") : alert("삭제 실패: " + response);
-                            if (response === "success") location.href = "/mes/product";
-                        },
-                        error: function () {
-                            alert("삭제 중 오류가 발생했습니다.");
-                        }
-                    });
-                }
-            }
-		});
-    </script>
+	            const idx = $('#idx').val();
+
+	            fetch(`/mes/product/${idx}`, {
+	                method: "DELETE"
+	            })
+	            .then(response => response.text())
+	            .then(data => {
+	                if (data === "success") {
+	                    alert("삭제되었습니다.");
+	                    location.href = "/mes/product"; // 목록으로 이동
+	                } else {
+	                    alert("삭제 실패: " + data);
+	                }
+	            })
+	            .catch(error => {
+	                console.error("삭제 요청 오류:", error);
+	                alert("삭제 요청 중 문제가 발생했습니다.");
+	            });
+	        });
+	    });
+	</script>
 	</div>
 </body>
 </html>

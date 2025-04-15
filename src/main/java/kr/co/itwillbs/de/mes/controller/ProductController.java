@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -131,15 +133,25 @@ public class ProductController {
 	}
 
 	// 상품 수정
-	@PostMapping("/{idx}")
-	public String updateProduct(@PathVariable("idx") Long idx, @ModelAttribute ProductDTO productDTO) {
+	@PutMapping("/{idx}")
+	public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable("idx") Long idx, @RequestBody ProductDTO productDTO) {
+		Map<String, Object> response = new HashMap<>();
 		try {
-			productService.updateProduct(productDTO);
-			return "redirect:/mes/product/" + idx;
-		} catch (EntityNotFoundException e) {
-			log.error("상품 수정 실패: {}", e.getMessage());
-			return "error";
-		}
+	        productService.updateProduct(productDTO);
+	        response.put("status", "success");
+	        response.put("message", "상품 수정이 완료되었습니다.");
+	        return ResponseEntity.ok(response);
+	    } catch (EntityNotFoundException e) {
+	        log.error("상품 수정 실패: {}", e.getMessage());
+	        response.put("status", "error");
+	        response.put("message", "상품을 찾을 수 없습니다.");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+	    } catch (Exception e) {
+	        log.error("상품 수정 실패: {}", e.getMessage());
+	        response.put("status", "error");
+	        response.put("message", "상품 수정 중 오류가 발생했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	    }
 	}
 
 	// 상품 삭제 (Soft Delete)
