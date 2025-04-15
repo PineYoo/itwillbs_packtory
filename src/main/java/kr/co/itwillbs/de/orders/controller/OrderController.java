@@ -4,8 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
-import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
@@ -28,17 +25,17 @@ import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
-import kr.co.itwillbs.de.orders.service.SellService;
+import kr.co.itwillbs.de.orders.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 
 /* 수주 및 발주관리 */
 @Slf4j
 @RequestMapping("/orders") // 반복되는 경로를 미리 매핑(클래스 내부에서는 추가되는 경로만 매핑)
 @Controller
-public class SellController {
+public class OrderController {
 	
 	@Autowired
-	private SellService sellService;
+	private OrderService orderService;
 	@Autowired
 	private CommonCodeUtil commonCodeUtil;
 	
@@ -54,11 +51,13 @@ public class SellController {
 	// 수주/발주 관리 목록 조회(SELECT) 요청(GET)
 	@GetMapping("/{tradeName}") // "/orders/sell" or "/orders/buy"
 	public String getOrderList(@PathVariable("tradeName") String tradeName, 
-							  @ModelAttribute OrderSearchDTO orderSearchDTO, Model model) {
+							   @ModelAttribute OrderSearchDTO orderSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// 수주 혹은 발주만 남은 codeItemList를 orderSearchDTO에 set
 		orderSearchDTO.setCodeItemList(this.getCodeItemsByTradeName(tradeName));
+		System.out.println(">>>>>>>>>>>>>>tradeName : " + tradeName);
+		System.out.println(">>>>>>>>>>>>>>getCodeItemList() : " + orderSearchDTO.getCodeItemList());
 		model.addAttribute("orderSearchDTO", orderSearchDTO);
 		
 		// 수주/발주 관리 목록 리스트 조회 요청(SELECT)
@@ -67,18 +66,18 @@ public class SellController {
  		
  		// 각 minorName 이 일치하는 minorcode 뽑아내서 trade_code 에 넣기
  		if (SELL_VALUE.equals(tradeName)) {	// sell 일 때
- 			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));   // '수주(1)'
+ 			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));	// '수주(1)'
  		} else if (BUY_VALUE.equals(tradeName)) {	// buy 일 때
- 			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));   // '발주(2)'
+ 			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));	// '발주(2)'
  		}
 		
 		// 수주/발주 관리 목록 리스트 조회 요청(SELECT)
-		List<OrderDTO> orderDTOList = sellService.getOrderList(orderSearchDTO);
+		List<OrderDTO> orderDTOList = orderService.getOrderList(orderSearchDTO);
 		model.addAttribute("orderDTOList", orderDTOList);
 		log.info("orderDTOList : " + orderDTOList);
 		
 		//페이징용 totalCount
-		orderSearchDTO.getPageDTO().setTotalCount(sellService.getOrderCountForPaging(orderSearchDTO));
+		orderSearchDTO.getPageDTO().setTotalCount(orderService.getOrderCountForPaging(orderSearchDTO));
 
 		
 		return COMMON_PATH + "/" + tradeName +"_management";	// "orders/sell_management" or "orders/buy_management"
@@ -103,18 +102,18 @@ public class SellController {
 		
 		// 각 minorName 이 일치하는 minorcode 뽑아내서 trade_code 에 넣기
 		if (SELL_VALUE.equals(tradeName)) {	// sell 일 때
-			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));   // '수주(1)'
+			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));	// '수주(1)'
 		} else if (BUY_VALUE.equals(tradeName)) {	// buy 일 때
-			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));   // '발주(2)'
+			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));	// '발주(2)'
 		}
 		
 		// 수주/발주 조건 검색 리스트 조회 요청(SELECT) - 재사용
-		List<OrderDTO> orderDTOList = sellService.getOrderList(orderSearchDTO);
+		List<OrderDTO> orderDTOList = orderService.getOrderList(orderSearchDTO);
 		model.addAttribute("orderDTOList", orderDTOList);
 		log.info("orderDTOList : " + orderDTOList);
 		
 		//페이징용 totalCount
-		orderSearchDTO.getPageDTO().setTotalCount(sellService.getOrderCountForPaging(orderSearchDTO));
+		orderSearchDTO.getPageDTO().setTotalCount(orderService.getOrderCountForPaging(orderSearchDTO));
 		
 		return COMMON_PATH + "/" + tradeName +"_management";	// "orders/sell_management" or "orders/buy_management"
 //		return COMMON_PATH + "/order_management";
@@ -130,7 +129,7 @@ public class SellController {
 		model.addAttribute("orderFormDTO", new OrderFormDTO());
 		
 		// 거래처 정보 가져오기
-		List<ClientDTO> clientList = sellService.getClientList();
+		List<ClientDTO> clientList = orderService.getClientList();
 		model.addAttribute("clientList", clientList);
 		
 		return COMMON_PATH + "/" + tradeName +"_register_form";	// "orders/sell_register_form" or "orders/buy_register_form"
@@ -150,14 +149,14 @@ public class SellController {
 		// 각 minorName 이 일치하는 minorcode 뽑아내서 trade_code 에 넣기
 		if (SELL_VALUE.equals(tradeName)) {	// sell 일 때
 			orderFormDTO.getOrderDTO().setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));  // '수주(1)'
-			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미출고"));	// (1)
+			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미출고"));	// 1
 		} else if (BUY_VALUE.equals(tradeName)) {	// buy 일 때
-			orderFormDTO.getOrderDTO().setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));   // '발주'
-			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미수금"));	//(2)
+			orderFormDTO.getOrderDTO().setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));   // '발주(2)'
+			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미수금"));	// 7
 		}
 		
 		// 주문서 등록 요청(INSERT)
-		sellService.registerOrder(orderFormDTO);
+		orderService.registerOrder(orderFormDTO);
 		
 		// >>>>>>>>>> 상품 선택 및 등록은 나중에  <<<<<<<<<<
 
@@ -174,10 +173,10 @@ public class SellController {
 		System.out.println("documentNumber : "  + documentNumber);
 		
 		// 거래처 정보 가져오기
-		List<ClientDTO> clientList = sellService.getClientList();
+		List<ClientDTO> clientList = orderService.getClientList();
 		model.addAttribute("clientList", clientList);
 		
-		OrderDTO orderDTO = sellService.getOrderByDocumentNumber(documentNumber);
+		OrderDTO orderDTO = orderService.getOrderByDocumentNumber(documentNumber);
 		// 수주 혹은 발주만 남은 codeItemList를 orderDTO에 set
 		orderDTO.setCodeItemList(this.getCodeItemsByTradeName(tradeName));
 		
@@ -199,19 +198,19 @@ public class SellController {
 		System.out.println("orderDetailDTO : " + orderDetailDTO);
 
 		// 주문 정보 수정
-		sellService.modifyOrder(orderDTO, orderDetailDTO);
+		orderService.modifyOrder(orderDTO, orderDetailDTO);
 		
 		return "redirect:" + COMMON_PATH + "/" + tradeName + "/" + orderDTO.getDocumentNumber();
 	}
 
 	// ========================================================================================
-	// 주문서안 담당자, 담당자 전화번호 넣기 위함
+	// 주문서 내에 담당자, 담당자 전화번호 넣기 위함
 	// 대분류 부서 목록
 	@GetMapping("/api/departments/main")
 	@ResponseBody
 	public List<OrderCodeDTO> getDepartmentList() {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-	    return sellService.getDepartmentList(); // major_code 기준
+	    return orderService.getDepartmentList(); // major_code 기준
 	}
 
 	// 하위 부서 목록
@@ -219,7 +218,7 @@ public class SellController {
 	@ResponseBody
 	public List<OrderCodeDTO> getSubDepartmentList(@RequestParam("departmentCode") String departmentCode) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-	    return sellService.getSubDepartmentList(departmentCode); // 하위 minor_code
+	    return orderService.getSubDepartmentList(departmentCode); // 하위 minor_code
 	}
 
 	// 부서별 직원 목록
@@ -228,7 +227,7 @@ public class SellController {
 	public List<OrderCodeDTO> getEmployeeList(@RequestParam("departmentCode") String departmentCode,
 											  @RequestParam("subDepartmentCode") String subDepartmentCode) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-	    return sellService.getEmployeeList(departmentCode, subDepartmentCode);
+	    return orderService.getEmployeeList(departmentCode, subDepartmentCode);
 	}
 
 	// 직원 전화번호 조회
@@ -236,7 +235,7 @@ public class SellController {
 	@ResponseBody
 	public OrderCodeDTO getEmployeeInfo(@RequestParam("employeeId") String employeeId) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-	    return sellService.getEmployeeInfo(employeeId);
+	    return orderService.getEmployeeInfo(employeeId);
 	}
 	
 	
@@ -245,6 +244,7 @@ public class SellController {
 	 * 공통코드_아이템에서 수주 or 발주 관련된 상태값(status_code) 가져오기
 	 * <br>COMMON_MAJOR_CODE_STATUS : \"ORDER_STATUS_CODE\"
 	 * <br>SELL_NAME_KR : \"수주\"
+	 * <br>BUY_NAME_KR : \"발주\"
 	 * @param tradeName
 	 * @return
 	 */

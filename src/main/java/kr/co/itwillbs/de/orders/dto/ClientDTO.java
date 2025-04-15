@@ -64,6 +64,18 @@ public class ClientDTO {
 	//	최종작성일자
 	private LocalDateTime modDate;
 	
+	// --------------------------------
+	// t_client_info
+	//	담당자 사번
+	private String clientEmployeeId;
+	//	담당자
+	private String clientEmployeeName;
+	//	담장자 메모
+	private String clientEmployeeMemo;
+	//	전화1
+	private String phone1;
+	//	전화2
+	private String phone2;
 	
 	
 }
