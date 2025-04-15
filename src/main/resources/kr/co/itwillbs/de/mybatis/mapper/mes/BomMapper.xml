@@ -78,7 +78,7 @@
 			<if test='unit !=null and !("".equals(unit.trim()))'>
 			unit,
 			</if>
-			<if test='quantity !=null and !("".equals(quantity.trim()))'>
+			<if test='quantity !=null'>
 			quantity,
 			</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
@@ -115,7 +115,7 @@
 			<if test='unit !=null and !("".equals(unit.trim()))'>
 			#{unit},
 			</if>
-			<if test='quantity !=null and !("".equals(quantity.trim()))'>
+			<if test='quantity !=null'>
 			#{quantity},
 			</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>

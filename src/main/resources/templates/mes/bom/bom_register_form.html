@@ -102,6 +102,8 @@
 				// BOM 등록
 				$('#btnSubmitForm').on("click", function() {
 					console.group('click! #btnSubmitForm!');
+					// error 내용 삭제
+					$("div[id$='Error']").text("")
 					// 만세 폼이다!
 					const _serializedData = $('#registerForm').serialize();
 					// 문자열을 '&' 기준z으로 분리하여 배열로 변환
@@ -113,6 +115,11 @@
 						const [key, value] = pair.split('=');
 						_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
 					});
+					// @Valid 숫자 타입을 숫자로 변환
+						// 수량은 숫자형으로 전환
+					if (_jsonObj['quantity']) {
+						_jsonObj['quantity'] = parseInt(_jsonObj['quantity']);
+					}
 					// 데이터 확인
 					console.log(_jsonObj);
 					// JSON 데이터를 서버로 전송
@@ -141,15 +148,7 @@
 					})
 					.catch(error => {
 						console.error("서버 응답 오류:", error);
-						if(data.status === "validFail") {
-							console.log("hello validFail!2");
-							//alert(data.message);
-							let _errors = error.errors;
-							console.log(_errors);
-							for (let field in error.errors) {
-								$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
-							} // end of for (let field in errors) { 
-						}
+						alert("요청 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해 주시기 바랍니다.");
 					});
 					
 					console.groupEnd();

@@ -96,7 +96,7 @@ public class BomController {
 	 */
 	@PostMapping(value= {"", "/"}, consumes= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> registerBomForJson(@ModelAttribute @Valid BomDTO bomDTO, Model model) {
+	private ResponseEntity<Map<String, Object>> registerBomForJson(@RequestBody @Valid BomDTO bomDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(bomDTO));
 		
@@ -114,7 +114,6 @@ public class BomController {
 		
 		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
 		return ResponseEntity.ok(response);
-		
 	}
 	
 	/**
