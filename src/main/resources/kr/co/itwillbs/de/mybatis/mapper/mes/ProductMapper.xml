@@ -7,10 +7,10 @@
 	<!-- 상품 등록 -->
 	<insert id="insertProduct" parameterType="kr.co.itwillbs.de.mes.dto.ProductDTO">
 		INSERT INTO t_product (
-	        type, name, unit, price,
+	        type, name, quantity, unit, price,
 	        reg_id, reg_date, is_deleted
 	    ) VALUES (
-	        #{type}, #{name}, #{unit}, #{price},
+	        #{type}, #{name}, #{quantity}, #{unit}, #{price},
 	        #{regId}, NOW(), 'N'
 	    )
 	</insert>
@@ -26,9 +26,12 @@
 	    <if test="name != null and name != ''">
 	        AND name LIKE CONCAT('%', #{name}, '%')
 	    </if>
-	    <if test="unit != null and unit != ''">
-	        AND unit = #{unit}
-	    </if>
+	    <if test="minQuantity != null">
+    		AND quantity &gt;= #{minQuantity}
+		</if>
+		<if test="maxQuantity != null">
+		    AND quantity &lt;= #{maxQuantity}
+		</if>
 	    <if test="minPrice != null">
     		AND price &gt;= #{minPrice}
 		</if>
@@ -40,9 +43,13 @@
 	<!-- 상품 검색 + 목록 조회 -->
 	<select id="searchProduct" parameterType="kr.co.itwillbs.de.mes.dto.ProductSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.ProductDTO">
 	    SELECT 
-	        p.*
+	        p.*, 
+	        c.minor_name AS type_name
 	    FROM t_product p
-	    WHERE p.is_deleted = 'N'
+	    LEFT JOIN t_commoncode_item c
+	      ON p.type = c.minor_code
+	     AND c.major_code = 'PRODUCT_TYPE'
+	   WHERE p.is_deleted = 'N'
 	    
 	    <if test="type != null and type != ''">
 	        AND p.type = #{type}
@@ -50,9 +57,12 @@
 	    <if test="name != null and name != ''">
 	        AND p.name LIKE CONCAT('%', #{name}, '%')
 	    </if>
-	    <if test="unit != null and unit != ''">
-	        AND p.unit = #{unit}
-	    </if>
+	    <if test="minQuantity != null">
+    		AND quantity &gt;= #{minQuantity}
+		</if>
+		<if test="maxQuantity != null">
+		    AND quantity &lt;= #{maxQuantity}
+		</if>
 	    <if test="minPrice != null">
 	        AND p.price &gt;= #{minPrice}
 	    </if>
@@ -64,19 +74,18 @@
 	</select>
 
 	<!-- 상품 상세 조회 -->
-	<select id="getProductByIdx" parameterType="Long"
-		resultType="kr.co.itwillbs.de.mes.dto.ProductDTO">
+	<select id="getProductByIdx" parameterType="Long" resultType="kr.co.itwillbs.de.mes.dto.ProductDTO">
 		SELECT * FROM t_product
 		WHERE idx = #{idx} 
 		AND is_deleted = 'N'
 	</select>
 
 	<!-- 상품 정보 수정 -->
-	<update id="updateProduct"
-		parameterType="kr.co.itwillbs.de.mes.dto.ProductDTO">
+	<update id="updateProduct" parameterType="kr.co.itwillbs.de.mes.dto.ProductDTO">
 		UPDATE t_product 
 		SET type = #{type},
 			name = #{name},
+			quantity = #{quantity},
 			unit = #{unit},
 			price = #{price},
 			mod_id = #{modId},

@@ -18,6 +18,7 @@ public class ProductVO {
 	private Long idx; 				// 인덱스 (PK)
 	private String type; 			// 타입
 	private String name; 			// 이름
+	private Integer quantity; 			// 개수
 	private String unit; 			// 단위
 	private BigDecimal price; 		// 가격
 

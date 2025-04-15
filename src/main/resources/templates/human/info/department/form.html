@@ -28,7 +28,8 @@
 
 						<!-- 대표부서코드 입력 -->
 						<div class="mb-3">
-							<label for="departmentCode" class="form-label">대표부서코드</label> <select class="form-control" id="departmentCode" th:field="*{departmentCode}" required>
+							<label for="departmentCode" class="form-label">대표부서코드</label> 
+							<select class="form-select" id="departmentCode" th:field="*{departmentCode}" required>
 								<option value="">선택하세요</option>
 								<option th:each="code : ${codeItems}" th:value="${code.minorName}" th:text="${code.minorName}"></option>
 							</select>

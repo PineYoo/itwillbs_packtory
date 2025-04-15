@@ -39,7 +39,8 @@
 						</div>
 
 						<div class="mb-3">
-							<label for="departmentCode" class="form-label">대표부서</label> <select class="form-control" id="departmentCode" th:field="*{departmentCode}" required>
+							<label for="departmentCode" class="form-label">대표부서</label> 
+							<select class="form-control" id="departmentCode" th:field="*{departmentCode}" required>
 								<option value="">선택하세요</option>
 								<option th:each="department : ${validDepartments}" th:value="${department.minorCode}" th:text="${department.minorName}"></option>
 							</select>
