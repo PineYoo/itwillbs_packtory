@@ -87,7 +87,8 @@
 		FROM t_product p
 		LEFT JOIN t_commoncode_item c
 		ON p.type = c.minor_code
-		AND c.major_code = 'PRODUCT_TYPE'
+		AND c.major_code =
+		'PRODUCT_TYPE'
 		WHERE p.is_deleted = 'N'
 		<if test="type != null and type != ''">
 			AND p.type = #{type}
@@ -115,10 +116,10 @@
 	<!-- 상품 상세 조회 -->
 	<select id="getProductByIdx" parameterType="Long"
 		resultType="kr.co.itwillbs.de.mes.dto.ProductDTO">
-		SELECT * FROM t_product
+		SELECT *
+		FROM t_product
 		WHERE idx = #{idx}
-		AND is_deleted =
-		'N'
+		AND is_deleted = 'N'
 	</select>
 
 	<!-- 상품 정보 수정 -->

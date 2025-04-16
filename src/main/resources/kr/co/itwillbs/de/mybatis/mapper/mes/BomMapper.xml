@@ -200,4 +200,11 @@
 		where idx = #{idx}
 	</update>
 	
+	<!-- 원자재에서 씀 -->
+	<select id="selectBomList" resultType="kr.co.itwillbs.de.mes.dto.BomDTO">
+	  SELECT idx, name
+	  FROM t_bom
+	  WHERE is_deleted = 'N'
+	</select>
+	
 </mapper>

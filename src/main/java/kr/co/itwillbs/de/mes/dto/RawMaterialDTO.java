@@ -58,8 +58,4 @@ public class RawMaterialDTO {
 	private String modId; 			// 최종수정자
 	private LocalDateTime modDate; 	// 최종수정일
 	
-	// 한글 변환
-	private String typeName;			// 타입명
-	private String clientCompanyName;	// 거래처명 
-	private String bomName;				// BOM명
 }

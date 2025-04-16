@@ -63,7 +63,11 @@ public interface ClientMapper {
 	 * @param clientInfoDTO
 	 */
 	void updateClientInfo(ClientInfoDTO clientInfoDTO);
-
+	
+	/*
+	 * 원자재에서 씀
+	 */
+	List<ClientDTO> selectClientList();
 
 	
 }

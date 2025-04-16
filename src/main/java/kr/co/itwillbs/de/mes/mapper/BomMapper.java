@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import kr.co.itwillbs.de.mes.dto.BomDTO;
 import kr.co.itwillbs.de.mes.dto.BomSearchDTO;
+import kr.co.itwillbs.de.orders.dto.ClientDTO;
 
 public interface BomMapper {
 
@@ -43,6 +44,11 @@ public interface BomMapper {
 	 * @return affectedRow
 	 */
 	int modifyBom(BomDTO bomDTO);
+	
+	/*
+	 * 원자재에서 씀
+	 */
+	List<BomDTO> selectBomList();
 
 
 }

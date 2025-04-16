@@ -42,7 +42,7 @@ public class RawMaterialService {
     }
 
     // 원자재 상세 조회
-    public RawMaterialDTO getRawMaterialByIdx(Long idx) {
+    public RawMaterialDTO getRawMaterial(Long idx) {
         log.info("원자재 상세 조회 - idx: {}", idx);
         return rawMaterialMapper.getRawMaterialByIdx(idx);
     }
