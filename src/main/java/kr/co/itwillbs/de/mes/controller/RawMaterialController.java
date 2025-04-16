@@ -46,6 +46,7 @@ public class RawMaterialController {
 	// 원자재 등록 폼 페이지
 	@GetMapping("/new")
 	public String rawMaterialRegisterForm(Model model) {
+		
 		// 로그인 유저 정보 세팅
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
@@ -55,18 +56,15 @@ public class RawMaterialController {
 			model.addAttribute("loginVO", loginVO);
 		}
 
-		// New DTO + 공통 코드
 		model.addAttribute("rawMaterialDTO", new RawMaterialDTO());
-		model.addAttribute("sheetTypes", commonCodeUtil.getCodeItems("MASK_SHEET"));
-		model.addAttribute("ingredientTypes", commonCodeUtil.getCodeItems("MASK_INGREDIENT"));
 
 		return "mes/rawMaterial/rawMaterial_form";
 	}
 
-	// 원자재 등록 폼 페이지 AJAX용
+	// 원자재 등록 페이지 AJAX용
 	@PostMapping(value= {"/new", "/"}, consumes= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> productRegister(@RequestBody @Valid RawMaterialDTO rawMaterialDTO) {
+	private ResponseEntity<Map<String, Object>> rawMaterialRegister(@RequestBody @Valid RawMaterialDTO rawMaterialDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(rawMaterialDTO));
 		
@@ -88,47 +86,36 @@ public class RawMaterialController {
 
 	// 원자재 목록 조회 (검색)
 	@GetMapping("")
-	public String getProductList(@ModelAttribute RawMaterialSearchDTO searchDTO, Model model) {
-		log.info("getProductList --- start");
+	public String getRawMaterialList(@ModelAttribute RawMaterialSearchDTO searchDTO, Model model) {
+		log.info("getRawmaterialList --- start");
 
 		// 페이징 정보 조회
 		searchDTO.getPageDTO().setTotalCount(rawMaterialService.searchRawMaterialCount(searchDTO));
 
 		// 원자재 목록 조회
-		List<RawMaterialDTO> productList = rawMaterialService.getRawMaterialList(searchDTO);
-		model.addAttribute("productList", productList);
-
-		// 원자재 타입 조회
-		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("PRODUCT_TYPE");
-		model.addAttribute("codeItems", codeItems);
+		List<RawMaterialDTO> rawMaterialList = rawMaterialService.getRawMaterialList(searchDTO);
+		model.addAttribute("rawmaterialList", rawMaterialList);
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
-		return "mes/product/product_list";
+		return "mes/rawmaterial/rawmaterial_list";
 	}
 
 	// 원자재 상세 조회
 	@GetMapping("/{idx}")
-	public String getProduct(@PathVariable("idx") Long idx, Model model) {
-		log.info("getProduct --- start");
+	public String getRawMaterial(@PathVariable("idx") Long idx, Model model) {
+		log.info("getRawMaterial --- start");
 
 		// 원자재 상세정보 조회
-		RawMaterialDTO rawMaterialDTO = rawMaterialService.getRawMaterialByIdx(idx);
-		model.addAttribute("productDTO", rawMaterialDTO);
+		RawMaterialDTO rawMaterialDTO = rawMaterialService.getRawMaterial(idx);
+		model.addAttribute("rawMaterialDTO", rawMaterialDTO);
 
-		// 원자재 타입 조회
-		List<CodeItemDTO> maskSheetItems = commonCodeUtil.getCodeItems("MASK_SHEET");
-		List<CodeItemDTO> maskIngredientItems = commonCodeUtil.getCodeItems("MASK_INGREDIENT");
-
-		model.addAttribute("maskSheetItems", maskSheetItems);
-		model.addAttribute("maskIngredientItems", maskIngredientItems);
-
-		return "mes/product/product_detail";
+		return "mes/rawmaterial/rawmaterial_detail";
 	}
 
 	// 원자재 수정
 	@PutMapping("/{idx}")
-	public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable("idx") Long idx, @RequestBody RawMaterialDTO rawMaterialDTO) {
+	public ResponseEntity<Map<String, Object>> updateRawMaterial(@PathVariable("idx") Long idx, @RequestBody RawMaterialDTO rawMaterialDTO) {
 		Map<String, Object> response = new HashMap<>();
 		try {
 	        rawMaterialService.updateRawMaterial(rawMaterialDTO);
@@ -151,7 +138,7 @@ public class RawMaterialController {
 	// 원자재 삭제 (Soft Delete)
 	@DeleteMapping("/{idx}")
 	@ResponseBody
-	public String deleteProduct(@PathVariable("idx") Long idx) {
+	public String deleteRawMaterial(@PathVariable("idx") Long idx) {
 		try {
 			rawMaterialService.deleteRawMaterial(idx);
 			return "success";

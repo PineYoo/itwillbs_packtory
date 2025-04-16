@@ -81,8 +81,13 @@ public class ClientService {
 		}
 		
 	}
-
 	
+	/* --------------------------------------------------------------
+	 * 원자재에서 씀
+	 */
+	 public List<ClientDTO> getClientList() {
+	        return clientMapper.selectClientList();
+	    }
 }
 
 
