@@ -76,7 +76,7 @@ public class BomService {
 	/* --------------------------------------------------------------
 	 * 원자재에서 씀
 	 */
-	 public List<BomDTO> getClientList() {
+	 public List<BomDTO> getBomList() {
 	        return bomMapper.selectBomList();
 	    }
 	
