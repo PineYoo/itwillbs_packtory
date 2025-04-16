@@ -85,16 +85,6 @@ public class ProductController {
 		return ResponseEntity.ok(response);
 	}
 
-//	// 상품 등록 처리
-//	@PostMapping("/new")
-//	public String productRegister(@ModelAttribute ProductDTO productDTO) {
-//		log.info("productRegister --- start");
-//
-//		productService.registerProduct(productDTO);
-//
-//		return "redirect:/mes/product";
-//	}
-
 	// 상품 목록 조회 (검색)
 	@GetMapping("")
 	public String getProductList(@ModelAttribute ProductSearchDTO searchDTO, Model model) {

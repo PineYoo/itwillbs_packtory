@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
 <meta charset="UTF-8">
-<title>팩토리(PackTory) - 상품 상세</title>
+<title>팩토리(PackTory) - 원자재 상세</title>
 <style type="text/css">
 .form {
 	max-width: 800px;
@@ -28,24 +28,40 @@ input, select {
 	<div layout:fragment="contents">
 		<div class="container-fluid">
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">상품 상세</h1>
+				<h1 class="h3 mb-4 text-gray-800">원자재 상세</h1>
 			</div>
 
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<form th:action="@{/mes/product}" method="post" th:object="${productDTO}" class="form row g-3" id="registerForm">
+						<form th:action="@{/mes/rawmaterial}" method="post" th:object="${rawMaterialDTO}" class="form row g-3" id="registerForm">
 							<input type="hidden" th:field="*{idx}" id="idx" />
 							<!-- idx ID 추가 -->
 
-							<!-- 상품 타입 -->
+							<!-- Client 선택 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type', '상품 타입', true, 'string', ${codeItems})}"></div>
+								<label for="clientIdx" class="form-label">거래처</label> <select th:field="*{clientIdx}" class="form-select">
+									<option value="" >거래처를 선택하세요</option>
+									<option th:each="client : ${clientList}" th:value="${client.idx}" th:text="${client.companyName}"></option>
+								</select>
 							</div>
 
-							<!-- 상품명 -->
+							<!-- BOM 선택 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name','상품명',true,'string')}"></div>
+								<label for="bomIdx" class="form-label">BOM</label> <select th:field="*{bomIdx}" class="form-select">
+									<option value="" >BOM을 선택하세요</option>
+									<option th:each="bom : ${bomList}" th:value="${bom.idx}" th:text="${bom.name}"></option>
+								</select>
+							</div>
+
+							<!-- 원자재 타입 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true, 'string')}"></div>
+							</div>
+
+							<!-- 원자재 이름 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('name', '원자재 이름', true, 'string')}"></div>
 							</div>
 
 							<!-- 값 -->
@@ -53,14 +69,19 @@ input, select {
 								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '값', true, 'number')}"></div>
 							</div>
 
-							<!-- 단위 -->
+							<!-- 원자재 단위 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit','단위',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('unit', '원자재 단위', true, 'string')}"></div>
 							</div>
 
-							<!-- 가격 -->
+							<!-- 원자재 가격 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('price','가격',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('price', '원자재 가격', true, 'number')}"></div>
+							</div>
+							
+							<!-- 평균 사용 기한 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('expirationDate', '평균 사용 기한', true, 'string')}"></div>
 							</div>
 							
 							<hr>
@@ -68,29 +89,29 @@ input, select {
 							<!-- 작성자 -->
 							<div class="col-md-6">
 								<label>작성자</label> 
-								<input th:value="${productDTO.regId}" class="form-control" readonly>
+								<input th:value="${rawMaterialDTO.regId}" class="form-control" readonly>
 							</div>
 							
 							<!-- 작성일자 -->
 							<div class="col-md-6">
 								<label>작성일자</label>
-								<input th:value="${productDTO.regDate}" class="form-control" readonly>
+								<input th:value="${rawMaterialDTO.regDate}" class="form-control" readonly>
 							</div>
 							
 							<!-- 최종작성자 -->
 							<div class="col-md-6">
 								<label>최종 작성자</label>
-								<input th:value="${productDTO.modId}" class="form-control" readonly>
+								<input th:value="${rawMaterialDTO.modId}" class="form-control" readonly>
 							</div>
 							
 							<!-- 최종작성일자 -->
 							<div class="col-md-6">
 								<label>최종 작성일자</label>
-								<input th:value="${productDTO.modDate}" class="form-control" readonly>
+								<input th:value="${rawMaterialDTO.modDate}" class="form-control" readonly>
 							</div>
 							
 							<hr>
-
+							
 							<div class="col-md-12 row align-items-center justify-content-center">
 								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
 								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
@@ -106,7 +127,7 @@ input, select {
 	    $(function () {
 	        // 목록 버튼 클릭 시
 	        $('#btnList').on("click", function () {
-	            location.href = "/mes/product";  // 상품 목록 페이지로 이동
+	            location.href = "/mes/rawmaterial";  // 원자재 목록 페이지로 이동
 	        });
 	
 	        // 수정 폼 제출 시
@@ -131,7 +152,7 @@ input, select {
 	            // idx를 실제 페이지 URL에서 받아오기
 	            const idx = $('#idx').val();  // 수정된 부분: id를 #idx로 수정
 	
-	            fetch(`/mes/product/${idx}`, {
+	            fetch(`/mes/rawmaterial/${idx}`, {
 	                method: "PUT",
 	                headers: {
 	                    "Content-Type": "application/json"
@@ -162,14 +183,14 @@ input, select {
 
 	            const idx = $('#idx').val();
 
-	            fetch(`/mes/product/${idx}`, {
+	            fetch(`/mes/rawmaterial/${idx}`, {
 	                method: "DELETE"
 	            })
 	            .then(response => response.text())
 	            .then(data => {
 	                if (data === "success") {
 	                    alert("삭제되었습니다.");
-	                    location.href = "/mes/product"; // 목록으로 이동
+	                    location.href = "/mes/rawmaterial"; // 목록으로 이동
 	                } else {
 	                    alert("삭제 실패: " + data);
 	                }

@@ -81,6 +81,7 @@
 	<select id="searchProduct"
 		parameterType="kr.co.itwillbs.de.mes.dto.ProductSearchDTO"
 		resultType="kr.co.itwillbs.de.mes.dto.ProductDTO">
+		
 		SELECT
 		p.*,
 		c.minor_name AS type_name

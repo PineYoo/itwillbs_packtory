@@ -26,11 +26,11 @@ public class RawMaterialDTO {
 	
 	private Long idx;				// 인덱스 (PK)
 	
+	@NotBlank(message = "거래처 정보는 필수 입력 값입니다.")
+	private String clientIdx;		// 거래처_idx
+	
 	@NotBlank(message = "BOM 정보는 필수 입력 값입니다.")
     private String bomIdx;			// BOM_idx
-	
-	@NotBlank(message = "거래처 정보는 필수 입력 값입니다.")
-    private String clientIdx;		// 거래처_idx
 
 	@NotBlank(message = "타입은 필수 입력 값입니다.")
     private String type;			// 타입
@@ -58,4 +58,7 @@ public class RawMaterialDTO {
 	private String modId; 			// 최종수정자
 	private LocalDateTime modDate; 	// 최종수정일
 	
+	// 한글 변환
+    private String clientCompanyName; // 거래처명 (뷰 출력용)
+    private String bomName;           // BOM명 (뷰 출력용)
 }

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 원자재 등록</title>
+<style>
+.form-label {
+	font-weight: bold;
+}
+
+.card-header {
+	background-color: #f8f9fc;
+	font-weight: bold;
+}
+
+.card-body {
+	padding: 2rem;
+}
+</style>
+</head>
+<body id="page-top">
+
+	<!-- 페이지 내용 -->
+	<div layout:fragment="contents">
+		<div class="container mt-5">
+			<!-- 카드 형식 -->
+			<div class="container-fluid">
+				<div class="d-sm-flex align-items-center justify-content-between mb-4">
+					<h1 class="h3 mb-4 text-gray-800">원자재 등록</h1>
+				</div>
+
+				<!-- 본문 컨테이너 -->
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<form th:action="@{/mes/rawmaterial/new}" th:object="${rawMaterialDTO}" method="post" class="form row g-3" id="registerForm">
+
+							<!-- Client 선택 -->
+							<div class="col-md-6">
+								<label for="clientIdx" class="form-label">거래처</label> <select th:field="*{clientIdx}" class="form-select">
+									<option value="">거래처를 선택하세요</option>
+									<option th:each="client : ${clientList}" th:value="${client.idx}" th:text="${client.companyName}"></option>
+								</select>
+							</div>
+
+							<!-- BOM 선택 -->
+							<div class="col-md-6">
+								<label for="bomIdx" class="form-label">BOM</label> <select th:field="*{bomIdx}" class="form-select">
+									<option value="">BOM을 선택하세요</option>
+									<option th:each="bom : ${bomList}" th:value="${bom.idx}" th:text="${bom.name}"></option>
+								</select>
+							</div>
+
+							<!-- 원자재 타입 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true, 'string')}"></div>
+							</div>
+
+							<!-- 원자재 이름 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('name', '원자재 이름', true, 'string')}"></div>
+							</div>
+
+							<!-- 값 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '값', true, 'number')}"></div>
+							</div>
+
+							<!-- 원자재 단위 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('unit', '원자재 단위', true, 'string')}"></div>
+							</div>
+
+							<!-- 원자재 가격 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputNumber('price', '원자재 가격', true, 'number')}"></div>
+							</div>
+							
+							<!-- 평균 사용 기한 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('expirationDate', '평균 사용 기한', true, 'string')}"></div>
+							</div>
+							<hr>
+							<!-- 버튼들 -->
+							<div class="col-md-12 row align-items-center justify-content-center">
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			$(function() {
+				$('#btnList').on("click", function() {
+					location.href="/mes/rawmaterial";
+				});
+				
+				// 원자재 등록
+				$('#btnSubmitForm').on("click", function() {
+					console.group('click! #btnSubmitForm!');
+					// error 내용 삭제
+					$("div[id$='Error']").text("")
+					// 만세 폼이다!
+					const _serializedData = $('#registerForm').serialize();
+					// 문자열을 '&' 기준z으로 분리하여 배열로 변환
+					const _pairs = _serializedData.split('&');
+					// 빈 객체를 생성하여 데이터를 담을 준비
+					const _jsonObj = {};
+					// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
+					_pairs.forEach(pair => {
+						const [key, value] = pair.split('=');
+						_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
+					});
+					// @Valid 숫자 타입을 숫자로 변환
+						// 수량은 숫자형으로 전환
+					if (_jsonObj['quantity']) {
+						_jsonObj['quantity'] = parseInt(_jsonObj['quantity']);
+					}
+					// 데이터 확인
+					console.log(_jsonObj);
+					// JSON 데이터를 서버로 전송
+					fetch("/mes/rawmaterial/new", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(_jsonObj)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.status === "success") {
+							alert(data.message);
+							location.href="/mes/rawmaterial"; // 현재 페이지 새로 고침
+						} else if(data.status === "validFail") {
+							console.log("hello validFail!1");
+							//alert(data.message);
+							let _errors = data.errors;
+							console.log(_errors);
+							for (let field in _errors) {
+								$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
+							} // end of for (let field in errors) {
+						}
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						alert("요청 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해 주시기 바랍니다.");
+					});
+					
+					console.groupEnd();
+				}); // end of $('#btnSubmitForm').on("click", function() {
+				
+			}); // end of $(function() {
+		</script>
+	</div>
+</body>
+</html>
