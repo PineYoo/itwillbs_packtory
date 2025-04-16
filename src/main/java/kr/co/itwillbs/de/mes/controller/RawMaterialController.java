@@ -33,6 +33,7 @@ import kr.co.itwillbs.de.mes.service.BomService;
 import kr.co.itwillbs.de.mes.service.RawMaterialService;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.service.ClientService;
+import kr.co.itwillbs.de.orders.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,6 +45,7 @@ public class RawMaterialController {
 
 	private final RawMaterialService rawMaterialService;
 	private final ClientService clientService;
+	private final OrderService orderService;
 	private final BomService bomService;
 
 	// 원자재 등록 폼 페이지
@@ -59,9 +61,12 @@ public class RawMaterialController {
 			model.addAttribute("loginVO", loginVO);
 		}
 
-		// 거래처 목록 조회
-		List<ClientDTO> clientList = clientService.getClientList();
-		System.out.println("Client List: " + clientList);
+//		// 거래처 목록 조회
+//		List<ClientDTO> clientList = clientService.getClientList();
+//		model.addAttribute("clientList", clientList);
+
+		// 거래처 정보 가져오기
+		List<ClientDTO> clientList = orderService.getClientList();
 		model.addAttribute("clientList", clientList);
 
 		// BOM 목록 조회
@@ -84,13 +89,13 @@ public class RawMaterialController {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			if (rawMaterialDTO.getClientIdx() != null) {
-	            rawMaterialDTO.setClientIdx(String.valueOf(Long.parseLong(rawMaterialDTO.getClientIdx())));
-	        }
+				rawMaterialDTO.setClientIdx(String.valueOf(Long.parseLong(rawMaterialDTO.getClientIdx())));
+			}
 
-	        if (rawMaterialDTO.getBomIdx() != null) {
-	            rawMaterialDTO.setBomIdx(String.valueOf(Long.parseLong(rawMaterialDTO.getBomIdx())));
-	        }
-	        
+			if (rawMaterialDTO.getBomIdx() != null) {
+				rawMaterialDTO.setBomIdx(String.valueOf(Long.parseLong(rawMaterialDTO.getBomIdx())));
+			}
+
 			rawMaterialService.registerRawMaterial(rawMaterialDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
@@ -137,8 +142,8 @@ public class RawMaterialController {
 		RawMaterialDTO rawMaterialDTO = rawMaterialService.getRawMaterial(idx);
 		model.addAttribute("rawMaterialDTO", rawMaterialDTO);
 
-		// 거래처 목록 조회
-		List<ClientDTO> clientList = clientService.getClientList();
+		// 거래처 정보 가져오기
+		List<ClientDTO> clientList = orderService.getClientList();
 		model.addAttribute("clientList", clientList);
 
 		// BOM 목록 조회
