@@ -48,4 +48,9 @@ public class EmployeeDTO {
     private String departmentName;
     private String subDepartmentName;
     private String positionName;
+    
+    // 전화번호, 이메일
+    private String phoneNumber;
+    private String email;
+
 }
