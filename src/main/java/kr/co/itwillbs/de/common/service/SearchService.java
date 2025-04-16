@@ -5,36 +5,38 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kr.co.itwillbs.de.common.mapper.EmployeeSearchMapper;
+import kr.co.itwillbs.de.common.mapper.SearchMapper;
 import kr.co.itwillbs.de.human.dto.EmployeeCodeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
+import kr.co.itwillbs.de.orders.dto.ClientDTO;
+import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class EmployeeSearchService {
+public class SearchService {
 	@Autowired
-	private EmployeeSearchMapper employeeSearchMapper;
+	private SearchMapper searchMapper;
 	
 	/**
-	 *  리스트 조회
+	 *  사원 정보 리스트 조회
 	 * @param employeeSearchDTO
 	 * @return List<EmployeeDTO>
 	 */
 	public List<EmployeeDTO> getEmployeeList(EmployeeSearchDTO employeeSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return employeeSearchMapper.getEmployeeList(employeeSearchDTO);
+		return searchMapper.getEmployeeList(employeeSearchDTO);
 	}
 	
 	/**
-	 * 검색조건에 따른 사원 카운트 가져오기 페이징용
+	 * 검색조건에 따른 사원 count 가져오기 페이징용
 	 * @param employeeSearchDTO
 	 * @return
 	 */
 	public int getEmployeeCountForPaging(EmployeeSearchDTO employeeSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return employeeSearchMapper.getEmployeeCountForPaging(employeeSearchDTO);
+		return searchMapper.getEmployeeCountForPaging(employeeSearchDTO);
 	}
 
 	/**
@@ -43,7 +45,7 @@ public class EmployeeSearchService {
 	 */
 	public List<EmployeeCodeDTO> getDepartmentList() {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return employeeSearchMapper.getDepartmentList();
+		return searchMapper.getDepartmentList();
 	}
 
 	/**
@@ -52,7 +54,7 @@ public class EmployeeSearchService {
 	 */
 	public List<EmployeeCodeDTO> getSubDepartmentList(String departmentCode) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return employeeSearchMapper.getSubDepartmentList(departmentCode);
+		return searchMapper.getSubDepartmentList(departmentCode);
 	}
 
 	/**
@@ -61,7 +63,26 @@ public class EmployeeSearchService {
 	 */
 	public List<EmployeeCodeDTO> getPositionList() {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return employeeSearchMapper.getPositionList();
+		return searchMapper.getPositionList();
 	}
 
+	/**
+	 *  사원 정보 리스트 조회
+	 * @param clientSearchDTO
+	 * @return List<ClientDTO>
+	 */
+	public List<ClientDTO> getClientList(ClientSearchDTO clientSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getClientList(clientSearchDTO);
+	}
+
+	/**
+	 * 검색조건에 따른 거래처 count 가져오기 페이징용
+	 * @param clientSearchDTO
+	 * @return
+	 */
+	public int getClientCountForPaging(ClientSearchDTO clientSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getClientCountForPaging(clientSearchDTO);
+	}
 }

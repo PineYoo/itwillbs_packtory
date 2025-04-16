@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- 		layout:decorate="~{common/layouts/de_layout}"> -->
+<head>
+<title>팩토리(PackTory) - 거래처 검색</title>
+<!-- 부트스트랩 icons 가져오기 -->
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+<!-- CSS -->
+<th:block layout:fragment="css">
+	<!-- Custom fonts for this template-->
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	
+	<!-- dataTables -->
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<!-- 	<link href="/css/datatables/datatables.min.css" rel="stylesheet"> -->
+	<link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" rel="stylesheet">
+	
+	<!-- datepicker -->
+	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
+	
+	<!-- fontawesome -->	
+	<link href="/css/fontawesome-free/all.min.css" rel="stylesheet" type="text/css">
+	
+	<!-- Custom styles for this template-->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+	
+	<!-- 부트스트랩 icons 가져오기 -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+	<link href="/css/sb-admin-2.min.css" rel="stylesheet" type="text/css">
+<!-- 	<link href="/css/sb-admin-2.css" rel="stylesheet" type="text/css"> -->
+	
+	<!-- 파비콘 -->
+	<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+	<!-- 개별 CSS-->
+	<link href="/css/approval/approval_reg_form.css" rel="stylesheet">
+</th:block>
+
+</head>
+
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+		
+			<!-- Page Heading -->
+			<h3 class="reg-title">거래처 검색</h3>
+			
+			<!-- 본문 컨테이너 -->
+			<div class="card-body">
+				<!-- 검색폼 -->
+				<form id="searchForm" th:object="${clientSearchDTO}">
+				    <input type="hidden" th:field="*{pageDTO.page}">
+					<input type="hidden" th:field="*{pageDTO.size}">
+		            
+		            <div class="row g-2 mb-3">
+					    <div class="col-md-12 col-sm-6 mb-2">
+					        <input type="text" id="searchKeyword" class="form-control" placeholder="사업자번호 / 거래처명 / 대표자명 검색">
+					    </div>
+					</div>
+		        </form>
+				<div class="table-responsive">
+				     <table class="table table-striped table-hover text-center">
+				        <thead>
+				            <tr>
+				                <th class="text-nowrap">사업자등록번호</th>
+				                <th class="text-nowrap">거래처명</th>
+				                <th class="text-nowrap">대표자명</th>
+				                <th class="text-nowrap">전화번호</th>
+				                <th class="text-nowrap">팩스</th>
+				                <th class="text-nowrap">이메일</th>
+<!-- 				                <th class="text-nowrap">주소</th> -->
+				                <th class="text-nowrap">선택</th>
+				            </tr>
+				        </thead>
+				        <tbody id="clientList">
+				        	<tr th:each="item , status : ${clientList}" th:data-id="${item.companyNumber}">
+								<td class="company-number" th:text="${item.companyNumber != null ? item.companyNumber : '-'}"></td>
+							    <td class="company-name" th:text="${item.companyName != null ? item.companyName : '-'}"></td>
+							    <td class="owner-name" th:text="${item.ownerName != null ? item.ownerName : '-'}"></td>
+							    <td class="phone-number" th:text="${item.phoneNumber != null ? item.phoneNumber : '-'}"></td>
+							    <td class="fax-number" th:text="${item.faxNumber != null ? item.faxNumber : '-'}"></td>
+							    <td class="e_mail" th:text="${item.eMail != null ? item.eMail : '-'}"></td>
+<!-- 							    <td class="address"  -->
+<!-- 									th:text="${(item.address1 != null ? item.address1 : '-') +  -->
+<!-- 								             (item.address2 != null ? ' ' + item.address2 : '') +  -->
+<!-- 								             (item.postCode != null ? ' (' + item.postCode + ')' : '')}"> -->
+<!-- 								</td> -->
+				        		<td>
+				        			<!-- hidden ! -->
+									<input type="hidden" class="company-category" th:value="${item.companyCategory}" />
+							        <input type="hidden" class="company-subject" th:value="${item.companySubject}" />
+							        <input type="hidden" class="post-code" th:value="${item.postCode}" />
+							        <input type="hidden" class="address1" th:value="${item.address1}" />
+							        <input type="hidden" class="address2" th:value="${item.address2}" />
+							        <input type="hidden" class="credit-limit" th:value="${item.creditLimit}" />
+							        <input type="hidden" class="memo" th:value="${item.memo}" />
+							        <input type="hidden" class="status" th:value="${item.status}" />
+							        <input type="hidden" class="status-message" th:value="${item.statusMessage}" />
+							        
+							        <input type="hidden" class="client-employee-id" th:value="${item.clientEmployeeId}" />
+							        <input type="hidden" class="client-employee-name" th:value="${item.clientEmployeeName}" />
+							        <input type="hidden" class="client-employee-memo" th:value="${item.clientEmployeeMemo}" />
+							        <input type="hidden" class="phone1" th:value="${item.phone1}" />
+							        <input type="hidden" class="phone2" th:value="${item.phone2}" />
+							        
+									<button class="btn btn-success">선택</button>
+				        		</td>
+				        	</tr>
+				        </tbody>
+				    </table>
+				</div>
+				<div th:replace="~{common/fragments/de_pagination :: pagination(${clientSearchDTO})}"></div>
+			</div>
+		    <div class="text-end">
+		        <button class="btn btn-secondary" onclick="window.close()">닫기</button>
+		    </div>
+		</div>
+		<!-- /.container-fluid -->
+	</th:block>
+	
+<!-- JS -->
+<th:block layout:fragment="script">
+	<!-- Bootstrap core JavaScript-->
+	<script src="/js/jquery-3.7.1.js"></script>
+	<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
+	
+		<!-- Custom scripts for all pages-->
+	<script src="/js/sb-admin-2.min.js"></script>
+	
+	<!-- Core plugin JavaScript-->
+	<script src="/js/jquery-easing/jquery.easing.min.js"></script>
+
+	<!-- dataTables -->
+	<script src="/js/datatables/jquery.dataTables.min.js"></script>
+	<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+	<script src="/js/datatables/dataTables.buttons.min.js"></script>
+	<script src="/js/datatables/buttons.html5.min.js"></script>
+	<script src="/js/datatables/jszip.min.js"></script>
+	<script src="/js/datatables/buttons.print.min.js"></script>
+	
+	<!-- fontawesome -->	
+	<script src="/css/fontawesome/all.min.js"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			
+		    // 검색조건에 따른 거래처 조회 함수
+			function searchClients() {
+				var searchKeyword = $('#searchKeyword').val();
+
+			    // 페이지 관련 값도 가져오기
+			    var page = $('input[name="pageDTO.page"]').val();
+			    var size = $('input[name="pageDTO.size"]').val();
+			    
+		        $.ajax({
+		            url: '/client/search-popup',
+		            type: 'POST',
+		            data: {
+		            	searchKeyword : searchKeyword,
+		            	'pageDTO.page': page,
+		                'pageDTO.size': size
+		            },
+		            success: function (data) {
+		                const $tbody = $('#clientList');
+		                $tbody.empty();
+
+		                if (data.length === 0) {
+		                    $tbody.append('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
+		                    return;
+		                }
+
+		                $.each(data, function (i, item) {
+		                	const row = `
+			                		<tr data-id="${item.companyNumber}">
+			                        <td class="company-number">${item.companyNumber || '-'}</td>
+			                        <td class="company-name">${item.companyName || '-'}</td>
+			                        <td class="owner-name">${item.ownerName || '-'}</td>
+			                        <td class="phone-number">${item.phoneNumber || '-'}</td>
+			                        <td class="fax-number">${item.faxNumber || '-'}</td>
+			                        <td class="e_mail">${item.eMail || '-'}</td>
+			                        <td>
+			                            <input type="hidden" class="company-category" value="${item.companyCategory || ''}" />
+			                            <input type="hidden" class="company-subject" value="${item.companySubject || ''}" />
+			                            <input type="hidden" class="post-code" value="${item.postCode || ''}" />
+			                            <input type="hidden" class="address1" value="${item.address1 || ''}" />
+			                            <input type="hidden" class="address2" value="${item.address2 || ''}" />
+			                            <input type="hidden" class="credit-limit" value="${item.creditLimit || ''}" />
+			                            <input type="hidden" class="memo" value="${item.memo || ''}" />
+			                            <input type="hidden" class="status" value="${item.status || ''}" />
+			                            <input type="hidden" class="status-message" value="${item.statusMessage || ''}" />
+			                            <input type="hidden" class="client-employee-id" value="${item.clientEmployeeId || ''}" />
+			                            <input type="hidden" class="client-employee-name" value="${item.clientEmployeeName || ''}" />
+			                            <input type="hidden" class="client-employee-memo" value="${item.clientEmployeeMemo || ''}" />
+			                            <input type="hidden" class="phone1" value="${item.phone1 || ''}" />
+			                            <input type="hidden" class="phone2" value="${item.phone2 || ''}" />
+			                            <button class="btn btn-success">선택</button>
+			                        </td>
+			                    </tr>
+			                `;
+		                    $tbody.append(row);
+		                });
+		            },
+		            error: function () {
+		                alert('검색 중 오류가 발생했습니다.');
+		            }
+		        });
+		    }
+
+		    // 키 입력 및 셀렉트박스 변경 시 바로 검색
+		    $('#searchKeyword').on('keyup', searchClients);
+		    
+			//	-------------------------------------------------------------
+			// 선택 버튼 클릭 이벤트
+			$(document).on("click", "#clientList .btn-success", function() {
+			    // 클릭한 버튼이 있는 tr 찾기
+			    var $row = $(this).closest("tr");
+
+			 	// '-'일 경우 빈 문자열로 변환하는 헬퍼 함수
+			    function cleanText(text) {
+			        return text.trim() === '-' ? '' : text.trim();
+			    }
+
+			    // 행에서 거래처 정보 추출
+			    const clientInfo = {
+			        companyNumber: cleanText($row.find(".company-number").text()),
+			        companyName: cleanText($row.find(".company-name").text()),
+			        ownerName: cleanText($row.find(".owner-name").text()),
+			        phoneNumber: cleanText($row.find(".phone-number").text()),
+			        faxNumber: cleanText($row.find(".fax-number").text()),
+			        eMail: cleanText($row.find(".e_mail").text()),
+			        
+			        companyCategory: $row.find(".company-category").val(),
+			        companySubject: $row.find(".company-subject").val(),
+			        postCode: $row.find(".post-code").val(),
+			        address1: $row.find(".address1").val(),
+			        address2: $row.find(".address2").val(),
+			        creditLimit: $row.find(".credit-limit").val(),
+			        memo: $row.find(".memo").val(),
+			        status: $row.find(".status").val(),
+			        statusMessage: $row.find(".status-message").val(),
+			
+			        clientEmployeeId: $row.find(".client-employee-id").val(),
+			        clientEmployeeName: $row.find(".client-employee-name").val(),
+			        clientEmployeeMemo: $row.find(".client-employee-memo").val(),
+			        phone1: $row.find(".phone1").val(),
+			        phone2: $row.find(".phone2").val()
+			    };
+
+			    // 부모 창에 값 전달 (id 기반 또는 함수 호출 방식 가능)
+			    if (window.opener && typeof window.opener.setClientInfo === 'function') {
+			        window.opener.setClientInfo(clientInfo);
+			    }
+
+			    // 현재 팝업 창 닫기
+			    window.close();
+			});
+			
+		});
+	</script>
+</th:block>
+	
+</body>
+</html>

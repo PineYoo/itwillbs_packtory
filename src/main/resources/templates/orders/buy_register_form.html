@@ -63,7 +63,7 @@
 								<div class="data-container">
 								    <div class="row">
 								        <div>
-							                <button type="button" id="searchEmployeeBtn" class="btn btn-primary mt-2" onclick="openEmployeeSearch()">검색</button>
+							                <button type="button" id="searchEmployeeBtn" class="btn btn-primary mt-2" onclick="openEmployeeSearch()">담당자 조회</button>
 							            </div>
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
@@ -153,47 +153,22 @@
 							    <!-- ------------------------------------------------------------------------------------------------------- -->
 							    <hr>								
 								<div class="data-container">
-							    	<div class="row">
+								    <div class="row">
+								        <div>
+							                <button type="button" id="searchClientBtn" class="btn btn-primary mt-2" onclick="openClientSearch()">거래처 조회</button>
+							            </div>
 								        <div class="col-sm-12 col-md-6 mb-3">
 								            <div>
-								                <label class="col-sm-8 col-md-4 mt-2" for="companyNumber">사업자 등록 번호</label>
-												<select id="companyNumberSelect" name="companyNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{orderDTO.companyNumber}">
-											        <option value="">사업자 등록번호를 선택하세요</option>
-											        <option th:each="client : ${clientList}"
-											                th:value="${client.companyNumber}"
-													        th:text="${client.companyNumber + ' (' + client.companyName + ')'}"> <!-- 사업자번호(사업자명) -->
-											        </option>
-											    </select>
-								            </div>
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="companyName">상호명</label>
-								                <input type="text" id="companyName" class="col-sm-12 col-md-6 rounded-sm mr-2" th:field="*{orderDTO.companyName}" readonly>
-								            </div>
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="ownerName">대표자명</label>
-								                <input type="text" id="ownerName" class="col-sm-12 col-md-6 rounded-sm mr-2" readonly>
-								            </div>
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="phoneNumber">전화번호</label>
-								                <input type="text" id="phoneNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" maxlength="13" placeholder="010-1234-5678" readonly>
-								            </div>
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="faxNumber">팩스번호</label>
-								                <input type="text" id="faxNumber" class="col-sm-12 col-md-6 rounded-sm mr-2" maxlength="10" placeholder="02-000-0000" readonly>
-								            </div>
-								            <div>
-								                <label class="col-sm-8 col-md-4" for="eMail">이메일</label>
-								                <input type="text" id="eMail" class="col-sm-12 col-md-6 rounded-sm mr-2 eMail" placeholder="email@example.com" readonly>
+								                <label class="col-sm-8 col-md-4" for="companyNumber">사업자 등록 번호</label>
+								                <input type="text" id="companyNumber" class="col-sm-12 col-md-6 rounded-sm mr-2"
+								                       th:field="*{orderDTO.companyNumber}" placeholder="사업자 등록 번호 검색" readonly>
 								            </div>
 								        </div>
 								        <div class="col-sm-12 col-md-6 mb-3">
-								            <div class="addressInfo">
-								                <label class="col-sm-8 col-md-4">주소</label>
-									            <div>
-									                <input type="text" class="col-sm-8 col-md-4 rounded-sm mr-2 postCode_2" maxlength="5" readonly>
-									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address1_2" placeholder="기본주소 입력" readonly>
-									                <input type="text" class="col-sm-18 col-md-9 rounded-sm mr-2 address2_2" placeholder="상세주소 입력" readonly>
-									            </div>
+								            <div>
+								                <label class="col-sm-8 col-md-4" for="companyName">상호명</label>
+								                <input type="text" id="companyName" class="col-sm-12 col-md-6 rounded-sm mr-2"
+								                       th:field="*{orderDTO.companyName}" placeholder="상호명" readonly>
 								            </div>
 								        </div>
 								    </div>
@@ -259,7 +234,7 @@
 		<script type="text/javascript">
 			// 담당자 검색 함수(새 창 띄우기)
 			function openEmployeeSearch() {
-			    window.open('/employee/search-popup', 'employeeSearch', 'width=800,height=600,scrollbars=yes');
+			    window.open('/employee/search-popup', 'employeeSearch', 'width=800,height=600,location=no,scrollbars=yes');
 			}
 			
 			// 팝업창에서 가져온 담당자 정보 넣는 함수
@@ -268,6 +243,18 @@
 				$("#subDepartmentCode").val(data.subDepartmentCode);	// hidden
 				$("#clientName").val(data.name);
 				$("#clientPhone").val(data.phoneNumber);
+			}
+			
+			// --------------------------------------------------------------------------------------------------------
+			// 담당자 검색 함수(새 창 띄우기)
+			function openClientSearch() {
+			    window.open('/client/search-popup', 'clientSearch', 'width=800,height=600,location=no,scrollbars=yes');
+			}
+			
+			// 팝업창에서 가져온 담당자 정보 넣는 함수
+			function setClientInfo(data) {
+				$("#companyNumber").val(data.companyNumber);
+				$("#companyName").val(data.companyName);
 			}
 			
 			
@@ -341,7 +328,7 @@
 				// 취소버튼
 				$('#cancelBtn').on("click", function() {
 					//window.close(); // 250401 부모창에서 페이지 이동으로 변경됨
-					location.href="/orders/sell";
+					location.href="/orders/buy";
 				});
 				
 				
