@@ -16,7 +16,7 @@ import lombok.ToString;
 public class OrderSearchDTO {
 	
 	private String documentNumber; // 문서 번호
-	private String tradeCode; // 문서 종류 코드(1:수주, 2:발주, 3:구매)
+	private String tradeCode; // 문서 종류 코드(1:수주, 2:발주, 3:구매) *25.04.16 이 필드가 없어지면 안됨
 	private String statusCode; // 주문상태_코드
 	private String companyName; // 거래처명
 	private String dueDate; // 마감일자
@@ -30,6 +30,6 @@ public class OrderSearchDTO {
 
 	private PageDTO pageDTO = new PageDTO();
 
-	private List<CodeItemDTO> codeItemList;
+	private List<CodeItemDTO> statusList;
 
 }

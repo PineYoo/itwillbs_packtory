@@ -6,172 +6,152 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.orders.dto.ClientDTO;
-import kr.co.itwillbs.de.orders.dto.OrderCodeDTO;
-import kr.co.itwillbs.de.orders.dto.OrderDTO;
-import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 import kr.co.itwillbs.de.orders.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 
-/* 수주 및 발주관리 */
 @Slf4j
 @RequestMapping("/orders") // 반복되는 경로를 미리 매핑(클래스 내부에서는 추가되는 경로만 매핑)
 @Controller
 public class OrderController {
 	
-	@Autowired
 	private OrderService orderService;
-	@Autowired
 	private CommonCodeUtil commonCodeUtil;
 	
+	public OrderController(OrderService orderService, CommonCodeUtil commonCodeUtil) {
+		this.orderService = orderService;
+		this.commonCodeUtil = commonCodeUtil;
+	}
+	
 	private final String COMMON_PATH = "/orders";
+	private final String COMMON_MAJOR_CODE_TRADE = "ORDER_TRADE_CODE";
+	private final String COMMON_MAJOR_CODE_STATUS = "ORDER_STATUS_CODE";
 	private final String SELL_VALUE = "sell";
 	private final String BUY_VALUE = "buy";
 	private final String MATERIAL_VALUE = "material";
-	private final String COMMON_MAJOR_CODE_TRADE = "ORDER_TRADE_CODE";
-	private final String COMMON_MAJOR_CODE_STATUS = "ORDER_STATUS_CODE";
 	private final String SELL_NAME_KR = "수주";
 	private final String BUY_NAME_KR = "발주";
 	private final String MATERIAL_NAME_KR = "구매";
+	private final String SELL_DEFAULT_STATUS_CODE = "미출고";
+	private final String BUY_DEFAULT_STATUS_CODE = "미수금";
+	private final String MATERIAL_DEFAULT_STATUS_CODE = "미입고";
 	
-	
-	// 수주/발주 관리 목록 조회(SELECT) 요청(GET)
-	@GetMapping("/{tradeName}") // "/orders/sell" or "/orders/buy"
+	/**
+	 * {수주,발주,구매} > tradeName > 거래에 따른 리스트 조회(GET)
+	 * @param tradeName : "/orders/sell" || "/orders/buy" || "/orders/material"
+	 * @param orderSearchDTO : view(html).searchForm
+	 * @param model : orderSearchDTO, orderDTOList
+	 * @return viewResolver : orders_management
+	 */
+	@GetMapping("/{tradeName}")
 	public String getOrderList(@PathVariable("tradeName") String tradeName, 
-							   @ModelAttribute OrderSearchDTO orderSearchDTO, Model model) {
+								@ModelAttribute OrderSearchDTO orderSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("tradeName is {}", tradeName);
+		// 검색폼.statusCodes 에 사용할 공통코드 조회 결과 셋
+		orderSearchDTO.setStatusList(this.getStatusCodesByTradeName(tradeName));
+		// view 페이지 통합을 위한 코드 값 추가
+		orderSearchDTO.setTradeCode(this.getTradeCodeByTradeNameFromCommonCodeTrade(tradeName));
+		log.info("tradeName is {}, statusList is {}", tradeName, orderSearchDTO.getStatusList());
 		
-		// 수주 혹은 발주만 남은 codeItemList를 orderSearchDTO에 set
-		orderSearchDTO.setCodeItemList(this.getCodeItemsByTradeName(tradeName));
-		System.out.println(">>>>>>>>>>>>>>tradeName : " + tradeName);
-		System.out.println(">>>>>>>>>>>>>>getCodeItemList() : " + orderSearchDTO.getCodeItemList());
-		model.addAttribute("orderSearchDTO", orderSearchDTO);
-		
-		// 수주/발주 관리 목록 리스트 조회 요청(SELECT)
-	    // 파라미터 : 공통코드에서 '수주' or '발주' 코드
- 		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
- 		System.out.println(">>>>>>>>>>>>>>tradeCode : " + tradeCode);
- 		
- 		// 각 minorName 이 일치하는 minorcode 뽑아내서 trade_code 에 넣기
- 		if (SELL_VALUE.equals(tradeName)) {	// sell 일 때
- 			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));	// '수주(1)'
- 		} else if (BUY_VALUE.equals(tradeName)) {	// buy 일 때
- 			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));	// '발주(2)'
- 		} else if (MATERIAL_VALUE.equals(tradeName)) {	// material 일 때
- 			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, MATERIAL_NAME_KR));	// '구매(3)'
- 		}
-		
-		// 수주/발주 관리 목록 리스트 조회 요청(SELECT)
-		List<OrderDTO> orderDTOList = orderService.getOrderList(orderSearchDTO);
-		model.addAttribute("orderDTOList", orderDTOList);
-		log.info("orderDTOList : " + orderDTOList);
-		
+		// db 조회시 trade_code 컬럼에 사용할 공통코드 조회 결과 셋
+		orderSearchDTO.setTradeCode(this.getTradeCodeByTradeNameFromCommonCodeTrade(tradeName));
 		//페이징용 totalCount
 		orderSearchDTO.getPageDTO().setTotalCount(orderService.getOrderCountForPaging(orderSearchDTO));
-
 		
-		return COMMON_PATH + "/" + tradeName +"_management";	// "orders/sell_management" or "orders/buy_management"
-//		return COMMON_PATH + "/order_management";
+		model.addAttribute("orderSearchDTO", orderSearchDTO);
+		model.addAttribute("orderDTOList", orderService.getOrderList(orderSearchDTO));
+		
+		return COMMON_PATH + "/orders_management";
 	}
 	
-	// 수주/발주 관리 목록 조회(SELECT) 요청(GET) - 검색 조건
-	@GetMapping(value = {"/{tradeName}/search"}) // "/orders/sell/search" or "/orders/buy/search"
+	/**
+	 * {수주,발주,구매} > tradeName > 거래에 따른 리스트 검색 조건 조회(GET)
+	 * @param tradeName : "/orders/sell/search" || "/orders/buy/search" || "/orders/material/search"
+	 * @param orderSearchDTO : view(html).searchForm
+	 * @param model : orderSearchDTO, orderDTOList
+	 * @return viewResolver : orders_management
+	 */
+	@GetMapping(value = {"/{tradeName}/search"})
 	public String getOrderListBySearchDTO(@PathVariable("tradeName") String tradeName, 
-									  	  @ModelAttribute OrderSearchDTO orderSearchDTO, Model model) {
+											@ModelAttribute OrderSearchDTO orderSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("tradeName is {}, orderSearchDTO : {}", tradeName, StringUtil.objToString(orderSearchDTO));
 		
-		log.info("orderSearchDTO : {}", StringUtil.objToString(orderSearchDTO));
+		// 검색폼.statusCodes 에 사용할 공통코드 조회 결과 셋
+		orderSearchDTO.setStatusList(this.getStatusCodesByTradeName(tradeName));
+		// view 페이지 통합을 위한 코드 값 추가
+		orderSearchDTO.setTradeCode(this.getTradeCodeByTradeNameFromCommonCodeTrade(tradeName));
+		log.info("tradeName is {}, statusList is {}", tradeName, orderSearchDTO.getStatusList());
 		
-		// 수주 혹은 발주만 남은 codeItemList를 orderSearchDTO에 set
-		orderSearchDTO.setCodeItemList(this.getCodeItemsByTradeName(tradeName));
-		model.addAttribute("orderSearchDTO", orderSearchDTO);
-		
-		// 수주/발주 관리 목록 리스트 조회 요청(SELECT)
-		// 파라미터 : 공통코드에서 '수주' or '발주' 코드
-		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
-		
-		// 각 minorName 이 일치하는 minorcode 뽑아내서 trade_code 에 넣기
-		if (SELL_VALUE.equals(tradeName)) {	// sell 일 때
-			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));	// '수주(1)'
-		} else if (BUY_VALUE.equals(tradeName)) {	// buy 일 때
-			orderSearchDTO.setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));	// '발주(2)'
-		}
-		
-		// 수주/발주 조건 검색 리스트 조회 요청(SELECT) - 재사용
-		List<OrderDTO> orderDTOList = orderService.getOrderList(orderSearchDTO);
-		model.addAttribute("orderDTOList", orderDTOList);
-		log.info("orderDTOList : " + orderDTOList);
-		
+		// db 조회시 trade_code 컬럼에 사용할 공통코드 조회 결과 셋
+		orderSearchDTO.setTradeCode(this.getTradeCodeByTradeNameFromCommonCodeTrade(tradeName));
 		//페이징용 totalCount
 		orderSearchDTO.getPageDTO().setTotalCount(orderService.getOrderCountForPaging(orderSearchDTO));
 		
-		return COMMON_PATH + "/" + tradeName +"_management";	// "orders/sell_management" or "orders/buy_management"
-//		return COMMON_PATH + "/order_management";
+		model.addAttribute("orderSearchDTO", orderSearchDTO);
+		model.addAttribute("orderDTOList", orderService.getOrderList(orderSearchDTO));
+		
+		return COMMON_PATH + "/orders_management";
 	}
 	
-	//------------------------------------------------------------------------------------------------
-	// 주문서등록 페이지로 이동(GET)
-	@GetMapping("/{tradeName}/regist")	// "/orders/sell/regist" or "/orders/buy/regist"
+	/**
+	 * {수주,발주,구매} > tradeName > 주문서 등록(GET)
+	 * @param tradeName "/orders/sell/regist" || "/orders/buy/regist" || "/orders/material/regist"
+	 * @param model : orderFormDTO, clientList
+	 * @return viewResolver: ".../sell_register_form" || ".../buy_register_form" || ".../material_register_form"
+	 */
+	@GetMapping("/{tradeName}/regist")
 	public String getOrderRegisterForm(@PathVariable("tradeName") String tradeName, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("tradeName is {}", tradeName);
 		
-		// 뷰 페이지에서 OrderDTO, OrderDetailDTO 에 기술된 Validation 항목 체크를 위해 빈 DTO 객체를 함께 전달
-		model.addAttribute("orderFormDTO", new OrderFormDTO());
+		// 등록 폼페이지에서 사용할 DTO 객체 생성
+		OrderFormDTO orderFormDTO = new OrderFormDTO();
+		// 등록시 db.trade_code, status_code 컬럼에 사용할 공통코드 조회 결과 셋
+		orderFormDTO.setTradeCode(this.getTradeCodeByTradeNameFromCommonCodeTrade(tradeName));
+		orderFormDTO.setStatusCode(this.getDefaultStatusCodeByTradeNameFromCommonCodeStatus(tradeName));
 		
-		// 거래처 정보 가져오기
-		List<ClientDTO> clientList = orderService.getClientList();
-		model.addAttribute("clientList", clientList);
+		model.addAttribute("orderFormDTO", orderFormDTO);
 		
-		// 아이템 정보 가져오기 (공통으로 가져와라?!)
-		// sell, buy 일 경우 상품 정보 | material(얘도 buy 라서 일단 자재(material) 라고 이름 지음) 일 경우 자재 정보 가져오기 ?? 이거 맞나
-		// 발주 : 반제품같은거 발주하는거고, 구매 : 자재 발주 ??
+		// TODO 25.04.16 상품이 추가 될 경우 t_order_items 테이블에 입력할 것 준비
 		
-		
-		return COMMON_PATH + "/" + tradeName +"_register_form";	// "orders/sell_register_form" or "orders/buy_register_form"
+		return COMMON_PATH + "/orders_register_form";
 	}
 	
-	@PostMapping(value= {"/{tradeName}/regist"}, consumes= {MediaType.APPLICATION_JSON_VALUE}) // "/orders/sell/regist" or "/orders/buy/regist"
+	/**
+	 * {수주,발주,구매} > 주문서 등록(POST)
+	 * <br>tradeName 이 없는 이유는 /{tradeName}/regist 메서드에서 trade_code,status_code 값을 만들었으며 그걸 전달 받음
+	 * @param orderFormDTO
+	 * @return status : success, fail
+	 */
+	@PostMapping(value= {"/regist"}, consumes= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> registerOrderForJson(@PathVariable("tradeName") String tradeName, 
-																	 @RequestBody @Valid OrderFormDTO orderFormDTO) {
+	private ResponseEntity<Map<String, Object>> registerOrderForJson(@RequestBody @Valid OrderFormDTO orderFormDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(orderFormDTO));
 		
 		//리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
-
-		// 공통코드 가져와서 trade_code, status_code 넣기
-		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
-		List<CodeItemDTO> statusCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_STATUS);
-		
-		// 각 minorName 이 일치하는 minorcode 뽑아내서 trade_code 에 넣기
-		if (SELL_VALUE.equals(tradeName)) {	// sell 일 때
-			orderFormDTO.getOrderDTO().setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));  // '수주(1)'
-			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미출고"));	// 1
-		} else if (BUY_VALUE.equals(tradeName)) {	// buy 일 때
-			orderFormDTO.getOrderDTO().setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));   // '발주(2)'
-			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미수금"));	// 7
-		}
 		
 		try {
 			// 주문서 등록 요청(INSERT)
@@ -185,127 +165,86 @@ public class OrderController {
 			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
 		}
 		
-		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
 		return ResponseEntity.ok(response);
 	}
 	
-	// 주문서등록(INSERT) 요청하는 주소 매핑(POST)
-//	@PostMapping("/{tradeName}/regist") // "/orders/sell/regist" or "/orders/buy/regist"
-//	public String OrderRegister(@PathVariable("tradeName") String tradeName, 
-//							    @ModelAttribute("orderFormDTO") @Valid OrderFormDTO orderFormDTO, 
-//							    BindingResult bindingResult) {	// BindingResult : 폼 데이터를 검증할 때, 그 결과(오류들)를 담는 데 쓰임
-//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-//
-//		// 공통코드 가져와서 trade_code, status_code 넣기
-//		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
-//		List<CodeItemDTO> statusCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_STATUS);
-//		
-//		// 각 minorName 이 일치하는 minorcode 뽑아내서 trade_code 에 넣기
-//		if (SELL_VALUE.equals(tradeName)) {	// sell 일 때
-//			orderFormDTO.getOrderDTO().setTradeCode(getMinorCodeByMinorName(tradeCode, SELL_NAME_KR));  // '수주(1)'
-//			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미출고"));	// 1
-//		} else if (BUY_VALUE.equals(tradeName)) {	// buy 일 때
-//			orderFormDTO.getOrderDTO().setTradeCode(getMinorCodeByMinorName(tradeCode, BUY_NAME_KR));   // '발주(2)'
-//			orderFormDTO.getOrderDTO().setStatusCode(getMinorCodeByMinorName(statusCode, "미수금"));	// 7
-//		}
-//		
-//		// 주문서 등록 요청(INSERT)
-//		orderService.registerOrder(orderFormDTO);
-//		
-//		// >>>>>>>>>> 상품 선택 및 등록은 나중에  <<<<<<<<<<
-//
-//		// 주문서 등록 후 주문서 상세 페이지로 이동
-//		return "redirect:" + COMMON_PATH + "/" + tradeName + "/" + orderFormDTO.getOrderDTO().getDocumentNumber();	// "orders/sell/100001" or "orders/buy/100002"
-//	}
-
-	//------------------------------------------------------------------------------------------------
-	// 주문서 상세 및 수정 페이지 매핑(GET)
-	@GetMapping("/{tradeName}/{documentNumber}")	// "orders/sell/100001" or "orders/buy/100002"
+	/**
+	 * {수주,발주,구매} > tradeName > 주문서 상세 및 수정(GET)
+	 * @param tradeName "/orders/sell/100001" || "/orders/buy/100002" || "/orders/material/100003"
+	 * @param documentNumber 주문서 번호
+	 * @param model : orderDTO, clientList
+	 * @return viewResolver : ".../sell_detail" || ".../buy_detail" || ".../material_detail"
+	 */
+	@GetMapping("/{tradeName}/{documentNumber}")
 	public String getOrderDetail(@PathVariable("tradeName") String tradeName, 
 								 @PathVariable("documentNumber") String documentNumber, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		System.out.println("documentNumber : "  + documentNumber);
 		
-		// 거래처 정보 가져오기
-		List<ClientDTO> clientList = orderService.getClientList();
-		model.addAttribute("clientList", clientList);
+		// 주문정보 가져오기
+		model.addAttribute("orderFormDTO", orderService.getOrderByDocumentNumber(documentNumber));
+		// statusCodes 에 사용할 공통코드 조회 결과 셋
+		model.addAttribute("statusCodes", this.getStatusCodesByTradeName(tradeName));
 		
-		OrderDTO orderDTO = orderService.getOrderByDocumentNumber(documentNumber);
-		// 수주 혹은 발주만 남은 codeItemList를 orderDTO에 set
-		orderDTO.setCodeItemList(this.getCodeItemsByTradeName(tradeName));
+		// TODO 25.04.16 상품이 추가 될 경우 t_order_items 테이블에 입력한 것 조회 하기
 		
-		log.info("orderDTO : " + orderDTO);
-		model.addAttribute("orderDTO", orderDTO);
-		
-		return COMMON_PATH + "/" + tradeName + "_detail";	// "orders/sell_detail" or "orders/buy_detail"
+		return COMMON_PATH + "/orders_detail";
 	}
 	
-	// 주문서 수정(UPDATE) 요청하는 주소 매핑(POST)
-	// => 히든메서드 필터에 의해 PUT 으로 변해야하지만 일단 POST 방식 사용
-	@PostMapping("/{tradeName}/modify")		// "/orders/sell/modify" or "/orders/buy/modify"
-	public String modifyOrder(@PathVariable("tradeName") String tradeName, 
-							   @ModelAttribute("orderDTO") OrderDTO orderDTO, 
-							   @ModelAttribute("orderDetailDTO") OrderDetailDTO orderDetailDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-
-		System.out.println("orderDTO : " + orderDTO);
-		System.out.println("orderDetailDTO : " + orderDetailDTO);
-
-		// 주문 정보 수정
-		orderService.modifyOrder(orderDTO, orderDetailDTO);
-		
-		return "redirect:" + COMMON_PATH + "/" + tradeName + "/" + orderDTO.getDocumentNumber();
-	}
-
-	// ========================================================================================
-	// 주문서 내에 담당자, 담당자 전화번호 넣기 위함
-	// 대분류 부서 목록
-	@GetMapping("/api/departments/main")
-	@ResponseBody
-	public List<OrderCodeDTO> getDepartmentList() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-	    return orderService.getDepartmentList(); // major_code 기준
-	}
-
-	// 하위 부서 목록
-	@GetMapping("/api/departments/sub")
-	@ResponseBody
-	public List<OrderCodeDTO> getSubDepartmentList(@RequestParam("departmentCode") String departmentCode) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-	    return orderService.getSubDepartmentList(departmentCode); // 하위 minor_code
-	}
-
-	// 부서별 직원 목록
-	@GetMapping("/api/employees/by-sub-dept")
-	@ResponseBody
-	public List<OrderCodeDTO> getEmployeeList(@RequestParam("departmentCode") String departmentCode,
-											  @RequestParam("subDepartmentCode") String subDepartmentCode) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-	    return orderService.getEmployeeList(departmentCode, subDepartmentCode);
-	}
-
-	// 직원 전화번호 조회
-	@GetMapping("/api/employees/info")
-	@ResponseBody
-	public OrderCodeDTO getEmployeeInfo(@RequestParam("employeeId") String employeeId) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-	    return orderService.getEmployeeInfo(employeeId);
-	}
-	
-	
-	// ========================================================================================
 	/**
-	 * 공통코드_아이템에서 수주 or 발주 관련된 상태값(status_code) 가져오기
-	 * <br>COMMON_MAJOR_CODE_STATUS : \"ORDER_STATUS_CODE\"
-	 * <br>SELL_NAME_KR : \"수주\"
-	 * <br>BUY_NAME_KR : \"발주\"
-	 * <br>MATERIAL_NAME_KR : \"구매\"
-	 * @param tradeName
-	 * @return
+	 * {수주,발주,구매} > 주문서 수정(PUT)
+	 * <br>tradeName 이 없는 이유는 /{tradeName}/regist 메서드에서 trade_code,status_code 값을 만들었으며 그걸 전달 받음
+	 * @param orderFormDTO
+	 * @return status : success, fail
 	 */
-	private List<CodeItemDTO> getCodeItemsByTradeName(String tradeName) {
-		//TODO 공통코드 가져오기 근데 고민해보자. 문제가 좀 있네? 지금 이 방법이 맞냐?
-//		List<CodeItemDTO> codeItemList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_STATUS);
+	@PutMapping("/modify")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> modifyOrderForJson(@RequestBody @Valid OrderFormDTO orderFormDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("requestDTO : {}", StringUtil.objToString(orderFormDTO));
+		//리턴 객체 생성
+		Map<String, Object> response = new HashMap<>();
+		
+		try {
+			// 주문 정보 수정
+			orderService.modifyOrder(orderFormDTO);
+			
+			response.put("status", "success");
+			response.put("message", "정상적으로 수행 되었습니다.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("status", "fail");
+			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
+		}
+		
+		return ResponseEntity.ok(response);
+	}
+
+	//===========================컨트롤러 내부 메서드 시작=====================================//
+	/**
+	 * <pre>
+	 * 공통코드_아이템에서 수주 or 발주 or 구매 관련된 상태값(status_code) 가져오기
+	 * COMMON_MAJOR_CODE_STATUS : \"ORDER_STATUS_CODE\"
+	 * SELL_NAME_KR : \"수주\", BUY_NAME_KR : \"발주\", MATERIAL_NAME_KR : \"구매\"
+	 * | MAJOR_CODE       | MINOR_CODE | MINOR_NAME | DESCRIPTION   |
+	 * | ORDER_STATUS_CODE| 1          | 미출고      | 수주_미출고      |
+	 * | ORDER_STATUS_CODE| 2          | 출고완료     | 수주_출고완료    |
+	 * | ORDER_STATUS_CODE| 3          | 취소        | 수주_취소       |
+	 * | ORDER_STATUS_CODE| 4          | 세금계산서발행| 발주_세금계산서발행|
+	 * | ORDER_STATUS_CODE| 5          | 수금완료    | 발주_수금완료     |
+	 * | ORDER_STATUS_CODE| 6          | 미발행      | 발주_미발행      |
+	 * | ORDER_STATUS_CODE| 7          | 미수금      | 발주_미수금      |
+	 * | ORDER_STATUS_CODE| 8          | 세금계산서발행| 구매_세금계산서발행|
+	 * | ORDER_STATUS_CODE| 9          | 결제완료    | 구매_결제완료     |
+	 * | ORDER_STATUS_CODE| 10         | 미입고      | 구매_미입고      |
+	 * | ORDER_STATUS_CODE| 11         | 입고완료    | 구매_입고완료     |
+	 * 일 때 생성한 메서드, 리스트를 가져와서 DESCRIPTION에 현재 화면의 코드만 남기고 제외시킴 
+	 * 공통 코드 값이 바뀔 경우 현재 의도와 다르게 작동할 가능성이 몹시 높음!
+	 * </pre>
+	 * @param tradeName
+	 * @return 수주: [1,2,3], 발주: [4,5,6,7], 구매: [8,9] 
+	 */
+	private List<CodeItemDTO> getStatusCodesByTradeName(String tradeName) {
 		// 공통코드 원본 리스트
 		List<CodeItemDTO> originList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_STATUS);
 		// 방어적 복사 (원본 건드리지 않도록)
@@ -320,22 +259,106 @@ public class OrderController {
 			// 구매가 아니면 -1이니까 삭제하라!
 			if (MATERIAL_VALUE.equals(tradeName) && item.getDescription().indexOf(MATERIAL_NAME_KR) < 0) it.remove(); 
 		}
+		
+		log.info("return codeItemList is {}", codeItemList);
 		return codeItemList;
-	}
+	} // end of private List<CodeItemDTO> getCodeItemsByTradeName(String tradeName) {
 	
 	/**
-	 * 특정 minorName을 가진 minorCode를 반환하는 유틸 메서드
-	 * @param codeList
-	 * @param targetName
-	 * @return
+	 * <pre>
+	 * 공통코드_아이템에서 수주 || 발주 || 구매 관련된 거래 코드값(trade_code) 가져오기
+	 * COMMON_MAJOR_CODE_TRADE : \"ORDER_TRADE_CODE\"
+	 * SELL_NAME_KR : \"수주\", BUY_NAME_KR : \"발주\", MATERIAL_NAME_KR : \"구매\"
+	 * | MAJOR_CODE      | MINOR_CODE | MINOR_NAME |
+	 * | ORDER_TRADE_CODE| 1          | 수주        |
+	 * | ORDER_TRADE_CODE| 2          | 발주        |
+	 * | ORDER_TRADE_CODE| 3          | 구매        |
+	 * 일 때 생성한 메서드, 리스트를 가져와 MINOR_NAME과 ?_NAME_KR이 일치할 경우 그 MINOR_CODE 를 사용하기 위함
+	 * 즉, 한글명으로 MINOR_CODE 공통 코드 값을 가져오기 위함
+	 * 공통 코드 값이 바뀔 경우 현재 의도와 다르게 작동할 가능성이 몹시 높음!
+	 * </pre>
+	 * @param tradeName
+	 * @return 1: 수주, 2: 발주, 3: 구매
 	 */
-	private String getMinorCodeByMinorName(List<CodeItemDTO> codeList, String targetName) {
-		for (CodeItemDTO item : codeList) {
+	private String getTradeCodeByTradeNameFromCommonCodeTrade(String tradeName) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		if(!StringUtils.hasLength(tradeName)) {
+			return null;
+		}
+		// 파라미터 : 공통코드에서 '수주' or '발주' 코드
+		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
+//		log.info("tradeCode is {}", tradeCode);
+		
+		String targetName = "";
+		String returnValue = "99"; // 얜 무조건 오류임
+		switch(tradeName) {
+			case SELL_VALUE: targetName = SELL_NAME_KR;
+				break;
+			case BUY_VALUE: targetName = BUY_NAME_KR;
+				break;
+			case MATERIAL_VALUE: targetName = MATERIAL_NAME_KR;
+				break;
+			default: targetName = SELL_NAME_KR;
+				break;
+		}
+		
+		for (CodeItemDTO item : tradeCode) {
 			if (targetName.equals(item.getMinorName())) {
-				return item.getMinorCode();
+				returnValue = item.getMinorCode();
+				break;
 			}
 		}
-		return null;
-	}
+		
+		log.info("returnValue is {}", returnValue);
+		return returnValue;
+	} // end of private String getTradeCodeByTradeNameFromCommonCodeTrade(String tradeName) {
+	
+	
+	/**
+	 * <pre>
+	 * 공통코드_아이템에서 수주 || 발주 || 구매 관련된 기본 거래 상태 코드값(statusCode) 가져오기
+	 * COMMON_MAJOR_CODE_TRADE : \"ORDER_STATUS_CODE\"
+	 * SELL_NAME_KR : \"수주\", BUY_NAME_KR : \"발주\", MATERIAL_NAME_KR : \"구매\"
+	 * | MAJOR_CODE       | MINOR_CODE | MINOR_NAME | DESCRIPTION   |
+	 * | ORDER_STATUS_CODE| 1          | 미출고      | 수주_미출고      |
+	 * ...(생략)
+	 * | ORDER_STATUS_CODE| 7          | 미수금      | 발주_미수금      |
+	 * ...(생략)
+	 * | ORDER_STATUS_CODE| 10         | 미입고      | 구매_미입고      |
+	 * </pre>
+	 * @param tradeName
+	 * @return 수주: 1(미출고), 발주: 7(미수금), 구매: 10(미입고) 
+	 */
+	private String getDefaultStatusCodeByTradeNameFromCommonCodeStatus(String tradeName) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		if(!StringUtils.hasLength(tradeName)) {
+			return null;
+		}
+		List<CodeItemDTO> statusCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_STATUS);
+//		log.info("statusCode is {}", statusCode);
+		
+		String targetName = "";
+		String returnValue = "99"; // 얜 무조건 오류임
+		switch(tradeName) {
+			case SELL_VALUE: targetName = SELL_DEFAULT_STATUS_CODE;
+				break;
+			case BUY_VALUE: targetName = BUY_DEFAULT_STATUS_CODE;
+				break;
+			case MATERIAL_VALUE: targetName = MATERIAL_DEFAULT_STATUS_CODE;
+				break;
+			default: targetName = SELL_DEFAULT_STATUS_CODE;
+				break;
+		}
+		
+		for (CodeItemDTO item : statusCode) {
+			if (targetName.equals(item.getMinorName())) {
+				returnValue = item.getMinorCode();
+				break;
+			}
+		}
+		
+		log.info("returnValue is {}", returnValue);
+		return returnValue;
+	} // end of private String getDefaultStatusCodeByTradeNameFromCommonCodeStatus(String tradeName) {
 	
 }

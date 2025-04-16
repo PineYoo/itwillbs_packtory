@@ -1,0 +1,185 @@
+<!-- templates/common/fragments/pagination.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<!--/* 부모 HTML 이 <div class="col-sm-12 col-md-6 mb-3"> 이어야 한다.*/-->
+	<th:block th:fragment="inputText(fieldName, labelText, isRequired, dataType)">
+		<div>
+			<label class="col-sm-8 col-md-4" th:for="${fieldName}" th:text="${labelText}"></label>
+			<input type="text"
+				class="col-sm-12 col-md-6 rounded-sm mr-2"
+				th:id="${fieldName}"
+				th:name="${fieldName}"
+				th:field="*{__${fieldName}__}"
+				th:placeholder="${labelText}"
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+			<div th:id="|${fieldName}Error|" class="text-danger"></div>
+		</div>
+	</th:block>
+	
+	<th:block th:fragment="inputTextReadOnly(fieldName, labelText, isRequired, dataType)">
+		<div>
+			<label class="col-sm-8 col-md-4" th:for="${fieldName}" th:text="${labelText}"></label>
+			<input type="text"
+				class="col-sm-12 col-md-6 rounded-sm mr-2"
+				th:id="${fieldName}"
+				th:name="${fieldName}"
+				th:field="*{__${fieldName}__}"
+				th:placeholder="${labelText}"
+				readonly
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+			<div th:id="|${fieldName}Error|" class="text-danger"></div>
+		</div>
+	</th:block>
+	
+	<th:block th:fragment="inputTextSearch(fieldName, labelText, isRequired, dataType)">
+		<div>
+			<label class="col-sm-8 col-md-4" th:for="${fieldName}" th:text="${labelText}"></label>
+			<input type="text"
+				class="col-sm-12 col-md-6 rounded-sm mr-2"
+				th:id="${fieldName}"
+				th:name="${fieldName}"
+				th:field="*{__${fieldName}__}"
+				th:placeholder="|${labelText} 검색|"
+				readonly
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+			<div th:id="|${fieldName}Error|" class="text-danger"></div>
+		</div>
+	</th:block>
+	
+	<th:block th:fragment="inputTel(fieldName, labelText, isRequired, dataType)">
+		<div>
+			<label class="col-sm-8 col-md-4" th:for="${fieldName}" th:text="${labelText}"></label>
+			<input type="tel"
+				class="col-sm-12 col-md-6 rounded-sm mr-2"
+				th:id="${fieldName}"
+				th:name="${fieldName}"
+				th:field="*{__${fieldName}__}"
+				th:placeholder="010-0000-0000"
+				maxlength="13"
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+			<div th:id="|${fieldName}Error|" class="text-danger"></div>
+		</div>
+	</th:block>
+	
+	<th:block th:fragment="inputNumber(fieldName, labelText, isRequired, dataType)">
+		<label class="col-sm-8 col-md-4" th:for="${fieldName}" th:text="${labelText}"></label>
+		<input type="number"
+			class="col-sm-12 col-md-6 rounded-sm mr-2"
+			th:id="${fieldName}"
+			th:name="${fieldName}"
+			th:field="*{__${fieldName}__}"
+			th:placeholder="${labelText}"
+			th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+		<div th:id="|${fieldName}Error|" class="text-danger"></div>
+	</th:block>
+	
+	<th:block th:fragment="inputAddress(fieldName1, fieldName2, fieldName3, labelText, isRequired, dataType)">
+		<label class="col-sm-8 col-md-4" th:for="${fieldName}" th:text="${labelText}"></label>
+		<div>
+			<input type="text"
+				th:class="|col-sm-8 col-md-4 rounded-sm mr-2 ${fieldName1}|"
+				th:id="${fieldName1}"
+				th:name="${fieldName1}"
+				th:field="*{__${fieldName1}__}"
+				placeholder="우편번호"
+				maxlength="5"
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+			<button type="button" class="btn btn-outline-primary ml-2"
+					th:id="|${fieldName1}Btn|">주소찾기</button>
+			<input type="text"
+				class="col-sm-18 col-md-9 rounded-sm mr-2"
+				th:id="${fieldName2}"
+				th:name="${fieldName2}"
+				th:field="*{__${fieldName2}__}"
+				placeholder="기본주소 입력"
+				readonly
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+			<input type="text"
+				class="col-sm-18 col-md-9 rounded-sm mr-2"
+				th:id="${fieldName3}"
+				th:name="${fieldName3}"
+				th:field="*{__${fieldName3}__}"
+				placeholder="상세주소 입력" 
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+			<div th:id="|${fieldName1}Error|" class="text-danger"></div>
+			<div th:id="|${fieldName3}Error|" class="text-danger"></div>
+		</div>
+	</th:block>
+	
+	<th:block th:fragment="isDeleted(fieldName, labelText, isRequired, dataType)">
+		<label class="col-sm-8 col-md-4" th:for="${fieldName}" th:text="${labelText}"></label>
+		<select class="col-sm-12 col-md-6 rounded-sm mr-2"
+				th:id="${fieldName}"
+				th:name="${fieldName}"
+				th:field="*{__${fieldName}__}"
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+			<option value="">선택하세요</option>
+			<option value="N">사용</option>
+			<option value="Y">미사용</option>
+		</select>
+		<div th:id="|${fieldName}Error|" class="text-danger"></div>
+	</th:block>
+	
+	<th:block th:fragment="selectCodeItems(fieldName, labelText, isRequired, dataType, options)">
+		<label class="col-sm-8 col-md-4" th:for="${fieldName}" th:text="${labelText}"></label>
+		<select class="col-sm-12 col-md-6 rounded-sm mr-2"
+				th:id="${fieldName}"
+				th:name="${fieldName}"
+				th:field="*{__${fieldName}__}"
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+			<option value="">선택하세요</option>
+			<option th:each="item : ${options}" th:value="${item.minorCode}" th:text="${item.minorName}">
+		</select>
+		<div th:id="|${fieldName}Error|" class="text-danger"></div>
+	</th:block>
+	
+	<th:block th:fragment="inputSingleDatePicker(fieldName, labelText, isRequired, dataType)">
+		<div>
+			<label class="col-sm-8 col-md-4" th:for="${fieldName}" th:text="${labelText}"></label>
+			<input type="text"
+					class="col-sm-12 col-md-6 rounded-sm mr-2"
+					autocomplete="off"
+					th:field="*{__${fieldName}__}"
+					th:placeholder="|${labelText} 선택|" 
+					th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+<!--/* 			<span class="input-group-text calendar-icon"
+					data-target="${fieldName}">
+				<i class="fa fa-calendar"></i>
+			</span> */-->
+			<div th:id="|${fieldName}Error|" class="text-danger"></div>
+		</div>
+	</th:block>
+	
+	<th:block th:fragment="inputDoubleDatePicker(fieldStartName, fieldEndName, labelText, isRequired, dataType)">
+		<label class="col-sm-3 col-form-label" th:for="${fieldStartName}" th:text="${labelText}"></label>
+		<div class="col-sm-9">
+			<div class="d-flex align-items-center">
+				<div class="input-group">
+					<input type="text"
+							class="form-control"
+							autocomplete="off"
+							th:field="*{__${fieldStartName}__}"
+							th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+					<span class="input-group-text calendar-icon"
+							data-target="${fieldStartName}">
+						<i class="fa fa-calendar"></i>
+					</span>
+				</div>
+				<span class="mx-2">⁓</span>
+				<div class="input-group">
+					<input type="text"
+							class="form-control"
+							autocomplete="off"
+							th:field="*{__${fieldEndName}__}"
+							th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+					<span class="input-group-text calendar-icon"
+							data-target="${fieldEndName}">
+						<i class="fa fa-calendar"></i>
+					</span>
+				</div>
+			</div>
+		</div>
+	</th:block>
+</body>
+</html>

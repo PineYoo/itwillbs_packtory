@@ -55,24 +55,4 @@
 		SELECT nextVal('approval_no')
 	</select>
 	
-	<select id="getCodes" resultType="kr.co.itwillbs.de.admin.dto.CodeDTO">
-		select 
-			major_code,
-			name,
-			description
-		from t_commoncode
-		where is_deleted = 'N'
-	</select>
-	
-	<select id="getCodeItems" parameterType="string"
-								resultType="kr.co.itwillbs.de.admin.dto.CodeItemDTO">
-		select 
-			major_code,
-			minor_code,
-			minor_name,
-			description
-		from t_commoncode_item
-		where is_deleted = 'N'
-		AND major_code = UPPER(#{majorCode})
-	</select>
 </mapper>
