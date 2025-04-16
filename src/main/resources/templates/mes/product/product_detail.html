@@ -65,6 +65,32 @@ input, select {
 							
 							<hr>
 							
+							<!-- 작성자 -->
+							<div class="col-md-6">
+								<label>작성자</label> 
+								<input th:value="${productDTO.regId}" class="form-control" readonly>
+							</div>
+							
+							<!-- 작성일자 -->
+							<div class="col-md-6">
+								<label>작성일자</label>
+								<input th:value="${productDTO.regDate}" class="form-control" readonly>
+							</div>
+							
+							<!-- 최종작성자 -->
+							<div class="col-md-6">
+								<label>최종 작성자</label>
+								<input th:value="${productDTO.modId}" class="form-control" readonly>
+							</div>
+							
+							<!-- 최종작성일자 -->
+							<div class="col-md-6">
+								<label>최종 작성일자</label>
+								<input th:value="${productDTO.modDate}" class="form-control" readonly>
+							</div>
+							
+							<hr>
+
 							<div class="col-md-12 row align-items-center justify-content-center">
 								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
 								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>

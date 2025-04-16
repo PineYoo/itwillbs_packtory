@@ -68,8 +68,7 @@ public class RawMaterialController {
 		List<BomDTO> bomList = bomService.getBomList();
 		model.addAttribute("bomList", bomList);
 
-		RawMaterialDTO rawMaterialDTO = new RawMaterialDTO();
-		model.addAttribute("rawMaterialDTO", rawMaterialDTO);
+		model.addAttribute("rawMaterialDTO", new RawMaterialDTO());
 
 		return "mes/rawMaterial/rawMaterial_form";
 	}
@@ -114,7 +113,7 @@ public class RawMaterialController {
 
 		// 원자재 목록 조회
 		List<RawMaterialDTO> rawMaterialList = rawMaterialService.getRawMaterialList(searchDTO);
-		model.addAttribute("rawmaterialList", rawMaterialList);
+		model.addAttribute("rawMaterialList", rawMaterialList);
 
 		// 거래처 목록 조회
 		List<ClientDTO> clientList = clientService.getClientList();
