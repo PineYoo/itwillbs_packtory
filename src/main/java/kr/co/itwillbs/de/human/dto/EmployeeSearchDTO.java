@@ -24,4 +24,6 @@ public class EmployeeSearchDTO {
     private LocalDate resignationDateTo;	// 퇴사일 범위 끝
     
     private PageDTO pageDTO = new PageDTO();
+    
+    private String searchKeyword;			// 키워드
 }

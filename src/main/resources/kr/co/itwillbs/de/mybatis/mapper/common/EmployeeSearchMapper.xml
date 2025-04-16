@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.common.mapper.EmployeeSearchMapper">
+	<!-- 검색조건에 따른 사원 리스트 조회 -->
+	<select id="getEmployeeList" parameterType="kr.co.itwillbs.de.human.dto.EmployeeSearchDTO"
+								 resultType="kr.co.itwillbs.de.human.dto.EmployeeDTO">
+		SELECT 
+		      e.id                                  -- 사번
+		    , e.name                                -- 이름
+		    , e.department_code                     -- 부서코드
+		    , ci2.minor_name AS department_name	    -- 부서명
+		    , e.sub_department_code                 -- 하위부서코드
+		    , di.child_name AS sub_department_name  -- 하위부서명
+		    , e.position_code                       -- 직책코드
+		    , ci3.minor_name AS position_name  	    -- 직책명
+		    , ed.phone_number                       -- 전화번호
+		    , ed.email		               			-- 이메일
+		  FROM t_employee e
+		  JOIN t_employee_detail ed
+		    ON ed.id = e.id
+		    
+		-- 부서명
+		  LEFT JOIN t_commoncode_item ci2 
+		    ON e.department_code = ci2.minor_code 
+		   AND ci2.major_code = 'DEPARTMENT_CODE'
+		   
+		-- 하위부서명
+		  LEFT JOIN t_department_info di
+		    ON e.department_code = di.department_code
+		   AND e.sub_department_code = di.child_code
+		   
+		-- 직책명
+		  LEFT JOIN t_commoncode_item ci3
+		    ON e.position_code = ci3.minor_code
+		   AND ci3.major_code = 'POSITION_CODE'
+		   
+	    <where>
+	        <if test="departmentCode != null and departmentCode != ''">
+	            AND e.department_code = #{departmentCode}
+	        </if>
+	        <if test="subDepartmentCode != null and subDepartmentCode != ''">
+	            AND e.sub_department_code = #{subDepartmentCode}
+	        </if>
+	        <if test="positionCode != null and positionCode != ''">
+	            AND e.position_code = #{positionCode}
+	        </if>
+	        <if test="searchKeyword != null and searchKeyword != ''">
+	            AND (
+	                e.id LIKE CONCAT('%', #{searchKeyword}, '%')
+	                OR e.name LIKE CONCAT('%', #{searchKeyword}, '%')
+	            )
+	        </if>
+	    </where>
+		 ORDER BY e.id
+		 LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+
+	<!-- 검색조건에 따른 사원 리스트 조회(페이징처리용) -->
+	<select id="getEmployeeCountForPaging" parameterType="kr.co.itwillbs.de.human.dto.EmployeeSearchDTO"
+								 resultType="int">
+		SELECT COUNT(*)
+		  FROM t_employee e
+		  JOIN t_employee_detail ed
+		    ON ed.id = e.id
+		    
+		-- 부서명
+		  LEFT JOIN t_commoncode_item ci2 
+		    ON e.department_code = ci2.minor_code 
+		   AND ci2.major_code = 'DEPARTMENT_CODE'
+		   
+		-- 하위부서명
+		  LEFT JOIN t_department_info di
+		    ON e.department_code = di.department_code
+		   AND e.sub_department_code = di.child_code
+		   
+		-- 직책명
+		  LEFT JOIN t_commoncode_item ci3
+		    ON e.position_code = ci3.minor_code
+		   AND ci3.major_code = 'POSITION_CODE'
+		   
+	    <where>
+	        <if test="departmentCode != null and departmentCode != ''">
+	            AND e.department_code = #{departmentCode}
+	        </if>
+	        <if test="subDepartmentCode != null and subDepartmentCode != ''">
+	            AND e.sub_department_code = #{subDepartmentCode}
+	        </if>
+	        <if test="positionCode != null and positionCode != ''">
+	            AND e.position_code = #{positionCode}
+	        </if>
+	        <if test="searchKeyword != null and searchKeyword != ''">
+	            AND (
+	                e.id LIKE CONCAT('%', #{searchKeyword}, '%')
+	                OR e.name LIKE CONCAT('%', #{searchKeyword}, '%')
+	            )
+	        </if>
+	    </where>
+	</select>
+
+	<!-- 부서 리스트 조회 -->
+	<select id="getDepartmentList" resultType="kr.co.itwillbs.de.human.dto.EmployeeCodeDTO">
+		SELECT minor_code AS code, minor_name AS name
+		  FROM t_commoncode_item
+		 WHERE major_code = 'DEPARTMENT_CODE'
+	</select>
+	
+	<!-- 하위부서 리스트 조회 -->
+	<select id="getSubDepartmentList" resultType="kr.co.itwillbs.de.human.dto.EmployeeCodeDTO">
+		SELECT child_code AS code, child_name AS name
+		  FROM t_department_info
+		 WHERE parent_code = #{departmentCode}
+	</select>
+
+	<!-- 직급 리스트 조회 -->
+	<select id="getPositionList" resultType="kr.co.itwillbs.de.human.dto.EmployeeCodeDTO">
+		SELECT minor_code AS code, minor_name AS name
+		  FROM t_commoncode_item
+		 WHERE major_code = 'POSITION_CODE'
+	</select>
+	
+</mapper>
