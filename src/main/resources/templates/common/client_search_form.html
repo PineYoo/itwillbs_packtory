@@ -80,7 +80,7 @@
 				            </tr>
 				        </thead>
 				        <tbody id="clientList">
-				        	<tr th:each="item , status : ${clientList}" th:data-id="${item.companyNumber}">
+				        	<tr th:each="item , status : ${clientList}" th:data-id="${item.idx}">
 								<td class="company-number" th:text="${item.companyNumber != null ? item.companyNumber : '-'}"></td>
 							    <td class="company-name" th:text="${item.companyName != null ? item.companyName : '-'}"></td>
 							    <td class="owner-name" th:text="${item.ownerName != null ? item.ownerName : '-'}"></td>
@@ -94,6 +94,7 @@
 <!-- 								</td> -->
 				        		<td>
 				        			<!-- hidden ! -->
+									<input type="hidden" class="idx" th:value="${item.idx}" />
 									<input type="hidden" class="company-category" th:value="${item.companyCategory}" />
 							        <input type="hidden" class="company-subject" th:value="${item.companySubject}" />
 							        <input type="hidden" class="post-code" th:value="${item.postCode}" />
@@ -186,6 +187,7 @@
 			                        <td class="fax-number">${item.faxNumber || '-'}</td>
 			                        <td class="e_mail">${item.eMail || '-'}</td>
 			                        <td>
+			                            <input type="hidden" class="idx" value="${item.idx || ''}" />
 			                            <input type="hidden" class="company-category" value="${item.companyCategory || ''}" />
 			                            <input type="hidden" class="company-subject" value="${item.companySubject || ''}" />
 			                            <input type="hidden" class="post-code" value="${item.postCode || ''}" />
@@ -236,6 +238,7 @@
 			        faxNumber: cleanText($row.find(".fax-number").text()),
 			        eMail: cleanText($row.find(".e_mail").text()),
 			        
+			        idx: $row.find(".idx").val(),
 			        companyCategory: $row.find(".company-category").val(),
 			        companySubject: $row.find(".company-subject").val(),
 			        postCode: $row.find(".post-code").val(),
