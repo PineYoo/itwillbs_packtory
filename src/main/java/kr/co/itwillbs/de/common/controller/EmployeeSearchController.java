@@ -35,10 +35,10 @@ public class EmployeeSearchController {
 		// 사원 리스트 조회 요청(SELECT)
 		List<EmployeeDTO> employeeList = employeeSearchService.getEmployeeList(employeeSearchDTO);
 		model.addAttribute("employeeList", employeeList);
-		model.addAttribute("employeeSearchDTO", employeeSearchDTO);
 		
 		//페이징용 totalCount
 		employeeSearchDTO.getPageDTO().setTotalCount(employeeSearchService.getEmployeeCountForPaging(employeeSearchDTO));
+		model.addAttribute("employeeSearchDTO", employeeSearchDTO);
 		
 		return "/common/employee_search_form";
 	}
