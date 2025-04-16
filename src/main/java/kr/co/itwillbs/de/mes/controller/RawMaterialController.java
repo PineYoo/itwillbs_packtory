@@ -23,14 +23,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.service.CustomUserDetails;
-import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.common.vo.LoginVO;
+import kr.co.itwillbs.de.mes.dto.BomDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
+import kr.co.itwillbs.de.mes.service.BomService;
 import kr.co.itwillbs.de.mes.service.RawMaterialService;
+import kr.co.itwillbs.de.orders.dto.ClientDTO;
+import kr.co.itwillbs.de.orders.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,12 +43,13 @@ import lombok.extern.slf4j.Slf4j;
 public class RawMaterialController {
 
 	private final RawMaterialService rawMaterialService;
-	private final CommonCodeUtil commonCodeUtil;
+	private final ClientService clientService;
+	private final BomService bomService;
 
 	// 원자재 등록 폼 페이지
 	@GetMapping("/new")
 	public String rawMaterialRegisterForm(Model model) {
-		
+
 		// 로그인 유저 정보 세팅
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
@@ -56,21 +59,39 @@ public class RawMaterialController {
 			model.addAttribute("loginVO", loginVO);
 		}
 
-		model.addAttribute("rawMaterialDTO", new RawMaterialDTO());
+		// 거래처 목록 조회
+		List<ClientDTO> clientList = clientService.getClientList();
+		System.out.println("Client List: " + clientList);
+		model.addAttribute("clientList", clientList);
+
+		// BOM 목록 조회
+		List<BomDTO> bomList = bomService.getBomList();
+		model.addAttribute("bomList", bomList);
+
+		RawMaterialDTO rawMaterialDTO = new RawMaterialDTO();
+		model.addAttribute("rawMaterialDTO", rawMaterialDTO);
 
 		return "mes/rawMaterial/rawMaterial_form";
 	}
 
 	// 원자재 등록 페이지 AJAX용
-	@PostMapping(value= {"/new", "/"}, consumes= {MediaType.APPLICATION_JSON_VALUE})
+	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	private ResponseEntity<Map<String, Object>> rawMaterialRegister(@RequestBody @Valid RawMaterialDTO rawMaterialDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(rawMaterialDTO));
-		
-		//리턴 객체 생성
+
+		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
+			if (rawMaterialDTO.getClientIdx() != null) {
+	            rawMaterialDTO.setClientIdx(String.valueOf(Long.parseLong(rawMaterialDTO.getClientIdx())));
+	        }
+
+	        if (rawMaterialDTO.getBomIdx() != null) {
+	            rawMaterialDTO.setBomIdx(String.valueOf(Long.parseLong(rawMaterialDTO.getBomIdx())));
+	        }
+	        
 			rawMaterialService.registerRawMaterial(rawMaterialDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
@@ -79,15 +100,14 @@ public class RawMaterialController {
 			response.put("status", "fail");
 			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
 		}
-		
+
 		return ResponseEntity.ok(response);
 	}
-
 
 	// 원자재 목록 조회 (검색)
 	@GetMapping("")
 	public String getRawMaterialList(@ModelAttribute RawMaterialSearchDTO searchDTO, Model model) {
-		log.info("getRawmaterialList --- start");
+		log.info("getRawMaterialList --- start");
 
 		// 페이징 정보 조회
 		searchDTO.getPageDTO().setTotalCount(rawMaterialService.searchRawMaterialCount(searchDTO));
@@ -95,6 +115,14 @@ public class RawMaterialController {
 		// 원자재 목록 조회
 		List<RawMaterialDTO> rawMaterialList = rawMaterialService.getRawMaterialList(searchDTO);
 		model.addAttribute("rawmaterialList", rawMaterialList);
+
+		// 거래처 목록 조회
+		List<ClientDTO> clientList = clientService.getClientList();
+		model.addAttribute("clientList", clientList);
+
+		// BOM 목록 조회
+		List<BomDTO> bomList = bomService.getBomList();
+		model.addAttribute("bomList", bomList);
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
@@ -110,29 +138,38 @@ public class RawMaterialController {
 		RawMaterialDTO rawMaterialDTO = rawMaterialService.getRawMaterial(idx);
 		model.addAttribute("rawMaterialDTO", rawMaterialDTO);
 
+		// 거래처 목록 조회
+		List<ClientDTO> clientList = clientService.getClientList();
+		model.addAttribute("clientList", clientList);
+
+		// BOM 목록 조회
+		List<BomDTO> bomList = bomService.getBomList();
+		model.addAttribute("bomList", bomList);
+
 		return "mes/rawmaterial/rawmaterial_detail";
 	}
 
 	// 원자재 수정
 	@PutMapping("/{idx}")
-	public ResponseEntity<Map<String, Object>> updateRawMaterial(@PathVariable("idx") Long idx, @RequestBody RawMaterialDTO rawMaterialDTO) {
+	public ResponseEntity<Map<String, Object>> updateRawMaterial(@PathVariable("idx") Long idx,
+			@RequestBody RawMaterialDTO rawMaterialDTO) {
 		Map<String, Object> response = new HashMap<>();
 		try {
-	        rawMaterialService.updateRawMaterial(rawMaterialDTO);
-	        response.put("status", "success");
-	        response.put("message", "원자재 수정이 완료되었습니다.");
-	        return ResponseEntity.ok(response);
-	    } catch (EntityNotFoundException e) {
-	        log.error("원자재 수정 실패: {}", e.getMessage());
-	        response.put("status", "error");
-	        response.put("message", "원자재을 찾을 수 없습니다.");
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-	    } catch (Exception e) {
-	        log.error("원자재 수정 실패: {}", e.getMessage());
-	        response.put("status", "error");
-	        response.put("message", "원자재 수정 중 오류가 발생했습니다.");
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-	    }
+			rawMaterialService.updateRawMaterial(rawMaterialDTO);
+			response.put("status", "success");
+			response.put("message", "원자재 수정이 완료되었습니다.");
+			return ResponseEntity.ok(response);
+		} catch (EntityNotFoundException e) {
+			log.error("원자재 수정 실패: {}", e.getMessage());
+			response.put("status", "error");
+			response.put("message", "원자재을 찾을 수 없습니다.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+		} catch (Exception e) {
+			log.error("원자재 수정 실패: {}", e.getMessage());
+			response.put("status", "error");
+			response.put("message", "원자재 수정 중 오류가 발생했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
 	}
 
 	// 원자재 삭제 (Soft Delete)

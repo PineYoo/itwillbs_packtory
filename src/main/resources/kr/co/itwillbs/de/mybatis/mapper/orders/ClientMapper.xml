@@ -269,7 +269,6 @@
 	<select id="selectClientList" resultType="kr.co.itwillbs.de.orders.dto.ClientDTO">
 	  SELECT idx, company_name
 	  FROM t_client
-	  WHERE is_deleted = 'N'
 	</select>
 	
 </mapper>
