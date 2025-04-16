@@ -41,7 +41,7 @@ input, select {
 							<!-- Client 선택 -->
 							<div class="col-md-6">
 								<label for="clientIdx" class="form-label">거래처</label> <select th:field="*{clientIdx}" class="form-select">
-									<option value="" disabled>거래처를 선택하세요</option>
+									<option value="" >거래처를 선택하세요</option>
 									<option th:each="client : ${clientList}" th:value="${client.idx}" th:text="${client.companyName}"></option>
 								</select>
 							</div>
@@ -49,7 +49,7 @@ input, select {
 							<!-- BOM 선택 -->
 							<div class="col-md-6">
 								<label for="bomIdx" class="form-label">BOM</label> <select th:field="*{bomIdx}" class="form-select">
-									<option value="" disabled>BOM을 선택하세요</option>
+									<option value="" >BOM을 선택하세요</option>
 									<option th:each="bom : ${bomList}" th:value="${bom.idx}" th:text="${bom.name}"></option>
 								</select>
 							</div>
