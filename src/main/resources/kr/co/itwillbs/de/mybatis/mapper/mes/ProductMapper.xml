@@ -81,12 +81,13 @@
 	<select id="searchProduct"
 		parameterType="kr.co.itwillbs.de.mes.dto.ProductSearchDTO"
 		resultType="kr.co.itwillbs.de.mes.dto.ProductDTO">
-		
+
 		SELECT
 		p.*,
 		c.minor_name AS type_name
 		FROM t_product p
-		LEFT JOIN t_commoncode_item c
+		LEFT JOIN
+		t_commoncode_item c
 		ON p.type = c.minor_code
 		AND c.major_code =
 		'PRODUCT_TYPE'
@@ -120,7 +121,8 @@
 		SELECT *
 		FROM t_product
 		WHERE idx = #{idx}
-		AND is_deleted = 'N'
+		AND is_deleted =
+		'N'
 	</select>
 
 	<!-- 상품 정보 수정 -->
@@ -147,12 +149,12 @@
 		WHERE idx = #{idx}
 	</update>
 
-	<!-- 상품 정보 들고가기 -->
-	<select id="selectProductById"
-		resultType="kr.co.itwillbs.de.mes.dto.ProductDTO">
-		SELECT *
+	<!-- 상품 정보 들고가기 (외부용) -->
+	<select id="selectProductList"
+		resultType="kr.co.itwillbs.de.mes.dto.BomDTO">
+		SELECT idx, name
 		FROM t_product
-		WHERE idx = #{idx}
+		WHERE is_deleted = 'N'
 	</select>
 
 </mapper>

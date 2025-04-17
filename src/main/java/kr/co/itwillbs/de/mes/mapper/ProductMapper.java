@@ -1,5 +1,6 @@
 package kr.co.itwillbs.de.mes.mapper;
 
+import kr.co.itwillbs.de.mes.dto.BomDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 
@@ -28,8 +29,7 @@ public interface ProductMapper {
 	// 상품 삭제
 	public void deleteProduct(Long idx);
 	
-	// --------------------------------------
-	// 상푸 정보 들고 가기
-	public ProductDTO selectProductById(Long idx);
+	// 상품 정보 들고 가기 (외부용)
+	public List<ProductDTO> selectProductList();
 
 }
