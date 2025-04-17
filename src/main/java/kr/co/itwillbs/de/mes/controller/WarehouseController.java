@@ -92,7 +92,7 @@ public class WarehouseController {
 
 		// 페이징
 		searchDTO.getPageDTO().setTotalCount(warehouseService.searchWarehouseCount(searchDTO));
-		
+
 		// 창고 목록 조회
 		List<WarehouseDTO> warehouseList = warehouseService.getWarehouseList(searchDTO);
 		model.addAttribute("warehouseList", warehouseList);
@@ -100,7 +100,7 @@ public class WarehouseController {
 		// 상품 정보 가져오기
 		List<ProductDTO> productList = productService.getProductList();
 		model.addAttribute("productList", productList);
-		
+
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
 		return "mes/warehouse/warehouse_list";
@@ -114,6 +114,10 @@ public class WarehouseController {
 		// 창고 상세정보 조회
 		WarehouseDTO warehouseDTO = warehouseService.getWarehouseByIdx(idx);
 		model.addAttribute("warehouseDTO", warehouseDTO);
+		
+		// 상품 정보 가져오기
+		List<ProductDTO> productList = productService.getProductList();
+		model.addAttribute("productList", productList);
 
 		return "mes/warehouse/warehouse_detail";
 	}

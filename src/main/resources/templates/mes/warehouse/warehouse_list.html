@@ -160,36 +160,36 @@
 		<!-- 본문 컨테이너 끝 -->
 
 		<script type="text/javascript">
-		$(document).ready(function() {
-		
-		    // DataTable 초기화
-		    $('#dataTables').DataTable({
-		        lengthChange : false,
-		        searching : false,
-		        paging : false,
-		        info : false,
-		        ordering : false
-		    });
-		
-		    // 등록 페이지 이동
-		    $("#btnRegister").on("click", function() {
-		        console.log("btnRegister click!!!");
-		        location.href = "/mes/warehouse/new"; // 창고 등록 페이지로 이동
-		    });
-		
-		    // 상세 페이지 이동
-		    $("#dataTables tbody").on('click', 'tr', function() {
-		        console.log("dataTables tbody click!!");
-		        var documentNumber = $(this).data('idx');
-		
-		        if(!documentNumber) {
-		            return; // 페이지 이동 막기
-		        }
-		
-		        location.href = `/mes/warehouse/${documentNumber}`;
-		    });
-		initDateRangePickerMaxToday('startManufacturingDate', 'endManufacturingDate');
-		});
+            $(document).ready(function() {
+
+                // DataTable 초기화
+                $('#dataTables').DataTable({
+                    lengthChange : false,
+                    searching : false,
+                    paging : false,
+                    info : false,
+                    ordering : false
+                });
+
+                // 등록 페이지 이동
+                $("#btnRegister").on("click", function() {
+                    console.log("btnRegister click!!!");
+                    location.href = "/mes/warehouse/new"; // 창고 등록 페이지로 이동
+                });
+
+                // 상세 페이지 이동
+                $("#dataTables tbody").on('click', 'tr', function() {
+                    console.log("dataTables tbody click!!");
+                    var documentNumber = $(this).data('idx');
+
+                    if(!documentNumber) {
+                        return; // 페이지 이동 막기
+                    }
+
+                    location.href = `/mes/warehouse/${documentNumber}`;
+                });
+                initDateRangePickerMaxToday('startManufacturingDate', 'endManufacturingDate');
+            });
         </script>
 	</div>
 </body>

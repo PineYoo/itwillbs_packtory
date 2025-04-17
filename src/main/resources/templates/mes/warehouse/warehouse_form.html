@@ -35,7 +35,8 @@
 
 							<!-- 상품 선택 -->
 							<div class="col-md-6">
-								<label for="productIdx" class="form-class">상품</label> <select th:field="*{productIdx}" class="form-select">
+								<label for="productIdx" class="form-class">상품</label> 
+								<select name="productIdx" id="productIdx" class="form-select">
 									<option value="">상품을 선택하세요</option>
 									<option th:each="product : ${productList}" th:value="${product.idx}" th:text="${product.name}"></option>
 								</select>
@@ -45,8 +46,8 @@
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('lotIdx', 'LOT_Idx', true, 'string')}"></div>
 							</div>
-							
-							<!-- 창고 타입 -->
+
+							<!-- 타입 -->
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true, 'string')}"></div>
 							</div>
@@ -80,17 +81,17 @@
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true, 'string')}"></div>
 							</div>
-							
+
 							<!-- 상태 -->
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('status', '상태', true, 'string')}"></div>
 							</div>
-							
+
 							<!-- 메모 -->
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true, 'string')}"></div>
 							</div>
-							
+
 							<!-- 제조일자 -->
 							<div class="col-md-6">
 								<label for="manufacturingDate" class="form-class">제조일자</label>

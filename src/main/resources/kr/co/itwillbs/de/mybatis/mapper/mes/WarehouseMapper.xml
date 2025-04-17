@@ -164,8 +164,8 @@
 		SELECT *
 		FROM t_warehouse
 		WHERE idx = #{idx}
-		AND is_deleted =
-		'N'
+		AND 
+		is_deleted ='N'
 	</select>
 
 	<!-- 창고 정보 수정 -->
@@ -185,11 +185,10 @@
 		name = #{name},
 		memo = #{memo},
 		status = #{status},
-		is_deleted =
-		#{is_deleted},
 		mod_id = #{modId},
 		mod_date = NOW()
-		WHERE idx = #{idx} AND
+		WHERE idx = #{idx}
+		AND
 		is_deleted = 'N'
 	</update>
 
