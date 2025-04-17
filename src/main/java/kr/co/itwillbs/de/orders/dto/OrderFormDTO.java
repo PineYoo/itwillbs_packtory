@@ -1,6 +1,7 @@
 package kr.co.itwillbs.de.orders.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -21,7 +22,6 @@ public class OrderFormDTO { // Wrapper DTO로 묶어버림
 
 //	private OrderDTO orderDTO; // 주문DTO
 //	private OrderDetailDTO orderDetailDTO; // 주문 상세DTO
-//	private OrderItemsDTO orderItemsDTO; // 주문 아이템DTO
 	
 	private Long idx; 					// 테이블_인덱스
 	private String documentNumber; 		// 문서번호
@@ -71,5 +71,16 @@ public class OrderFormDTO { // Wrapper DTO로 묶어버림
 	private String totalAmount;			// 합계금액
 	private String issueCode;			// 이슈코드
 	private String issueRemaks;			// 이슈비고
+	
+	private List<OrderItemsDTO> orderItems; // 주문 아이템 리스트
+	
+	// OrderItems
+//	private Long ItemIdx;				// 아이템테이블 _인덱스
+//    private String productCode; 		// 물품코드
+//    private String productNumber; 		// 물품번호
+//    private String productName; 		// 아이템명
+//    private String productValue; 		// 개수
+//    private Integer unitPrice; 			// 개수별 금액
+//    private Integer totalPrice; 		// 합계액
 	
 }

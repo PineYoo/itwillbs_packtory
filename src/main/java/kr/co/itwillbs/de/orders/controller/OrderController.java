@@ -24,6 +24,8 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
+import kr.co.itwillbs.de.mes.dto.ProductDTO;
+import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 import kr.co.itwillbs.de.orders.service.OrderService;
@@ -121,7 +123,8 @@ public class OrderController {
 	 * @return viewResolver: ".../sell_register_form" || ".../buy_register_form" || ".../material_register_form"
 	 */
 	@GetMapping("/{tradeName}/regist")
-	public String getOrderRegisterForm(@PathVariable("tradeName") String tradeName, Model model) {
+	public String getOrderRegisterForm(@PathVariable("tradeName") String tradeName, Model model,
+									   @ModelAttribute ProductSearchDTO productSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("tradeName is {}", tradeName);
 		

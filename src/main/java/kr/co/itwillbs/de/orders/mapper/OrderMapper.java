@@ -28,12 +28,6 @@ public interface OrderMapper {
     
     // -------------------------------------------------------------------
 	/**
-	 * 거래처 정보 조회(SELECT)
-	 * @return List<ClientDTO>
-	 */
-	List<ClientDTO> getClientList();
-
-	/**
 	 * 수주/발주 주문 정보 등록(INSERT) >> orderDTO
 	 * @param orderDTO
 	 * @return 
@@ -49,6 +43,13 @@ public interface OrderMapper {
 	//void insertOrderDetail(OrderDetailDTO orderDetailDTO);
 	void insertOrderDetail(OrderFormDTO orderFormDTO);
 
+	/**
+	 * 수주/발주 주문 정보 등록(INSERT) >> orderItemsDTO
+	 * @param orderItemsDTO
+	 * @return 
+	 */
+	void insertOrderItems(OrderFormDTO orderFormDTO);
+	
 	// -------------------------------------------------------------------
 	/**
 	 * SELECT FROM t_order inner join t_order_detail where documentNumber

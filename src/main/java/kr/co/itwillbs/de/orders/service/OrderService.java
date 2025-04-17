@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
+import kr.co.itwillbs.de.mes.dto.ProductDTO;
+import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
@@ -49,13 +51,13 @@ public class OrderService {
 	
 	// ------------------------------------------------------------------------------------
 	/**
-	 * 거래처 정보 조회(SELECT)
-	 * @return List<ClientDTO>
+	 * 상품정보 조건 검색 가져오기
+	 * @param productSearchDTO
+	 * @return List<ProductDTO>
 	 */
-	public List<ClientDTO> getClientList() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-
-		return orderMapper.getClientList();
+	public List<ProductDTO> getItemList(ProductSearchDTO productSearchDTO) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
@@ -71,8 +73,10 @@ public class OrderService {
 		orderFormDTO.setDocumentNumber(commonService.getSeqOrderNumberfromMySQL());
 		orderMapper.insertOrder(orderFormDTO);
 		
-		// orderDTO에 들어간 documentNumber 가져오기
+		// orderDTO에 들어간 documentNumber 가져오기(이미 들어가 있음)
 		orderMapper.insertOrderDetail(orderFormDTO);
+		
+		orderMapper.insertOrderItems(orderFormDTO);
 	}
 
 	// ------------------------------------------------------------------------------------
@@ -112,5 +116,6 @@ public class OrderService {
 		orderMapper.updateOrder(orderFormDTO);
 		orderMapper.updateOrderDetail(orderFormDTO);
 	}
+
 	
 }

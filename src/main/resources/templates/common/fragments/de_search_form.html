@@ -42,7 +42,7 @@
 					th:field="*{__${fieldName}__}"
 					th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
 				<option value="" th:selected="${fieldName} eq '' ">전체</option>
-				<option value="" >전체</option>
+<!-- 				<option value="" >전체</option> -->
 				<option th:each="item : ${options}" th:value="${item.minorCode}" th:text="${item.minorName}">
 			</select>
 		</div>
