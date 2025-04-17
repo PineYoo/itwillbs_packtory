@@ -168,11 +168,17 @@
 	<!-- 원자재 상세 조회 -->
 	<select id="getRawMaterialByIdx" parameterType="Long"
 		resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
-		SELECT *
-		FROM t_raw_material
-		WHERE idx = #{idx}
-		AND is_deleted
-		= 'N'
+		SELECT
+		      r.*,
+		      c.company_name AS clientcompanyname,
+		      b.name         AS bomname
+		  FROM
+		      t_raw_material r
+		      LEFT JOIN t_client       c ON r.client_idx = c.idx
+		      LEFT JOIN t_bom          b ON r.bom_idx = b.idx
+		WHERE
+			r.is_deleted = 'N'
+			AND r.idx = #{idx}
 	</select>
 
 	<!-- 원자재 정보 수정 -->

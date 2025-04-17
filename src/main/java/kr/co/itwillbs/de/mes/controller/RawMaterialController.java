@@ -61,10 +61,6 @@ public class RawMaterialController {
 			model.addAttribute("loginVO", loginVO);
 		}
 
-//		// 거래처 목록 조회
-//		List<ClientDTO> clientList = clientService.getClientList();
-//		model.addAttribute("clientList", clientList);
-
 		// 거래처 정보 가져오기
 		List<ClientDTO> clientList = orderService.getClientList();
 		model.addAttribute("clientList", clientList);

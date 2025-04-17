@@ -38,20 +38,25 @@ input, select {
 							<input type="hidden" th:field="*{idx}" id="idx" />
 							<!-- idx ID 추가 -->
 
-							<!-- Client 선택 -->
-							<div class="col-md-6">
-								<label for="clientIdx" class="form-label">거래처</label> <select th:field="*{clientIdx}" class="form-select">
-									<option value="" >거래처를 선택하세요</option>
-									<option th:each="client : ${clientList}" th:value="${client.idx}" th:text="${client.companyName}"></option>
-								</select>
-							</div>
+							<div class="row">
+								<!-- 거래처명 -->
+								<div class="col-md-6 mb-3">
+									<div class="d-flex justify-content-between align-items-center mb-1">
+										<label for="companyName" class="form-label mb-0">거래처명</label>
+										<button type="button" id="searchClientBtn" class="btn btn-primary btn-sm" onclick="openClientSearch()">거래처 조회</button>
+									</div>
+									<input type="text" id="companyName" class="form-control" readonly th:value="${rawMaterialDTO.clientCompanyName}" />
+								</div>
+								<!-- 히든 IDX -->
+								<input type="hidden" id="clientIdx" th:field="*{clientIdx}" />
 
-							<!-- BOM 선택 -->
-							<div class="col-md-6">
-								<label for="bomIdx" class="form-label">BOM</label> <select th:field="*{bomIdx}" class="form-select">
-									<option value="" >BOM을 선택하세요</option>
-									<option th:each="bom : ${bomList}" th:value="${bom.idx}" th:text="${bom.name}"></option>
-								</select>
+								<!-- BOM -->
+								<div class="col-md-6 mb-3">
+									<label for="bomIdx" class="form-label">BOM</label> <select th:field="*{bomIdx}" class="form-select">
+										<option value="">BOM을 선택하세요</option>
+										<option th:each="bom : ${bomList}" th:value="${bom.idx}" th:text="${bom.name}"></option>
+									</select>
+								</div>
 							</div>
 
 							<!-- 원자재 타입 -->
@@ -78,40 +83,36 @@ input, select {
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputNumber('price', '원자재 가격', true, 'number')}"></div>
 							</div>
-							
+
 							<!-- 평균 사용 기한 -->
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('expirationDate', '평균 사용 기한', true, 'string')}"></div>
 							</div>
-							
+
 							<hr>
-							
+
 							<!-- 작성자 -->
 							<div class="col-md-6">
-								<label>작성자</label> 
-								<input th:value="${rawMaterialDTO.regId}" class="form-control" readonly>
+								<label>작성자</label> <input th:value="${rawMaterialDTO.regId}" class="form-control" readonly>
 							</div>
-							
+
 							<!-- 작성일자 -->
 							<div class="col-md-6">
-								<label>작성일자</label>
-								<input th:value="${rawMaterialDTO.regDate}" class="form-control" readonly>
+								<label>작성일자</label> <input th:value="${rawMaterialDTO.regDate}" class="form-control" readonly>
 							</div>
-							
+
 							<!-- 최종작성자 -->
 							<div class="col-md-6">
-								<label>최종 작성자</label>
-								<input th:value="${rawMaterialDTO.modId}" class="form-control" readonly>
+								<label>최종 작성자</label> <input th:value="${rawMaterialDTO.modId}" class="form-control" readonly>
 							</div>
-							
+
 							<!-- 최종작성일자 -->
 							<div class="col-md-6">
-								<label>최종 작성일자</label>
-								<input th:value="${rawMaterialDTO.modDate}" class="form-control" readonly>
+								<label>최종 작성일자</label> <input th:value="${rawMaterialDTO.modDate}" class="form-control" readonly>
 							</div>
-							
+
 							<hr>
-							
+
 							<div class="col-md-12 row align-items-center justify-content-center">
 								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
 								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
@@ -124,6 +125,18 @@ input, select {
 		</div>
 
 		<script type="text/javascript">
+		// --------------------------------------------------------------------------------------------------------
+		// 거래처 검색 함수(새 창 띄우기)
+		function openClientSearch() {
+		    window.open('/client/search-popup', 'clientSearch', 'width=800,height=600,location=no,scrollbars=yes');
+		}
+		
+		// 팝업창에서 가져온 거래처 정보 넣는 함수
+		function setClientInfo(data) {
+		    console.log("선택된 거래처:", data);
+			$("#companyName").val(data.companyName);
+			$("#clientIdx").val(data.idx);
+		}
 	    $(function () {
 	        // 목록 버튼 클릭 시
 	        $('#btnList').on("click", function () {
