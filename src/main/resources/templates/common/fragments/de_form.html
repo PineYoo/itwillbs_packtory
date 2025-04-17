@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
+	<!--/* 부모 HTML 이 <div class="col-md-12"> || <div class="col-md-6"> 이어야 한다.*/-->
 	<th:block th:fragment="inputText(fieldName, labelText, isRequired, dataType)">
 		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
 		<input type="text"

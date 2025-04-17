@@ -26,7 +26,7 @@ public class StringUtil {
 		sb.append("\n");
 		try {
 			for (Method m : arrMethod) {
-				if (m.getName().startsWith("get") && !m.getName().equals("getClass") && m.invoke(obj) != null) {
+				if (m.getName().startsWith("get") && !m.getName().equals("getClass") && m.invoke(obj) != null && !"".equals(m.invoke(obj))) {
 					sb.append(m.getName());
 					sb.append(" : ");
 					sb.append(m.invoke(obj));

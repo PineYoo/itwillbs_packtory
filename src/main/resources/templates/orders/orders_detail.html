@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) -</title>
+
+<!-- layout:decorate="~{common/layouts/de_layout}" 빼면서 datepicker 적용 안되는 문제 -->
+<!-- <th:block th:insert="~{common/fragments/de_common::headContents}"></th:block> -->
+
+<style type="text/css">
+	.form {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+	input, select {
+        border: 1px solid #ccc;
+        padding: 5px;
+        margin: 2px;
+	}
+	.essential {
+        background-color: #fffbe6; /* 연한 노랑 */
+    }
+    .filled {
+        background-color: white;
+    }
+    
+    /* ----------------- */
+    .addressInfo {
+	    display: flex;
+	}
+    @media (max-width: 768px) {
+	    .addressInfo {
+		    display: block;
+		}
+	}
+</style>
+<!-- 다음 우편번호 API -->
+<script
+	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+
+<body id="page-top">
+	<div layout:fragment="contents">
+		<!--/* tradeCode로 변수값 제어 시작, (list는 뷰에서 어떻게든 해보자! 어려우면 model로 값을 주고? -> JS로 전부 조진다)*/-->
+		<th:block
+			th:with="tradeName=${orderFormDTO.tradeCode eq '1' ? 'sell' : (orderFormDTO.tradeCode eq '2' ? 'buy' : 'material')},
+				tradeNameKr=${orderFormDTO.tradeCode eq '1' ? '수주' : (orderFormDTO.tradeCode eq '2' ? '발주' : '구매')}">
+			<!-- Begin Page Content -->
+			<div class="container-fluid" style="margin-top: 20px;">
+				<!-- Page Heading -->
+				<div class="d-sm-flex align-items-center justify-content-between mb-4">
+					<h1 class="h3 mb-2 text-gray-800" th:text="|주문서 등록(${tradeNameKr})|"></h1>
+				</div>
+
+				<!-- ---------- 본문 컨테이너 ---------- -->
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<div class="table-responsive">
+							<form th:action="@{/orders/{tradeName}/regist(tradeName=${tradeName})}" method="post" th:object="${orderFormDTO}" class="form" id="registerForm">
+								<!--/* 히든 값 시작 거래코드, 거래 상태 확인 */-->
+								<input type="hidden" th:field="*{documentNumber}" alt="문서 번호" />
+								<input type="hidden" th:field="*{tradeCode}" alt="거래 코드" />
+								<input type="hidden" th:field="*{departmentCode}" alt="담당부서_코드" />
+								<input type="hidden" th:field="*{subDepartmentCode}" alt="담당하위부서_코드" />
+								<input type="hidden" name="isDeleted" value="N" alt="삭제유무" />
+								<!--/* 히든 값 끝 거래코드, 거래 상태 확인 */-->
+								
+								<div class="row">
+									<div class="data-container">
+										<div class="row">
+											<div>
+												<button type="button" class="btn btn-primary mt-2" onclick="openEmployeeSearch()">담당자 조회</button>
+											</div>
+											<div class="col-sm-12 col-md-6 mb-3">
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputText('clientName','담당자',true,'string')}"></div>
+											</div>
+											<div class="col-sm-12 col-md-6 mb-3">
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputText('clientPhone','담당자 전화번호',true,'string')}"></div>
+											</div>
+										</div>
+									</div>
+									<!-- ------------------------------------------------------------------------------------------------------- -->
+									<hr>
+									<div class="data-container">
+										<div class="row">
+											<div class="col-sm-12 col-md-6 mb-3">
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputSingleDatePicker('requestDate','요청예정일자',true,'string')}"></div>
+											</div>
+											<div class="col-sm-12 col-md-6 mb-3">
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputSingleDatePicker('dueDate','요청마감일자',true,'string')}"></div>
+											</div>
+										</div>
+									</div>
+									<!-- ------------------------------------------------------------------------------------------------------- -->
+									<hr>
+									<div class="data-container">
+										<div class="row">
+											<div class="col-sm-12 col-md-6 mb-3">
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputSingleDatePicker('expectedDate','예정일',true,'string')}"></div>
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputText('specialIssue','특이사항',true,'string')}"></div>
+											</div>
+											<div class="col-sm-12 col-md-6 mb-3">
+												<div th:replace="~{common/fragments/de_noform_mb3 :: selectCodeItems('statusCode','주문상태',true,'string',${statusCodes})}"></div>
+												<div th:replace="~{common/fragments/de_noform_mb3 :: isDeleted('isDeleted','삭제유무',true,'string')}"></div>
+											</div>
+										</div>
+									</div>
+									
+									<hr>
+									<div class="data-container">
+										<div class="row">
+											<div class="col-sm-12 col-md-6 mb-3">
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputText('destinationName','목적지명',true,'string')}"></div>
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputText('receiver','받는사람',true,'string')}"></div>
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputTel('phone1','전화번호1',true,'string')}"></div>
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputTel('phone2','전화번호2',true,'string')}"></div>
+											</div>
+											<div class="col-sm-12 col-md-6 mb-3">
+												<div class="addressInfo">
+													<div th:replace="~{common/fragments/de_noform_mb3 :: inputAddress('postCode', 'address1' ,'address2', '납품주소',true,'string')}"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- ------------------------------------------------------------------------------------------------------- -->
+									<hr>
+									<div class="data-container">
+										<div class="row">
+											<div>
+												<button type="button" id="searchClientBtn" class="btn btn-primary mt-2" onclick="openClientSearch()">거래처 조회</button>
+											</div>
+											<div class="col-sm-12 col-md-6 mb-3">
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputTextSearch('companyNumber','사업자 등록번호',true,'string')}"></div>
+											</div>
+											<div class="col-sm-12 col-md-6 mb-3">
+												<div th:replace="~{common/fragments/de_noform_mb3 :: inputTextSearch('companyName','상호명',true,'string')}"></div>
+											</div>
+										</div>
+									</div>
+									<!-- <div class="data-container"> 끝 -->
+								</div>
+								<!-- =============================================== -->
+								<hr>
+								
+								<th:block th:switch="${orderFormDTO.tradeCode}">
+								
+									<th:block th:case="1">
+										<!-- ---------- 수주검색 영역 ---------- -->
+										<div class="col-4 search-box">
+											<div class="input-group">
+												<input type="text" id="searchKeyword" class="form-control bg-light border small" 
+													name="keyword_search" placeholder="상품(수주) 조회" aria-label="Search" aria-describedby="basic-addon2">
+												<div class="input-group-append">
+													<button class="btn btn-primary" id="searchBtn" type="button" onclick="alert('준비중입니다.'); return false;">조회</button>
+												</div>
+											</div>
+										</div>
+										<br>
+										<!-- ---------- 상품 리스트 출력 영역 ---------- -->
+										<div class="table-responsive">
+											<table class="table table-bordered table-hover text-center" id="buyManagement" width="100%" cellspacing="0">
+												<thead class="table-light">
+													<tr>
+														<th>No</th>
+														<th>상품번호</th>
+														<th>품명</th>
+														<th>규격</th>
+														<th>수량</th>
+														<th>단가</th>
+														<th>합계금액</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr><td colspan="7"> No Data </td></tr>
+													<!-- <tr th:each="item, status : ${buyDTOList}" th:data-id="${buy['idx']}">
+														<td><input type="checkbox"></td>
+														<td th:text="${buy['document_number']}"></td>
+														<td th:text="${buy['request_date'] != null ? #temporals.format(buy['request_date'], 'yyyy-MM-dd') : 'No Date'}"></td>
+														<td th:text="${buy['request_date']}"></td>
+														<td th:text="${buy['company_name']}"></td>
+														<td th:text="${buy['supply_amount']}"></td>
+														<td th:text="${buy['vat_amount']}"></td>
+														<td th:text="${buy['total_amount']}"></td>
+													</tr> -->
+												</tbody>
+											</table>
+										</div>
+										
+									</th:block>
+									<th:block th:case="2">
+										
+										<!------------ 발주검색 영역 ---------- -->
+										<div class="col-4 search-box">
+											<div class="input-group">
+												<input type="text" id="searchKeyword" class="form-control bg-light border small"
+													name="keyword_search" placeholder="상품(발주) 조회" aria-label="Search" aria-describedby="basic-addon2">
+												<div class="input-group-append">
+													<button class="btn btn-primary" id="searchBtn" type="button" onclick="alert('준비중입니다.'); return false;">조회</button>
+												</div>
+											</div>
+										</div>
+										<br>
+										<!-- ---------- 상품 리스트 출력 영역 ---------- -->
+										<div class="table-responsive">
+											<table class="table table-bordered table-hover text-center" id="sellManagement" width="100%" cellspacing="0">
+												<thead class="table-light">
+													<tr>
+														<th>No</th>
+														<th>상품번호</th>
+														<th>품명</th>
+														<th>규격</th>
+														<th>수량</th>
+														<th>단가</th>
+														<th>합계금액</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td colspan="7">No Data</td>
+													</tr>
+													<!-- <tr th:each="item, status : ${sellDTOList}" th:data-id="${sell['idx']}">
+														<td><input type="checkbox"></td>
+														<td th:text="${sell['document_number']}"></td>
+														<td th:text="${sell['request_date'] != null ? #temporals.format(sell['request_date'], 'yyyy-MM-dd') : 'No Date'}"></td>
+														<td th:text="${sell['request_date']}"></td>
+														<td th:text="${sell['company_name']}"></td>
+														<td th:text="${sell['supply_amount']}"></td>
+														<td th:text="${sell['vat_amount']}"></td>
+														<td th:text="${sell['total_amount']}"></td>
+													</tr> -->
+												</tbody>
+											</table>
+		
+										</div>
+									</th:block>
+									<th:block th:case="3">
+										구매
+									</th:block>
+									
+									<th:block th:case="*">
+										잘못된 경로로 접근하였습니다.
+									</th:block>
+								</th:block>
+								
+								<!--/* 이 폼의 끝! 서브밋 버튼 */-->
+								<div
+									class="col-md-12 row align-items-center justify-content-center">
+									<button type="button" id="btnSubmitForm"
+										class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+									<button type="button" id="cancelBtn"
+										class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">취소</button>
+								</div>
+								<!--/* 이 폼의 끝! 서브밋 버튼 */-->
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- ---------- 본문 컨테이너 끝 ---------- -->
+			</div>
+			
+			<!--/* th:with 데이터 Javascript로 사용하기 위함 */-->
+			<article id="tradeData" th:attr="data-trade-name=${tradeName}, data-trade-name-kr=${tradeNameKr}"></article>
+			<script type="text/javascript">
+				const tradeDataEl = document.querySelector('#tradeData');
+				const tradeName = tradeDataEl.dataset.tradeName;
+				const tradeNameKr = tradeDataEl.dataset.tradeNameKr;
+				console.log("tradeName is %s, tradeNameKr is %s", tradeName, tradeNameKr);
+				
+				// 담당자 검색 함수(새 창 띄우기)
+				function openEmployeeSearch() {
+					window.open('/employee/search-popup', 'employeeSearch', 'width=800,height=600,location=no,scrollbars=yes');
+				}
+				
+				// 팝업창에서 가져온 담당자 정보 넣는 함수
+				function setEmployeeInfo(data) {
+					$("#departmentCode").val(data.departmentCode);			// hidden
+					$("#subDepartmentCode").val(data.subDepartmentCode);	// hidden
+					$("#clientName").val(data.name);
+					$("#clientPhone").val(data.phoneNumber);
+				}
+				
+				// --------------------------------------------------------------------------------------------------------
+				// 거래처 검색 함수(새 창 띄우기)
+				function openClientSearch() {
+					window.open('/client/search-popup', 'clientSearch', 'width=800,height=600,location=no,scrollbars=yes');
+				}
+				
+				// 팝업창에서 가져온 담당자 정보 넣는 함수
+				function setClientInfo(data) {
+					$("#companyNumber").val(data.companyNumber);
+					$("#companyName").val(data.companyName);
+				}			
+				$(document).ready(function () {
+					// init Html > head > title
+					//const _prefixTitle = "팩토리(PackTory) - ";
+					const _suffixTitle = " 상세";
+					document.title = document.title + " " + tradeNameKr + _suffixTitle;
+					
+					// 취소버튼
+					$('#cancelBtn').on("click", function() {
+						console.log("cancelBtn click!!!");
+						location.href="/orders/"+tradeName;
+					});
+					
+					//---------------------------------------------------
+					// 주소 검색(다음 우편번호 API 활용) "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
+					// button에 id가 searchpost로 시작하는 요소를 가져온다 button[id^='searchpost'
+					$("#postCodeBtn, .postCode").click(function() {
+						new daum.Postcode({
+							oncomplete: function(data) { 
+								// 1) 우편번호(zonecode) 가져와서 우편번호 항목(postCode)에 출력
+								$("#postCode").val(data.zonecode).addClass("filled");
+						
+								// 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서 
+								//		기본주소 항목(address1)에 출력
+								let address = data.address;
+								
+								// 3) 만약, 건물명(buildingName)이 존재할 경우(= 널스트링이 아님)
+								//		기본 주소 뒤에 건물명 결합
+								if(data.buildingName !== ''){
+									address += "(" + data.buildingName + ")";
+								}
+								
+								// 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
+								$("#address1").val(address).addClass("filled");
+								
+								// 5) 상세주소 항목(address2)에 포커스 요청
+								$("#address2").focus();
+							}
+						}).open();
+					});
+					
+					// ===== 캘린더 ===============================================
+					// 요청 예정일자 선택 (datepicker)
+					$('#requestDate, #expectedDate').daterangepicker({
+						singleDatePicker: true, // 단일 날짜 선택 모드
+						showDropdowns: true, // 년월 수동 선택 가능
+						autoApply: true, // 확인/취소 버튼 없이 즉시 반영
+						autoUpdateInput: false, // 초기 입력 필드 비우기
+						locale: {
+							format: 'YYYY-MM-DD', // 날짜 형식
+							daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+							monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+							applyLabel: "확인",
+							cancelLabel: "취소"
+						},
+						// 날짜 선택 가능 범위 여기 작성 ---------------------------------
+						minDate: moment(), // 오늘 이후 선택 가능
+						maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
+						// ---------------------------------------------------------------
+					}).on('apply.daterangepicker', function(ev, picker) {
+						$(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
+					});
+					
+					// 요청 예정일자 선택 후 마감일자 활성화
+					$('#requestDate').on('apply.daterangepicker', function(ev, picker) {
+// 						console.log("hello dueDate!");
+// 						console.log(ev);
+// 						console.log(picker);
+						$('#dueDate').prop('disabled', false); // 비활성화 해제
+						$('#dueDate').val(''); // 기존 값 초기화
+						
+						$('#dueDate').daterangepicker({
+							singleDatePicker: true,
+							showDropdowns: true,
+							autoApply: true,
+							autoUpdateInput: false,
+							locale: {
+								format: 'YYYY-MM-DD',
+								daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+								monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+								applyLabel: "확인",
+								cancelLabel: "취소"
+							},
+							// 날짜 선택 가능 범위 여기 작성 ---------------------------------
+							minDate: picker.startDate.clone().add(7, 'days'), // 요청 예정일 + 7일
+							maxDate: moment().add(1, 'year')
+							// ---------------------------------------------------------------
+						}).on('apply.daterangepicker', function(ev, picker) {
+							$(this).val(picker.startDate.format('YYYY-MM-DD'));
+						}).on('show.daterangepicker', function(ev, picker) {
+// 							console.log("캘린더 열림"); // 캘린더가 열리는지 확인
+						});
+					});
+					// ===== 캘린더 끝 ============================================
+					
+					//---------------------------------------------------
+					// 주문서 등록(submit)
+					$('#btnSubmitForm').on("click", function() {
+						console.group('click! #btnSubmitForm!');
+						// error 내용 삭제
+						$("div[id$='Error']").text("")
+						// 만세 폼이다!
+						const _serializedData = $('#registerForm').serialize();
+						// 문자열을 '&' 기준z으로 분리하여 배열로 변환
+						const _pairs = _serializedData.split('&');
+						// 빈 객체를 생성하여 데이터를 담을 준비
+						const _jsonObj = {};
+						// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
+						_pairs.forEach(pair => {
+							const [key, value] = pair.split('=');
+							_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
+						});
+	
+						// 데이터 확인
+						console.log(_jsonObj);
+						// JSON 데이터를 서버로 전송
+						fetch("/orders/modify", {
+							method: "PUT",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify(_jsonObj)
+						})
+						.then(response => response.json())
+						.then(data => {
+							console.log("서버 응답:", data);
+							if(data.status === "success") {
+								alert(data.message);
+								location.reload(); // 현재 페이지 새로 고침
+								//location.href="/orders/"+tradeName;
+							} else if(data.status === "validFail") {
+								console.log("hello validFail!");
+								let _errors = data.errors;
+								console.log(_errors);
+								for (let field in _errors) {
+									$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
+								} // end of for (let field in errors) {
+							}
+						})
+						.catch(error => {
+							console.error("서버 응답 오류:", error);
+							alert("요청 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해 주시기 바랍니다.");
+						});
+						
+						console.groupEnd();
+					}); // end of $('#btnSubmitForm').on("click", function() {
+					
+				});
+			</script>
+	</div>
+	</th:block>
+	<!--/* end of th:with="tradeName, tradeNameKr" */-->
+	<!--/* tradeCode로 변수값 제어 끝 */-->
+	<!-- --------------------------------------------------------------------------------------------- -->
+	<th:block layout:fragment="script">
+	</th:block>
+</body>
+</html>

@@ -70,5 +70,5 @@ public class OrderDTO {
     private String issueRemaks;			// 이슈비고
     
     // 진짜 이게 맞나 모르겠다 타임리프 form 안에 object를 쓰기 위해..
-    private List<CodeItemDTO> codeItemList;
+    private List<CodeItemDTO> statusList;
 }

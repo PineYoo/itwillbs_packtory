@@ -53,14 +53,6 @@
 							</div>
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type','BOM 타입',true,'string',${typeList})}"></div>
-							
-<!-- 								<label class="mb-1" for="type">타입</label>
-									<select class="form-select" th:field="*{type}">
-										<option value="">전체</option>
-										<option th:each="item : ${typeList}" th:value="${item.minorCode}" th:text="${item.minorName}" th:selected="*{type} eq ${item.minorCode}"></option>
-									</select>
-								<input type="text" class="form-control" th:field="*{type}" placeholder="">
-								<div th:if="${#fields.hasErrors('type')}" th:errors="*{type}" class="text-danger"></div> -->
 							</div>
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('code','BOM 코드',true,'string')}"></div>

@@ -111,7 +111,7 @@
 								                	   placeholder="날짜 선택" 
 								                	   th:attr="data-required=true, data-name='요청예정일자', data-type='String'"
 								                	   autocomplete="off" />
-								            	<div th:id="|orderDTO.requestDateError|" class="text-danger"></div>
+								            	<div th:id="|*{orderDTO.requestDate}Error|" class="text-danger"></div>
 								            	
 								            </div>
 								        </div>
@@ -568,16 +568,14 @@
 					// orderDTO와 orderDetailDTO로 분리
 					const orderDTO = {};
 					const orderDetailDTO = {};
-
 					// 필요한 필드 이름에 따라 분리
-					for (let key in _jsonObj) {
+/* 					for (let key in _jsonObj) {
 						if (key.startsWith("orderDTO.")) {
 							orderDTO[key.replace("orderDTO.", "")] = _jsonObj[key];
 						} else if (key.startsWith("orderDetailDTO.")) {
 							orderDetailDTO[key.replace("orderDetailDTO.", "")] = _jsonObj[key];
 						}
-					}
-					
+					} */
 					// 데이터 확인
 					console.log(_jsonObj);
 					// JSON 데이터를 서버로 전송
@@ -586,8 +584,8 @@
 						headers: {
 							"Content-Type": "application/json"
 						},
-// 						body: JSON.stringify(_jsonObj)
-						body: JSON.stringify({ orderDTO, orderDetailDTO })
+						body: JSON.stringify(_jsonObj)
+						//body: JSON.stringify({ orderDTO, orderDetailDTO })
 					})
 					.then(response => response.json())
 					.then(data => {

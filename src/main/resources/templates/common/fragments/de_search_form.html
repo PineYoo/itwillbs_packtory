@@ -1,0 +1,98 @@
+<!-- templates/common/fragments/pagination.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<!--/* 부모 HTML 이 <div class="form-group row mb-3"> 이어야한다. */-->
+	
+	<th:block th:fragment="inputText(fieldName, labelText, isRequired, dataType)">
+		<label class="col-sm-3 col-form-label" th:for="${fieldName}" th:text="${labelText}"></label>
+		<div class="col-sm-9">
+			<input type="text"
+				class="form-control"
+				th:id="${fieldName}"
+				th:name="${fieldName}"
+				th:field="*{__${fieldName}__}"
+				th:placeholder="${labelText}"
+				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+		</div>
+	</th:block>
+	
+	<th:block th:fragment="selectCodes(fieldName, labelText, isRequired, dataType, options)">
+	<!--/* t_commoncode 를 사용할 때 */-->
+		<label class="col-sm-3 col-form-label" th:for="${fieldName}" th:text="${labelText}"></label>
+		<div class="col-sm-9">
+			<select class="form-select"
+					th:id="${fieldName}"
+					th:name="${fieldName}"
+					th:field="*{__${fieldName}__}"
+					th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+				<option value="" th:selected="${fieldName} eq '' ">전체</option>
+				<option th:each="item : ${options}" th:value="${item.majorCode}" th:text="${item.name}">
+			</select>
+		</div>
+	</th:block>
+	
+	<th:block th:fragment="selectCodeItems(fieldName, labelText, isRequired, dataType, options)">
+	<!--/* t_commoncode_item 을 사용할 때 */-->
+		<label class="col-sm-3 col-form-label" th:for="${fieldName}" th:text="${labelText}"></label>
+		<div class="col-sm-9">
+			<select class="form-select"
+					th:id="${fieldName}"
+					th:name="${fieldName}"
+					th:field="*{__${fieldName}__}"
+					th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+				<option value="" th:selected="${fieldName} eq '' ">전체</option>
+				<option value="" >전체</option>
+				<option th:each="item : ${options}" th:value="${item.minorCode}" th:text="${item.minorName}">
+			</select>
+		</div>
+	</th:block>
+	
+	<th:block th:fragment="isDeleted(fieldName, labelText, isRequired, dataType)">
+		<label class="col-sm-3 col-form-label" th:for="${fieldName}" th:text="${labelText}"></label>
+		<div class="col-sm-9">
+			<select class="form-select"
+					th:id="${fieldName}"
+					th:name="${fieldName}"
+					th:field="*{__${fieldName}__}"
+					th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+				<option value="" >전체</option>
+				<option value="N">사용</option>
+				<option value="Y">미사용</option>
+			</select>
+		</div>
+	</th:block>
+	
+	<th:block th:fragment="inputDatePicker(fieldStartName, fieldEndName, labelText, isRequired, dataType)">
+		<label class="col-sm-3 col-form-label" th:for="${fieldStartName}" th:text="${labelText}"></label>
+		<div class="col-sm-9">
+			<div class="d-flex align-items-center">
+				<div class="input-group">
+					<input type="text"
+							class="form-control"
+							autocomplete="off"
+							th:field="*{__${fieldStartName}__}"
+							th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+					<span class="input-group-text calendar-icon"
+							data-target="${fieldStartName}">
+						<i class="fa fa-calendar"></i>
+					</span>
+				</div>
+				<span class="mx-2">⁓</span>
+				<div class="input-group">
+					<input type="text"
+							class="form-control"
+							autocomplete="off"
+							th:field="*{__${fieldEndName}__}"
+							th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+					<span class="input-group-text calendar-icon"
+							data-target="${fieldEndName}">
+						<i class="fa fa-calendar"></i>
+					</span>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	
+</body>
+</html>

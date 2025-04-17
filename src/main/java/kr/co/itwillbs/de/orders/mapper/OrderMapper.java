@@ -3,13 +3,10 @@ package kr.co.itwillbs.de.orders.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
-import jakarta.validation.Valid;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
-import kr.co.itwillbs.de.orders.dto.OrderCodeDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
-import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
+import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 
 @Mapper
@@ -41,14 +38,16 @@ public interface OrderMapper {
 	 * @param orderDTO
 	 * @return 
 	 */
-	void insertOrder(@Valid OrderDTO orderDTO);
+	//void insertOrder(OrderDTO orderDTO);
+	void insertOrder(OrderFormDTO orderFormDTO);
 	
 	/**
 	 * 수주/발주 주문 정보 등록(INSERT) >> orderDetailDTO
 	 * @param orderDetailDTO
 	 * @return 
 	 */
-	void insertOrderDetail(OrderDetailDTO orderDetailDTO);
+	//void insertOrderDetail(OrderDetailDTO orderDetailDTO);
+	void insertOrderDetail(OrderFormDTO orderFormDTO);
 
 	// -------------------------------------------------------------------
 	/**
@@ -56,7 +55,10 @@ public interface OrderMapper {
 	 * @param documentNumber
 	 * @return OrderDTO
 	 */
-	OrderDTO getOrderByDocumentNumber(String documentNumber);
+	OrderFormDTO getOrderByDocumentNumber(String documentNumber);
+	
+	@Deprecated
+	OrderDTO oldgetOrderByDocumentNumber(String documentNumber);
 	
 	// -------------------------------------------------------------------
 	/**
@@ -64,27 +66,15 @@ public interface OrderMapper {
 	 * @param orderDTO
 	 * @return 
 	 */
-	void updateOrder(OrderDTO orderDTO);
+	//void updateOrder(OrderDTO orderDTO);
+	void updateOrder(OrderFormDTO orderFormDTO);
 	
 	/**
 	 * 수주/발주 주문 정보 수정(UPDATE) >> orderDetailDTO
 	 * @param orderDetailDTO
 	 * @return 
 	 */
-	void updateOrderDetail(OrderDetailDTO orderDetailDTO);
-
-	
-	// -------------------------------------------------------------------
-	List<OrderCodeDTO> getDepartmentList();
-
-	List<OrderCodeDTO> getSubDepartmentList(String departmentCode);
-
-	List<OrderCodeDTO> getEmployeeList(@Param("departmentCode") String departmentCode, @Param("subDepartmentCode") String subDepartmentCode);
-
-	OrderCodeDTO getEmployeeInfo(String employeeId);
-
-	
-	
-	
+	//void updateOrderDetail(OrderDetailDTO orderDetailDTO);
+	void updateOrderDetail(OrderFormDTO orderFormDTO);
 
 }

@@ -2,16 +2,12 @@ package kr.co.itwillbs.de.orders.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
-import kr.co.itwillbs.de.orders.dto.OrderCodeDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
-import kr.co.itwillbs.de.orders.dto.OrderDetailDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 import kr.co.itwillbs.de.orders.mapper.OrderMapper;
@@ -20,14 +16,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class OrderService {
-	@Autowired
-	private OrderMapper orderMapper;
 	
-	@Autowired
-	private CommonService commonService;
-
+	private final OrderMapper orderMapper;
+	private final CommonService commonService;
+	
+	public OrderService(OrderMapper orderMapper, CommonService commonService) {
+		this.orderMapper = orderMapper;
+		this.commonService = commonService;
+	}
+	
 	/**
-	 * 수주/발주 정보 조건 카운트 가져오기 페이징용
+	 * 수주/발주/구매 정보 조건 카운트 가져오기 페이징용
 	 * @param orderSearchDTO
 	 * @return
 	 */
@@ -38,7 +37,7 @@ public class OrderService {
 	}
 	
 	/**
-	 * 수주/발주 정보 조건 검색 가져오기
+	 * 수주/발주/구매 정보 조건 검색 가져오기
 	 * @param orderSearchDTO
 	 * @return List<OrderDTO>
 	 */
@@ -65,17 +64,15 @@ public class OrderService {
 	 * @return 
 	 */
 	@LogExecution // 로그 남길 서비스
-	public void registerOrder(@Valid OrderFormDTO orderFormDTO) {
+	public void registerOrder(OrderFormDTO orderFormDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// MySQL DB에서 시퀀스 가져와서 document_number에 넣기
-		orderFormDTO.getOrderDTO().setDocumentNumber(commonService.getSeqOrderNumberfromMySQL());
-		orderMapper.insertOrder(orderFormDTO.getOrderDTO());
+		orderFormDTO.setDocumentNumber(commonService.getSeqOrderNumberfromMySQL());
+		orderMapper.insertOrder(orderFormDTO);
 		
 		// orderDTO에 들어간 documentNumber 가져오기
-		String documentNumber = orderFormDTO.getOrderDTO().getDocumentNumber();	
-		orderFormDTO.getOrderDetailDTO().setDocumentNumber(documentNumber);
-		orderMapper.insertOrderDetail(orderFormDTO.getOrderDetailDTO());
+		orderMapper.insertOrderDetail(orderFormDTO);
 	}
 
 	// ------------------------------------------------------------------------------------
@@ -84,7 +81,19 @@ public class OrderService {
 	 * @param documentNumber
 	 * @return OrderDTO
 	 */
-	public OrderDTO getOrderByDocumentNumber(String documentNumber) {
+	@Deprecated
+	public OrderDTO oldgetOrderByDocumentNumber(String documentNumber) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		return orderMapper.oldgetOrderByDocumentNumber(documentNumber);
+	}
+	
+	/**
+	 * 수주/발주 상세 정보 가져오기
+	 * @param documentNumber
+	 * @return OrderDTO
+	 */
+	public OrderFormDTO getOrderByDocumentNumber(String documentNumber) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		return orderMapper.getOrderByDocumentNumber(documentNumber);
@@ -98,33 +107,10 @@ public class OrderService {
 	 * @return 
 	 */
 	@LogExecution // 로그 남길 서비스
-	public void modifyOrder(OrderDTO orderDTO, OrderDetailDTO orderDetailDTO) {
+	public void modifyOrder(OrderFormDTO orderFormDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		orderMapper.updateOrder(orderDTO);
-		orderMapper.updateOrderDetail(orderDetailDTO);
+		orderMapper.updateOrder(orderFormDTO);
+		orderMapper.updateOrderDetail(orderFormDTO);
 	}
-	
-	// ------------------------------------------------------------------------------------
-	public List<OrderCodeDTO> getDepartmentList() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return orderMapper.getDepartmentList();
-	}
-
-	public List<OrderCodeDTO> getSubDepartmentList(String departmentCode) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return orderMapper.getSubDepartmentList(departmentCode);
-	}
-
-	public List<OrderCodeDTO> getEmployeeList(String departmentCode, String subDepartmentCode) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return orderMapper.getEmployeeList(departmentCode, subDepartmentCode);
-	}
-
-	public OrderCodeDTO getEmployeeInfo(String employeeId) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return orderMapper.getEmployeeInfo(employeeId);
-	}
-	
-	
 	
 }
