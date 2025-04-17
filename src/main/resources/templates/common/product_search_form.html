@@ -233,8 +233,14 @@
 
 // 		            selectedCount--;
 
+					// 상품 삭제
 		            if (window.opener && typeof window.opener.removeProductInfo === 'function') {
 		                window.opener.removeProductInfo(idx);
+		            }
+			        
+				    // 상품의 총합 계산
+		            if (window.opener && typeof window.opener.updateTotalSelectedPrice === 'function') {
+		                window.opener.updateTotalSelectedPrice();
 		            }
 
 		        } else {
@@ -250,9 +256,15 @@
 		                .text('선택됨');
 
 // 		            selectedCount++;
-
+	
+					// 상품 정보 추가
 		            if (window.opener && typeof window.opener.appendProductInfo === 'function') {
 		                window.opener.appendProductInfo(productInfo);
+		            }
+			        
+				    // 상품의 총합 계산
+		            if (window.opener && typeof window.opener.updateTotalSelectedPrice === 'function') {
+		                window.opener.updateTotalSelectedPrice();
 		            }
 		        }
 		    });

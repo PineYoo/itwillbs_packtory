@@ -38,13 +38,13 @@
 	
 	#dataTables tbody {
 	    display: block;
-	    max-height: 187px;  /* 원하는 최대 높이 설정 */
+	    max-height: 194px;  /* 원하는 최대 높이 설정 */
 	    overflow-y: auto;   /* 내용이 넘칠 때 스크롤 표시 */
 	}
 	
 	/* 테이블 열 너비 비율 맞추기 */
 	#dataTables td, #dataTables th {
-	    width: 14.285714%;  /* 7개의 열에 대해 설정 (100% / 7 열) */
+		width: 16.666667%; /* 100% / 6열 = 약 16.6667% */
 	    vertical-align: middle; /* 세로 정렬을 중앙으로 맞추기 */
 	}
 	
@@ -198,8 +198,8 @@
 												</tbody>
 												<tfoot>
 												    <tr>
-												        <td colspan="4" class="text-left"><strong>총 합계</strong></td>
-												        <td colspan="2" class="text-center"><strong id="totalSelectedPrice">0</strong></td>
+												        <td colspan="3" class="text-left"><strong>총 합계</strong></td>
+												        <td colspan="3" class="text-center"><strong id="totalSelectedPrice">0</strong></td>
 												    </tr>
 												</tfoot>
 											</table>
