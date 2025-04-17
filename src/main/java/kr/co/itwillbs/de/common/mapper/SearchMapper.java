@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import kr.co.itwillbs.de.human.dto.EmployeeCodeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
+import kr.co.itwillbs.de.mes.dto.ProductDTO;
+import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 
@@ -25,6 +27,7 @@ public interface SearchMapper {
 	 */
 	int getEmployeeCountForPaging(EmployeeSearchDTO employeeSearchDTO);
 
+	// --------------------------------------------------------------------
 	/**
 	 * 부서 리스트 조회
 	 * @return List<EmployeeCodeDTO>
@@ -43,6 +46,7 @@ public interface SearchMapper {
 	 */
 	List<EmployeeCodeDTO> getPositionList();
 
+	// ====================================================================
 	/**
 	 * 검색조건에 따른 거래처 리스트 조회
 	 * @param clientSearchDTO
@@ -54,6 +58,19 @@ public interface SearchMapper {
 	 * 페이징용 카운트
 	 */
 	int getClientCountForPaging(ClientSearchDTO clientSearchDTO);
+	
+	// ====================================================================
+	/**
+	 * 검색조건에 따른 상품 리스트 조회
+	 * @param productSearchDTO
+	 * @return List<ProductDTO>
+	 */
+	List<ProductDTO> getProductList(ProductSearchDTO productSearchDTO);
+	
+	/**
+	 * 페이징용 카운트
+	 */
+	int getProductCountForPaging(ProductSearchDTO productSearchDTO);
 
 
 }

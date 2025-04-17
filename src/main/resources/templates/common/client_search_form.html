@@ -86,7 +86,7 @@
 							    <td class="owner-name" th:text="${item.ownerName != null ? item.ownerName : '-'}"></td>
 							    <td class="phone-number" th:text="${item.phoneNumber != null ? item.phoneNumber : '-'}"></td>
 							    <td class="fax-number" th:text="${item.faxNumber != null ? item.faxNumber : '-'}"></td>
-							    <td class="e_mail" th:text="${item.eMail != null ? item.eMail : '-'}"></td>
+							    <td class="e-mail" th:text="${item.eMail != null ? item.eMail : '-'}"></td>
 <!-- 							    <td class="address"  -->
 <!-- 									th:text="${(item.address1 != null ? item.address1 : '-') +  -->
 <!-- 								             (item.address2 != null ? ' ' + item.address2 : '') +  -->
@@ -173,19 +173,19 @@
 		                $tbody.empty();
 
 		                if (data.length === 0) {
-		                    $tbody.append('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
+		                    $tbody.append('<tr><td colspan="7">조회 된 데이터가 없습니다.</td></tr>');
 		                    return;
 		                }
 
 		                $.each(data, function (i, item) {
 		                	const row = `
-			                		<tr data-id="${item.companyNumber}">
-			                        <td class="company-number">${item.companyNumber || '-'}</td>
-			                        <td class="company-name">${item.companyName || '-'}</td>
-			                        <td class="owner-name">${item.ownerName || '-'}</td>
-			                        <td class="phone-number">${item.phoneNumber || '-'}</td>
-			                        <td class="fax-number">${item.faxNumber || '-'}</td>
-			                        <td class="e_mail">${item.eMail || '-'}</td>
+			                		<tr data-id="${item.idx}">
+				                        <td class="company-number">${item.companyNumber || '-'}</td>
+				                        <td class="company-name">${item.companyName || '-'}</td>
+				                        <td class="owner-name">${item.ownerName || '-'}</td>
+				                        <td class="phone-number">${item.phoneNumber || '-'}</td>
+				                        <td class="fax-number">${item.faxNumber || '-'}</td>
+				                        <td class="e-mail">${item.eMail || '-'}</td>
 			                        <td>
 			                            <input type="hidden" class="idx" value="${item.idx || ''}" />
 			                            <input type="hidden" class="company-category" value="${item.companyCategory || ''}" />
@@ -236,7 +236,7 @@
 			        ownerName: cleanText($row.find(".owner-name").text()),
 			        phoneNumber: cleanText($row.find(".phone-number").text()),
 			        faxNumber: cleanText($row.find(".fax-number").text()),
-			        eMail: cleanText($row.find(".e_mail").text()),
+			        eMail: cleanText($row.find(".e-mail").text()),
 			        
 			        idx: $row.find(".idx").val(),
 			        companyCategory: $row.find(".company-category").val(),

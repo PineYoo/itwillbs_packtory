@@ -27,10 +27,10 @@ public class OrderDTO {
     private String statusCode; 			// 주문상태_코드
     private String companyName; 		// 거래처명
     private String companyNumber; 		// 사업자번호
-    @NotBlank(message = "요청예정일자는 필수 입력 값입니다.")
+    @NotBlank(message = "요청예정일자는 필수 선택 값입니다.")
     private String requestDate; 		// 요청일자
     private String expectedDate; 		// 예정일
-    @NotBlank(message = "요청마감일자는 필수 입력 값입니다.")
+    @NotBlank(message = "요청마감일자는 필수 선택 값입니다.")
     private String dueDate; 			// 마감일자
     @NotBlank(message = "목적지명은 필수 입력 값입니다.")
     private String destinationName;		// 목적지명

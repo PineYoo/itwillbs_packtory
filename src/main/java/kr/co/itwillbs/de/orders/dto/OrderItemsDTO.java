@@ -17,7 +17,7 @@ import lombok.ToString;
 public class OrderItemsDTO {
 	private Long idx; 					// 테이블 인덱스
 	
-    private String orderDocumentNumber;	// 주문번호
+    private String documentNumber;		// 주문번호(orderDocumentNumber)
     private String productCode; 		// 물품코드
     private String productNumber; 		// 물품번호
     private String productName; 		// 아이템명

@@ -131,12 +131,6 @@
 	</select>
 	
 	<!-- ============================================================= -->
-	<!-- 거래처 정보 조회(SELECT) -->
-	<select id="getClientList" resultType="kr.co.itwillbs.de.orders.dto.ClientDTO">
-		SELECT *
-		  FROM t_client
-	</select>
-	
 	<!-- 주문서 등록(order) -->
 	<insert id="insertOrder">
 		INSERT INTO t_order
@@ -161,7 +155,7 @@
 			 , #{regId}				-- reg_id
 			 , now()				-- reg_date
 			 , null					-- mod_id(최초 등록시는 reg_id 만 넣고 update 시 mod_id 입력)
-			 , now()				-- mod_date
+			 , null					-- mod_date
 			 )
 	</insert>
 	
@@ -183,12 +177,35 @@
 			 , null					-- total_amount(임시)
 			 , null					-- issue_code(임시)
 			 , null					-- issue_remaks(임시)
-			 , null					-- is_deleted
+			 , 'Y'					-- is_deleted(default)
 			 , #{regId}				-- reg_id
 			 , now()				-- reg_date
 			 , null					-- mod_id(최초 등록시는 reg_id 만 넣고 update 시 mod_id 입력)
-			 , now()				-- mod_date
+			 , null					-- mod_date
 			 )
+	</insert>
+	
+	<!-- 주문서 등록(order_items) -->
+	<insert id="insertOrderItems">
+		INSERT INTO t_order_items
+		VALUES 
+			<foreach collection="orderItems" item="item" separator=",">
+		        (
+		          null					-- idx(auto_increment)
+		        , #{documentNumber}		-- order_document_number
+		        , #{item.productCode}	-- product_code
+		        , #{item.productNumber}	-- product_number
+		        , #{item.productName}	-- product_name
+		        , #{item.productValue}	-- product_value
+		        , #{item.unitPrice}		-- unit_price
+		        , #{item.totalPrice}	-- total_price
+		        , 'Y'					-- is_deleted(default)
+				, #{regId}				-- reg_id
+				, now()				-- reg_date
+				, null					-- mod_id(최초 등록시는 reg_id 만 넣고 update 시 mod_id 입력)
+				, null					-- mod_date
+		        )
+		    </foreach>
 	</insert>
 	
 	<!-- ============================================================= -->

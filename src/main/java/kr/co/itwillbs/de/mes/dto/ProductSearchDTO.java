@@ -23,4 +23,6 @@ public class ProductSearchDTO {
 	private BigDecimal maxPrice; 	// 최대 가격
 
 	private PageDTO pageDTO = new PageDTO();
+	
+	private String searchKeyword;
 }

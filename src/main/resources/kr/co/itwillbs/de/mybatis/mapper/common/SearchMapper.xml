@@ -191,7 +191,64 @@
 	            )
 	        </if>
 	    </where>
-		 ORDER BY c.company_number
+	</select>
+	
+	<!-- =========================================================== -->
+	<!-- 상품 리스트 컬럼 -->
+	<sql id="product_list_columns_forSelect">
+	      p.idx   				      -- 인덱스
+	    , p.type						-- 타입
+	    , p.name						-- 이름
+	    , p.unit	   					-- 단위
+	    , p.quantity					-- 개수
+	    , p.price	  					-- 가격
+	    , DATE(p.reg_date) AS reg_date	-- 등록일
+	</sql>
+	
+	<!-- 검색조건에 따른 거래처 리스트 조회 -->
+	<select id="getProductList" parameterType="kr.co.itwillbs.de.mes.dto.ProductSearchDTO"
+								resultType="kr.co.itwillbs.de.mes.dto.ProductDTO">
+		SELECT 
+			<include refid="product_list_columns_forSelect"></include>
+		  FROM t_product p
+		
+		-- 상품타입
+		  JOIN t_commoncode_item ci
+		    ON ci.minor_code = p.type
+		   AND ci.major_code = 'PRODUCT_TYPE'
+	    <where>
+	        p.is_deleted = 'N'
+	        <if test="searchKeyword != null and searchKeyword != ''">
+	            AND (
+	                p.name LIKE CONCAT('%', #{searchKeyword}, '%')
+	                OR p.unit LIKE CONCAT('%', #{searchKeyword}, '%')
+	            )
+	        </if>
+	    </where>
+		 ORDER BY p.reg_date desc						-- 최근 등록 순
 		 LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
+	
+	<!-- 검색조건에 따른 거래처 리스트 조회(페이징처리용) -->
+	<select id="getProductCountForPaging" parameterType="kr.co.itwillbs.de.mes.dto.ProductSearchDTO"
+									 	  resultType="int">
+		SELECT COUNT(*) 
+		  FROM t_product p
+		
+		-- 상품타입
+		  JOIN t_commoncode_item ci
+		    ON ci.minor_code = p.type
+		   AND ci.major_code = 'PRODUCT_TYPE'
+	    <where>
+	        p.is_deleted = 'N'
+	        <if test="searchKeyword != null and searchKeyword != ''">
+	            AND (
+	                p.name LIKE CONCAT('%', #{searchKeyword}, '%')
+	                OR p.unit LIKE CONCAT('%', #{searchKeyword}, '%')
+	            )
+	        </if>
+	    </where>
+	</select>
+	
+	
 </mapper>

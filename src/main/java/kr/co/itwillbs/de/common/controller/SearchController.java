@@ -17,6 +17,8 @@ import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.human.dto.EmployeeCodeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
+import kr.co.itwillbs.de.mes.dto.ProductDTO;
+import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -114,5 +116,35 @@ public class SearchController {
 		return searchService.getClientList(clientSearchDTO);
 	}
 
+	// ==================================================================================
+	// 상품 조회 팝업창으로 이동
+	@GetMapping(value = { "/product/search-popup", "/product/search-popup/" })
+	public String getProductList(Model model, @ModelAttribute ProductSearchDTO productSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		// 상품 리스트 조회 요청(SELECT)
+		List<ProductDTO> productList = searchService.getProductList(productSearchDTO);
+		model.addAttribute("productList", productList);
+		
+//		//페이징용 totalCount
+		productSearchDTO.getPageDTO().setTotalCount(searchService.getProductCountForPaging(productSearchDTO));
+		model.addAttribute("productSearchDTO", productSearchDTO);
+		
+		return "/common/product_search_form";
+	}
+	
+	// 검색조건에 따른 거래처 목록
+	@PostMapping("/product/search-popup")
+	@ResponseBody
+	public List<ProductDTO> searchProductList(Model model, @ModelAttribute ProductSearchDTO productSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		System.out.println(">>>>>>>>>>>>>>>>>>" + productSearchDTO);
+		
+		//페이징용 totalCount
+		productSearchDTO.getPageDTO().setTotalCount(searchService.getProductCountForPaging(productSearchDTO));
+		model.addAttribute("productSearchDTO", productSearchDTO);
+		
+		return searchService.getProductList(productSearchDTO);
+	}
+	
 
 }
