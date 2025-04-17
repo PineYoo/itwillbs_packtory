@@ -33,7 +33,6 @@ import kr.co.itwillbs.de.mes.service.BomService;
 import kr.co.itwillbs.de.mes.service.RawMaterialService;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.service.ClientService;
-import kr.co.itwillbs.de.orders.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +44,6 @@ public class RawMaterialController {
 
 	private final RawMaterialService rawMaterialService;
 	private final ClientService clientService;
-	private final OrderService orderService;
 	private final BomService bomService;
 
 	// 원자재 등록 폼 페이지
@@ -60,10 +58,6 @@ public class RawMaterialController {
 			model.addAttribute("userDetails", userDetails);
 			model.addAttribute("loginVO", loginVO);
 		}
-
-		// 거래처 정보 가져오기
-		List<ClientDTO> clientList = orderService.getClientList();
-		model.addAttribute("clientList", clientList);
 
 		// BOM 목록 조회
 		List<BomDTO> bomList = bomService.getBomList();
@@ -137,10 +131,6 @@ public class RawMaterialController {
 		// 원자재 상세정보 조회
 		RawMaterialDTO rawMaterialDTO = rawMaterialService.getRawMaterial(idx);
 		model.addAttribute("rawMaterialDTO", rawMaterialDTO);
-
-		// 거래처 정보 가져오기
-		List<ClientDTO> clientList = orderService.getClientList();
-		model.addAttribute("clientList", clientList);
 
 		// BOM 목록 조회
 		List<BomDTO> bomList = bomService.getBomList();
