@@ -24,9 +24,8 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.mes.dto.ProductDTO;
-import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
+import kr.co.itwillbs.de.orders.dto.OrderItemsDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 import kr.co.itwillbs.de.orders.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -123,8 +122,7 @@ public class OrderController {
 	 * @return viewResolver: ".../sell_register_form" || ".../buy_register_form" || ".../material_register_form"
 	 */
 	@GetMapping("/{tradeName}/regist")
-	public String getOrderRegisterForm(@PathVariable("tradeName") String tradeName, Model model,
-									   @ModelAttribute ProductSearchDTO productSearchDTO) {
+	public String getOrderRegisterForm(@PathVariable("tradeName") String tradeName, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("tradeName is {}", tradeName);
 		
@@ -137,6 +135,7 @@ public class OrderController {
 		model.addAttribute("orderFormDTO", orderFormDTO);
 		
 		// TODO 25.04.16 상품이 추가 될 경우 t_order_items 테이블에 입력할 것 준비
+		// => 25.04.17 공통으로 상품리스트 가져오므로 여기선 필요 X
 		
 		return COMMON_PATH + "/orders_register_form";
 	}
@@ -190,6 +189,7 @@ public class OrderController {
 		model.addAttribute("statusCodes", this.getStatusCodesByTradeName(tradeName));
 		
 		// TODO 25.04.16 상품이 추가 될 경우 t_order_items 테이블에 입력한 것 조회 하기
+		// => 25.04.18 orderFormDTO 안에 List<OrderItemsDTO> orderItems로 넣어감
 		
 		return COMMON_PATH + "/orders_detail";
 	}

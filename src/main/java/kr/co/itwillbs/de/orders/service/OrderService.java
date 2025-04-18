@@ -8,7 +8,6 @@ import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
-import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
@@ -61,7 +60,8 @@ public class OrderService {
 	}
 
 	/**
-	 * 수주/발주 주문 정보 등록(INSERT) >> orderDTO
+	 * 수주/발주 주문 정보 등록(INSERT)
+	 * <br> order, orderDetail, orderItems
 	 * @param orderFormDTO
 	 * @return 
 	 */
@@ -71,11 +71,9 @@ public class OrderService {
 		
 		// MySQL DB에서 시퀀스 가져와서 document_number에 넣기
 		orderFormDTO.setDocumentNumber(commonService.getSeqOrderNumberfromMySQL());
+
 		orderMapper.insertOrder(orderFormDTO);
-		
-		// orderDTO에 들어간 documentNumber 가져오기(이미 들어가 있음)
 		orderMapper.insertOrderDetail(orderFormDTO);
-		
 		orderMapper.insertOrderItems(orderFormDTO);
 	}
 
@@ -95,12 +93,14 @@ public class OrderService {
 	/**
 	 * 수주/발주 상세 정보 가져오기
 	 * @param documentNumber
-	 * @return OrderDTO
+	 * @return OrderFormDTO
 	 */
 	public OrderFormDTO getOrderByDocumentNumber(String documentNumber) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		OrderFormDTO orderFormDTO = orderMapper.getOrderByDocumentNumber(documentNumber);		// order, orderDetail 정보
+		orderFormDTO.setOrderItems(orderMapper.getOrderListByDocumentNumber(documentNumber));	// orderItems 정보
 		
-		return orderMapper.getOrderByDocumentNumber(documentNumber);
+		return orderFormDTO;
 	}
 
 	// ------------------------------------------------------------------------------------
@@ -115,6 +115,11 @@ public class OrderService {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		orderMapper.updateOrder(orderFormDTO);
 		orderMapper.updateOrderDetail(orderFormDTO);
+		
+		// documentNumber 일치하는 아이템 delete 후 다시 insert
+		// => 바뀐 값 하나하나 비교해서 update 하기 번거로움 ..
+		orderMapper.deleteOrderItemsByDocumentNumber(orderFormDTO.getDocumentNumber());
+		orderMapper.insertOrderItems(orderFormDTO);	// 재사용
 	}
 
 	

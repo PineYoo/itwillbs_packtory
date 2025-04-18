@@ -25,28 +25,47 @@
         background-color: white;
     }
     
-    /* 테이블 레이아웃을 고정하고, 열 너비를 100%로 맞추기 */
+    /* 테이블 전체 */
 	#dataTables {
-	    table-layout: fixed;  /* 테이블의 열 너비를 고정 */
-	    width: 100%;  /* 테이블 너비를 100%로 설정 */
+	  width: 100%;
+	  border-collapse: collapse;
+	  table-layout: auto; /* auto일 때 열 너비 동적 */
 	}
 	
-	#dataTables thead, #dataTables tfoot {
-	    display: table;
-	    width: 100%;
-	}
-	
+	/* tbody만 스크롤 */
 	#dataTables tbody {
-	    display: block;
-	    max-height: 194px;  /* 원하는 최대 높이 설정 */
-	    overflow-y: auto;   /* 내용이 넘칠 때 스크롤 표시 */
+	  display: block;
+	  max-height: 188px; /* 원하는 높이 */
+	  overflow-y: auto;
+	  scrollbar-gutter: stable;	/* 스크롤 공간 항상 확보 */
 	}
 	
-	/* 테이블 열 너비 비율 맞추기 */
+	/* thead, tfoot도 block으로 설정 */
+	#dataTables thead, #dataTables tfoot {
+	  display: table;
+ 	  width: calc(100% - 8px); /* 스크롤바 너비만큼 줄이기 */
+	  table-layout: fixed;
+	}
+	
+	/* tbody 내 tr들도 table로 지정해줘야 열 맞음 */
+	#dataTables tbody tr {
+	  display: table;
+	  width: 100%;
+	  table-layout: fixed;
+	}
+	
 	#dataTables td, #dataTables th {
-		width: 16.666667%; /* 100% / 6열 = 약 16.6667% */
 	    vertical-align: middle; /* 세로 정렬을 중앙으로 맞추기 */
 	}
+	
+	/* colgroup 대신 이렇게 각 열에 너비 지정 */
+	#dataTables td:nth-child(1), #dataTables th:nth-child(1) {width: 10%;}
+	#dataTables td:nth-child(2), #dataTables th:nth-child(2) {width: 30%;}
+	#dataTables td:nth-child(3), #dataTables th:nth-child(3) {width: 15%;}
+	#dataTables td:nth-child(4), #dataTables th:nth-child(4) {width: 15%;}
+	#dataTables td:nth-child(5), #dataTables th:nth-child(5) {width: 20%;}
+	#dataTables td:nth-child(6), #dataTables th:nth-child(6) {width: 10%;}
+	
 	
 	/* 수량 입력 필드 스타일링 */
 	#dataTables .product-value {
@@ -57,6 +76,25 @@
 	    text-align: center;  /* 텍스트 중앙 정렬 */
 	    font-size: 14px;  /* 글자 크기 조정 */
 	    margin: 0;  /* 기본 margin 제거 */
+	}
+	
+	/* pc버전 오버레이 스타일 스크롤바 */
+	/* Webkit 계열 (Chrome, Edge, Safari 등) */
+	tbody::-webkit-scrollbar {
+	  width: 8px;  /* 너비 조절 */
+	}
+	
+	tbody::-webkit-scrollbar-track {
+	  background: transparent;
+	}
+	
+	tbody::-webkit-scrollbar-thumb {
+	  background-color: rgba(0, 0, 0, 0.3);  /* 얇은 반투명 회색 */
+	  border-radius: 4px;
+	}
+	
+	tbody::-webkit-scrollbar-thumb:hover {
+	  background-color: rgba(0, 0, 0, 0.5);  /* 호버 시 좀 더 진하게 */
 	}
     /* ----------------- */
     .addressInfo {
@@ -167,12 +205,13 @@
 								
 									<th:block th:case="1">
 										<!-- ---------- 수주 영역 ---------- -->
-										<div class="mb-2">
-											<button type="button" class="btn btn-primary mt-2" onclick="openProductSearch()">상품 조회</button>
+										<div class="mb-2 d-flex align-items-center">
+											<button type="button" class="btn btn-primary mr-2" onclick="openProductSearch()">상품 조회</button>
+											<div id="orderItemsError" class="text-danger"></div>
 										</div>
 										<!-- ---------- 상품 리스트 출력 영역 ---------- -->
 										<div class="table-responsive">
-											<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
+											<table class="table table-bordered text-center" id="dataTables">
 												<thead class="table-light">
 													<tr>
 														<th>상품번호</th>
@@ -184,30 +223,29 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr th:each="item, status : ${itemList}" th:data-id="${item.idx}">
+													<tr th:each="item, status : ${orderFormDTO.orderItems}" th:data-id="${item.productNumber}">
 														<td class="product-number" th:text="${item.productNumber}"></td>
-														<td class="name" th:text="${item.productName}"></td>
+														<td class="product-name" th:text="${item.productName}"></td>
 														<td class="unit-price" th:text="${#numbers.formatInteger(item.unitPrice, 3, 'COMMA')}"></td> <!-- 세자리마다 콤마 -->
 														<td><input class="product-value" type="number" min="0" step="10" th:value="${item.productValue}"></td>
 														<td class="total-price" th:text="${#numbers.formatInteger(item.totalPrice, 3, 'COMMA')}"></td>
 														<td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
 													</tr>
-													<tr th:if="${#lists.isEmpty(itemList)}" class="clickable-row menu2depth_items">
+													<tr th:if="${#lists.isEmpty(orderFormDTO.orderItems)}" class="clickable-row menu2depth_items">
 														<td colspan="6"><span>상품을 담아주세요.</span></td>
 													</tr>
 												</tbody>
 												<tfoot>
 												    <tr>
-												        <td colspan="3" class="text-left"><strong>총 합계</strong></td>
-												        <td colspan="3" class="text-center"><strong id="totalSelectedPrice">0</strong></td>
+												        <td style="width: 70%;" colspan="4" class="text-left"><strong>총 합계</strong></td>
+											 	        <td style="width: 30%;" colspan="2" class="text-center"><strong id="totalSelectedPrice">0</strong></td>
 												    </tr>
 												</tfoot>
 											</table>
 										</div>
-										
 									</th:block>
-									<th:block th:case="2">
 										
+									<th:block th:case="2">
 										<!------------ 발주검색 영역 ---------- -->
 										<div class="col-4 search-box">
 											<div class="input-group">
@@ -301,7 +339,7 @@
 					window.open('/client/search-popup', 'clientSearch', 'width=800,height=600,location=no,scrollbars=yes');
 				}
 				
-				// 팝업창에서 가져온 담당자 정보 넣는 함수
+				// 팝업창에서 가져온 거래처 정보 넣는 함수
 				function setClientInfo(data) {
 					$("#companyNumber").val(data.companyNumber);
 					$("#companyName").val(data.companyName);

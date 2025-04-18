@@ -25,6 +25,77 @@
         background-color: white;
     }
     
+    /* 테이블 전체 */
+	#dataTables {
+	  width: 100%;
+	  border-collapse: collapse;
+	  table-layout: auto; /* auto일 때 열 너비 동적 */
+	}
+	
+	/* tbody만 스크롤 */
+	#dataTables tbody {
+	  display: block;
+	  max-height: 188px; /* 원하는 높이 */
+	  overflow-y: auto;
+	  scrollbar-gutter: stable;	/* 스크롤 공간 항상 확보 */
+	}
+	
+	/* thead, tfoot도 block으로 설정 */
+	#dataTables thead, #dataTables tfoot {
+	  display: table;
+ 	  width: calc(100% - 8px); /* 스크롤바 너비만큼 줄이기 */
+	  table-layout: fixed;
+	}
+	
+	/* tbody 내 tr들도 table로 지정해줘야 열 맞음 */
+	#dataTables tbody tr {
+	  display: table;
+	  width: 100%;
+	  table-layout: fixed;
+	}
+	
+	#dataTables td, #dataTables th {
+	    vertical-align: middle; /* 세로 정렬을 중앙으로 맞추기 */
+	}
+	
+	/* colgroup 대신 이렇게 각 열에 너비 지정 */
+	#dataTables td:nth-child(1), #dataTables th:nth-child(1) {width: 10%;}
+	#dataTables td:nth-child(2), #dataTables th:nth-child(2) {width: 30%;}
+	#dataTables td:nth-child(3), #dataTables th:nth-child(3) {width: 15%;}
+	#dataTables td:nth-child(4), #dataTables th:nth-child(4) {width: 15%;}
+	#dataTables td:nth-child(5), #dataTables th:nth-child(5) {width: 20%;}
+	#dataTables td:nth-child(6), #dataTables th:nth-child(6) {width: 10%;}
+	
+	
+	/* 수량 입력 필드 스타일링 */
+	#dataTables .product-value {
+        border: 1px solid #ccc;
+	    width: 80%;  /* 수량 입력 필드 너비를 줄임 */
+	    padding: 5px;  /* 안쪽 여백 추가 */
+	    box-sizing: border-box;  /* padding 포함해서 width 조정 */
+	    text-align: center;  /* 텍스트 중앙 정렬 */
+	    font-size: 14px;  /* 글자 크기 조정 */
+	    margin: 0;  /* 기본 margin 제거 */
+	}
+	
+	/* pc버전 오버레이 스타일 스크롤바 */
+	/* Webkit 계열 (Chrome, Edge, Safari 등) */
+	tbody::-webkit-scrollbar {
+	  width: 8px;  /* 너비 조절 */
+	}
+	
+	tbody::-webkit-scrollbar-track {
+	  background: transparent;
+	}
+	
+	tbody::-webkit-scrollbar-thumb {
+	  background-color: rgba(0, 0, 0, 0.3);  /* 얇은 반투명 회색 */
+	  border-radius: 4px;
+	}
+	
+	tbody::-webkit-scrollbar-thumb:hover {
+	  background-color: rgba(0, 0, 0, 0.5);  /* 호버 시 좀 더 진하게 */
+	}
     /* ----------------- */
     .addressInfo {
 	    display: flex;
@@ -147,50 +218,48 @@
 								<th:block th:switch="${orderFormDTO.tradeCode}">
 								
 									<th:block th:case="1">
-										<!-- ---------- 수주검색 영역 ---------- -->
-										<div class="col-4 search-box">
-											<div class="input-group">
-												<input type="text" id="searchKeyword" class="form-control bg-light border small" 
-													name="keyword_search" placeholder="상품(수주) 조회" aria-label="Search" aria-describedby="basic-addon2">
-												<div class="input-group-append">
-													<button class="btn btn-primary" id="searchBtn" type="button" onclick="alert('준비중입니다.'); return false;">조회</button>
-												</div>
-											</div>
+										<!-- ---------- 수주 영역 ---------- -->
+										<div class="mb-2 d-flex align-items-center">
+											<button type="button" class="btn btn-primary mr-2" onclick="openProductSearch()">상품 조회</button>
+											<div id="orderItemsError" class="text-danger"></div>
 										</div>
-										<br>
 										<!-- ---------- 상품 리스트 출력 영역 ---------- -->
 										<div class="table-responsive">
-											<table class="table table-bordered table-hover text-center" id="buyManagement" width="100%" cellspacing="0">
+											<table class="table table-bordered text-center" id="dataTables">
 												<thead class="table-light">
 													<tr>
-														<th>No</th>
 														<th>상품번호</th>
-														<th>품명</th>
-														<th>규격</th>
-														<th>수량</th>
+														<th>상품명</th>
 														<th>단가</th>
+														<th>수량</th>
 														<th>합계금액</th>
+														<th>삭제</th>
 													</tr>
 												</thead>
 												<tbody>
-													<tr><td colspan="7"> No Data </td></tr>
-													<!-- <tr th:each="item, status : ${buyDTOList}" th:data-id="${buy['idx']}">
-														<td><input type="checkbox"></td>
-														<td th:text="${buy['document_number']}"></td>
-														<td th:text="${buy['request_date'] != null ? #temporals.format(buy['request_date'], 'yyyy-MM-dd') : 'No Date'}"></td>
-														<td th:text="${buy['request_date']}"></td>
-														<td th:text="${buy['company_name']}"></td>
-														<td th:text="${buy['supply_amount']}"></td>
-														<td th:text="${buy['vat_amount']}"></td>
-														<td th:text="${buy['total_amount']}"></td>
-													</tr> -->
+													<tr th:each="item, status : ${orderFormDTO.orderItems}" th:data-id="${item.productNumber}">
+														<td class="product-number" th:text="${item.productNumber}"></td>
+														<td class="product-name" th:text="${item.productName}"></td>
+														<td class="unit-price" th:text="${#numbers.formatInteger(item.unitPrice, 3, 'COMMA')}"></td> <!-- 세자리마다 콤마 -->
+														<td><input class="product-value" type="number" min="0" step="10" th:value="${item.productValue}"></td>
+														<td class="total-price" th:text="${#numbers.formatInteger(item.totalPrice, 3, 'COMMA')}"></td>
+														<td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
+													</tr>
+													<tr th:if="${#lists.isEmpty(orderFormDTO.orderItems)}" class="clickable-row menu2depth_items">
+														<td colspan="6"><span>상품을 담아주세요.</span></td>
+													</tr>
 												</tbody>
+												<tfoot>
+												    <tr>
+												        <td style="width: 70%;" colspan="4" class="text-left"><strong>총 합계</strong></td>
+											 	        <td style="width: 30%;" colspan="2" class="text-center"><strong id="totalSelectedPrice">0</strong></td>
+												    </tr>
+												</tfoot>
 											</table>
 										</div>
-										
 									</th:block>
-									<th:block th:case="2">
 										
+									<th:block th:case="2">
 										<!------------ 발주검색 영역 ---------- -->
 										<div class="col-4 search-box">
 											<div class="input-group">
@@ -287,11 +356,92 @@
 					window.open('/client/search-popup', 'clientSearch', 'width=800,height=600,location=no,scrollbars=yes');
 				}
 				
-				// 팝업창에서 가져온 담당자 정보 넣는 함수
+				// 팝업창에서 가져온 거래처 정보 넣는 함수
 				function setClientInfo(data) {
 					$("#companyNumber").val(data.companyNumber);
 					$("#companyName").val(data.companyName);
-				}			
+				}	
+				
+
+				// --------------------------------------------------------------------------------------------------------
+				// 상품 검색 함수(새 창 띄우기)
+				function openProductSearch() {
+					const selectedIdxList = [];
+				
+					// 현재 테이블에 이미 추가된 상품의 idx 수집
+					$('#dataTables tbody tr[data-id]').each(function() {
+						const id = parseInt($(this).data('id'));
+						if (!isNaN(id)) {
+							selectedIdxList.push(id);
+						}
+					});
+				
+					window.open('/product/search-popup', 'productSearch', 'width=800,height=600,location=no,scrollbars=yes');
+				
+					// 자식창이 열릴 때 데이터 넘겨주기 위한 전역 변수
+					window.selectedIdxListFromParent = selectedIdxList;
+// 					window.maxSelectableItems = 5;
+				}
+				
+				// 팝업창에서 가져온 상품 정보 추가하는 함수
+				function appendProductInfo(product) {
+				    const $tbody = $('#dataTables tbody');
+					
+				    // 기존 안내 문구 제거
+				    $tbody.find('.menu2depth_items').remove();
+				
+				 	// 상품 행 생성
+				    const newRow = `
+				        <tr data-id="${product.idx}">
+				            <td class="product-number">${product.idx}</td>
+				            <td class="product-name">${product.name}</td>
+				            <td class="unit-price">${parseInt(product.price).toLocaleString()}</td>
+				            <td><input class="product-value" type="number" min="0" step="10" value="0"/></td>
+				            <td class="total-price">0</td>
+				            <td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
+				        </tr>
+				    `;
+
+				    $tbody.append(newRow);
+				}
+				
+				// 상품 삭제하는 함수
+				function removeProductInfo(idx) {
+				    const $tbody = $('#dataTables tbody');
+				    
+				    // 해당 상품 인덱스를 가진 행 찾고 삭제
+				    const $row = $tbody.find(`tr[data-id='${idx}']`);
+				    $row.remove();  // 해당 행을 삭제
+// 				    $tbody.find('tr').each(function () {
+// 				        if (parseInt($(this).data('id')) === parseInt(idx)) {
+// 				            $(this).remove();
+// 				        }
+// 				    });
+				    
+				    // 삭제 후 상품이 하나도 없으면 안내 문구 삽입
+				    if ($tbody.find('tr').not('.clickable-row').length === 0) {
+				        const emptyRow = `
+				            <tr class="clickable-row menu2depth_items">
+				                <td colspan="6"><span>상품을 담아주세요.</span></td>
+				            </tr>
+				        `;
+				        $tbody.append(emptyRow);
+				    }
+				}
+				
+				// 상품의 총합 계산 함수
+				function updateTotalSelectedPrice() {
+				    let total = 0;
+
+				    let totalSum = 0;
+					$('.total-price').each(function () {
+						const val = parseInt($(this).text().replace(/,/g, '')) || 0;
+						totalSum += val;
+					});
+					$('#totalSelectedPrice').text(totalSum.toLocaleString());
+				}
+				
+				// ---------------------------------------------------------------
 				$(document).ready(function () {
 					// init Html > head > title
 					//const _prefixTitle = "팩토리(PackTory) - ";
@@ -385,6 +535,33 @@
 						});
 					});
 					// ===== 캘린더 끝 ============================================
+					//---------------------------------------------------
+				    // 페이지 로드 시 총합계 출력
+					updateTotalSelectedPrice();
+					
+					// 상품 수량 입력 시 이벤트
+					$(document).on('input', '.product-value', function () {
+						const $row = $(this).closest('tr');
+					    const price = parseInt($row.find('.unit-price').text().replace(/,/g, '')) || 0; // 단가
+					    const quantity = parseInt($(this).val()) || 0; // 수량
+					    const total = price * quantity; // 합계
+					
+					    // 합계 출력
+					    $row.find('.total-price').text(total.toLocaleString()); // 쉼표 추가해서 포맷팅
+					    
+					    // 총합계 출력
+					    updateTotalSelectedPrice();
+					});
+					
+					// 상품 삭제 버튼 클릭 시 이벤트
+					$(document).on('click', '.delete-row', function () {
+					    const $row = $(this).closest('tr');
+						const idx = parseInt($row.data('id'));  // 해당 상품의 idx 값 가져오기
+						removeProductInfo(idx);
+						
+						$(this).closest('tr').remove();
+					    updateTotalSelectedPrice(); // 삭제 후 총 합계 다시 계산
+					});
 					
 					//---------------------------------------------------
 					// 주문서 등록(submit)
@@ -403,7 +580,30 @@
 							const [key, value] = pair.split('=');
 							_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
 						});
-	
+						
+						// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+						// 상품 정보 수집
+					    const orderItems = [];
+					    $('#dataTables tbody tr').each(function() {
+					        const item = {
+					        	// 물품코드 넣을 값이 없다 ?
+				                productNumber: $(this).find('.product-number').text(),  // 물품 번호
+				                productName: $(this).find('.product-name').text(),  // 아이템명
+				                productValue: $(this).find('.product-value').val(),  // 개수
+				                unitPrice: $(this).find('.unit-price').text().replace(/,/g, ''),  // 개수별금액 (콤마 제거)
+				                totalPrice: $(this).find('.total-price').text().replace(/,/g, ''),  // 합계액 (콤마 제거)
+				                // 나머지 값들을 추가할 수 있다면 여기에 추가
+				            };
+					        
+					        if (item.productValue > 0) { // 수량이 0보다 큰 상품만 추가
+					            orderItems.push(item);
+					        }
+					    });
+
+					    // 상품 정보를 _jsonObj에 추가
+					    _jsonObj.orderItems = orderItems;
+						// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+						
 						// 데이터 확인
 						console.log(_jsonObj);
 						// JSON 데이터를 서버로 전송

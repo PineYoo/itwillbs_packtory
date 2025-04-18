@@ -126,23 +126,15 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item, status : ${orderDTOList}" th:data-id="${item.documentNumber}">
-									<td
-										th:text="${item.documentNumber != null and item.documentNumber != '' ? item.documentNumber : '-'}"></td>
-									<td
-										th:text="${item.regDate != null and item.regDate != '' ? #temporals.format(item.regDate, 'yyyy-MM-dd') : '-'}"></td>
-									<td
-										th:text="${item.companyName != null and item.companyName != '' ? item.companyName : '-'}"></td>
-									<td
-										th:text="${item.supplyAmount != null and item.supplyAmount != '' ? item.supplyAmount : '-'}"></td>
-									<td
-										th:text="${item.vatAmount != null and item.vatAmount != '' ? item.vatAmount : '-'}"></td>
-									<td
-										th:text="${item.totalAmount != null and item.totalAmount != '' ? item.totalAmount : '-'}"></td>
-									<td
-										th:text="${item.expectedDate != null and item.expectedDate != '' ? item.expectedDate : '-'}"></td>
-									<td
-										th:text="${item.clientName != null and item.clientName != '' ? item.clientName : '회의 전'}"></td>
+								<tr th:each="item, status : ${orderDTOList}" th:data-id="${item.documentNumber}" class="clickable-row">
+									<td th:text="${item.documentNumber != null and item.documentNumber != '' ? item.documentNumber : '-'}"></td>
+									<td th:text="${item.regDate != null and item.regDate != '' ? #temporals.format(item.regDate, 'yyyy-MM-dd') : '-'}"></td>
+									<td th:text="${item.companyName != null and item.companyName != '' ? item.companyName : '-'}"></td>
+									<td th:text="${item.supplyAmount != null and item.supplyAmount != '' ? item.supplyAmount : '-'}"></td>
+									<td th:text="${item.vatAmount != null and item.vatAmount != '' ? item.vatAmount : '-'}"></td>
+									<td th:text="${item.totalAmount != null and item.totalAmount != '' ? item.totalAmount : '-'}"></td>
+									<td th:text="${item.expectedDate != null and item.expectedDate != '' ? item.expectedDate : '-'}"></td>
+									<td th:text="${item.clientName != null and item.clientName != '' ? item.clientName : '회의 전'}"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -173,8 +165,17 @@
 					searching : false,
 					paging : false,
 					info : false,
-					order: [0, "desc"],
-					responsive: true
+					order: [0, "desc"],	// 기본 정렬
+					responsive: true,
+					language: {
+						emptyTable: "조회 된 데이터가 없습니다."
+					},
+					columnDefs: [
+				        {
+				            targets: [3, 4, 5, 6], // 정렬 막을 컬럼 인덱스
+				            orderable: false
+				        }
+				    ]
 				}); // end of $('#dataTables').DataTable({
 
 				// 등록 버튼(btnRegister) 클릭 시 이벤트(주문서 등록 페이지 이동)
@@ -184,7 +185,7 @@
 				});
 				// ---------------------------------------------------
 				// 수주 리스트 각 행 클릭 시 주문 상세 클릭 시 이벤트(상세 보기 페이지 이동)
-				$("#dataTables tbody").on('click', 'tr', function() {
+				$('.clickable-row').on("click", function() {
 					console.log("dataTables tbody click!!");
 					var documentNumber = $(this).data('id');
 					if (!documentNumber) {

@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
+import kr.co.itwillbs.de.orders.dto.OrderItemsDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 
 @Mapper
@@ -57,6 +57,13 @@ public interface OrderMapper {
 	 * @return OrderDTO
 	 */
 	OrderFormDTO getOrderByDocumentNumber(String documentNumber);
+
+	/**
+	 * SELECT FROM t_order_items WHERE order_document_number
+	 * @param documentNumber
+	 * @return List<OrderItemsDTO>
+	 */
+	List<OrderItemsDTO> getOrderListByDocumentNumber(String documentNumber);
 	
 	@Deprecated
 	OrderDTO oldgetOrderByDocumentNumber(String documentNumber);
@@ -77,5 +84,12 @@ public interface OrderMapper {
 	 */
 	//void updateOrderDetail(OrderDetailDTO orderDetailDTO);
 	void updateOrderDetail(OrderFormDTO orderFormDTO);
+
+	/**
+	 * 문서번호 일치하는 주문_아이템 삭제(DELETE)
+	 * @param documentNumber
+	 */
+	void deleteOrderItemsByDocumentNumber(String documentNumber);
+
 
 }
