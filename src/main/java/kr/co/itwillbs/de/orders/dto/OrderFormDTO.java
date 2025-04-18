@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.Getter;
@@ -72,6 +73,7 @@ public class OrderFormDTO { // Wrapper DTO로 묶어버림
 	private String issueCode;			// 이슈코드
 	private String issueRemaks;			// 이슈비고
 	
+	@NotEmpty(message = "주문 아이템은 한 개 이상 등록되어야 합니다.")
 	private List<OrderItemsDTO> orderItems; // 주문 아이템 리스트
 	
 	// OrderItems

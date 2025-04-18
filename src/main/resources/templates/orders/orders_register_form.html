@@ -167,8 +167,9 @@
 								
 									<th:block th:case="1">
 										<!-- ---------- 수주 영역 ---------- -->
-										<div class="mb-2">
-											<button type="button" class="btn btn-primary mt-2" onclick="openProductSearch()">상품 조회</button>
+										<div class="mb-2 d-flex align-items-center">
+											<button type="button" class="btn btn-primary mr-2" onclick="openProductSearch()">상품 조회</button>
+											<div id="orderItemsError" class="text-danger"></div>
 										</div>
 										<!-- ---------- 상품 리스트 출력 영역 ---------- -->
 										<div class="table-responsive">
@@ -184,7 +185,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr th:each="item, status : ${itemList}" th:data-id="${item.idx}">
+													<tr th:each="item, status : ${orderFormDTO.orderItems}" th:data-id="${item.productNumber}">
 														<td class="product-number" th:text="${item.productNumber}"></td>
 														<td class="product-name" th:text="${item.productName}"></td>
 														<td class="unit-price" th:text="${#numbers.formatInteger(item.unitPrice, 3, 'COMMA')}"></td> <!-- 세자리마다 콤마 -->
@@ -192,7 +193,7 @@
 														<td class="total-price" th:text="${#numbers.formatInteger(item.totalPrice, 3, 'COMMA')}"></td>
 														<td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
 													</tr>
-													<tr th:if="${#lists.isEmpty(itemList)}" class="clickable-row menu2depth_items">
+													<tr th:if="${#lists.isEmpty(orderFormDTO.orderItems)}" class="clickable-row menu2depth_items">
 														<td colspan="6"><span>상품을 담아주세요.</span></td>
 													</tr>
 												</tbody>

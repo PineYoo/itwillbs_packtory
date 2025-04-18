@@ -25,6 +25,39 @@
         background-color: white;
     }
     
+    /* 테이블 레이아웃을 고정하고, 열 너비를 100%로 맞추기 */
+	#dataTables {
+	    table-layout: fixed;  /* 테이블의 열 너비를 고정 */
+	    width: 100%;  /* 테이블 너비를 100%로 설정 */
+	}
+	
+	#dataTables thead, #dataTables tfoot {
+	    display: table;
+	    width: 100%;
+	}
+	
+	#dataTables tbody {
+	    display: block;
+	    max-height: 194px;  /* 원하는 최대 높이 설정 */
+	    overflow-y: auto;   /* 내용이 넘칠 때 스크롤 표시 */
+	}
+	
+	/* 테이블 열 너비 비율 맞추기 */
+	#dataTables td, #dataTables th {
+		width: 16.666667%; /* 100% / 6열 = 약 16.6667% */
+	    vertical-align: middle; /* 세로 정렬을 중앙으로 맞추기 */
+	}
+	
+	/* 수량 입력 필드 스타일링 */
+	#dataTables .product-value {
+        border: 1px solid #ccc;
+	    width: 80%;  /* 수량 입력 필드 너비를 줄임 */
+	    padding: 5px;  /* 안쪽 여백 추가 */
+	    box-sizing: border-box;  /* padding 포함해서 width 조정 */
+	    text-align: center;  /* 텍스트 중앙 정렬 */
+	    font-size: 14px;  /* 글자 크기 조정 */
+	    margin: 0;  /* 기본 margin 제거 */
+	}
     /* ----------------- */
     .addressInfo {
 	    display: flex;
@@ -148,8 +181,9 @@
 								
 									<th:block th:case="1">
 										<!-- ---------- 수주 영역 ---------- -->
-										<div class="mb-2">
-											<button type="button" class="btn btn-primary mt-2" onclick="openProductSearch()">상품 조회</button>
+										<div class="mb-2 d-flex align-items-center">
+											<button type="button" class="btn btn-primary mr-2" onclick="openProductSearch()">상품 조회</button>
+											<div id="orderItemsError" class="text-danger"></div>
 										</div>
 										<!-- ---------- 상품 리스트 출력 영역 ---------- -->
 										<div class="table-responsive">
