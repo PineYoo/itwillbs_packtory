@@ -165,7 +165,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr th:each="item, status : ${orderFormDTO.orderItems}" th:data-id="${item.idx}">
+													<tr th:each="item, status : ${orderFormDTO.orderItems}" th:data-id="${item.productNumber}">
 														<td class="product-number" th:text="${item.productNumber}"></td>
 														<td class="product-name" th:text="${item.productName}"></td>
 														<td class="unit-price" th:text="${#numbers.formatInteger(item.unitPrice, 3, 'COMMA')}"></td> <!-- 세자리마다 콤마 -->
