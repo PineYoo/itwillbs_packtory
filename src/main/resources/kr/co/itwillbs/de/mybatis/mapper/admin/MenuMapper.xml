@@ -41,8 +41,8 @@
 	
 	<sql id="t_menu_columns_forSelect">
 		idx,
-		menu_type,
-		menu_id,
+		menu_name,
+		parents_idx,
 		rank_number,
 		url,
 		description,
@@ -57,8 +57,8 @@
 								parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		insert into t_menu (
 			<trim suffixOverrides=",">
-			menu_type,
-			menu_id,
+			menu_name,
+			parents_idx,
 			rank_number,
 			url,
 			description,
@@ -72,8 +72,8 @@
 			</trim>
 		) values (
 			<trim suffixOverrides=",">
-			#{menuType},
-			#{menuId},
+			#{menuName},
+			#{parentsIdx},
 			#{rankNumber},
 			#{url},
 			#{description},
@@ -88,30 +88,30 @@
 		)
 	</insert>
 	
-	<select id="getMenuTypeCount" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
+	<select id="getMenuCount" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
 								resultType="int">
 		SELECT 
 			count(*)
 		FROM t_menu
 			<where>
 				<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
-				<if test='menuType != null and !("".equals(menuType.trim()))'>AND menu_type LIKE CONCAT('%',#{menuType},'%') </if>
-				<if test='menuId != null and !("".equals(menuId.trim()))'>AND menu_id = #{menuId} </if>
+				<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name LIKE CONCAT('%',#{menuName},'%') </if>
+				<if test='parentsIdx != null and !("".equals(parentsIdx.trim()))'>AND parents_idx = #{parentsIdx} </if>
 				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
 				<if test='url != null and !("".equals(url.trim()))'>AND url LIKE CONCAT('%',#{url},'%') </if>
 				<if test='regId != null and !("".equals(regId.trim()))'>AND reg_id = #{regId} </if>
 			</where>
 	</select>
 	
-	<select id="getMenuTypeList" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
+	<select id="getMenuList" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
 								resultType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		SELECT 
 			<include refid="t_menu_columns_forSelect" />
 		FROM t_menu
 			<where>
 				<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
-				<if test='menuType != null and !("".equals(menuType.trim()))'>AND menu_type LIKE CONCAT('%',#{menuType},'%') </if>
-				<if test='menuId != null and !("".equals(menuId.trim()))'>AND menu_id = #{menuId} </if>
+				<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name LIKE CONCAT('%',#{menuName},'%') </if>
+				<if test='parentsIdx != null and !("".equals(parentsIdx.trim()))'>AND parents_idx = #{parentsIdx} </if>
 				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
 				<if test='url != null and !("".equals(url.trim()))'>AND url LIKE CONCAT('%',#{url},'%') </if>
 				<if test='regId != null and !("".equals(regId.trim()))'>AND reg_id = #{regId} </if>
@@ -119,22 +119,32 @@
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
-	<select id="getMenuIdListByMenuType" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
+	<select id="getMenuItemListByMenuName" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
 								resultType="kr.co.itwillbs.de.admin.dto.MenuDTO">
-		select 
+		SELECT 
 			<include refid="t_menu_columns_forSelect" />
-		from t_menu
+		FROM t_menu
 		<where>
-			menu_id != '0'
-			<if test='menuType != null and !("".equals(menuType.trim()))'>AND menu_type = #{menuType} </if>
+			parents_idx is not null
+			<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name = #{menuName} </if>
 		</where>
-		order by rank_number asc
+		ORDER BY rank_number asc
 	</select>
 	
-	<update id="modifyTypeMenu" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
-		update t_menu
+	<update id="modifyMenuIsDeleted" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
+		UPDATE t_menu
 			<set>
-				<if test='menuType != null and !("".equals(menuType.trim()))'>menu_type = #{menuType},</if>
+				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+			</set> 
+		WHERE idx = #{idx}
+	</update>
+	
+	<update id="modifyMenu" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
+		UPDATE t_menu
+			<set>
+				<if test='menuName != null and !("".equals(menuName.trim()))'>menu_name = #{menuName},</if>
 				<if test='rankNumber != null and !("".equals(rankNumber.trim()))'>rank_number = #{rankNumber},</if>
 				<if test='url != null and !("".equals(url.trim()))'>url = #{url},</if>
 				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
@@ -142,31 +152,21 @@
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 			</set> 
-		where idx = #{idx}
-	</update>
-	
-	<update id="modifyMenuIsDeleted" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
-		update t_menu
-			<set>
-				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
-				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
-			</set> 
-		where idx = #{idx}
+		WHERE idx = #{idx}
 	</update>
 	
 	<!-- 뭔가 대량 인서트나 업데이트가 있을것 같은데...? -->
 	<delete id="removeChildMenu" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
-		delete from t_menu 
-		where menu_type = #{menuType}
-		  and menu_id != '0'
+		DELETE from t_menu 
+		WHERE menu_name = #{menuName}
+		  AND parents_idx IS NOT NULL
 	</delete>
 	
 	<insert id="registerChildMenu" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
-		insert into t_menu (
+		INSERT INTO t_menu (
 			<trim suffixOverrides=",">
-			menu_type,
-			menu_id,
+			menu_name,
+			parents_idx,
 			rank_number,
 			url,
 			is_deleted,
@@ -174,9 +174,9 @@
 			reg_id,
 			reg_date,
 			</trim>
-		) values 
+		) VALUES 
 		<foreach item="item" index="index" collection="list" separator=",">
-			(#{item.menuType}, #{item.menuId}, #{item.rankNumber}, #{item.url}, #{item.isDeleted}, #{item.description}, #{item.regId}, now())
+			(#{item.menuName}, #{item.parentsIdx}, #{item.rankNumber}, #{item.url}, #{item.isDeleted}, #{item.description}, #{item.regId}, now())
 		</foreach>
 		
 	</insert>

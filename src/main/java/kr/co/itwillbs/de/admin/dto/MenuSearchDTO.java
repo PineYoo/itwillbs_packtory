@@ -17,9 +17,9 @@ public class MenuSearchDTO {
 	// 테이블 PK
 	private String idx;
 	// 메뉴 타입(공통코드화 해야할듯?)
-	private String menuType;
+	private String menuName;
 	// 메뉴 ID 2뎁스 이상 있을 때 묶음? 근데 이 이름이 맞아?
-	private String menuId;
+	private String parentsIdx;
 	// 메뉴 url
 	private String url;
 	

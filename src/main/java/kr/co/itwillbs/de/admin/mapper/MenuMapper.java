@@ -11,32 +11,32 @@ import kr.co.itwillbs.de.admin.dto.MenuSearchDTO;
 public interface MenuMapper {
 
 	/**
-	 * 메뉴 등록(INSERT), 2depth 메뉴 등록 고민하기!
+	 * 메뉴 등록(INSERT) pa
 	 * @param menuDTO
 	 * @return
 	 */
 	int registerMenu(MenuDTO menuDTO);
 
 	/**
-	 * 그룹 메뉴 리스트 조회 카운트 - 페이징용
+	 * 그룹 메뉴 리스트 조회 카운트 - 페이징용 parents_idx is null
 	 * @param menuSearchDTO
 	 * @return
 	 */
-	int getMenuTypeCount(MenuSearchDTO menuSearchDTO);
+	int getMenuCount(MenuSearchDTO menuSearchDTO);
 	
 	/**
-	 * 그룹 메뉴 리스트 검색 조건 조회
+	 * 그룹 메뉴 리스트 검색 조건 조회 parents_idx is null
 	 * @param menuSearchDTO
 	 * @return
 	 */
-	List<MenuDTO> getMenuTypeList(MenuSearchDTO menuSearchDTO);
+	List<MenuDTO> getMenuList(MenuSearchDTO menuSearchDTO);
 
 	/**
-	 * 메뉴 리스트 조회(2depth) -> 조건은 생각해보자
+	 * 메뉴 item 조회(parents_idx is not null)
 	 * @param menuSearchDTO
 	 * @return
 	 */
-	List<MenuDTO> getMenuIdListByMenuType(MenuSearchDTO menuSearchDTO);
+	List<MenuDTO> getMenuItemListByMenuName(MenuSearchDTO menuSearchDTO);
 
 	/**
 	 * 메뉴 목록에서 isDeleted 수정하기 
@@ -47,21 +47,21 @@ public interface MenuMapper {
 
 	
 	/**
-	 * 메뉴 1depth(그룹메뉴) 수정
+	 * 메뉴 대표메뉴 수정 
 	 * @param menuDTO
 	 * @return
 	 */
-	int modifyTypeMenu(MenuDTO menuDTO);
+	int modifyMenu(MenuDTO menuDTO);
 	
 	/**
-	 * 메뉴 2depth(하위메뉴) 등록 전 삭제
+	 * 메뉴 child(부메뉴) 등록 전 삭제
 	 * @param menuDTO
 	 * @return
 	 */
 	int removeChildMenu(MenuDTO menuDTO);
 	
 	/**
-	 * 메뉴 2depth(소메뉴) 등록
+	 * 메뉴 child(부메뉴) 등록
 	 * @param menuList
 	 * @return
 	 */
