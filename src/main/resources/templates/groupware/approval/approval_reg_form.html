@@ -44,7 +44,7 @@
 			        
 			        <div class="form-div">
 			            <label th:for="approvalType">결재유형</label>
-			            <select id="approvalType" class="form-control" th:field="*{approvalType}">
+			            <select id="approvalType" class="form-select" th:field="*{approvalType}">
 			            	<option value="">선택</option>
 			            	<option th:each="item : ${approvalTypeList}" th:value="${item.minorCode}" th:text="${item.minorName}"></option>
 			            </select>

@@ -150,7 +150,16 @@
 					lengthChange: false,
 					searching: false,
 					paging: false,
-					info: false
+					info: false,
+					language: {
+						emptyTable: "조회 된 데이터가 없습니다."
+					},
+					columnDefs: [
+				        {
+				            targets: [4, 5, 6], // 정렬 막을 컬럼 인덱스
+				            orderable: false
+				        }
+				    ]
 				}); // end of $('#dataTables').DataTable({
 					
 				// 등록 버튼(btnRegister) 클릭 시 이벤트(주문서 등록 페이지 이동)

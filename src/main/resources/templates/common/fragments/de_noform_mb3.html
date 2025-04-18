@@ -137,16 +137,16 @@
 	<th:block th:fragment="inputSingleDatePicker(fieldName, labelText, isRequired, dataType)">
 		<div>
 			<label class="col-sm-8 col-md-4" th:for="${fieldName}" th:text="${labelText}"></label>
-			<input type="text"
-					class="col-sm-12 col-md-6 rounded-sm mr-2"
-					autocomplete="off"
-					th:field="*{__${fieldName}__}"
-					th:placeholder="|${labelText} 선택|" 
-					th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
-<!--/* 			<span class="input-group-text calendar-icon"
-					data-target="${fieldName}">
-				<i class="fa fa-calendar"></i>
-			</span> */-->
+<!-- 			<div class="input-group"> -->
+				<input type="text"
+						class="col-sm-12 col-md-6 rounded-sm"
+						autocomplete="off"
+						th:field="*{__${fieldName}__}"
+						th:placeholder="|${labelText} 선택|" 
+						th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+<!-- 				<span class="calendar-icon"> -->
+<!-- 					<img src="/img/calendar_icon.png" alt="calendar_icon" style="height: 18px;"> -->
+<!-- 				</span> -->
 			<div th:id="|${fieldName}Error|" class="text-danger"></div>
 		</div>
 	</th:block>

@@ -234,17 +234,23 @@
 			        lengthChange: false,    // 건수 선택
 			        searching: false,       // 검색
 			        info: false,            // 정보 표시
-					order: [0, "desc"],
-// 			        ordering: true,        // 정렬
+					order: [0, "desc"],		// 기본 정렬
 			        paging: false,          // 페이징
-// 			        responsive: true,      // 반응형
-// 			        autoWidth: false,      // 자동 너비 조정 해제
 			        dom: '<"top"<"left-length"l><"right-buttons"fB>>rt<"bottom"ip>',
+			        language: {
+						emptyTable: "조회 된 데이터가 없습니다."
+					},
 			        buttons: [
 			            { extend: 'copy', text: '복사' },
 			            { extend: 'excel', text: '엑셀', exportOptions: { columns: ':visible' } },
 			            { extend: 'print', text: '프린트' }
-			        ]
+			        ],
+					columnDefs: [
+				        {
+				            targets: [6, 7], // 정렬 막을 컬럼 인덱스
+				            orderable: false
+				        }
+				    ]
 			    }); // end of $('#dataTables').DataTable({
 				
 			 	// ---------------------------------------------------
