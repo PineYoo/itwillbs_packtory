@@ -51,8 +51,8 @@
 						<form th:action="@{/admin/menu}" method="post" th:object="${menuDTO}" class="form row g-3">
 							<input type="hidden" id="menuId" name="menuId" value="0">
 							<div class="col-md-6">
-								<label class="mb-1" for="menuType">메뉴 타입</label>
-								<input type="text" class="form-control" th:field="*{menuType}" placeholder="메뉴 타입">
+								<label class="mb-1" for="menuName">메뉴 이름</label>
+								<input type="text" class="form-control" th:field="*{menuName}" placeholder="메뉴 이름">
 							</div>
 							<div class="col-md-6">
 								<label class="mb-1" for="url">메뉴 URL</label>

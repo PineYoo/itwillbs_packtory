@@ -52,13 +52,10 @@ public class MenuService {
 	 * @param menuSearchDTO
 	 * @return
 	 */
-	public int getMenuTypeCount(MenuSearchDTO menuSearchDTO) {
+	public int getMenuCount(MenuSearchDTO menuSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		// 1depth 메뉴들은 menuId가 0이다.
-		menuSearchDTO.setMenuId("0");
-		log.info("menuSearchDTO : {}", menuSearchDTO);
-		return menuMapper.getMenuTypeCount(menuSearchDTO);
+		return menuMapper.getMenuCount(menuSearchDTO);
 	}
 	
 	/**
@@ -66,13 +63,10 @@ public class MenuService {
 	 * @param menuSearchDTO
 	 * @return
 	 */
-	public List<MenuDTO> getMenuTypeList(MenuSearchDTO menuSearchDTO) {
+	public List<MenuDTO> getMenuList(MenuSearchDTO menuSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		// 1depth 메뉴들은 menuId가 0이다.
-		menuSearchDTO.setMenuId("0");
-		log.info("menuSearchDTO : {}", menuSearchDTO);
-		return menuMapper.getMenuTypeList(menuSearchDTO);
+		return menuMapper.getMenuList(menuSearchDTO);
 	}
 
 	
@@ -84,7 +78,7 @@ public class MenuService {
 	 */
 	public MenuDTO getMenuTypeByIdx(MenuSearchDTO menuSearchDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		List<MenuDTO> menuDTOlist = getMenuTypeList(menuSearchDTO);
+		List<MenuDTO> menuDTOlist = getMenuList(menuSearchDTO);
 		log.info("menuDTOlist size{}, {}", menuDTOlist.size(), menuDTOlist);
 		
 		MenuDTO menuDTO = null;
@@ -105,7 +99,7 @@ public class MenuService {
 	 * @param menuSearchDTO
 	 * @return
 	 */
-	public List<MenuDTO> getMenuIdListByMenuType(MenuSearchDTO menuSearchDTO) {
+	public List<MenuDTO> getMenuItemListByMenuName(MenuSearchDTO menuSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// 컨트롤러에서 넘겨준 idx와 menuType 파라미터 확인
@@ -118,7 +112,7 @@ public class MenuService {
 		 */
 		log.info("menuSearchDTO parameters : {}", menuSearchDTO);
 		
-		return menuMapper.getMenuIdListByMenuType(menuSearchDTO);
+		return menuMapper.getMenuItemListByMenuName(menuSearchDTO);
 	}
 
 	/**
@@ -139,10 +133,10 @@ public class MenuService {
 	 * @throws Exception 
 	 */
 	@LogExecution
-	public void modifyTypeMenu(MenuDTO menuDTO) throws Exception {
+	public void modifyMenu(MenuDTO menuDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		int affectedRow = menuMapper.modifyTypeMenu(menuDTO);
+		int affectedRow = menuMapper.modifyMenu(menuDTO);
 		if(affectedRow < 1) {
 			throw new Exception("데이터 수정에 실패 했습니다.");
 		}

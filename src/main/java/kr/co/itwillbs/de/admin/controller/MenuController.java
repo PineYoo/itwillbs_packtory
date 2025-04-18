@@ -80,16 +80,17 @@ public class MenuController {
 	@GetMapping(value= {"","/"})
 	public String getMenuTypeList(@ModelAttribute MenuSearchDTO menuSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		log.info("menuSearchDTO is {}", menuSearchDTO);
 		
 		// 리스트 검색 DTO 빈 값 뷰에 전달
-		menuSearchDTO.getPageDTO().setTotalCount(menuService.getMenuTypeCount(menuSearchDTO));
+		menuSearchDTO.getPageDTO().setTotalCount(menuService.getMenuCount(menuSearchDTO));
 		model.addAttribute("menuSearchDTO", menuSearchDTO);
 		
 		// 리스트 결과 DTOlist 뷰에 전달
-		List<MenuDTO> menuDTOList = menuService.getMenuTypeList(menuSearchDTO);
+		List<MenuDTO> menuDTOList = menuService.getMenuList(menuSearchDTO);
 		model.addAttribute("menuDTOList", menuDTOList);
 		
-		return MENU_PATH+"/menu_type_list";
+		return MENU_PATH+"/menu_parents_list";
 	}
 	
 	/**
@@ -102,18 +103,17 @@ public class MenuController {
 	@GetMapping("/search")
 	public String sampleGetList(@ModelAttribute MenuSearchDTO menuSearchDTO, Model model) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
 		log.info("request menuSearchDTO : {}", StringUtil.objToString(menuSearchDTO));
 		
 		// 리스트 검색 DTO 뷰에 전달
-		menuSearchDTO.getPageDTO().setTotalCount(menuService.getMenuTypeCount(menuSearchDTO));
+		menuSearchDTO.getPageDTO().setTotalCount(menuService.getMenuCount(menuSearchDTO));
 		model.addAttribute("menuSearchDTO", menuSearchDTO);
 		
 		// 리스트 결과 DTOlist 뷰에 전달
-		List<MenuDTO> menuDTOList = menuService.getMenuTypeList(menuSearchDTO);
+		List<MenuDTO> menuDTOList = menuService.getMenuList(menuSearchDTO);
 		model.addAttribute("menuDTOList", menuDTOList);
 		
-		return MENU_PATH+"/menu_type_list";
+		return MENU_PATH+"/menu_parents_list";
 	}	
 	
 	/**
@@ -141,10 +141,9 @@ public class MenuController {
 			// 1depth 메뉴 조회
 			MenuDTO menuDTO = menuService.getMenuTypeByIdx(menuSearchDTO);
 			model.addAttribute("menuDTO", menuDTO);
-			// 1depth 분류 값인 menuType 셋
-			menuSearchDTO.setMenuType(menuDTO.getMenuType());
-			// 이제 2depth 메뉴 리스트 가져오기
-			model.addAttribute("menuDTOIdList", menuService.getMenuIdListByMenuType(menuSearchDTO));
+			
+			menuSearchDTO.setMenuName(menuDTO.getMenuName());
+			model.addAttribute("menuDTOIdList", menuService.getMenuItemListByMenuName(menuSearchDTO));
 			
 			// 메뉴 등록을 위한 RequestMapping 리스트
 			model.addAttribute("mappingList", menuService.MappingConvertor());
@@ -163,9 +162,9 @@ public class MenuController {
 	 * @param model
 	 * @return
 	 */
-	@PutMapping("/modifyTypeMenu")
+	@PutMapping("/modifyMenu")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> modifyTypeMenu(@RequestBody MenuDTO menuDTO,  Model model) {
+	public ResponseEntity<Map<String, Object>> modifyMenu(@RequestBody MenuDTO menuDTO,  Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestBody : {}", menuDTO);
@@ -173,7 +172,7 @@ public class MenuController {
 		//리턴 객체
 		Map<String, Object> response = new HashMap<>();
 		try {
-			menuService.modifyTypeMenu(menuDTO);
+			menuService.modifyMenu(menuDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {

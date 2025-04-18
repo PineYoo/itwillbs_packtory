@@ -50,11 +50,11 @@
 					<div class="table-responsive">
 						<form th:action="@{/admin/menu}" method="post" th:object="${menuDTO}" class="form row g-3" id="menuTypeForm">
 							<input type="hidden" name="_method" value="put">
-							<input type="hidden" th:field="*{idx}" id="major_idx" disabled />
-							<input type="hidden" th:field="*{menuId}" value="0" disabled />
+							<input type="hidden" th:field="*{idx}" disabled />
+							<input type="hidden" th:field="*{parentsIdx}" disabled />
 							<div class="col-md-6">
-								<label class="mb-1" for="menuType">그룹 메뉴</label>
-								<input type="text" class="form-control" th:field="*{menuType}" placeholder="그룹 메뉴" disabled>
+								<label class="mb-1" for="menuName">그룹 메뉴</label>
+								<input type="text" class="form-control" th:field="*{menuName}" placeholder="그룹 메뉴" disabled>
 							</div>
 							<div class="col-md-6">
 								<label class="mb-1" for="url">메뉴 URL</label>
@@ -100,7 +100,7 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables1" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
-									<th>메뉴ID</th>
+									<th>메뉴 이름</th>
 									<th>메뉴 URL</th>
 									<th>메뉴 순서</th>
 									<th>삭제유무</th>
@@ -110,7 +110,7 @@
 							</thead>
 							<tbody id="childMenuBody">
 								<tr th:each="item, status : ${menuDTOIdList}" class="clickable-row childMenuItems">
-									<td><input type="text" name="menuId" th:value="${item.menuId}" class="form-control" placeholder="메뉴 ID" /></td>
+									<td><input type="text" name="menuName" th:value="${item.menuName}" class="form-control" placeholder="메뉴 이름" /></td>
 									<td><input type="text" name="url" th:value="${item.url}" class="form-control" placeholder="메뉴 URL" /></td>
 									<td><input type="text" name="rankNumber" th:value="${item.rankNumber}" class="form-control" placeholder="메뉴 순서" /></td>
 									<td>
@@ -120,12 +120,11 @@
 											<option value="N" th:selected="${item.isDeleted} eq 'N' ">사용중</option>
 										</select>
 									</td>
-									<!-- <td><input type="text" name="isDeleted" th:value="${item.isDeleted}" class="form-control" placeholder="삭제유무 (Y/N)" /></td> -->
 									<td><input type="text" name="description" th:value="${item.description}" class="form-control" placeholder="메뉴 설명" /></td>
 									<td><button type="button" class="btn btn-secondary removeChildMenu">삭제</button></td>
 								</tr>
 								<tr th:if="${#lists.isEmpty(menuDTOIdList)}" class="clickable-row childMenuItems">
-									<td><input type="text" id="menuId" name="menuId" class="form-control" placeholder="메뉴 ID" /></td>
+									<td><input type="text" id="menuName" name="menuName" class="form-control" placeholder="메뉴 이름" /></td>
 									<td><input type="text" id="url" name="url" class="form-control" placeholder="메뉴 URL" /></td>
 									<td><input type="text" id="rankNumber" name="rankNumber" class="form-control" placeholder="메뉴 순서" /></td>
 									<td>
@@ -135,7 +134,6 @@
 											<!-- <option value="">전체</option> -->
 										</select>
 									</td>
-									<!-- <td><input type="text" id="isDeleted" name="isDeleted" class="form-control" placeholder="삭제유무 (Y/N)" /></td> -->
 									<td><input type="text" id="description" name="description" class="form-control" placeholder="메뉴 설명" /></td>
 									<td><button type="button" class="btn btn-secondary removeChildMenu">삭제</button></td>
 								</tr>
@@ -205,7 +203,7 @@
 				// 메뉴타입(그룹메뉴) 수정 토글버튼 이벤트
 				$('#btnToggleDisabled').on("click", function() {
 					console.group('click! #btnToggleDisabled!');
-					let _isDisabled = document.querySelector('#menuType').disabled;
+					let _isDisabled = document.querySelector('#idx').disabled;
 					console.log("_isDisabled : " + _isDisabled);
 					if(_isDisabled) {
 						$('#toggleText').text("잠금");
@@ -225,12 +223,12 @@
 				// 메뉴타입(그룹메뉴) 수정!
 				$('#btnSubmitForm').on("click", function() {
 					console.group('click! #btnSubmitForm!');
-					let _groupType = document.querySelector('#menuType').value;
+					let _groupType = document.querySelector('#idx').value;
 					if(!confirm("[ "+ _groupType + " ] 메뉴 정보를 수정 하시겠습니까?")){
 						return;
 					}
 					
-					let _isDisabled = document.querySelector('#menuType').disabled;
+					let _isDisabled = document.querySelector('#idx').disabled;
 					if(_isDisabled) {
 					// disabled 가 true 이면 수정을 할 수 없다. elements disabled 풀고 전송
 						$('#btnToggleDisabled').trigger( "click" );
@@ -249,7 +247,7 @@
 					// 데이터 확인
 					console.log(_jsonObj);
 					// JSON 데이터를 서버로 전송
-					fetch("/admin/menu/modifyTypeMenu", {
+					fetch("/admin/menu/modifyMenu", {
 						method: "PUT",
 						headers: {
 							"Content-Type": "application/json"
@@ -280,7 +278,7 @@
 					console.group('click! addChildMenuRow!');
 					
 					let tableRowHtml = '<tr class="clickable-row childMenuItems" >';
-					tableRowHtml += '<td><input type="text" id="menuId" name="menuId" class="form-control" placeholder="메뉴 ID" /></td>';
+					tableRowHtml += '<td><input type="text" id="menuName" name="menuName" class="form-control" placeholder="메뉴 이름" /></td>';
 					tableRowHtml += '<td><input type="text" id="url" name="url" class="form-control" placeholder="메뉴 URL" /></td>';
 					tableRowHtml += '<td><input type="text" id="rankNumber" name="rankNumber" class="form-control" placeholder="메뉴 순서" /></td>';
 					tableRowHtml += '<td>';
@@ -346,8 +344,8 @@
 			
 					menuItems.forEach(item => {
 						const menu = {
-							menuType : document.querySelector('#menuType').value,
-							menuId: item.querySelector('[name="menuId"]').value,
+							parentsIdx : document.querySelector('#idx').value,
+							menuName: item.querySelector('[name="menuName"]').value,
 							rankNumber: item.querySelector('[name="rankNumber"]').value,
 							url: item.querySelector('[name="url"]').value,
 							isDeleted: item.querySelector('[name="isDeleted"]').value,
