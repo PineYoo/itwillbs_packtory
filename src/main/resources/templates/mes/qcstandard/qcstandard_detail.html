@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
 <meta charset="UTF-8">
-<title>팩토리(PackTory) - 창고 상세</title>
+<title>팩토리(PackTory) - 품질기준 상세</title>
 <style type="text/css">
 .form {
 	max-width: 800px;
@@ -28,67 +28,43 @@ input, select {
 	<div layout:fragment="contents">
 		<div class="container-fluid">
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">창고 상세</h1>
+				<h1 class="h3 mb-4 text-gray-800">품질기준 상세</h1>
 			</div>
 
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<form th:action="@{/mes/warehouse}" method="post" th:object="${warehouseDTO}" class="form row g-3" id="registerForm">
+						<form th:action="@{/mes/qcstandard/updateQcStandard}" method="post" th:object="${qcStandardDTO}" class="form row g-3" id="registerForm">
 							<input type="hidden" th:field="*{idx}" id="idx" />
-							<!-- idx ID 추가 -->
-
-							<!-- 상품 선택 -->
-							<div class="col-md-6">
-								<label for="productIdx" class="form-label">상품</label> <select th:field="*{productIdx}" class="form-select" id="productIdx">
-									<option value="">상품을 선택하세요</option>
-									<option th:each="product : ${productList}" th:value="${product.idx}" th:text="${product.name}"></option>
-								</select>
-							</div>
-
-							<!-- LOT_Idx -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('lotIdx', 'LOT_Idx', true, 'string')}"></div>
-							</div>
-
+							
 							<!-- 타입 -->
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true, 'string')}"></div>
 							</div>
 
-							<!-- 창고이름 -->
+							<!-- 품질기준 이름 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name','창고 이름',true,'string')}"></div>
-							</div>
-
-							<!-- 입출고 상태 -->
-							<div class="col-md-6">
-								<label for="directionCode" class="form-class">입출고 상태</label> <select th:field="*{directionCode}" class="form-select">
-									<option value="">입출고 상태를 선택하세요</option>
-									<option value="입고">입고</option>
-									<option value="출고">출고</option>
-									<option value="기타">기타</option>
-								</select>
-							</div>
-
-							<!-- 총 수량 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '총 수량', true, 'number')}"></div>
-							</div>
-
-							<!-- 사용 수량 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('usedQuantity', '사용 수량', true, 'number')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('name', '품질기준 이름', true, 'string')}"></div>
 							</div>
 
 							<!-- 단위 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit','단위',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true, 'string')}"></div>
 							</div>
 
-							<!-- 상태 -->
+							<!-- 목표치 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('status', '상태', true, 'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('targetValue', '목표치', true, 'number')}"></div>
+							</div>
+
+							<!-- 최소치 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputNumber('minValue', '최소치', true, 'number')}"></div>
+							</div>
+
+							<!-- 최대치 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputNumber('maxValue', '최대치', true, 'number')}"></div>
 							</div>
 
 							<!-- 메모 -->
@@ -96,42 +72,31 @@ input, select {
 								<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true, 'string')}"></div>
 							</div>
 
-							<!-- 제조일자 -->
+							<!-- 삭제 유무 -->
 							<div class="col-md-6">
-								<label for="manufacturingDate" class="form-class">제조일자</label>
-								<div onclick="document.getElementById('manufacturingDate').showPicker()" style="cursor: pointer;">
-									<input type="date" class="form-control" id="manufacturingDate" th:field="*{manufacturingDate}" th:value="${#temporals.format(warehouseDTO.manufacturingDate, 'yyyy-MM-dd')}" />
-								</div>
-							</div>
-
-							<!-- 사용기한 -->
-							<div class="col-md-6">
-								<label for="expiryDate" class="form-class">사용기한</label>
-								<div onclick="document.getElementById('expiryDate').showPicker()" style="cursor: pointer;">
-									<input type="date" class="form-control" id="expiryDate" th:field="*{expiryDate}" th:value="${#temporals.format(warehouseDTO.expiryDate, 'yyyy-MM-dd')}" />
-								</div>
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,'string')}"></div>
 							</div>
 
 							<hr>
 
 							<!-- 작성자 -->
 							<div class="col-md-6">
-								<label>작성자</label> <input th:value="${warehouseDTO.regId}" class="form-control" readonly>
+								<label>작성자</label> <input th:value="${qcStandardDTO.regId}" class="form-control" readonly>
 							</div>
 
 							<!-- 작성일자 -->
 							<div class="col-md-6">
-								<label>작성일자</label> <input th:value="${warehouseDTO.regDate}" class="form-control" readonly>
+								<label>작성일자</label> <input th:value="${qcStandardDTO.regDate}" class="form-control" readonly>
 							</div>
 
 							<!-- 최종작성자 -->
 							<div class="col-md-6">
-								<label>최종 작성자</label> <input th:value="${warehouseDTO.modId}" class="form-control" readonly>
+								<label>최종 작성자</label> <input th:value="${qcStandardDTO.modId}" class="form-control" readonly>
 							</div>
 
 							<!-- 최종작성일자 -->
 							<div class="col-md-6">
-								<label>최종 작성일자</label> <input th:value="${warehouseDTO.modDate}" class="form-control" readonly>
+								<label>최종 작성일자</label> <input th:value="${qcStandardDTO.modDate}" class="form-control" readonly>
 							</div>
 
 							<hr>
@@ -151,7 +116,7 @@ input, select {
 	    $(function () {
 	        // 목록 버튼 클릭 시
 	        $('#btnList').on("click", function () {
-	            location.href = "/mes/warehouse";  // 창고 목록 페이지로 이동
+	            location.href = "/mes/qcstandard";  // 품질기준 목록 페이지로 이동
 	        });
 	
 	        // 수정 폼 제출 시
@@ -209,7 +174,7 @@ input, select {
 	            .then(data => {
 	                if (data === "success") {
 	                    alert("삭제되었습니다.");
-	                    location.href = "/mes/warehouse"; // 목록으로 이동
+	                    location.href = "/mes/qcstandard"; // 목록으로 이동
 	                } else {
 	                    alert("삭제 실패: " + data);
 	                }

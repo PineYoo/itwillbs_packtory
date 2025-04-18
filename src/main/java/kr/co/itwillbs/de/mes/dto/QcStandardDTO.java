@@ -1,5 +1,6 @@
 package kr.co.itwillbs.de.mes.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,10 @@ public class QcStandardDTO {
 
 	private Long idx;
 	private String type;
+	
+	@NotBlank(message = "품질기준 이름은 필수 입력 값입니다.")
 	private String name;
+	
 	private String unit;
 	private String targetValue;
 	private String minValue;
