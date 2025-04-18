@@ -186,7 +186,7 @@
 												<tbody>
 													<tr th:each="item, status : ${itemList}" th:data-id="${item.idx}">
 														<td class="product-number" th:text="${item.productNumber}"></td>
-														<td class="name" th:text="${item.productName}"></td>
+														<td class="product-name" th:text="${item.productName}"></td>
 														<td class="unit-price" th:text="${#numbers.formatInteger(item.unitPrice, 3, 'COMMA')}"></td> <!-- 세자리마다 콤마 -->
 														<td><input class="product-value" type="number" min="0" step="10" th:value="${item.productValue}"></td>
 														<td class="total-price" th:text="${#numbers.formatInteger(item.totalPrice, 3, 'COMMA')}"></td>
@@ -204,10 +204,9 @@
 												</tfoot>
 											</table>
 										</div>
-										
 									</th:block>
-									<th:block th:case="2">
 										
+									<th:block th:case="2">
 										<!------------ 발주검색 영역 ---------- -->
 										<div class="col-4 search-box">
 											<div class="input-group">
@@ -301,7 +300,7 @@
 					window.open('/client/search-popup', 'clientSearch', 'width=800,height=600,location=no,scrollbars=yes');
 				}
 				
-				// 팝업창에서 가져온 담당자 정보 넣는 함수
+				// 팝업창에서 가져온 거래처 정보 넣는 함수
 				function setClientInfo(data) {
 					$("#companyNumber").val(data.companyNumber);
 					$("#companyName").val(data.companyName);

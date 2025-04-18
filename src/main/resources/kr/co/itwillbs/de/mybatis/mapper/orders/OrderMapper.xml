@@ -201,7 +201,7 @@
 		        , #{item.totalPrice}	-- total_price
 		        , 'Y'					-- is_deleted(default)
 				, #{regId}				-- reg_id
-				, now()				-- reg_date
+				, now()					-- reg_date
 				, null					-- mod_id(최초 등록시는 reg_id 만 넣고 update 시 mod_id 입력)
 				, null					-- mod_date
 		        )
@@ -211,7 +211,7 @@
 	<!-- ============================================================= -->
 	<!-- 수주/발주 주문서 상세 컬럼 -->
 	<sql id="order_detail_columns_forSelect">
-		  o.idx					-- 테이블 _인덱스
+		  o.idx					-- 인덱스
 		, o.document_number		-- 주문번호(문서번호)
 		, o.trade_code			-- 거래종류_코드
 		, o.status_code			-- 주문상태_코드
@@ -246,7 +246,7 @@
 		, d.is_deleted			-- 삭제유무
 	</sql>
 	
-	<!-- 주문서 상세 정보 조회 -->
+	<!-- 문서번호에 따른 주문 정보 조회 -->
 	<select id="getOrderByDocumentNumber" resultType="kr.co.itwillbs.de.orders.dto.OrderFormDTO">
 		SELECT
 			<include refid="order_detail_columns_forSelect"></include>
@@ -254,6 +254,29 @@
      LEFT JOIN t_order_detail d
 			ON d.document_number = o.document_number
 		 WHERE o.document_number = #{documentNumber}
+	</select>
+	
+	<!-- 수주/발주 주문_아이템 상세 컬럼 -->
+	<sql id="order_items_columns_forSelect">
+		  idx					-- 인덱스	
+		, order_document_number	-- 문서번호	
+		, product_code			-- 물품코드		
+		, product_number		-- 물품번호	
+		, product_name			-- 아이템명	
+		, product_value			-- 개수		
+		, unit_price			-- 개수별금액	
+		, total_price			-- 합계액		
+		, is_deleted			-- 삭제유무	
+		, reg_id				-- 작성자		
+		, reg_date				-- 작성일자시간	
+	</sql>
+
+	<!-- 문서번호에 따른 주문_아이템 정보 조회 -->
+	<select id="getOrderListByDocumentNumber" resultType="kr.co.itwillbs.de.orders.dto.OrderItemsDTO">
+		SELECT 
+			<include refid="order_items_columns_forSelect"></include>
+		  FROM t_order_items
+		 WHERE order_document_number = #{documentNumber}
 	</select>
 	
 	<!-- ============================================================= -->
@@ -296,4 +319,9 @@
 		 WHERE document_number = #{documentNumber}
 	</update>
 	
+	<!-- 주문_아이템 삭제(DELETE) -->
+	<delete id="deleteOrderItemsByDocumentNumber">
+		DELETE FROM t_order_items
+		 WHERE order_document_number = #{documentNumber}
+	</delete>
 </mapper>
