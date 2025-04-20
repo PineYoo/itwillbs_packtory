@@ -40,27 +40,27 @@ input, select {
 
 							<!-- 상품 타입 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type', '상품 타입', true, 'string', ${codeItems})}"></div>
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type', '상품 타입', true,${codeItems},false,false)}"></div>
 							</div>
 
 							<!-- 상품명 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name','상품명',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('name','상품명',true,false,false)}"></div>
 							</div>
 
 							<!-- 값 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '값', true, 'number')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '값', true,false,false)}"></div>
 							</div>
 
 							<!-- 단위 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit','단위',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('unit','단위',true,false,false)}"></div>
 							</div>
 
 							<!-- 가격 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('price','가격',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('price','가격',true,false,false)}"></div>
 							</div>
 							
 							<hr>

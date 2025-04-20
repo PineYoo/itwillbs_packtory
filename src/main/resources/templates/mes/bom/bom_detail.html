@@ -50,39 +50,31 @@
 						<form th:action="@{/mes/bom}" method="post" th:object="${bomDTO}" class="form row g-3" id="registerForm">
 							<input type="hidden" th:field="*{idx}" />
 							<div class="col-md-12">
-								<div th:replace="~{common/fragments/de_form :: inputText('productIdx','상품코드',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('productIdx','상품코드',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type','BOM 타입',true,'string',${typeList})}"></div>
-							
-<!-- 								<label class="mb-1" for="type">타입</label>
-									<select class="form-select" th:field="*{type}">
-										<option value="">전체</option>
-										<option th:each="item : ${typeList}" th:value="${item.minorCode}" th:text="${item.minorName}" th:selected="*{type} eq ${item.minorCode}"></option>
-									</select>
-								<input type="text" class="form-control" th:field="*{type}" placeholder="">
-								<div th:if="${#fields.hasErrors('type')}" th:errors="*{type}" class="text-danger"></div> -->
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type','BOM 타입',true,${typeList},false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('code','BOM 코드',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('code','BOM 코드',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name','BOM 이름',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('name','BOM 이름',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('description','BOM 설명',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('description','BOM 설명',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('spec','BOM 스펙',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('spec','BOM 스펙',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit','BOM 단위',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('unit','BOM 단위',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity','BOM 개수',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity','BOM 개수',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6 mb-4">
-								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,false,false)}"></div>
 							</div>
 							
 							<div class="col-md-12 row align-items-center justify-content-center">

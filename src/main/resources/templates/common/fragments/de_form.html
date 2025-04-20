@@ -3,51 +3,68 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 	<!--/* 부모 HTML 이 <div class="col-md-12"> || <div class="col-md-6"> 이어야 한다.*/-->
-	<th:block th:fragment="inputText(fieldName, labelText, isRequired, dataType)">
+	<th:block th:fragment="inputText(fieldName, labelText, isRequired, isReadonly, isDisabled)">
 		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
 		<input type="text"
 			class="form-control"
-			th:id="${fieldName}"
-			th:name="${fieldName}"
 			th:field="*{__${fieldName}__}"
 			th:placeholder="${labelText}"
-			th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+			th:attr="data-required=${isRequired},
+					 data-name=${labelText},
+					 readonly=${isReadonly ? 'readonly' : null},
+					 disabled=${isDisabled ? 'disabled' : null}" />
 		<div th:id="|${fieldName}Error|" class="text-danger"></div>
 	</th:block>
 	
-	<th:block th:fragment="inputNumber(fieldName, labelText, isRequired, dataType)">
+	<th:block th:fragment="inputNumber(fieldName, labelText, isRequired, isReadonly, isDisabled)">
 		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
 		<input type="number"
 			class="form-control"
-			th:id="${fieldName}"
-			th:name="${fieldName}"
 			th:field="*{__${fieldName}__}"
 			th:placeholder="${labelText}"
-			th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" />
+			th:attr="data-required=${isRequired},
+					 data-name=${labelText},
+					 readonly=${isReadonly ? 'readonly' : null},
+					 disabled=${isDisabled ? 'disabled' : null}" />
 		<div th:id="|${fieldName}Error|" class="text-danger"></div>
 	</th:block>
 	
-	<th:block th:fragment="isDeleted(fieldName, labelText, isRequired, dataType)">
+	<th:block th:fragment="textArea(fieldName, labelText, rows, cols, isRequired, isReadonly, isDisabled)">
+		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
+		<textarea class="form-control" 
+			rows="${rows}"
+			cols="${cols}"
+			th:field="*{__${fieldName}__}"
+			th:placeholder="${labelText}"
+			th:attr="data-required=${isRequired},
+					 data-name=${labelText},
+					 readonly=${isReadonly ? 'readonly' : null},
+					 disabled=${isDisabled ? 'disabled' : null}"></textarea>
+		<div th:id="|${fieldName}Error|" class="text-danger"></div>
+	</th:block>
+	
+	<th:block th:fragment="isDeleted(fieldName, labelText, isRequired, isReadonly, isDisabled)">
 		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
 		<select class="form-select"
-				th:id="${fieldName}"
-				th:name="${fieldName}"
 				th:field="*{__${fieldName}__}"
-				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
-			<option value="">선택하세요</option>
+				th:attr="data-required=${isRequired},
+						 data-name=${labelText},
+						 readonly=${isReadonly ? 'readonly' : null},
+						 disabled=${isDisabled ? 'disabled' : null}">
 			<option value="N">사용</option>
 			<option value="Y">미사용</option>
 		</select>
 		<div th:id="|${fieldName}Error|" class="text-danger"></div>
 	</th:block>
 	
-	<th:block th:fragment="selectCodeItems(fieldName, labelText, isRequired, dataType, options)">
+	<th:block th:fragment="selectCodeItems(fieldName, labelText, isRequired, options, isReadonly, isDisabled)">
 		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
 		<select class="form-select"
-				th:id="${fieldName}"
-				th:name="${fieldName}"
 				th:field="*{__${fieldName}__}"
-				th:attr="data-required=${isRequired}, data-name=${labelText}, data-type=${dataType}" >
+				th:attr="data-required=${isRequired},
+						 data-name=${labelText},
+						 readonly=${isReadonly ? 'readonly' : null},
+						 disabled=${isDisabled ? 'disabled' : null}">
 			<option value="">선택하세요</option>
 			<option th:each="item : ${options}" th:value="${item.minorCode}" th:text="${item.minorName}">
 		</select>

@@ -45,12 +45,12 @@
 											<div class="col-md-6">
 												<!-- 메뉴 타입 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('menuName','메뉴 이름',false,'string')}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('menuName','메뉴 이름',false)}"></div>
 												</div>
 												
 												<!-- 삭제유무 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제 유무',false,'string')}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제 유무',false)}"></div>
 												</div>
 											</div>
 
@@ -58,7 +58,7 @@
 											<div class="col-md-6">
 												<!-- 메뉴 URL -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('url','메뉴 URL',false,'string')}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('url','메뉴 URL',false)}"></div>
 												</div>
 
 											</div>
@@ -105,7 +105,7 @@
 							</thead>
 							<tbody>
 								<tr th:each="item, status : ${menuDTOList}" th:data-id="${item.idx}" class="clickable-row">
-									<td th:text="${status.count}"></td>
+									<td th:text="${item.rownum}"></td>
 									<td th:text="${item.menuName}"></td>
 									<td th:text="${item.rankNumber}"></td>
 									<td th:text="${item.url}"></td>
@@ -131,7 +131,7 @@
 						searching : false,
 						paging : false,
 						info : false,
-						order: [0, "desc"],
+						order: [0, "asc"],
 						responsive: true
 					}); // end of $('#dataTables').DataTable({
 					

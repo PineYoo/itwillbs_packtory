@@ -49,30 +49,22 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<form th:action="@{/admin/menu}" method="post" th:object="${menuDTO}" class="form row g-3">
-							<input type="hidden" id="menuId" name="menuId" value="0">
 							<div class="col-md-6">
-								<label class="mb-1" for="menuName">메뉴 이름</label>
-								<input type="text" class="form-control" th:field="*{menuName}" placeholder="메뉴 이름">
+								<div th:replace="~{common/fragments/de_form :: inputText('menuName','메뉴 이름',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<label class="mb-1" for="url">메뉴 URL</label>
-								<input type="text" class="form-control" th:field="*{url}" placeholder="URL">
+								<div th:replace="~{common/fragments/de_form :: inputText('url','메뉴 URL',false,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<label class="mb-1" for="rankNumber">메뉴 순서</label>
-								<input type="text" class="form-control" th:field="*{rankNumber}" placeholder="메뉴 순서">
+								<div th:replace="~{common/fragments/de_form :: inputNumber('rankNumber','메뉴 순서',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<label for="isDeleted" class="form-label">삭제유무</label>
-								<select id="isDeleted" name="isDeleted" class="form-select" th:field="*{isDeleted}">
-									<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
-									<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
-<!-- 									<option value="" th:selected="*{isDeleted} eq '' ">선택</option> -->
-								</select>
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,false,false)}"></div>
 							</div>
 							<div class="col-md-12 mb-4">
-								<label class="mb-1" for="description">메뉴 설명</label>
-								<textarea class="form-control" th:field="*{description}" rows="3" cols="40" placeholder="메뉴 설명 입력"></textarea>
+								<div th:replace="~{common/fragments/de_form :: textArea('description','메뉴 설명', '3', '40', false,false,false)}"></div>
+								<!--/* <label class="mb-1" for="description">메뉴 설명</label>
+								<textarea class="form-control" th:field="*{description}" rows="3" cols="40" placeholder="메뉴 설명"></textarea> */-->
 							</div>
 							
 							<div class="col-md-12 row align-items-center justify-content-center">
@@ -97,14 +89,16 @@
 									<th>UrlPath</th>
 									<th>Controller</th>
 									<th>Handler Method</th>
+									<th>Description</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="item : ${mappingList}">
 									<td th:text="${item.method}">GET</td>
-									<td th:text="${item.urlPattern}">/api/example</td>
+									<td th:text="${item.uriPattern}">/api/example</td>
 									<td th:text="${item.simpleName}">ExampleController</td>
 									<td th:text="${item.methodName}">exampleMethod</td>
+									<td th:text="${item.description}">description</td>
 								</tr>
 							</tbody>
 						</table>

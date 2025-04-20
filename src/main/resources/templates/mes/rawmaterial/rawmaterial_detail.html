@@ -61,32 +61,32 @@ input, select {
 
 							<!-- 원자재 타입 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true, 'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
 							</div>
 
 							<!-- 원자재 이름 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name', '원자재 이름', true, 'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('name', '원자재 이름', true,false,false)}"></div>
 							</div>
 
 							<!-- 값 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '값', true, 'number')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '값', true,false,false)}"></div>
 							</div>
 
 							<!-- 원자재 단위 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit', '원자재 단위', true, 'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('unit', '원자재 단위', true,false,false)}"></div>
 							</div>
 
 							<!-- 원자재 가격 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('price', '원자재 가격', true, 'number')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('price', '원자재 가격', true,false,false)}"></div>
 							</div>
 
 							<!-- 평균 사용 기한 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('expirationDate', '평균 사용 기한', true, 'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('expirationDate', '평균 사용 기한', true,false,false)}"></div>
 							</div>
 
 							<hr>

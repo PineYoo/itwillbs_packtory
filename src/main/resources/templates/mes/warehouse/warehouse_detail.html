@@ -48,17 +48,17 @@ input, select {
 
 							<!-- LOT_Idx -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('lotIdx', 'LOT_Idx', true, 'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('lotIdx', 'LOT_Idx', true,false,false)}"></div>
 							</div>
 
 							<!-- 타입 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true, 'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
 							</div>
 
 							<!-- 창고이름 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name','창고 이름',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('name','창고 이름',true,false,false)}"></div>
 							</div>
 
 							<!-- 입출고 상태 -->
@@ -73,27 +73,27 @@ input, select {
 
 							<!-- 총 수량 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '총 수량', true, 'number')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '총 수량', true,false,false)}"></div>
 							</div>
 
 							<!-- 사용 수량 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('usedQuantity', '사용 수량', true, 'number')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('usedQuantity', '사용 수량', true,false,false)}"></div>
 							</div>
 
 							<!-- 단위 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit','단위',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('unit','단위',true,false,false)}"></div>
 							</div>
 
 							<!-- 상태 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('status', '상태', true, 'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('status', '상태', true,false,false)}"></div>
 							</div>
 
 							<!-- 메모 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true, 'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true,false,false)}"></div>
 							</div>
 
 							<!-- 제조일자 -->

@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <title>팩토리(PackTory) - 메뉴 관리</title>
 
-	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<!-- <link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet"> -->
 	<style type="text/css">
 		.form {
 			max-width: 800px;
@@ -53,28 +53,32 @@
 							<input type="hidden" th:field="*{idx}" disabled />
 							<input type="hidden" th:field="*{parentsIdx}" disabled />
 							<div class="col-md-6">
-								<label class="mb-1" for="menuName">그룹 메뉴</label>
-								<input type="text" class="form-control" th:field="*{menuName}" placeholder="그룹 메뉴" disabled>
+								<div th:replace="~{common/fragments/de_form :: inputText('menuName','메뉴 이름',true,false,true)}"></div>
+<!-- 								<label class="mb-1" for="menuName">그룹 메뉴 이름</label>
+								<input type="text" class="form-control" th:field="*{menuName}" placeholder="그룹 메뉴 이름" disabled> -->
 							</div>
 							<div class="col-md-6">
-								<label class="mb-1" for="url">메뉴 URL</label>
-								<input type="text" class="form-control" th:field="*{url}" placeholder="URL" disabled>
+								<div th:replace="~{common/fragments/de_form :: inputText('url','메뉴 URL',false,false,true)}"></div>
+<!-- 								<label class="mb-1" for="url">메뉴 URL</label>
+								<input type="text" class="form-control" th:field="*{url}" placeholder="URL" disabled> -->
 							</div>
 							<div class="col-md-6">
-								<label class="mb-1" for="rankNumber">메뉴 순서</label>
-								<input type="text" class="form-control" th:field="*{rankNumber}" placeholder="메뉴 순서" disabled>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('rankNumber','메뉴 URL',false,false,true)}"></div>
+								<!-- <label class="mb-1" for="rankNumber">메뉴 순서</label>
+								<input type="text" class="form-control" th:field="*{rankNumber}" placeholder="메뉴 순서" disabled> -->
 							</div>
 							<div class="col-md-6">
-								<label for="isDeleted" class="form-label">삭제유무</label>
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,false,true)}"></div>
+<!-- 								<label for="isDeleted" class="form-label">삭제유무</label>
 								<select id="isDeleted" name="isDeleted" class="form-select" th:field="*{isDeleted}" disabled>
-									<option value="" th:selected="*{isDeleted} eq '' ">전체</option>
-									<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
-									<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
-								</select>
+									<option value="Y">삭제</option>
+									<option value="N">사용중</option>
+								</select> -->
 							</div>
 							<div class="col-md-12 mb-4">
-								<label class="mb-1" for="description">메뉴 설명</label>
-								<textarea class="form-control" th:field="*{description}" rows="3" cols="40" placeholder="메뉴 설명 입력" disabled></textarea>
+								<div th:replace="~{common/fragments/de_form :: textArea('description','메뉴 설명','3','40',false,false,true)}"></div>
+								<!-- <label class="mb-1" for="description">메뉴 설명</label>
+								<textarea class="form-control" th:field="*{description}" rows="3" cols="40" placeholder="메뉴 설명 입력" disabled></textarea> -->
 							</div>
 							
 							<div class="col-md-12 row align-items-center justify-content-center">
@@ -156,14 +160,16 @@
 									<th>UrlPath</th>
 									<th>Controller</th>
 									<th>Handler Method</th>
+									<th>Description</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="item : ${mappingList}">
 									<td th:text="${item.method}">GET</td>
-									<td th:text="${item.urlPattern}">/api/example</td>
+									<td th:text="${item.uriPattern}">/api/example</td>
 									<td th:text="${item.simpleName}">ExampleController</td>
 									<td th:text="${item.methodName}">exampleMethod</td>
+									<td th:text="${item.description}">description</td>
 								</tr>
 							</tbody>
 						</table>
@@ -174,10 +180,10 @@
 		
 		<!-- 딱 요만큼이면 되네! jquery.dataTables.min.js, dataTables.bootstrap4.min.js, datatables-demo.js-->
 		<!-- Page level plugins -->
-		<script src="/js/datatables/jquery.dataTables.min.js"></script>
+<!-- 		<script src="/js/datatables/jquery.dataTables.min.js"></script>
 		<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
-		<!-- Page level custom scripts -->
-		<script src="/js/demo/datatables-demo.js"></script>
+		Page level custom scripts
+		<script src="/js/demo/datatables-demo.js"></script> -->
 		
 		<script type="text/javascript">
 			$(document).ready(function() {
@@ -223,8 +229,8 @@
 				// 메뉴타입(그룹메뉴) 수정!
 				$('#btnSubmitForm').on("click", function() {
 					console.group('click! #btnSubmitForm!');
-					let _groupType = document.querySelector('#idx').value;
-					if(!confirm("[ "+ _groupType + " ] 메뉴 정보를 수정 하시겠습니까?")){
+					let _groupMenuName = document.querySelector('#menuName').value;
+					if(!confirm("[ "+ _groupMenuName + " ] 메뉴 정보를 수정 하시겠습니까?")){
 						return;
 					}
 					

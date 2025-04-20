@@ -53,42 +53,42 @@ input, select {
 
 								<!-- 타입 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true, 'string')}"></div>
+									<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
 								</div>
 
 								<!-- 품질기준 이름 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('name', '품질기준 이름', true, 'string')}"></div>
+									<div th:replace="~{common/fragments/de_form :: inputText('name', '품질기준 이름', true,false,false)}"></div>
 								</div>
 
 								<!-- 단위 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true, 'string')}"></div>
+									<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
 								</div>
 
 								<!-- 목표치 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputNumber('targetValue', '목표치', true, 'number')}"></div>
+									<div th:replace="~{common/fragments/de_form :: inputNumber('targetValue', '목표치', true,false,false)}"></div>
 								</div>
 
 								<!-- 최소치 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputNumber('minValue', '최소치', true, 'number')}"></div>
+									<div th:replace="~{common/fragments/de_form :: inputNumber('minValue', '최소치', true,false,false)}"></div>
 								</div>
 
 								<!-- 최대치 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputNumber('maxValue', '최대치', true, 'number')}"></div>
+									<div th:replace="~{common/fragments/de_form :: inputNumber('maxValue', '최대치', true,false,false)}"></div>
 								</div>
 
 								<!-- 메모 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true, 'string')}"></div>
+									<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true,false,false)}"></div>
 								</div>
 
 								<!-- 삭제 유무 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,'string')}"></div>
+									<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
 								</div>
 
 								<hr>

@@ -52,17 +52,17 @@
 											<div class="col-md-6 left-form">
 												<!-- 주문상태 코드 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('statusCode','주문상태코드',false,'string',*{statusList})}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('statusCode','주문상태코드',false,*{statusList})}"></div>
 												</div>
 
 												<!-- 문서번호 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('documentNumber','문서번호',false,'string')}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('documentNumber','문서번호',false)}"></div>
 												</div>
 
 												<!-- 요청일자 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputDatePicker('requestStartDate','requestEndDate','요청일자',false,'date')}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputDatePicker('requestStartDate','requestEndDate','요청일자',false)}"></div>
 												</div>
 											</div>
 
@@ -70,17 +70,17 @@
 											<div class="col-md-6">
 												<!-- 거래처명 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('companyName','거래처명',false,'string')}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('companyName','거래처명',false)}"></div>
 												</div>
 
 												<!-- 삭제유무 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제유무',false,'string')}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제유무',false)}"></div>
 												</div>
 
 												<!-- 마감일자 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputDatePicker('dueStartDate','dueEndDate','마감일자',false,'date')}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputDatePicker('dueStartDate','dueEndDate','마감일자',false)}"></div>
 												</div>
 											</div>
 										</div>

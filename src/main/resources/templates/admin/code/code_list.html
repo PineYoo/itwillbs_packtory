@@ -127,7 +127,7 @@
 							<tbody>
 								<tr th:each="item, status : ${codeDTOList}" th:data-id="${item.idx}" class="clickable-row">
 									<!-- <th:block th:object="${item}"> -->
-									<td th:text="${item.idx}"></td>
+									<td th:text="${item.rownum}"></td>
 									<!-- <td th:text="${status.count}"></td> -->
 									<td th:text="${item.majorCode}"></td>
 									<td th:text="${item.name}"></td>
@@ -156,7 +156,7 @@
 						searching : false,
 						paging : false,
 						info : false,
-						order: [0, "desc"],
+						order: [0, "asc"],
 						responsive: true
 					}); // end of $('#dataTables').DataTable({
 					

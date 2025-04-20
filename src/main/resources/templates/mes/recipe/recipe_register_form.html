@@ -49,31 +49,31 @@
 					<div class="table-responsive">
 						<form th:action="@{/mes/recipe}" method="post" th:object="${recipeDTO}" class="form row g-3" id="registerForm">
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type','레시피 타입',true,'string',${recipeTypeList})}"></div>
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type','레시피 타입',true,${recipeTypeList},false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name','레시피 이름',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('name','레시피 이름',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('productIdx','상품코드',true,'string', ${productTypeList})}"></div>
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('productIdx','상품코드',true, ${productTypeList},false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('bomIdx','BOM코드',true,'string', ${bomTypeList})}"></div>
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('bomIdx','BOM코드',true,${bomTypeList},false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit','레시피 단위',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('unit','레시피 단위',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity','레시피 개수',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity','레시피 개수',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('jobTime','작업시간',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('jobTime','작업시간',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,false,false)}"></div>
 							</div>
 							<div class="col-md-12 mb-4">
-								<div th:replace="~{common/fragments/de_form :: inputText('memo','메모',true,'string')}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('memo','메모',true,false,false)}"></div>
 							</div>
 							
 							<div class="col-md-12 row align-items-center justify-content-center">
