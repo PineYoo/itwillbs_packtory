@@ -2,6 +2,9 @@ package kr.co.itwillbs.de.common.util;
 
 import java.util.List;
 
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -61,5 +64,22 @@ public class CommonCodeUtil {
 			return null;
 		}
 		return codeService.getCodeItems(majorCode);
+	}
+	
+	/**
+	 * 공통 코드 캐시들을 미리 불러와서 셋해두자!
+	 */
+	@Order(1) // ApplicationReadyEvent.1st 순서를 제어하고 싶다면 Order 어노테이션으로 제어 가능
+	@EventListener(ApplicationReadyEvent.class) //@EventListener(ApplicationReadyEvent.class) 이벤트 리스너들의 순서는 보장되지 않는다고 함
+	private void initCacheToCommonCode() {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		// 공통 코드 Major들 가져오기
+		List<CodeDTO> codeList = codeService.getCodes();
+		
+		// 전부 호출하여 캐시에 올라가도록 하자
+		for(CodeDTO item : codeList) {
+			codeService.getCodeItems(item.getMajorCode());
+		}
 	}
 }
