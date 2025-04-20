@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<configuration scan="true" scanPeriod="60 seconds" >
+<configuration scan="true" scanPeriod="60 seconds">
 
     <property name="CONSOLE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %magenta([%thread]) %highlight([%-3level]) %logger{5} - %msg %n" />
     <property name="ROLLING_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread][%-3level] %logger{5} - %msg %n" />
@@ -9,7 +9,6 @@
     <property name="MAX_FILE_SIZE" value="20MB" />
     <property name="TOTAL_SIZE" value="100MB" />
     <property name="MAX_HISTORY" value="7" />
-
 
     <!-- Console appender 설정 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -31,45 +30,36 @@
         </encoder>
     </appender>
 
+    <!-- Hibernate SQL 쿼리 로깅 -->
     <logger name="org.hibernate.SQL" level="DEBUG" additive="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="ROLLING_LOG_FILE"/>
     </logger>
-    <logger name="org.springframework.aop" level="DEBUG" additive="false">
+    
+    <!-- 스프링 AOP 로깅 (콘솔만) -->
+    <logger name="org.springframework.aop" level="INFO" additive="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
+    
     <!-- 쿼리 파라미터 -->
     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additive="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="ROLLING_LOG_FILE"/>
     </logger>
-    <!-- 쿼리 결과 : level 을 TRACE 로 변경하면 결과 로그가 생성된다. -->
-    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="DEBUG" additivity="false">
-        <appender-ref ref="CONSOLE"/>
-    </logger>
-    <!-- MyBatis 쿼리 로그를 출력하는 로거 설정 -->
-    <logger name="org.apache.ibatis.logging.jdbc" level="DEBUG" additive="false">
-        <appender-ref ref="CONSOLE"/>
-    </logger>
-    <!-- 쿼리문 로그를 더 보기 위한 설정 -->
-    <logger name="org.mybatis.spring.SqlSession" level="DEBUG" additive="false">
-        <appender-ref ref="CONSOLE"/>
-    </logger>
-    <!-- MyBatis 로그를 더 자세히 보기 위해 추가 -->
-    <logger name="org.apache.ibatis" level="DEBUG" additive="false">
-        <appender-ref ref="CONSOLE"/>
-    </logger>
-    <!-- SLF4J 로거 설정 -->
-    <logger name="org.apache.ibatis.logging.slf4j.Slf4JImpl" level="DEBUG" additive="false">
+    
+    <!-- 쿼리 결과 (콘솔만) -->
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="DEBUG" additive="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
     
-    <!-- 전체 로그 레벨 설정 (기본값 DEBUG) -->
-    <root level="DEBUG">
+    <!-- MyBatis 로깅 - 통합 설정 -->
+    <logger name="org.apache.ibatis" level="INFO" additive="false">
         <appender-ref ref="CONSOLE"/>
-    </root>
+    </logger>
 
+    <!-- 전체 로그 레벨 설정 -->
     <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
         <appender-ref ref="ROLLING_LOG_FILE"/>
     </root>
 </configuration>
