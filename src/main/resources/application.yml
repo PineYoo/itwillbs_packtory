@@ -31,6 +31,13 @@ spring:
 
   aop:
     auto: true
+
+logging:
+  default:
+    enabled: true
+  detailed:
+    enabled: true
+    level: INFO
 # 개발 기본 세팅 끝
 ---
 # 개발 세팅 - Oracle 시작 
@@ -49,6 +56,13 @@ spring:
       enabled: false
     restart:
       enabled: false
+
+logging:
+  default:
+    enabled: false
+  detailed:
+    enabled: true
+    level: TRACE
 # 개발 세팅 - Oracle 끝
 ---
 # 공통 설정 시작
