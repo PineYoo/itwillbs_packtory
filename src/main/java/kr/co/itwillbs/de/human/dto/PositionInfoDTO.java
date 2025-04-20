@@ -1,10 +1,15 @@
 package kr.co.itwillbs.de.human.dto;
 
 import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.NotEmpty;
 import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import kr.co.itwillbs.de.human.entity.PositionInfo;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -17,6 +22,9 @@ public class PositionInfoDTO {
 
     @NotEmpty(message = "직급 코드는 필수 입력 값입니다.")
     private String positionCode;
+    
+    @NotEmpty(message = "직급 이름은 필수 입력 값입니다.")
+    private String positionName;
 
     @NotEmpty(message = "정렬 순서는 필수 입력 값입니다.")
     private String rankNumber;
@@ -38,11 +46,12 @@ public class PositionInfoDTO {
     private LocalDateTime modDate;  // 최종 수정일자 (자동 수정됨)
 
     @Builder
-    public PositionInfoDTO(Long idx, String positionCode, String rankNumber, String isManager, 
+    public PositionInfoDTO(Long idx, String positionCode, String positionName, String rankNumber, String isManager, 
                            String isDeleted, String regId, LocalDateTime regDate, 
                            String modId, LocalDateTime modDate) {
         this.idx = idx;
         this.positionCode = positionCode;
+        this.positionName = positionName;
         this.rankNumber = rankNumber;
         this.isManager = isManager;
         this.isDeleted = isDeleted;
@@ -55,6 +64,7 @@ public class PositionInfoDTO {
     public PositionInfo toEntity() {
         return PositionInfo.builder()
                 .positionCode(positionCode)
+                .positionName(positionName)
                 .rankNumber(rankNumber)
                 .isManager(isManager)
                 .isDeleted(isDeleted)
@@ -70,6 +80,7 @@ public class PositionInfoDTO {
         return PositionInfoDTO.builder()
                 .idx(positionInfo.getIdx())
                 .positionCode(positionInfo.getPositionCode())
+                .positionName(positionInfo.getPositionName())
                 .rankNumber(positionInfo.getRankNumber())
                 .isManager(positionInfo.getIsManager())
                 .isDeleted(positionInfo.getIsDeleted())

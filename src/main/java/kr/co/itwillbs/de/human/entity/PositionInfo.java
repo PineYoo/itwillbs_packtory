@@ -24,6 +24,9 @@ public class PositionInfo {
 
     @Column(name = "position_code", length = 10, nullable = false)
     private String positionCode; // 직급 코드
+    
+    @Column(name = "position_name", length = 30, nullable = false)
+    private String positionName; // 직급 명
 
     @Column(name = "rank_number", length = 10, nullable = false)
     private String rankNumber; // 정렬 순서
@@ -69,9 +72,10 @@ public class PositionInfo {
     }
 
     @Builder
-    public PositionInfo(String positionCode, String rankNumber, String isManager, String isDeleted,
+    public PositionInfo(String positionCode, String rankNumber, String positionName, String isManager, String isDeleted,
                         String regId, LocalDateTime regDate, String modId, LocalDateTime modDate) {
         this.positionCode = positionCode;
+        this.positionName = positionName;
         this.rankNumber = rankNumber;
         this.isManager = isManager;
         this.isDeleted = isDeleted;
@@ -85,6 +89,7 @@ public class PositionInfo {
         return PositionInfoDTO.builder()
                 .idx(idx)
                 .positionCode(positionCode)
+                .positionName(positionName)
                 .rankNumber(rankNumber)
                 .isManager(isManager)
                 .isDeleted(isDeleted)
@@ -98,6 +103,7 @@ public class PositionInfo {
     // 직급 수정 메서드 (DTO로부터 데이터 반영)
     public void updateFromDTO(PositionInfoDTO dto) {
         this.positionCode = dto.getPositionCode();
+        this.positionName = dto.getPositionName();
         this.rankNumber = dto.getRankNumber();
         this.isManager = dto.getIsManager();
         // regId와 regDate는 수정하지 않음

@@ -4,17 +4,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.itwillbs.de.human.entity.PositionInfo;
 
-import org.springframework.data.repository.query.Param;
-
 @Repository
-public interface PositionInfoRepository extends JpaRepository<PositionInfo, Long> {
+public interface PositionInfoRepository extends JpaRepository<PositionInfo, Long>, JpaSpecificationExecutor<PositionInfo> {
 
     // 삭제되지 않은 직급 목록만 조회
     List<PositionInfo> findByIsDeleted(String isDeleted);
