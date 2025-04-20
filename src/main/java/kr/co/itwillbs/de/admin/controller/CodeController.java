@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/admin/code")
+@RequestMapping(value="/admin/code", name = "공통코드 관리")
 public class CodeController {
 
 	private final CodeService codeService;

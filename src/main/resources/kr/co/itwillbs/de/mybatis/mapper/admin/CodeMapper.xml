@@ -128,17 +128,22 @@
 	
 	<select id="getCodesBySearchDTO" parameterType="kr.co.itwillbs.de.admin.dto.CodeSearchDTO"
 									resultType="kr.co.itwillbs.de.admin.dto.CodeDTO">
-		SELECT 
-			<include refid="t_commonCode_columns_forSelect" />
-		FROM t_commoncode
-		<where>
-			<if test='majorCode !=null and !("".equals(majorCode.trim()))'>and major_code = #{majorCode}</if>
-			<if test='name !=null and !("".equals(name.trim()))'>and name LIKE CONCAT('%',#{name},'%')</if>
-			<if test='description !=null and !("".equals(description.trim()))'>and description LIKE CONCAT('%',#{description},'%')</if>
-			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>and is_deleted = #{isDeleted}</if>
-			<if test='regId !=null and !("".equals(regId.trim()))'>and reg_id = #{regId}</if>
-		</where>
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		SELECT *
+		FROM (
+			SELECT 
+				ROW_NUMBER() OVER (ORDER BY reg_date DESC) AS rownum,
+				<include refid="t_commonCode_columns_forSelect" />
+			FROM t_commoncode
+			<where>
+				<if test='majorCode !=null and !("".equals(majorCode.trim()))'>and major_code = #{majorCode}</if>
+				<if test='name !=null and !("".equals(name.trim()))'>and name LIKE CONCAT('%',#{name},'%')</if>
+				<if test='description !=null and !("".equals(description.trim()))'>and description LIKE CONCAT('%',#{description},'%')</if>
+				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>and is_deleted = #{isDeleted}</if>
+				<if test='regId !=null and !("".equals(regId.trim()))'>and reg_id = #{regId}</if>
+			</where>
+			) AS a
+		WHERE a.rownum <![CDATA[>]]> #{pageDTO.offset}
+		LIMIT #{pageDTO.size} 
 	</select>
 	
 	<select id="getCodeByIdx" parameterType="kr.co.itwillbs.de.admin.dto.CodeSearchDTO"
