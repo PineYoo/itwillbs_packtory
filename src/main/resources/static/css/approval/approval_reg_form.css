@@ -36,7 +36,7 @@ label {
 }
 
 .form-control {
-  flex: 1; /* 가능한 최대 너비 차지 */
+  flex: 1 !important; /* 가능한 최대 너비 차지 */
   min-width: 200px; /* 최소 너비 설정 */
   height: 38px; /* 버튼과 동일한 높이 설정 */
 }

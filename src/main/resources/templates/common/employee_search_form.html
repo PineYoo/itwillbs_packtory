@@ -87,6 +87,14 @@
 		            	</div>
 					</div>
 		        </form>
+
+				<div class="completeSelect" style="display: none;">
+				    <div class="d-flex justify-content-end align-items-center mb-2">
+					    <span class="me-3 text-danger">※ 기안자는 선택하신 순서대로 들어갑니다. ※</span>
+					    <button class="btn btn-danger" id="completeSelection">선택완료</button>
+					</div>
+				</div>
+
 				<div class="table-responsive">
 				     <table class="table table-striped table-hover text-center">
 				        <thead>
@@ -114,7 +122,7 @@
 							        <input type="hidden" class="sub-department-code" th:value="${item.subDepartmentCode}" />
 							        <input type="hidden" class="position-code" th:value="${item.positionCode}" />
 							        <input type="hidden" class="email" th:value="${item.email}" />
-									<button class="btn btn-success">선택</button>
+									<button class="btn btn-success select-btn">선택</button>
 				        		</td>
 				        	</tr>
 				        </tbody>
@@ -122,9 +130,9 @@
 				</div>
 				<div th:replace="~{common/fragments/de_pagination :: pagination(${employeeSearchDTO})}"></div>
 			</div>
-		    <div class="text-end">
-		        <button class="btn btn-secondary" onclick="window.close()">닫기</button>
-		    </div>
+<!-- 		    <div class="text-end"> -->
+<!-- 		        <button class="btn btn-secondary" onclick="window.close()">닫기</button> -->
+<!-- 		    </div> -->
 		</div>
 		<!-- /.container-fluid -->
 	</th:block>
@@ -153,6 +161,9 @@
 	<script src="/css/fontawesome/all.min.js"></script>
 	
 	<script type="text/javascript">
+		const isSingleSelect = window.opener.isSingleSelect ?? false;	// 단일선택모드인가
+		let selectedEmployeeList = []; // 선택된 사원 정보 저장
+
 		$(document).ready(function() {
 		    // 1. 페이지 로드 시 부서 리스트와 직급 리스트를 가져오기
 		    $.ajax({
@@ -264,7 +275,7 @@
 		                	            <input type="hidden" class="sub-department-code" value="${item.subDepartmentCode || ''}" />
 		                	            <input type="hidden" class="position-code" value="${item.positionCode || ''}" />
 		                	            <input type="hidden" class="email" value="${item.email || ''}" />
-		                	            <button class="btn btn-success">선택</button>
+		                	            <button class="btn btn-success select-btn">선택</button>
 		                	        </td>
 		                	    </tr>
 		                	`;
@@ -282,44 +293,112 @@
 		    $('#department, #subDepartment, #position').on('change', searchEmployees);
 		    
 			//	-------------------------------------------------------------
+		    // 다중선택모드 시에만 선택완료버튼 보이기
+		    if(!isSingleSelect) {
+		    	$('.completeSelect').show();
+		    }
+			
+			//	-------------------------------------------------------------
+		    const selectedIdxList = window.opener.selectedIdxListFromParent || [];
+		    const maxSelectable = window.opener.maxSelectableItems || 3;	// 기안자 최대 3명
+		    let selectedCount = selectedIdxList.length; // 초기 개수
+			
+			 // 초기화: 이미 선택된 사원은 선택됨 표시
+		    $('#employeeList tr').each(function () {
+		        const idx = parseInt($(this).find('.idx').val());
+		        if (selectedIdxList.includes(idx)) {
+		            $(this).find('.select-btn')
+		                .removeClass('btn-success')
+		                .addClass('btn-secondary selected')
+		                .text('선택됨');
+	            
+                    // 초기 선택값도 리스트에 넣어줌
+                    const $row = $(this);
+                    selectedEmployeeList.push({
+                        id: $row.find(".emp-id").text().trim(),
+                        name: $row.find(".emp-name").text().trim(),
+                        departmentName: $row.find(".dept-name").text().trim(),
+                        subDepartmentName: $row.find(".sub-dept-name").text().trim(),
+                        positionName: $row.find(".position-name").text().trim(),
+                        phoneNumber: $row.find(".phone-number").text().trim(),
+                        departmentCode: $row.find(".department-code").val(),
+                        subDepartmentCode: $row.find(".sub-department-code").val(),
+                        positionCode: $row.find(".position-code").val(),
+                        email: $row.find(".email").val()
+                    });
+                }
+            });
+		    
+			
 			// 선택 버튼 클릭 이벤트
-			$(document).on("click", "#employeeList .btn-success", function() {
-			    // 클릭한 버튼이 있는 tr 찾기
-			    var $row = $(this).closest("tr");
+			$(document).on("click", ".select-btn", function() {
+			    const $btn = $(this);
+			    const $row = $btn.closest("tr");
 
-			 	// '-'일 경우 빈 문자열로 변환하는 헬퍼 함수
+			    // '-'일 경우 빈 문자열로 변환하는 헬퍼 함수
 			    function cleanText(text) {
 			        return text.trim() === '-' ? '' : text.trim();
 			    }
 
-			    // 행에서 사원 정보 추출
-			    var id = cleanText($row.find(".emp-id").text());
-			    var name = cleanText($row.find(".emp-name").text());
-			    var departmentName = cleanText($row.find(".dept-name").text());
-			    var subDepartmentName = cleanText($row.find(".sub-dept-name").text());
-			    var positionName = cleanText($row.find(".position-name").text());
-			    var phoneNumber = cleanText($row.find(".phone-number").text());
+			    const employeeInfo = {
+			        id: cleanText($row.find(".emp-id").text()),
+			        name: cleanText($row.find(".emp-name").text()),
+			        departmentName: cleanText($row.find(".dept-name").text()),
+			        subDepartmentName: cleanText($row.find(".sub-dept-name").text()),
+			        positionName: cleanText($row.find(".position-name").text()),
+			        phoneNumber: cleanText($row.find(".phone-number").text()),
+			        departmentCode: $row.find(".department-code").val(),
+			        subDepartmentCode: $row.find(".sub-department-code").val(),
+			        positionCode: $row.find(".position-code").val(),
+			        email: $row.find(".email").val()
+			    };
 
-			    var departmentCode = $row.find(".department-code").val();
-			    var subDepartmentCode = $row.find(".sub-department-code").val();
-			    var positionCode = $row.find(".position-code").val();
-			    var email = $row.find(".email").val();
+			    // 단일 선택 모드일 경우
+			    if (typeof isSingleSelect !== 'undefined' && isSingleSelect) {
+			        if (window.opener && typeof window.opener.setEmployeeInfo === 'function') {
+			            window.opener.setEmployeeInfo(employeeInfo); // 부모창으로 전달
+			        }
+			        window.close(); // 창 닫기
+			        return;
+			    }
 
-			    // 부모 창에 값 전달 (id 기반 또는 함수 호출 방식 가능)
-			    window.opener.setEmployeeInfo({
-					id: id,
-					name: name,
-					departmentCode: departmentCode,
-					departmentName: departmentName,
-					subDepartmentCode: subDepartmentCode,
-					subDepartmentName: subDepartmentName,
-					positionCode: positionCode,
-					positionName: positionName,
-					phoneNumber: phoneNumber,
-					email: email
-			    });
-
-			    // 현재 팝업 창 닫기
+			    // ----------------------------------------------
+			    // 다중 선택 모드
+			    if ($btn.hasClass('selected')) {
+			        // 선택 취소
+			        $btn
+			            .removeClass('selected btn-secondary')
+			            .addClass('btn-success')
+			            .text('선택');
+					
+			        selectedCount--;
+			        
+			        // 리스트에서 제거
+			        selectedEmployeeList = selectedEmployeeList.filter(emp => emp.id !== employeeInfo.id);
+			    } else {
+		            if (selectedCount >= maxSelectable) {
+		                alert(`최대 ${maxSelectable}명까지만 선택할 수 있습니다.`);
+		                return;
+		            }
+		            
+					// 선택
+			        $btn
+			            .addClass('selected btn-secondary')
+			            .removeClass('btn-success')
+			            .text('선택됨');
+					
+			        selectedCount++;
+					
+			    	// 리스트에 추가
+			        selectedEmployeeList.push(employeeInfo);
+			    }
+			});
+			
+			// 선택완료 버튼 클릭 시 이벤트(부모창에 선택된 값 한번에 전달)
+			$('#completeSelection').on('click', function () {
+			    if (window.opener && typeof window.opener.setSelectedEmployees === 'function') {
+			        window.opener.setSelectedEmployees(selectedEmployeeList);  // 부모창에 한 번에 전달
+			    }
 			    window.close();
 			});
 			

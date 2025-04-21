@@ -52,11 +52,6 @@ public class ApprovalService {
 		
 		approvalDTO.setApprovalNo(approvalNo);
 		
-		//	서버로 넘어오는 값(ex - 2025-04-03 ~ 2025-04-10)
-		//	~ 기준으로 앞쪽 날짜를 draftDate(기안일자)로 세팅
-		//	~ 기준으로 뒤쪽 날짜를 dueDate(마감일자)로 세팅
-		approvalDTO.setDraftDate(approvalDTO.getDueDate().split("~")[0].trim());
-		approvalDTO.setDueDate(approvalDTO.getDueDate().split("~")[1].trim());
 		log.info("draftDTO : " + approvalDTO);
 		//DraftDTO(approval_no=A202503280001, drafter_id=100008, drafter_name=김보라, drafter_department=아이티윌, drafter_position=주임, 
 		// approval_type=null, doc_no=, approver1=, approver2=, approver3=, title=ㅇㅇㄹㄴ, content=ㅇㄴㄹㅇ, due_date=null, approvalStatus=null)
