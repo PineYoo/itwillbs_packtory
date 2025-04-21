@@ -58,10 +58,7 @@ public class WarehouseService {
             // 창고 정보를 업데이트하는 쿼리 호출
         	warehouseMapper.updateWarehouse(warehouseDTO);
             log.info("창고 수정 완료 - name: {}", warehouseDTO.getName());
-        } else {
-            log.warn("수정 요청된 창고 정보가 null입니다.");
-            throw new IllegalArgumentException("수정 요청된 창고 정보가 null입니다.");
-        }
+        } 
     }
 
 	// 창고 삭제 (Soft delete)

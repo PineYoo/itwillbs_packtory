@@ -129,7 +129,7 @@ input, select {
 	            // idx를 실제 페이지 URL에서 받아오기
 	            const idx = $('#idx').val();  // 수정된 부분: id를 #idx로 수정
 	
-	            fetch(`/mes/warehouse/${idx}`, {
+	            fetch(`/mes/qclog/updateQcLog`, {
 	                method: "PUT",
 	                headers: {
 	                    "Content-Type": "application/json"
@@ -160,7 +160,7 @@ input, select {
 
 	            const idx = $('#idx').val();
 
-	            fetch(`/mes/warehouse/${idx}`, {
+	            fetch(`/mes/qclog/${idx}`, {
 	                method: "DELETE"
 	            })
 	            .then(response => response.text())
