@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import kr.co.itwillbs.de.mes.dto.BomDTO;
 import kr.co.itwillbs.de.mes.dto.BomSearchDTO;
 import kr.co.itwillbs.de.mes.mapper.BomMapper;
-import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -48,9 +48,12 @@
 
 												<!-- 상품 검색 -->
 												<div class="mb-3">
-													<label for="productIdx" class="form-label">상품 이름</label> <select class="form-select" name="productIdx" id="productIdx">
+													<label for="productIdx" class="form-label">상품 이름</label> 
+													<select class="form-select" name="productIdx" id="productIdx">
 														<option value="">상품 검색</option>
-														<option th:each="product : ${productList}" th:value="${product.idx}" th:text="${product.name}" th:selected="${product.idx} == ${searchDTO.productIdx}"></option>
+														<option th:each="product : ${productList}" 
+																th:value="${product.idx}" th:text="${product.name}" 
+																th:selected="${product.idx} == ${searchDTO.productIdx}"></option>
 													</select>
 												</div>
 

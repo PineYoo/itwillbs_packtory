@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.util.StringUtil;
+import kr.co.itwillbs.de.mes.dto.QcLogDTO;
+import kr.co.itwillbs.de.mes.dto.QcLogSearchDTO;
 import kr.co.itwillbs.de.mes.dto.QcStandardDTO;
-import kr.co.itwillbs.de.mes.dto.QcStandardSearchDTO;
+import kr.co.itwillbs.de.mes.service.QcLogService;
 import kr.co.itwillbs.de.mes.service.QcStandardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,33 +31,38 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/mes/qcstandard")
-public class QcStandardController {
+@RequestMapping("/mes/qclog")
+public class QcLogController {
 
+	private final QcLogService qcLogService;
 	private final QcStandardService qcStandardService;
-	private final String QC_PATH = "/mes/qcstandard";
+	private final String QC_PATH = "/mes/qclog";
 
-	// 품질 등록 폼 페이지
+	// 품질로그 등록 폼 페이지
 	@GetMapping("/new")
-	public String qcStandardRegisterForm(Model model) {
+	public String qcLogRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		model.addAttribute("qcStandardDTO", new QcStandardDTO());
+		// 품질기준 목록 조회
+		List<QcStandardDTO> qcStandaradList = qcStandardService.getQcStandardList();
+		model.addAttribute("qcStandaradList", qcStandaradList);
 
-		return QC_PATH + "/qcstandard_form";
+		model.addAttribute("qcLogDTO", new QcLogDTO());
+
+		return QC_PATH + "/qclog_form";
 	}
 
-	// 품질 등록 폼 페이지 AJAX용
+	// 품질로그 등록 폼 페이지 AJAX용
 	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> qcstandardRegister(@RequestBody @Valid QcStandardDTO qcStandardDTO) {
+	private ResponseEntity<Map<String, Object>> qcLogRegister(@RequestBody @Valid QcLogDTO qcLogDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("requestDTO : {}", StringUtil.objToString(qcStandardDTO));
+		log.info("requestDTO : {}", StringUtil.objToString(qcLogDTO));
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			qcStandardService.insertQcStandard(qcStandardDTO);
+			qcLogService.insertQcLog(qcLogDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -67,44 +74,52 @@ public class QcStandardController {
 		return ResponseEntity.ok(response);
 	}
 
-	// 품질 목록 조회 (검색)
+	// 품질로그 목록 조회 (검색)
 	@GetMapping("")
-	public String getQcStandardList(@ModelAttribute QcStandardSearchDTO searchDTO, Model model) {
+	public String getQcLogList(@ModelAttribute QcLogSearchDTO searchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		// 페이징
-		searchDTO.getPageDTO().setTotalCount(qcStandardService.searchQcStandardCount(searchDTO));
+		searchDTO.getPageDTO().setTotalCount(qcLogService.searchQcLogCount(searchDTO));
 
 		// 품질 목록 조회
-		List<QcStandardDTO> qcStandardList = qcStandardService.searchQcStandard(searchDTO);
-		model.addAttribute("qcStandardList", qcStandardList);
+		List<QcLogDTO> qcLogList = qcLogService.searchQcLog(searchDTO);
+		model.addAttribute("qcLogList", qcLogList);
+		
+		// 품질기준 목록 조회
+		List<QcStandardDTO> qcStandaradList = qcStandardService.getQcStandardList();
+		model.addAttribute("qcStandaradList", qcStandaradList);
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
-		return QC_PATH + "/qcstandard_list";
+		return QC_PATH + "/qclog_list";
 	}
 
-	// 품질 상세 조회
+	// 품질로그 상세 조회
 	@GetMapping("/{idx}")
-	public String getQcStandard(@PathVariable("idx") Long idx, Model model) {
+	public String getQcLog(@PathVariable("idx") Long idx, Model model) {
 		log.info("{}---start, request param {}", Thread.currentThread().getStackTrace()[1].getMethodName(), idx);
 
-		// 품질 상세정보 조회
-		QcStandardDTO qcStandardDTO = qcStandardService.getQcStandardByIdx(idx);
-		model.addAttribute("qcStandardDTO", qcStandardDTO);
+		// 품질로그 상세정보 조회
+		QcLogDTO qcLogDTO = qcLogService.getQcLogByIdx(idx);
+		model.addAttribute("qcLogDTO", qcLogDTO);
 
-		return QC_PATH + "/qcstandard_detail";
+		// 품질기준 목록 조회
+		List<QcStandardDTO> qcStandaradList = qcStandardService.getQcStandardList();
+		model.addAttribute("qcStandaradList", qcStandaradList);
+
+		return QC_PATH + "/qclog_detail";
 	}
 
-	// 품질 수정
-	@PutMapping("/updateQcStandard")
-	public ResponseEntity<Map<String, Object>> updateQcStandard(@RequestBody QcStandardDTO qcStandardDTO) {
+	// 품질로그 수정
+	@PutMapping("/updateQcLog")
+	public ResponseEntity<Map<String, Object>> updateQcLog(@RequestBody QcLogDTO qcLogDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			qcStandardService.updateQcStandard(qcStandardDTO);
+			qcLogService.updateQcLog(qcLogDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -117,12 +132,12 @@ public class QcStandardController {
 		return ResponseEntity.ok(response);
 	}
 
-	// 품질 삭제 (Soft Delete)
+	// 품질로그 삭제 (Soft Delete)
 	@DeleteMapping("/{idx}")
 	@ResponseBody
-	public String deleteQcStandard(@PathVariable("idx") Long idx) {
+	public String deleteQcLog(@PathVariable("idx") Long idx) {
 		try {
-			qcStandardService.deleteQcStandard(idx);
+			qcLogService.deleteQcLog(idx);
 			return "success";
 		} catch (Exception e) {
 			log.error("품질 삭제 실패: {}", e.getMessage());

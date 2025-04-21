@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
+<head>
+<meta charset="UTF-8">
+<title>팩토리(PackTory) - 품질로그 상세</title>
+<style type="text/css">
+.form {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+input, select {
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 2px;
+}
+
+.essential {
+	background-color: #fffbe6;
+}
+
+.filled {
+	background-color: white;
+}
+</style>
+</head>
+<body id="page-top">
+	<div layout:fragment="contents">
+		<div class="container-fluid">
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-4 text-gray-800">품질로그 상세</h1>
+			</div>
+
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive">
+						<form th:action="@{/mes/qclog/updateQcLog}" method="post" th:object="${qcLogDTO}" class="form row g-3" id="registerForm">
+							<input type="hidden" th:field="*{idx}" id="idx" />
+
+							<!-- 품질기준 선택 -->
+							<div class="col-md-6">
+								<label for="bomIdx" class="form-label">품질기준</label> <select th:field="*{qcIdx}" class="form-select">
+									<option value="">품질기준을 선택하세요</option>
+									<option th:each="qc : ${qcStandaradList}" th:value="${qc.idx}" th:text="${qc.name}"></option>
+								</select>
+							</div>
+
+							<!-- 측정결과 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('qcResult', '측정결과', true,false,false)}"></div>
+							</div>
+
+							<!-- 측정값 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('value', '측정값', true,false,false)}"></div>
+							</div>
+
+							<!-- 단위 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
+							</div>
+
+							<!-- 메모 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true,false,false)}"></div>
+							</div>
+
+							<!-- 삭제 유무 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+							</div>
+
+							<hr>
+
+							<!-- 작성자 -->
+							<div class="col-md-6">
+								<label>작성자</label> <input th:value="${qcLogDTO.regId}" class="form-control" readonly>
+							</div>
+
+							<!-- 작성일자 -->
+							<div class="col-md-6">
+								<label>작성일자</label> <input th:value="${qcLogDTO.regDate}" class="form-control" readonly>
+							</div>
+
+							<!-- 최종작성자 -->
+							<div class="col-md-6">
+								<label>최종 작성자</label> <input th:value="${qcLogDTO.modId}" class="form-control" readonly>
+							</div>
+
+							<!-- 최종작성일자 -->
+							<div class="col-md-6">
+								<label>최종 작성일자</label> <input th:value="${qcLogDTO.modDate}" class="form-control" readonly>
+							</div>
+
+							<hr>
+
+							<div class="col-md-12 row align-items-center justify-content-center">
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
+								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+								<button type="button" id="deleteBtn" class="btn btn-danger btn-lg d-block col-3 ml-2 mb-3">삭제</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+	    $(function () {
+	        // 목록 버튼 클릭 시
+	        $('#btnList').on("click", function () {
+	            location.href = "/mes/qclog";  // 품질로그 목록 페이지로 이동
+	        });
+	
+	        // 수정 폼 제출 시
+	        $('#btnSubmitForm').on("click", function () {
+	            // 에러 메시지 초기화
+	            $("div[id$='Error']").text("");
+	            
+	            // 폼 데이터 직렬화
+	            const _serializedData = $('#registerForm').serialize();
+	            const _pairs = _serializedData.split('&');
+	            const _jsonObj = {};
+	            _pairs.forEach(pair => {
+	                const [key, value] = pair.split('=');
+	                _jsonObj[decodeURIComponent(key)] = decodeURIComponent(value);
+	            });
+	
+	            // idx를 실제 페이지 URL에서 받아오기
+	            const idx = $('#idx').val();  // 수정된 부분: id를 #idx로 수정
+	
+	            fetch(`/mes/warehouse/${idx}`, {
+	                method: "PUT",
+	                headers: {
+	                    "Content-Type": "application/json"
+	                },
+	                body: JSON.stringify(_jsonObj)  // JSON 형식으로 요청 본문 전달
+	            })
+	            .then(response => response.json())
+	            .then(data => {
+	                if (data.status === "success") {
+	                    alert(data.message);  // 성공 메시지
+	                    location.reload();  // 페이지 새로고침
+	                } else if (data.status === "validFail") {
+	                    const errors = data.errors;
+	                    for (let field in errors) {
+	                        $("#" + field + "Error").text(errors[field]);  // 유효성 검사 실패 시 에러 메시지 표시
+	                    }
+	                }
+	            })
+	            .catch(error => {
+	                console.error("서버 오류:", error);
+	                alert("요청 처리 중 문제가 발생했습니다.");
+	            });
+	        });
+	        
+	     	// 삭제 버튼 클릭 시
+	        $('#deleteBtn').on("click", function () {
+	            if (!confirm("정말 삭제하시겠습니까?")) return;
+
+	            const idx = $('#idx').val();
+
+	            fetch(`/mes/warehouse/${idx}`, {
+	                method: "DELETE"
+	            })
+	            .then(response => response.text())
+	            .then(data => {
+	                if (data === "success") {
+	                    alert("삭제되었습니다.");
+	                    location.href = "/mes/qclog"; // 목록으로 이동
+	                } else {
+	                    alert("삭제 실패: " + data);
+	                }
+	            })
+	            .catch(error => {
+	                console.error("삭제 요청 오류:", error);
+	                alert("삭제 요청 중 문제가 발생했습니다.");
+	            });
+	        });
+	    });
+	</script>
+	</div>
+</body>
+</html>
