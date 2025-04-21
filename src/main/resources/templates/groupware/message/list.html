@@ -33,38 +33,27 @@
 						<section class="d-flex search-inner">
 
 							<div class="col pl-4 search-box">
-								<form th:action="@{/groupware/message}" method="get" id="searchForm">
-									<!-- 								    <input type="hidden" th:field="*{pageDTO.page}"> -->
-									<!-- 									<input type="hidden" th:field="*{pageDTO.size}"> -->
+								<form th:action="@{/groupware/message}" method="get" th:object="${searchDTO}" id="searchForm">
+									<input type="hidden" th:field="*{pageDTO.page}"> <input type="hidden" th:field="*{pageDTO.size}">
+
 									<div class="container-fluid px-5 mt-3">
 										<div class="row">
 											<!-- 왼쪽 컬럼 -->
 											<div class="col-md-6 left-form">
-												<!-- 주문상태 코드 -->
+
+												<!-- 메시지 유형 -->
 												<div class="form-group row mb-3">
-													<label class="col-sm-3 col-form-label">알림 유형 선택</label>
-													<div class="col-sm-9">
-														<select name="type" class="form-select">
-															<option value="">알림 유형 선택</option>
-															<option th:each="code : ${messageTypes}" th:value="${code.minorName}" th:text="${code.minorName}"></option>
-														</select>
-													</div>
+													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('type','메시지 유형',false, ${codeItems})}"></div>
 												</div>
 
 												<!-- 발신자ID -->
 												<div class="form-group row mb-3">
-													<label class="col-sm-3 col-form-label">발신자ID</label>
-													<div class="col-sm-9">
-														<input type="text" name="senderId" class="form-control" placeholder="발신자 ID 입력">
-													</div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('senderId','발신자 ID',false)}"></div>
 												</div>
 
 												<!-- 수신자ID -->
 												<div class="form-group row mb-3">
-													<label class="col-sm-3 col-form-label">수신자ID</label>
-													<div class="col-sm-9">
-														<input type="text" name="senderId" class="form-control" placeholder="발신자 ID 입력">
-													</div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('receiverId','수신자 ID',false)}"></div>
 												</div>
 											</div>
 
@@ -74,8 +63,7 @@
 												<div class="form-group row mb-3">
 													<label class="col-sm-3 col-form-label">발신일</label>
 													<div class="col-sm-9">
-														<input type="datetime-local" name="sendDate" class="form-control" th:value="${searchDTO?.sendDate != null} ? ${#temporals.format(searchDTO.sendDate, 'yyyy-MM-dd\'T\'HH:mm')} : ''">
-
+														<input type="date" name="sendDate" class="form-control" th:value="${searchDTO?.sendDate != null} ? ${#temporals.format(searchDTO.sendDate, 'yyyy-MM-dd\')} : ''">
 													</div>
 												</div>
 
@@ -83,7 +71,7 @@
 												<div class="form-group row mb-3">
 													<label class="col-sm-3 col-form-label">수신일</label>
 													<div class="col-sm-9">
-														<input type="datetime-local" name="receiveDate" class="form-control" th:value="${searchDTO?.receiveDate != null} ? ${#temporals.format(searchDTO.receiveDate, 'yyyy-MM-dd\'T\'HH:mm')} : ''">
+														<input type="date" name="receiveDate" class="form-control" th:value="${searchDTO?.receiveDate != null} ? ${#temporals.format(searchDTO.receiveDate, 'yyyy-MM-dd\'} : ''">
 													</div>
 												</div>
 											</div>
@@ -120,7 +108,7 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
-									<th>인덱스</th>
+									<th>번호</th>
 									<th>알림 유형</th>
 									<th>제목</th>
 									<th>발신자</th>
@@ -130,14 +118,14 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="message : ${messageDTOList}" th:data-id="${message.idx}" class="message-row">
-									<td th:text="${message.idx}"></td>
-									<td th:text="${message.type}"></td>
-									<td th:text="${message.title}"></td>
-									<td th:text="${message.senderId}"></td>
-									<td th:text="${message.sendDate}"></td>
-									<td th:text="${message.receiverId}"></td>
-									<td th:text="${message.status}"></td>
+								<tr th:each="item, stat : ${messageDTOList}" th:data-id="${item.idx}" class="message-row">
+									<td th:text="${startNo - stat.index}"></td>
+									<td th:text="${item.type}"></td>
+									<td th:text="${item.title}"></td>
+									<td th:text="${item.senderId}"></td>
+									<td th:text="${item.sendDate}"></td>
+									<td th:text="${item.receiverId}"></td>
+									<td th:text="${item.status}"></td>
 								</tr>
 								<tr th:if="${#lists.isEmpty(messageDTOList)}">
 									<td colspan="6" class="text-center">조회된 데이터가 없습니다.</td>
@@ -145,6 +133,7 @@
 							</tbody>
 						</table>
 					</div>
+					<div th:replace="~{common/fragments/de_pagination :: pagination(${searchDTO})}"></div>
 				</div>
 			</div>
 		</div>

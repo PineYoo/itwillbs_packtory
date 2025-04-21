@@ -34,30 +34,22 @@
 						<section class="d-flex search-inner">
 
 							<div class="col pl-4 search-box">
-								<form th:action="@{/groupware/policy}" method="get" id="searchForm">
-<!-- 									<input type="hidden" th:field="*{pageDTO.page}">  -->
-<!-- 									<input type="hidden" th:field="*{pageDTO.size}"> -->
+								<form th:action="@{/groupware/policy}" method="get" th:object="${searchDTO}" id="searchForm">
+									<input type="hidden" th:field="*{pageDTO.page}"> <input type="hidden" th:field="*{pageDTO.size}">
+
 									<div class="container-fluid px-5 mt-3">
 										<div class="row">
 											<!-- 왼쪽 컬럼 -->
 											<div class="col-md-6 left-form">
+
 												<!-- 규정 유형 -->
 												<div class="form-group row mb-3">
-													<label class="col-sm-3 col-form-label">규정 유형</label>
-													<div class="col-sm-9">
-														<select name="type" class="form-select" th:value="${searchDTO.type}">
-															<option value="">규정 유형 선택</option>
-															<option th:each="code : ${policyTypes}" th:value="${code.minorName}" th:text="${code.minorName}" th:selected="${searchDTO != null and searchDTO.type == code.minorName}"></option>
-														</select>
-													</div>
+													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('type','규정 유형',false, ${codeItems})}"></div>
 												</div>
 
 												<!-- 제목 -->
 												<div class="form-group row mb-3">
-													<label class="col-sm-3 col-form-label">제목</label>
-													<div class="col-sm-9">
-														<input type="text" name="title" class="form-control" placeholder="제목 입력" th:value="${searchDTO != null ? searchDTO.title : ''}">
-													</div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('title','제목',false)}"></div>
 												</div>
 											</div>
 
@@ -65,12 +57,8 @@
 											<div class="col-md-6">
 												<!-- 작성자 -->
 												<div class="form-group row mb-3">
-													<label class="col-sm-3 col-form-label">작성자</label>
-													<div class="col-sm-9">
-														<input type="text" name="regId" class="form-control" placeholder="작성자 입력" th:value="${searchDTO != null ? searchDTO.regId : ''}">
-													</div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('regId','작성자',false)}"></div>
 												</div>
-
 											</div>
 										</div>
 
@@ -105,7 +93,7 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
-									<th>인덱스</th>
+									<th>번호</th>
 									<th>규정 유형</th>
 									<th>제목</th>
 									<th>작성자</th>
@@ -113,20 +101,20 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="policy : ${policyDTOList}" th:data-id="${policy.idx}" class="policy-row">
-									<td th:text="${policy.idx}"></td>
-									<td th:text="${policy.type}"></td>
-									<td th:text="${policy.title}"></td>
-									<td th:text="${policy.regId}"></td>
-									<td th:text="${policy.modId}"></td>
+								<tr th:each="item, stat : ${policyDTOList}" th:data-id="${item.idx}" class="message-row">
+									<td th:text="${startNo - stat.index}"></td>
+									<td th:text="${item.type}"></td>
+									<td th:text="${item.title}"></td>
+									<td th:text="${item.regId}"></td>
+									<td th:text="${item.modId}"></td>
 								</tr>
 								<tr th:if="${#lists.isEmpty(policyDTOList)}">
 									<td colspan="6" class="text-center">조회된 데이터가 없습니다.</td>
 								</tr>
 							</tbody>
 						</table>
-
 					</div>
+					<div th:replace="~{common/fragments/de_pagination :: pagination(${searchDTO})}"></div>
 				</div>
 			</div>
 		</div>

@@ -1,6 +1,6 @@
 package kr.co.itwillbs.de.groupware.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -58,33 +58,33 @@ public class Message {
     
     @CreatedDate
     @Column(name = "send_date", updatable = false)
-    private LocalDateTime sendDate; // 발신일
+    private LocalDate sendDate; // 발신일
 
     @Column(name = "receiver_id", length = 50, nullable = false)
     private String receiverId; // 수신자 ID
 
     @Column(name = "receive_date")
-    private LocalDateTime receiveDate; // 수신일
+    private LocalDate receiveDate; // 수신일
 
     @PrePersist
     public void prePersist() {
         this.status = (this.status == null || this.status.isEmpty()) ? "안읽음" : this.status;
         this.fileIdxs = (this.fileIdxs == null || this.fileIdxs.isEmpty()) ? "-" : this.fileIdxs;
         this.isDeleted = (this.isDeleted == null || this.isDeleted.isEmpty()) ? "N" : this.isDeleted;
-        this.sendDate = (this.sendDate == null) ? LocalDateTime.now() : this.sendDate;
+        this.sendDate = (this.sendDate == null) ? LocalDate.now() : this.sendDate;
         this.senderId = (this.senderId == null || this.senderId.isEmpty()) ? "-" : this.senderId;
         this.receiverId = (this.receiverId == null || this.receiverId.isEmpty()) ? "-" : this.receiverId;
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.sendDate = (this.sendDate == null) ? LocalDateTime.now() : this.sendDate;
+        this.sendDate = (this.sendDate == null) ? LocalDate.now() : this.sendDate;
     }
 
     @Builder
     public Message(String type, String title, String contents, String status,
-                   String fileIdxs, String isDeleted, String senderId, LocalDateTime sendDate,
-                   String receiverId, LocalDateTime receiveDate) {
+                   String fileIdxs, String isDeleted, String senderId, LocalDate sendDate,
+                   String receiverId, LocalDate receiveDate) {
         this.type = type;
         this.title = title;
         this.contents = contents;
