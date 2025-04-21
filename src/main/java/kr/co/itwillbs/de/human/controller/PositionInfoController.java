@@ -19,7 +19,7 @@ import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.human.dto.PositionInfoDTO;
-import kr.co.itwillbs.de.human.dto.PositionSearchDTO;
+import kr.co.itwillbs.de.human.dto.PositionInfoSearchDTO;
 import kr.co.itwillbs.de.human.service.PositionInfoService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,7 +54,7 @@ public class PositionInfoController {
 
 	// 직급 목록 조회 (검색 기능 추가)
 	@GetMapping("")
-	public String getPositionList(@ModelAttribute PositionSearchDTO searchDTO, Model model) {
+	public String getPositionList(@ModelAttribute PositionInfoSearchDTO searchDTO, Model model) {
 		LogUtil.logStart(log);
 
 		// 검색 조건에 따라 조회
@@ -73,29 +73,6 @@ public class PositionInfoController {
 
 		return "human/info/position/list";
 	}
-
-//    // 직급 목록 조회 (검색 기능 추가)
-//    @GetMapping("")
-//    public String getPositionList(@ModelAttribute PositionSearchDTO searchDTO, Model model) {
-//    	LogUtil.logStart(log);
-//    	
-//    	// 검색 조건에 따라 조회
-//    	List<PositionInfoDTO> positionList;
-//    	if (searchDTO.getPositionCode() != null && !searchDTO.getPositionCode().isEmpty()) {
-//    		positionList = positionInfoService.getPositionListByCode(searchDTO.getPositionCode().trim());
-//    	} else {
-//    		positionList = positionInfoService.getPositionList();
-//    	}
-//    	
-//    	model.addAttribute("positionInfoDTOList", positionList);
-//    	
-//    	// 공통 코드 리스트 (직급 코드 선택용)
-//    	List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("POSITION_CODE");
-//    	model.addAttribute("codeItems", codeItems);
-//    	model.addAttribute("searchDTO", searchDTO); // 검색 시 선택된 코드 유지
-//    	
-//    	return "human/info/position/list";
-//    }
 
     // 단일 직급 조회
     @GetMapping("/detail/{idx}")

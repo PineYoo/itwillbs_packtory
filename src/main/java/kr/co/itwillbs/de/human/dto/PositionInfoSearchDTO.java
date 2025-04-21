@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-public class PositionSearchDTO {
+public class PositionInfoSearchDTO {
 	
 	private String positionCode;
 	private String positionName;

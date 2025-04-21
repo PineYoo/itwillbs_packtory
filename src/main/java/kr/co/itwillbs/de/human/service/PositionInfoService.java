@@ -18,7 +18,7 @@ import jakarta.persistence.criteria.Predicate;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.human.dto.PositionInfoDTO;
-import kr.co.itwillbs.de.human.dto.PositionSearchDTO;
+import kr.co.itwillbs.de.human.dto.PositionInfoSearchDTO;
 import kr.co.itwillbs.de.human.entity.PositionInfo;
 import kr.co.itwillbs.de.human.repository.PositionInfoRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +52,7 @@ public class PositionInfoService {
 	 * @param searchDTO
 	 * @return
 	 */
-	public Page<PositionInfoDTO> getPositionsBySearchDTO(PositionSearchDTO searchDTO) {
+	public Page<PositionInfoDTO> getPositionsBySearchDTO(PositionInfoSearchDTO searchDTO) {
 		LogUtil.logStart(log);
 		
 		Pageable pageable = searchDTO.getPageDTO().toPageable(Sort.by("idx").descending());

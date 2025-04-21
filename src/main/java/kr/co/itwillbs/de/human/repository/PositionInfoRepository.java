@@ -22,11 +22,6 @@ public interface PositionInfoRepository extends JpaRepository<PositionInfo, Long
     // 특정 직급 코드로 필터링된 목록 조회
     List<PositionInfo> findByPositionCodeAndIsDeleted(String positionCode, String isDeleted);
 
-//    @Transactional
-//    @Modifying
-//    @Query("UPDATE PositionInfo p SET p.isDeleted = 'Y', p.modDate = :modDate WHERE p.idx = :idx")
-//    void softDeleteById(@Param("idx") Long idx, @Param("modDate") LocalDateTime modDate);
-    
     @Transactional
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE PositionInfo p SET p.isDeleted = 'Y', p.modDate = :modDate WHERE p.idx = :idx")

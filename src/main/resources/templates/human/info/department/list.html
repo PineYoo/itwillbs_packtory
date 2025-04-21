@@ -36,22 +36,16 @@
 						<section class="d-flex search-inner">
 
 							<div class="col pl-4 search-box">
-								<form th:action="@{/human/department/search}" method="post" id="searchForm">
-									<!-- 								    <input type="hidden" th:field="*{pageDTO.page}"> -->
-									<!-- 									<input type="hidden" th:field="*{pageDTO.size}"> -->
+								<form th:action="@{/human/department}" method="get" th:object="${searchDTO}" id="searchForm">
+									<input type="hidden" th:field="*{pageDTO.page}"> <input type="hidden" th:field="*{pageDTO.size}">
+
 									<div class="container-fluid px-5 mt-3">
 										<div class="row">
 											<!-- 왼쪽 컬럼 -->
 											<div class="col-md-6 left-form">
-												<!-- 대표 부서 -->
+												<!-- 직급 코드 -->
 												<div class="form-group row mb-3">
-													<label class="col-sm-3 col-form-label">대표 부서</label>
-													<div class="col-sm-9">
-														<select id="departmentCode" name="departmentCode" class="form-select" th:value="${departmentSearchDto.departmentCode}">
-															<option value="">대표 부서 선택</option>
-															<option th:each="code : ${codeItems}" th:value="${code.minorCode}" th:text="${code.minorName}" th:selected="${code.minorCode == departmentSearchDto.departmentCode}"></option>
-														</select>
-													</div>
+													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('departmentCode','직급 명',false, ${codeItems})}"></div>
 												</div>
 
 												<!-- 하위 부서 -->
@@ -68,31 +62,28 @@
 
 											<!-- 오른쪽 컬럼 -->
 											<div class="col-md-6">
+											
 												<!-- 장소 -->
-
 												<div class="form-group row mb-3">
-													<label for="locationIdx" class="col-sm-3 col-form-label">장소</label>
-													<div class="col-sm-9">
-														<input type="text" name="locationIdx" class="form-control" placeholder="장소" th:value="${departmentSearchDto.locationIdx}" />
-													</div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('locationIdx','장소',false)}"></div>
 												</div>
 											</div>
 										</div>
 
 										<!-- 검색바 버튼 -->
-										<div class="row justify-content-end">
-											<div class="col-12 col-sm-auto mb-2">
-												<button class="btn btn-success btn-block" id="btnRegister" type="button">부서 등록</button>
+											<div class="row justify-content-end">
+												<div class="col-12 col-sm-auto mb-2">
+													<button class="btn btn-success btn-block" id="btnRegister" type="button">부서 등록</button>
+												</div>
+												<div class="col-12 col-sm-auto mb-2">
+													<button type="button" class="btn btn-warning btn-block" onclick="formReset('searchForm');">초기화</button>
+												</div>
+												<div class="col-12 col-sm-auto mb-2">
+													<button class="btn btn-primary btn-block" id="btnSearch" type="submit">검색</button>
+												</div>
 											</div>
-											<div class="col-12 col-sm-auto mb-2">
-												<button type="button" class="btn btn-warning btn-block" onclick="formReset('searchForm');">초기화</button>
-											</div>
-											<div class="col-12 col-sm-auto mb-2">
-												<button class="btn btn-primary btn-block" id="btnSearch" type="submit">검색</button>
-											</div>
+											<!-- 검색바 버튼 끝 -->
 										</div>
-										<!-- 검색바 버튼 끝 -->
-									</div>
 								</form>
 
 							</div>
@@ -110,6 +101,7 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
+									<th>번호</th>
 									<th>인덱스</th>
 									<th>대표 부서</th>
 									<th>하위 부서</th>
@@ -119,13 +111,14 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="department : ${departmentInfoDTOList}" th:data-id="${department.idx}" class="department-row">
-									<td th:text="${department.idx}"></td>
-									<td th:text="${department.departmentName}"></td>
-									<td th:text="${department.childName}"></td>
-									<td th:text="${department.parentCode}"></td>
-									<td th:text="${department.childCode}"></td>
-									<td th:text="${department.locationIdx}"></td>
+								<tr th:each="item, stat : ${departmentInfoDTOList}" th:data-id="${item.idx}" class="department-row">
+									<td th:text="${startNo - stat.index}"></td>
+									<td th:text="${item.idx}"></td>
+									<td th:text="${item.departmentName}"></td>
+									<td th:text="${item.childName}"></td>
+									<td th:text="${item.parentCode}"></td>
+									<td th:text="${item.childCode}"></td>
+									<td th:text="${item.locationIdx}"></td>
 								</tr>
 								<tr th:if="${#lists.isEmpty(departmentInfoDTOList)}">
 									<td colspan="8" class="text-center">조회된 데이터가 없습니다.</td>
@@ -133,6 +126,7 @@
 							</tbody>
 						</table>
 					</div>
+					<div th:replace="~{common/fragments/de_pagination :: pagination(${searchDTO})}"></div>
 				</div>
 			</div>
 		</div>

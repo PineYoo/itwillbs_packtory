@@ -5,8 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
-import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
-import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.human.dto.DepartmentCodeDTO;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoDTO;
 import kr.co.itwillbs.de.human.dto.DepartmentInfoSearchDTO;
@@ -44,17 +41,6 @@ public class DepartmentInfoController {
 	public String departmentRegisterForm(Model model) {
 		log.info("departmentRegisterForm --- start");
 		model.addAttribute("departmentInfoDTO", new DepartmentInfoDTO());
-
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
-			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-			LoginVO loginVO = userDetails.getLoginVO();
-			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
-			log.info("userDetails is {}", userDetails);
-			log.info("loginVO is {}", loginVO);
-			model.addAttribute("userDetails", userDetails);
-			model.addAttribute("loginVO", loginVO);
-		}
 
 		// 공통 코드 유틸을 활용하여 major_code가 "DEPARTMENT_CODE"인 코드 아이템 목록 조회
 		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("DEPARTMENT_CODE");
@@ -87,43 +73,28 @@ public class DepartmentInfoController {
 		return result;
 	}
 
-	// 부서 목록 조회
+	// 부서 목록 조회 (검색 + 페이징)
 	@GetMapping("")
-	public String getDepartmentList(Model model) {
+	public String getDepartmentList(@ModelAttribute DepartmentInfoSearchDTO searchDTO, Model model) {
 		log.info("getDepartmentList --- start");
 
-		// 공통 코드 유틸을 활용하여 major_code가 "DEPARTMENT_CODE"인 코드 아이템 목록 조회
+		// 검색 조건에 따라 페이징 처리된 부서 목록 조회
+		Page<DepartmentInfoDTO> result = departmentInfoService.getDepartmentsBySearchDTO(searchDTO);
+		searchDTO.getPageDTO().setTotalCount((int) result.getTotalElements());
+
+		model.addAttribute("departmentInfoDTOList", result.getContent());
+
+		// 역순 번호 계산
+		int startNo = searchDTO.getPageDTO().getTotalCount() - searchDTO.getPageDTO().getOffset();
+		model.addAttribute("startNo", startNo);
+
+		// 공통 코드 리스트 (부서 코드 선택용)
 		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("DEPARTMENT_CODE");
 		model.addAttribute("codeItems", codeItems);
 
-		// 부서 목록 조회 (codeItems 넘겨줌)
-		List<DepartmentInfoDTO> departmentList = departmentInfoService.getDepartmentList(codeItems);
+		// 검색 조건 유지
+		model.addAttribute("searchDTO", searchDTO);
 
-		// 부서 목록과 검색 폼 초기화
-		model.addAttribute("departmentInfoDTOList", departmentList);
-		model.addAttribute("departmentSearchDto", new DepartmentInfoSearchDTO());
-
-		// list.html 뷰 페이지로 이동
-		return "human/info/department/list";
-	}
-
-	// 부서 검색 기능 (POST 방식으로 처리)
-	@PostMapping("/search")
-	public String searchDepartments(@ModelAttribute DepartmentInfoSearchDTO departmentSearchDto, Model model) {
-		log.info("searchDepartments --- start");
-
-		// 검색된 부서 목록 조회
-		List<DepartmentInfoDTO> departmentList = departmentInfoService.searchDepartments(departmentSearchDto);
-
-		// 검색된 부서 목록과 검색 폼의 기존 입력값 유지
-		model.addAttribute("departmentInfoDTOList", departmentList);
-		model.addAttribute("departmentSearchDto", departmentSearchDto);
-
-		// 공통 코드 유틸을 활용하여 major_code가 "DEPARTMENT_CODE"인 코드 아이템 목록 조회
-		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("DEPARTMENT_CODE");
-		model.addAttribute("codeItems", codeItems);
-
-		// list.html 뷰 페이지로 이동
 		return "human/info/department/list";
 	}
 

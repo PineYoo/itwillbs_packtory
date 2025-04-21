@@ -3,6 +3,7 @@ package kr.co.itwillbs.de.human.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -10,11 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.itwillbs.de.human.dto.DepartmentCodeDTO;
 import kr.co.itwillbs.de.human.entity.DepartmentInfo;
+import kr.co.itwillbs.de.human.entity.PositionInfo;
 
 import org.springframework.data.repository.query.Param;
 
 @Repository
-public interface DepartmentInfoRepository extends JpaRepository<DepartmentInfo, Long> {
+public interface DepartmentInfoRepository extends JpaRepository<DepartmentInfo, Long>, JpaSpecificationExecutor<DepartmentInfo> {
 
     // 검색 시, 삭제되지 않은 부서만 조회하도록 수정
 	@Query("SELECT d FROM DepartmentInfo d WHERE d.isDeleted = 'N' "
@@ -38,6 +40,9 @@ public interface DepartmentInfoRepository extends JpaRepository<DepartmentInfo, 
 		   "FROM DepartmentInfo d " +
 		   "WHERE d.parentCode = :departmentCode AND d.isDeleted = 'N'")
 	List<DepartmentCodeDTO> findSubDepartmentsByParentCode(@Param("departmentCode") String departmentCode);
+	
+    @Query("SELECT d FROM DepartmentInfo d WHERE d.isDeleted = 'N' ORDER BY d.rankNumber ASC")
+    List<DepartmentInfo> findValidDepartments();
 
 
 
