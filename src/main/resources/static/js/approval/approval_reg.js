@@ -115,8 +115,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	        $(this).find(".remove-approver").attr("data-id", approverCount).attr("data-index", approverCount);
 	    });
 	}
-	//---------------------------------------------------
 	
+	//---------------------------------------------------
 	$(".fileDeleteButton").on("click", function() {
 		let idx = $(this).data("id");
 		let listItem = $("#file-" + idx);
@@ -139,12 +139,28 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	});
 	
-	
+	// 돌아가기 버튼(리스트로 이동)
 	$("#cancelBtn").on("click", function() {
 		location.href = "/groupware/approval"
 	});
 	
+	// ---------------------------------------------------
+	// +++++++++++++ 최짐니 ++++++++++++++++++++++++++++++
+	// 결제유형 - 레시피결재 클릭 시 이벤트
+	$('#approvalType').on('change', function() {
+        var selectedValue = $(this).val();
+        if (selectedValue === '7') {	// 레시피결재 일 경우
+            console.log("레시피결재 선택됨");
+			
+            $('#recipeApprovalSection').show(); // 섹션 보이기
+        } else {
+            $('#recipeApprovalSection').hide();
+        }
+    });
 	
+	// 기간별 날짜 검색(datepicker) 함수 활용 - (공통 페이지에 있음)
+	// 유효기간 적용
+	initDateRangePicker('validFrom', 'validTo');
 	
 	
 }); // DOMContentLoaded 끝
@@ -158,7 +174,16 @@ function setApprover(index, id, name) {
 	
 }
 
+// 상품 검색 함수(새 창 띄우기)
+function openProductSearch() {
+	window.open('/product/search-popup', 'productSearch', 'width=800,height=600,location=no,scrollbars=yes');
+	window.isSingleSelect = true; // 상품 하나만 선택할 수 있음
 
+}
 
-
+// 팝업창에서 가져온 상품 정보 넣는 함수
+function setProductInfo(product) {
+	$("#productIdx").val(product.idx);     // value 저장용
+	$("#productName").val(product.name);   // 사용자에게 보이는 이름
+}		
 

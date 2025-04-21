@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.common.service.FileService;
@@ -16,6 +17,7 @@ import kr.co.itwillbs.de.groupware.dto.ApprovalSearchDTO;
 import kr.co.itwillbs.de.groupware.dto.DraftDTO;
 import kr.co.itwillbs.de.groupware.dto.NoticeDTO;
 import kr.co.itwillbs.de.groupware.mapper.ApprovalMapper;
+import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -174,11 +176,16 @@ public class ApprovalService {
 		return approvalMapper.getApprovalCountBySearchDTO(approvalSearchDTO);
 	}
 
-	
-	
-	
-	
-	
+	/**
+	 * 레시피 마스터 정보 저장(INSERT)
+	 * @param recipeMasterDTO
+	 */
+	public void registRecipeMaster(RecipeMasterDTO recipeMasterDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		approvalMapper.registRecipeMaster(recipeMasterDTO);
+		
+	}
+
 	
 	
 	

@@ -9,6 +9,7 @@ import kr.co.itwillbs.de.groupware.dto.ApprovalDTO;
 import kr.co.itwillbs.de.groupware.dto.ApprovalSearchDTO;
 import kr.co.itwillbs.de.groupware.dto.DraftDTO;
 import kr.co.itwillbs.de.groupware.dto.NoticeDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
 
 @Mapper
 public interface ApprovalMapper {
@@ -55,6 +56,12 @@ public interface ApprovalMapper {
 											@Param("memberId") String memberId);
 
 	int getApprovalCountBySearchDTO(ApprovalSearchDTO approvalSearchDTO);
+
+	/**
+	 * INSERT INTO t_recipe_master VALUES()
+	 * @param recipeMasterDTO
+	 */
+	void registRecipeMaster(RecipeMasterDTO recipeMasterDTO);
 	
 	
 }

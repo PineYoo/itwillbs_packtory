@@ -41,6 +41,8 @@ import kr.co.itwillbs.de.groupware.dto.DraftDTO;
 import kr.co.itwillbs.de.groupware.dto.NoticeDTO;
 import kr.co.itwillbs.de.groupware.dto.NoticeSearchDTO;
 import kr.co.itwillbs.de.groupware.service.ApprovalService;
+import kr.co.itwillbs.de.mes.dto.ProductDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
 import lombok.extern.slf4j.Slf4j;
 
 /* 전자결재 */
@@ -182,6 +184,14 @@ public class ApprovalController {
 			
 			fileService.registerFile(fileVO);
 		}
+		
+		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		// 25.04.21
+		// 레시피결재 정보 등록
+		if (approvalDTO.getApprovalType().equals("7")) {	// approvalType이 레시피결재(7) 일 경우
+			approvalService.registRecipeMaster(approvalDTO.getRecipeMaster());
+		}
+		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		
 		//	전자결재 리스트페이지 리다이렉트
 		return "redirect:/groupware/approval";
@@ -393,8 +403,5 @@ public class ApprovalController {
 		log.info("approvalDTOList : {} " + approvalDTOList.toString());
 		return approvalDTOList;
 	}
-	
-	
-	
 	
 }
