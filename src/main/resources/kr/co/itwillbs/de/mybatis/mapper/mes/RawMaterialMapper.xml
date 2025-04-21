@@ -213,9 +213,9 @@
 	</update>
 
 	<!-- 원자재 정보 들고가기 (외부용) -->
-	<select id="selectRawMaterialById" parameterType="Long"
+	<select id="selectRawMaterialList" parameterType="Long"
 		resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
-		SELECT *
+		SELECT idx, name
 		FROM t_raw_material
 		WHERE idx = #{idx}
 	</select>
