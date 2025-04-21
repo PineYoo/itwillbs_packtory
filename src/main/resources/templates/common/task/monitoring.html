@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - Task Monitoring</title>
+<style>
+.status-Standby {
+	background-color: #e0e0e0;
+}
+
+.status-Running {
+	background-color: #fff3cd;
+}
+
+.status-Success {
+	background-color: #d4edda;
+}
+
+.status-Fail {
+	background-color: #f8d7da;
+}
+</style>
+</head>
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">모니터링</h1>
+			</div>
+	
+				<button class="btn btn-primary" id="refreshBtn">새로고침 🔄</button>
+				
+				<div class="tab-content mt-4" id="tabContent">
+			
+					<!-- 테이블 뷰 -->
+					<div class="tab-pane fade show active" id="tableView" role="tabpanel">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Task Name</th>
+									<th>Thread Name</th>
+									<th>Status</th>
+									<th>Fail Count</th>
+									<th>Last Run Time</th>
+								</tr>
+							</thead>
+							<tbody id="tableBody">
+							<tr th:each="report : ${reports}" th:class="'status-' + ${report.status}">
+								<td th:text="${report.taskName}">TaskName</td>
+								<td th:text="${report.threadName}">-</td>
+								<td th:text="${report.status}">Status</td>
+								<td th:text="${report.failCount}">0</td>
+								<td th:text="${#temporals.format(report.lastRunTime, 'yyyy.MM.dd. a hh:mm:ss')}">-</td>
+							</tr>
+						</tbody>
+						</table>
+					</div>
+				</div>
+		</div>
+		
+		<script type="text/javascript">
+			document.querySelector('#refreshBtn').addEventListener("click", function(event) {
+				async function fetchReports() {
+					const res = await fetch('/common/task/report/api');
+					const data = await res.json();
+					console.log(data);
+					
+					renderTable(data);
+				}
+				// 이게 맞나?
+				fetchReports();
+			});
+			
+			function renderTable(data) {
+				console.log("hello renderTable!");
+				tableBody.innerHTML = '';
+				data.forEach(report => {
+					const className ='status-'+report.status; 
+					const row = `<tr class="${className}">
+									<td>${report.taskName}</td>
+									<td>${report.threadName}</td>
+									<td>${report.status}</td>
+									<td>${report.failCount}</td>
+									<td>${formatDate(report.lastRunTime)}</td>
+								</tr>`;
+					tableBody.insertAdjacentHTML('beforeend', row);
+				});
+			}	
+				
+			function formatDate(dateTimeStr) {
+				console.log("hello formatDate!");
+				const date = new Date(dateTimeStr);
+				console.log("%s -> %s", dateTimeStr, date.toLocaleString());
+				return date.toLocaleString();
+// 				return date.toLocaleString('ko-KR',{ hour12: false });
+			}
+		</script>
+	</th:block>
+</body>
+</html>
