@@ -32,7 +32,7 @@ public class DepartmentInfoController {
 
 	@Autowired
 	private DepartmentInfoService departmentInfoService;
-
+	
 	@Autowired
 	private CommonCodeUtil commonCodeUtil; // 공통 코드 유틸 사용
 
@@ -81,9 +81,8 @@ public class DepartmentInfoController {
 		// 검색 조건에 따라 페이징 처리된 부서 목록 조회
 		Page<DepartmentInfoDTO> result = departmentInfoService.getDepartmentsBySearchDTO(searchDTO);
 		searchDTO.getPageDTO().setTotalCount((int) result.getTotalElements());
-
 		model.addAttribute("departmentInfoDTOList", result.getContent());
-
+		
 		// 역순 번호 계산
 		int startNo = searchDTO.getPageDTO().getTotalCount() - searchDTO.getPageDTO().getOffset();
 		model.addAttribute("startNo", startNo);

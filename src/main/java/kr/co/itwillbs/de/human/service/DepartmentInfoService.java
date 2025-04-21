@@ -91,25 +91,6 @@ public class DepartmentInfoService {
 		return result.map(DepartmentInfo::toDto);
 	}
 
-	// 부서 검색 (검색 필터 조건: 대표부서코드, 하위부서코드, 장소참조)
-//	public List<DepartmentInfoDTO> searchDepartments(DepartmentInfoSearchDTO departmentSearchDTO) {
-//		log.info("searchDepartments --- start");
-//
-//		// 빈 문자열을 null로 처리하여 Repository 쿼리에서 조건 무시
-//		String deptCode = (departmentSearchDTO.getDepartmentCode() != null
-//				&& !departmentSearchDTO.getDepartmentCode().trim().isEmpty())
-//						? departmentSearchDTO.getDepartmentCode().trim()
-//						: null;
-//		String childCode = (departmentSearchDTO.getChildCode() != null
-//				&& !departmentSearchDTO.getChildCode().trim().isEmpty()) ? departmentSearchDTO.getChildCode().trim()
-//						: null;
-//		String locationIdx = (departmentSearchDTO.getLocationIdx() != null
-//				&& !departmentSearchDTO.getLocationIdx().trim().isEmpty()) ? departmentSearchDTO.getLocationIdx().trim()
-//						: null;
-//		List<DepartmentInfo> entityList = departmentInfoRepository.findBySearchParams(deptCode, childCode, locationIdx);
-//		return convertDepartmentToDepartmentDTO(entityList);
-//	}
-
 	// 단일 부서 조회 (idx로 조회)
 	public DepartmentInfoDTO getDepartmentByIdx(Long idx) {
 		log.info("getDepartmentByIdx --- start");
@@ -144,11 +125,6 @@ public class DepartmentInfoService {
 
 		departmentInfo.setIsDeleted("Y"); // 삭제 상태 변경
 	}
-
-	// Entity 리스트를 DTO 리스트로 변환
-//	private List<DepartmentInfoDTO> convertDepartmentToDepartmentDTO(List<DepartmentInfo> departmentList) {
-//		return departmentList.stream().map(DepartmentInfo::toDto).collect(Collectors.toList());
-//	}
 
 	// 하위 부서 코드 조회
 	public List<DepartmentCodeDTO> getSubDepartmentCodes(String departmentCode) {
