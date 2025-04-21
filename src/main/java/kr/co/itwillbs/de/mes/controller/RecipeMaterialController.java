@@ -151,6 +151,7 @@ public class RecipeMaterialController {
 		
 		model.addAttribute("recipeMaterialDTOList", recipeMaterailService.getRecipeMaterialBySearchDTO(recipeMaterialSearchDTO));
 		
+		
 		return VIEW_PATH+"/material_list";
 	}
 	
