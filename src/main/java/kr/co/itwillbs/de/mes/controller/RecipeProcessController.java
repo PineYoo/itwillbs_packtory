@@ -21,36 +21,33 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.mes.dto.RecipeDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
-import kr.co.itwillbs.de.mes.service.RecipeService;
+import kr.co.itwillbs.de.mes.service.RecipeProcessService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/mes/recipe")
-public class RecipeController {
-/**
- * currency rate(환율) 정보를 어떻게 관리하지? 이건 실시간으로 해야 의미가 있다!
- * https://www.data.go.kr/data/3068846/openapi.do 환율 api
- */
+@RequestMapping("/mes/recipe/process")
+public class RecipeProcessController {
 	
-	private final RecipeService recipeService;
+	private final RecipeProcessService recipeProcessService;
 	private final CommonCodeUtil commonCodeUtil;
 	
-	public RecipeController(RecipeService recipeService, CommonCodeUtil commonCodeUtil) {
-		this.recipeService = recipeService;
+	public RecipeProcessController(RecipeProcessService recipeProcessService, CommonCodeUtil commonCodeUtil) {
+		this.recipeProcessService = recipeProcessService;
 		this.commonCodeUtil = commonCodeUtil;
 	}
 	
 	// 계속 사용하게 될 클래스 RequestMapping 문자열 값
-	private final String RECIPE_PATH="/mes/recipe";
-	private final String COMMON_MAJOR_CODE_RECIPE_TYPE = "RECIPE_TYPE";
-	private final String COMMON_MAJOR_CODE_BOM_TYPE = "BOM_TYPE";
-	private final String COMMON_MAJOR_CODE_PRODUCT_TYPE = "PRODUCT_TYPE";
+	private final String RECIPE_PATH="/mes/recipe/process";
+//	private final String COMMON_MAJOR_CODE_RECIPE_TYPE = "RECIPE_TYPE";
+//	private final String COMMON_MAJOR_CODE_BOM_TYPE = "BOM_TYPE";
+//	private final String COMMON_MAJOR_CODE_PRODUCT_TYPE = "PRODUCT_TYPE";
 	
 	/**
-	 * MES > 레시피 > 레시피 등록 화면 GET
+	 * MES > 레시피 > 레시피 공정 등록 화면 GET
 	 * @param model
 	 * @return
 	 */
@@ -59,30 +56,26 @@ public class RecipeController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// thymeleaf th:object 용 모델 셋
-		model.addAttribute("recipeTypeList", this.getCodeItems(COMMON_MAJOR_CODE_RECIPE_TYPE));
-		model.addAttribute("bomTypeList", this.getCodeItems(COMMON_MAJOR_CODE_BOM_TYPE));
-		model.addAttribute("productTypeList", this.getCodeItems(COMMON_MAJOR_CODE_PRODUCT_TYPE));
-		model.addAttribute("recipeDTO", new RecipeDTO());
+		model.addAttribute("recipeProcessDTO", new RecipeProcessDTO());
 		
-		return RECIPE_PATH+"/recipe_register_form";
+		return RECIPE_PATH+"/process_register_form";
 	}
 	
 	/**
-	 * MES > 레시피 > 레시피 등록 POST(from)
+	 * MES > 레시피 > 레시피 공정 등록 POST(form)
 	 * <br> @Valid 공통에 문제가 있어서 Post를 전부 Ajax로 대체함
-	 * @param recipeDTO
+	 * @param recipeProcessDTO
 	 * @param model
-	 * @return
+	 * @return String
 	 */
 	// 파일을 받을 경우 MediaType.MULTIPART_FORM_DATA_VALUE
-	@Deprecated
 	@PostMapping(value= {"", "/"}, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.TEXT_HTML_VALUE})
-	private String registerRecipe(@ModelAttribute @Valid RecipeDTO recipeDTO, Model model) {
+	private String registerRecipe(@ModelAttribute @Valid RecipeProcessDTO recipeProcessDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("requestDTO : {}", StringUtil.objToString(recipeDTO));
+		log.info("requestDTO : {}", StringUtil.objToString(recipeProcessDTO));
 
 		try {
-			recipeService.registerRecipe(recipeDTO);
+			recipeProcessService.registerRecipeProcess(recipeProcessDTO);
 		} catch(RuntimeException e) {
 			log.error(e.getMessage());
 		}catch (Exception e) {
@@ -93,21 +86,21 @@ public class RecipeController {
 	}
 	
 	/**
-	 * MES > 레시피 > 레시피 등록 POST(ajax)
-	 * @param recipeDTO
+	 * MES > 레시피 > 레시피 공정 등록 POST(ajax)
+	 * @param recipeProcessDTO
 	 * @param model
-	 * @return
+	 * @return ResponseEntity<Map<String, Object>>
 	 */
 	@PostMapping(value= {"", "/"}, consumes= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> registerRecipeForJson(@RequestBody @Valid RecipeDTO recipeDTO) {
+	private ResponseEntity<Map<String, Object>> registerRecipeForJson(@RequestBody @Valid RecipeProcessDTO recipeProcessDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("requestDTO : {}", StringUtil.objToString(recipeDTO));
+		log.info("requestDTO : {}", StringUtil.objToString(recipeProcessDTO));
 		
 		//리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			recipeService.registerRecipe(recipeDTO);
+			recipeProcessService.registerRecipeProcess(recipeProcessDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -121,86 +114,83 @@ public class RecipeController {
 	}
 	
 	/**
-	 * MES > 레시피 > 레시피 리스트
-	 * @param recipeSearchDTO
+	 * MES > 레시피 > 레시피 공정 리스트
+	 * @param recipeProcessSearchDTO
 	 * @param model
-	 * @return
+	 * @return String
 	 */
 	@GetMapping(value= {"", "/"})
-	public String getRecipes(@ModelAttribute RecipeSearchDTO recipeSearchDTO, Model model) {
+	public String getRecipes(@ModelAttribute RecipeProcessSearchDTO recipeProcessSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		recipeSearchDTO.getPageDTO().setTotalCount(recipeService.getRecipesCountBySearchDTO(recipeSearchDTO));
-		setcodeItems(recipeSearchDTO);
-		model.addAttribute("recipeSearchDTO", recipeSearchDTO);
+		recipeProcessSearchDTO.getPageDTO().setTotalCount(recipeProcessService.getRecipesCountBySearchDTO(recipeProcessSearchDTO));
+//		setcodeItems(recipeSearchDTO);
+		model.addAttribute("recipeProcessSearchDTO", recipeProcessSearchDTO);
 		
-		model.addAttribute("recipeDTOList", recipeService.getRecipesBySearchDTO(recipeSearchDTO));
+		model.addAttribute("recipeProcessDTOList", recipeProcessService.getRecipesProcessBySearchDTO(recipeProcessSearchDTO));
 		
-		return RECIPE_PATH+"/recipe_list";
+		return RECIPE_PATH+"/process_list";
 	}
 	
 	/**
-	 * MES > 레시피 > 레시피 검색 조건 조회 
-	 * @param recipeSearchDTO
+	 * MES > 레시피 > 레시피 공정 검색 조건 조회 
+	 * @param recipeProcessSearchDTO
 	 * @param model
-	 * @return
+	 * @return String
 	 */
 	@GetMapping(value= {"/search", "/search/"})
-	public String getRecipesBySearchDTO(@ModelAttribute RecipeSearchDTO recipeSearchDTO, Model model) {
+	public String getRecipesBySearchDTO(@ModelAttribute RecipeProcessSearchDTO recipeProcessSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		recipeSearchDTO.getPageDTO().setTotalCount(recipeService.getRecipesCountBySearchDTO(recipeSearchDTO));
-		setcodeItems(recipeSearchDTO);
-		model.addAttribute("recipeSearchDTO", recipeSearchDTO);
+		recipeProcessSearchDTO.getPageDTO().setTotalCount(recipeProcessService.getRecipesCountBySearchDTO(recipeProcessSearchDTO));
+//		setcodeItems(recipeSearchDTO);
+		model.addAttribute("recipeProcessSearchDTO", recipeProcessSearchDTO);
 		
-		model.addAttribute("recipeDTOList", recipeService.getRecipesBySearchDTO(recipeSearchDTO));
+		model.addAttribute("recipeProcessDTOList", recipeProcessService.getRecipesProcessBySearchDTO(recipeProcessSearchDTO));
 		
-		return RECIPE_PATH+"/recipe_list";
+		return RECIPE_PATH+"/process_list";
 	}
 	
 	/**
 	 * MES > 레시피 > 레시피 상세 조회
 	 * @param idx
-	 * @param recipeSearchDTO
+	 * @param recipeProcessSearchDTO
 	 * @param model
-	 * @return
+	 * @return String
 	 */
 	@GetMapping("/{idx}")
 	public String getRecipe(@PathVariable("idx") String idx,
-							@ModelAttribute RecipeSearchDTO recipeSearchDTO, Model model) {
+							@ModelAttribute RecipeProcessSearchDTO recipeProcessSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("request idx : {}, recipeSearchDTO : {}", idx, recipeSearchDTO);
+		log.info("request idx : {}, recipeSearchDTO : {}", idx, recipeProcessSearchDTO);
 		
 		// idx 값이 숫자가 아닐 때 리스트로 리다이렉트
 		if(!StringUtil.isLongValue(idx)) {
-			model.addAttribute("recipeSearchDTO", recipeSearchDTO);
+			model.addAttribute("recipeProcessSearchDTO", recipeProcessSearchDTO);
 			return "redirect:"+RECIPE_PATH;
 		}
 		
-		model.addAttribute("recipeTypeList", this.getCodeItems(COMMON_MAJOR_CODE_RECIPE_TYPE));
-		model.addAttribute("bomTypeList", this.getCodeItems(COMMON_MAJOR_CODE_BOM_TYPE));
-		model.addAttribute("productTypeList", this.getCodeItems(COMMON_MAJOR_CODE_PRODUCT_TYPE));
-		model.addAttribute("recipeDTO", recipeService.getRecipeByIdx(idx));
+		model.addAttribute("recipeProcessDTO", recipeProcessService.getRecipeProcessByIdx(idx));
 		
-		return RECIPE_PATH+"/recipe_detail";
+		return RECIPE_PATH+"/process_detail";
 	}
 	
 	/**
-	 * MES > BOM > BOM 상세 업데이트
-	 * @param recipeDTO
-	 * @return
+	 * MES > 레시피 > 레시피 공정 상세 업데이트
+	 * @param recipeProcessDTO
+	 * @return ResponseEntity<Map<String, Object>>
 	 */
-	@PutMapping("/modifyRecipe")
+	@PutMapping("/modifyRecipeProcess")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> modifyRecipe(@RequestBody @Valid RecipeDTO recipeDTO) {
+	public ResponseEntity<Map<String, Object>> modifyRecipe(@RequestBody @Valid RecipeProcessDTO recipeProcessDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		log.info("requestBody : {}", recipeDTO);
+		log.info("requestBody : {}", recipeProcessDTO);
 		
 		//리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			recipeService.modifyRecipe(recipeDTO);
+			recipeProcessService.modifyRecipeProcess(recipeProcessDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -221,10 +211,10 @@ public class RecipeController {
 	 * @param recipeSearchDTO
 	 * @return
 	 */
-	private void setcodeItems(RecipeSearchDTO recipeSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		recipeSearchDTO.setTypeList(this.getCodeItems(COMMON_MAJOR_CODE_BOM_TYPE));
-	}
+//	private void setcodeItems(RecipeSearchDTO recipeSearchDTO) {
+//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+//		recipeSearchDTO.setTypeList(this.getCodeItems(COMMON_MAJOR_CODE_BOM_TYPE));
+//	}
 	
 	/**
 	 * 입력 수정 화면에서 사용할 list
