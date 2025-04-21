@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.mes.mapper.RecipeMaterialMapper">
+
+	<!-- href: https://mybatis.org/mybatis-3/ko/dynamic-sql.html -->
+	<select id="templates" >
+		<![CDATA[]]><!-- Character DATA(CDATA) 는 <![CDATA[문자열]]> 파싱되지 않고 그대로 출력을 위함, 쿼리에서 이스케이프 문자를 사용하지 않기 위해 썼음 -->
+		<!-- 예시) 컬럼명 &gt;(&lt;) #{필드명} -> 컬럼명<![CDATA[>(<)]]> #{필드명} -->
+		<if test="blabla != null"></if><!-- mybatis가 동적쿼리가 되는 시작 점. -->
+		
+		<choose><!-- mybatis switch 문 -->
+			<when test="bla != null">
+			</when>
+			<when test="bla != null and blabla != null">
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		
+		<where></where><!-- where 엘리먼트는 태그에 의해 컨텐츠가 리턴되면 단순히 “WHERE”만을 추가한다. 게다가 컨텐츠가 “AND”나 “OR”로 시작한다면 그 “AND”나 “OR”를 지워버린다. -->
+		<trim prefix="WHERE" prefixOverrides="AND |OR "></trim><!-- 위의<where>의 <trim>버전 -->
+		
+		<set></set><!--  set 엘리먼트는 동적으로 SET 키워드를 붙히고 필요없는 콤마를 제거한다. -->
+		<trim prefix="SET" suffixOverrides=","></trim><!-- 위의<set>의 <trim>버전 -->
+		
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")" nullable="true">
+			#{item}
+		</foreach>
+		
+		<foreach item="item" index="index" collection="list">
+			(#{item.index}, #{item.id}, #{item.name}, #{item.isDeleted})
+		</foreach>
+	</select>
+	
+	<sql id="t_recipe_columns_forSelect">
+		  idx
+		, process_idx
+		, material_idx
+		, name
+		, unit
+		, quantity
+		, mix_seq
+		, is_deleted
+		, reg_id
+		, DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date
+		, mod_id
+		, DATE_FORMAT(mod_date, '%Y-%m-%d %H:%i:%s') AS mod_date
+	</sql>
+	
+		<!-- useGeneratedKeys : true 일때, keyProperty : idx >> affectRow가 아닌 생성된 idx가 리턴타입에 셋 mysql은 확인됨 -->
+	<insert id="registerRecipeMaterial" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO">
+		INSERT INTO t_recipe_material (
+			<trim suffixOverrides=",">
+			type,
+			<if test='processIdx !=null and !("".equals(processIdx.trim()))'>
+			process_idx,
+			</if>
+			<if test='materialIdx !=null and !("".equals(materialIdx.trim()))'>
+			material_idx,
+			</if>
+			<if test='name !=null and !("".equals(name.trim()))'>
+			name,
+			</if>
+			<if test='unit !=null and !("".equals(unit.trim()))'>
+			unit,
+			</if>
+			<if test='quantity !=null'>
+			quantity,
+			</if>
+			<if test='mixSeq !=null and !("".equals(mixSeq.trim()))'>
+			mix_seq,
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+			is_deleted,
+			</if>
+			reg_id,
+			reg_date,
+			</trim>
+		) VALUES (
+			<trim suffixOverrides=",">
+			#{type},
+			<if test='processIdx !=null and !("".equals(processIdx.trim()))'>
+			#{processIdx},
+			</if>
+			<if test='bomIdx !=null and !("".equals(materialIdx.trim()))'>
+			#{materialIdx},
+			</if>
+			<if test='name !=null and !("".equals(name.trim()))'>
+			#{name},
+			</if>
+			<if test='unit !=null and !("".equals(unit.trim()))'>
+			#{unit},
+			</if>
+			<if test='quantity !=null'>
+			#{quantity},
+			</if>
+			<if test='mixSeq !=null and !("".equals(mixSeq.trim()))'>
+			#{mixSeq},
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+			#{isDeleted},
+			</if>
+			#{regId},
+			now(),
+			</trim>
+			)
+	</insert>
+	
+	<select id="getRecipeMaterialCountBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.RecipeMaterialSearchDTO"
+										resultType="int">
+		SELECT 
+			count(*)
+		FROM t_recipe_material
+		<where>
+<!-- 			<if test='processIdx !=null and !("".equals(type.trim()))'>AND process_idx = #{processIdx}</if> -->
+			<if test='name !=null and !("".equals(name.trim()))'>AND name LIKE CONCAT('%',#{name},'%')</if>
+			<if test='unit !=null and !("".equals(unit.trim()))'>AND unit LIKE CONCAT('%',#{unit},'%')</if>
+			<if test='mixSeq !=null and !("".equals(mixSeq.trim()))'>AND mix_seq LIKE CONCAT('%',#{mixSeq},'%')</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
+		</where>
+	</select>
+
+	<select id="getRecipeMaterialBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.RecipeMaterialSearchDTO"
+									resultType="kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO">
+		SELECT 
+			<include refid="t_recipe_columns_forSelect"></include> 
+		FROM t_recipe_material
+		<where>
+<!-- 			<if test='processIdx !=null and !("".equals(type.trim()))'>AND process_idx = #{processIdx}</if> -->
+			<if test='name !=null and !("".equals(name.trim()))'>AND name LIKE CONCAT('%',#{name},'%')</if>
+			<if test='unit !=null and !("".equals(unit.trim()))'>AND unit LIKE CONCAT('%',#{unit},'%')</if>
+			<if test='mixSeq !=null and !("".equals(mixSeq.trim()))'>AND mix_seq LIKE CONCAT('%',#{mixSeq},'%')</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
+		</where>
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+	
+	<select id="getRecipeMaterialByIdx" parameterType="string"
+									resultType="kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO">
+		SELECT 
+			<include refid="t_recipe_columns_forSelect"></include> 
+		FROM t_recipe_material
+		where idx = #{idx}
+	</select>
+	
+	
+	
+	<!-- <set>이 분명 마지막 , 를 제거해준다고 알고 있다? 맞나? -->
+	<update id="modifyRecipeMaterial" parameterType="kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO">
+		UPDATE t_recipe_material
+			<set>
+				<if test='processIdx !=null and !("".equals(processIdx.trim()))'>process_idx = #{processIdx},</if>
+				<if test='materialIdx !=null and !("".equals(materialIdx.trim()))'>material_idx = #{materialIdx},</if>
+				<if test='name !=null and !("".equals(name.trim()))'>name = #{name},</if>
+				<if test='unit !=null and !("".equals(unit.trim()))'>unit = #{unit},</if>
+				<if test='quantity !=null'>quantity = #{quantity},</if>
+				<if test='mixSeq !=null and !("".equals(mixSeq.trim()))'>mix_seq = #{mixSeq},</if>
+				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+			</set>
+		WHERE idx = #{idx}
+	</update>
+	
+	<update id="removeSample" parameterType="kr.co.itwillbs.de.sample.dto.SampleSearchDTO">
+		update t_demo
+			<set>
+				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+			</set>
+		where idx = #{idx}
+	</update>
+	
+</mapper>
