@@ -47,14 +47,6 @@ public class PolicyService {
 		return String.valueOf(policy.getIdx()); // 생성된 idx 반환
 	}
 
-//	// 규정 목록 조회 (검색 조건 적용)
-//	public List<PolicyDTO> getPolicyList(PolicySearchDTO searchDTO) {
-//		log.info("getPolicyList --- searchDTO: {}", searchDTO);
-//
-//		return policyRepository.searchPublishedPolicies(searchDTO.getType(), searchDTO.getTitle(), searchDTO.getRegId())
-//				.stream().map(Policy::toDto).collect(Collectors.toList());
-//	}
-
 	/**
 	 * SearchDTO를 가져와서 리스트 조건 조회하기
 	 * 
