@@ -148,9 +148,6 @@
 									<td th:text="${item.isDeleted}"></td>
 									<td th:text="${item.memo}"></td>
 								</tr>
-								<tr th:if="${#lists.isEmpty(recipeDTOList)}" class="clickable-row menu2depth_items">
-									<td colspan="9"><span>조회 된 데이터가 없습니다.</span></td>
-								</tr>
 							</tbody>
 						</table>
 					</div>
@@ -168,10 +165,14 @@
 						searching : false,
 						paging : false,
 						info : false,
-						order: [0, "desc"],
-						responsive: true
+						order: [0, "desc"],	// 기본 정렬
+						responsive: true,
+						language: {
+							emptyTable: "조회 된 데이터가 없습니다."
+						}
 					}); // end of $('#dataTables').DataTable({
-					
+
+						
 				}); // end of $(document).ready(function() {
 			
 				$(function() {

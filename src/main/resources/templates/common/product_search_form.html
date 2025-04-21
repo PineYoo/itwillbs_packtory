@@ -128,6 +128,9 @@
 	<script src="/css/fontawesome/all.min.js"></script>
 	
 	<script type="text/javascript">
+		const isSingleSelect = window.opener.isSingleSelect ?? false;
+		
+		
 		$(document).ready(function() {
 			
 		    // 검색조건에 따른 상품 조회 함수
@@ -224,6 +227,18 @@
 		            type: $row.find('.type').val()
 		        };
 
+		     	// 25.04.21 추가(상품 단일선택 모드)
+		        if (typeof isSingleSelect !== 'undefined' && isSingleSelect) {	// true
+		        	if (window.opener && typeof window.opener.setProductInfo === 'function') {
+		                window.opener.setProductInfo(productInfo); // 부모창으로 전달
+		            }
+		        	
+		        	window.close(); // 선택하자마자 창 닫기
+		            return;
+		        }
+		        
+		     	// ----------------------------
+		        // 상품 다중선택 모드
 		        if ($btn.hasClass('selected')) {
 		            // 선택 취소
 		            $btn
