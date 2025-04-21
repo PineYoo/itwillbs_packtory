@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<meta charset="UTF-8">
+<title>팩토리(PackTory) - 레시피 관리</title>
+	<style type="text/css">
+		.form {
+			max-width: 800px;
+			margin: 0 auto;
+		}
+		input, select {
+	        border: 1px solid #ccc;
+	        padding: 5px;
+	        margin: 2px;
+		}
+		.essential {
+	        background-color: #fffbe6; /* 연한 노랑 */
+	    }
+	    .filled {
+	        background-color: white;
+	    }
+	    
+	    /* ----------------- */
+	    .addressInfo {
+		    display: flex;
+		}
+	    @media (max-width: 768px) {
+		    .addressInfo {
+			    display: block;
+			}
+		}
+	</style>
+
+</head>
+<body>
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-4 text-gray-800">소요자재 등록</h1>
+			</div>
+			
+			<!-- ---------- 본문 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive">
+						<form th:action="@{/mes/recipe/material}" method="post" th:object="${recipeMaterailDTO}" class="form row g-3" id="registerForm">
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('name','자재 이름',true,false,false)}"></div>
+							</div>
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('unit','레시피 단위',true,false,false)}"></div>
+							</div>
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity','레시피 개수',true,false,false)}"></div>
+							</div>
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('mixSeq','혼합순서',true,false,false)}"></div>
+							</div>
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,false,false)}"></div>
+							</div>
+							
+							<div class="col-md-12 row align-items-center justify-content-center">
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">취소</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(function() {
+				$('#btnList').on("click", function() {
+					location.href="/mes/recipe/material";
+				});
+				
+				// 레시피 등록
+				$('#btnSubmitForm').on("click", function() {
+					console.group('click! #btnSubmitForm!');
+					// error 내용 삭제
+					$("div[id$='Error']").text("")
+					// 만세 폼이다!
+					const _serializedData = $('#registerForm').serialize();
+					// 문자열을 '&' 기준z으로 분리하여 배열로 변환
+					const _pairs = _serializedData.split('&');
+					// 빈 객체를 생성하여 데이터를 담을 준비
+					const _jsonObj = {};
+					// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
+					_pairs.forEach(pair => {
+						const [key, value] = pair.split('=');
+						_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
+					});
+					// @Valid 숫자 타입을 숫자로 변환
+						// 수량은 숫자형으로 전환
+					if (_jsonObj['quantity']) {
+						_jsonObj['quantity'] = parseInt(_jsonObj['quantity']);
+					}
+					// 데이터 확인
+					console.log(_jsonObj);
+					// JSON 데이터를 서버로 전송
+					fetch("/mes/recipe/", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(_jsonObj)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.status === "success") {
+							alert(data.message);
+							location.href="/mes/recipe";
+						} else if(data.status === "validFail") {
+							console.log("hello validFail!");
+							//alert(data.message);
+							let _errors = data.errors;
+							console.log(_errors);
+							for (let field in _errors) {
+								$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
+							} // end of for (let field in errors) {
+						}
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						alert("요청 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해 주시기 바랍니다.");
+					});
+					
+					console.groupEnd();
+				}); // end of $('#btnSubmitForm').on("click", function() {
+				
+			}); // end of $(function() {
+		</script>
+	</th:block>
+</body>
+</html>
