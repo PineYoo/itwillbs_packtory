@@ -66,7 +66,7 @@
 				emp.sub_department_code,
 				tdi.child_name AS sub_department_name,
 				emp.position_code,
-				tpi.position_code AS position_name,
+				tpi.position_name AS position_name,
 				tpi.is_manager,
 				emp.hire_date,
 				emp.resignation_date,
@@ -96,7 +96,7 @@
 				ON emp.department_code = tdi.department_code
 				AND emp.sub_department_code = tdi.child_code
 			LEFT JOIN t_position_info AS tpi
-				ON emp.position_code = tpi.idx
+				ON emp.position_code = tpi.position_code
 			)
 	</sql>
 	
