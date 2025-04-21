@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/admin/member")
+@RequestMapping(value="/admin/member", name = "멤버 관리")
 public class MemberController {
 /**
  * t_employee 에서 등록한 직원정보로

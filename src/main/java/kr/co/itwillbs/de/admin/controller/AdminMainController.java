@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/admin")
+@RequestMapping(value = "/admin", name = "관리자 메인과 기타등등의 어딘가") // 여기 name은 밑에 Get,Post,Put 암튼 등등에서 ...조합이 안되네?
 public class AdminMainController {
 
 	private final CacheManager cacheManager;

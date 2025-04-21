@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/admin/log")
+@RequestMapping(value="/admin/log", name = "로그 관리")
 public class LogController {
 	
 	private final LogService logService;

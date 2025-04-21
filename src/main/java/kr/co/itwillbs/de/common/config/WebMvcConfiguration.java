@@ -6,12 +6,13 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.resource.PathResourceResolver;
 
 @Configuration
-@EnableWebMvc // 역시 Java config 를 하니 application.yml 에 설정이 안먹히는구나!
+//@EnableWebMvc // 이녀석도 Java config를 하니 application.yml 에 설정이 안먹힘. 
 public class WebMvcConfiguration implements WebMvcConfigurer{
 /**
  * 레거시 MVC에 dispatch-servlet에 설정하던 mvc 설정들 중

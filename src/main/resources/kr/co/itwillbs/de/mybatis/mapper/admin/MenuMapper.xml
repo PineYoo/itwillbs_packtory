@@ -93,22 +93,27 @@
 		SELECT 
 			count(*)
 		FROM t_menu
-			<where>
-				<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
-				<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name LIKE CONCAT('%',#{menuName},'%') </if>
-				<if test='parentsIdx != null and !("".equals(parentsIdx.trim()))'>AND parents_idx = #{parentsIdx} </if>
-				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
-				<if test='url != null and !("".equals(url.trim()))'>AND url LIKE CONCAT('%',#{url},'%') </if>
-				<if test='regId != null and !("".equals(regId.trim()))'>AND reg_id = #{regId} </if>
-			</where>
+		<where>
+			AND parents_idx is null
+			<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
+			<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name LIKE CONCAT('%',#{menuName},'%') </if>
+			<if test='parentsIdx != null and !("".equals(parentsIdx.trim()))'>AND parents_idx = #{parentsIdx} </if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
+			<if test='url != null and !("".equals(url.trim()))'>AND url LIKE CONCAT('%',#{url},'%') </if>
+			<if test='regId != null and !("".equals(regId.trim()))'>AND reg_id = #{regId} </if>
+		</where>
 	</select>
 	
 	<select id="getMenuList" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
 								resultType="kr.co.itwillbs.de.admin.dto.MenuDTO">
-		SELECT 
-			<include refid="t_menu_columns_forSelect" />
-		FROM t_menu
+		SELECT *
+		FROM (
+			SELECT 
+				ROW_NUMBER() OVER (ORDER BY reg_date DESC) AS rownum,
+				<include refid="t_menu_columns_forSelect" />
+			FROM t_menu
 			<where>
+				AND parents_idx is null
 				<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
 				<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name LIKE CONCAT('%',#{menuName},'%') </if>
 				<if test='parentsIdx != null and !("".equals(parentsIdx.trim()))'>AND parents_idx = #{parentsIdx} </if>
@@ -116,17 +121,18 @@
 				<if test='url != null and !("".equals(url.trim()))'>AND url LIKE CONCAT('%',#{url},'%') </if>
 				<if test='regId != null and !("".equals(regId.trim()))'>AND reg_id = #{regId} </if>
 			</where>
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+			) AS a
+		WHERE a.rownum <![CDATA[>]]> #{pageDTO.offset}
+		LIMIT #{pageDTO.size} 
 	</select>
 	
-	<select id="getMenuItemListByMenuName" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
+	<select id="getMenuItemListByParentsIdx" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
 								resultType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		SELECT 
 			<include refid="t_menu_columns_forSelect" />
 		FROM t_menu
 		<where>
-			parents_idx is not null
-			<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name = #{menuName} </if>
+			<if test='parentsIdx != null and !("".equals(parentsIdx.trim()))'>AND parents_idx = #{parentsIdx} </if>
 		</where>
 		ORDER BY rank_number asc
 	</select>
@@ -158,8 +164,7 @@
 	<!-- 뭔가 대량 인서트나 업데이트가 있을것 같은데...? -->
 	<delete id="removeChildMenu" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">
 		DELETE from t_menu 
-		WHERE menu_name = #{menuName}
-		  AND parents_idx IS NOT NULL
+		WHERE parents_idx = #{parentsIdx}
 	</delete>
 	
 	<insert id="registerChildMenu" parameterType="kr.co.itwillbs.de.admin.dto.MenuDTO">

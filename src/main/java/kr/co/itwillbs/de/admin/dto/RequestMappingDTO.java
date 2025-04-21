@@ -11,9 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RequestMappingDTO {
 
-	private String urlPattern;
-	private String methodName;
+	private String uriPattern;
+	private String description;
 	private String method;
+	private String methodName;
 	private String simpleName;
 	private String params;
 	private List<String> paramList;
