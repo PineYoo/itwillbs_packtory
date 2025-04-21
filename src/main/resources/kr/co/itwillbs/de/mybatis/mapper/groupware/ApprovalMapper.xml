@@ -482,6 +482,24 @@
 		</where>
 	</select>
 	
+	<insert id="registRecipeMaster">
+		INSERT INTO t_recipe_master
+		VALUES (null			-- idx(auto_increment)
+			 , #{productIdx}	-- product_idx
+			 , #{name}			-- name
+			 , #{version}		-- version
+			 , #{batchSize}		-- batch_size
+			 , null				-- status(임시 - 어떤 레시피가 사용중인지 보는 값)
+			 , null				-- approval_status(임시 - 결재 승인 후 update 예정)
+			 , #{validFrom}		-- valid_from
+			 , #{validTo}		-- valid_to
+			 , 'Y'				-- is_deleted(default)
+			 , #{regId}			-- reg_id
+			 , now()			-- reg_date
+			 , null				-- mod_id(최초 등록시는 reg_id 만 넣고 update 시 mod_id 입력)
+			 , null				-- mod_date
+			 )
+	</insert>
 	
 </mapper>
 

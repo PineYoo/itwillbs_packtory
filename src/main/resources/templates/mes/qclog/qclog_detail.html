@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
 <meta charset="UTF-8">
-<title>팩토리(PackTory) - 품질기준 상세</title>
+<title>팩토리(PackTory) - 품질로그 상세</title>
 <style type="text/css">
 .form {
 	max-width: 800px;
@@ -28,43 +28,36 @@ input, select {
 	<div layout:fragment="contents">
 		<div class="container-fluid">
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">품질기준 상세</h1>
+				<h1 class="h3 mb-4 text-gray-800">품질로그 상세</h1>
 			</div>
 
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<form th:action="@{/mes/qcstandard/updateQcStandard}" method="post" th:object="${qcStandardDTO}" class="form row g-3" id="registerForm">
+						<form th:action="@{/mes/qclog/updateQcLog}" method="post" th:object="${qcLogDTO}" class="form row g-3" id="registerForm">
 							<input type="hidden" th:field="*{idx}" id="idx" />
-							
-							<!-- 타입 -->
+
+							<!-- 품질기준 선택 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
+								<label for="bomIdx" class="form-label">품질기준</label> <select th:field="*{qcIdx}" class="form-select">
+									<option value="">품질기준을 선택하세요</option>
+									<option th:each="qc : ${qcStandaradList}" th:value="${qc.idx}" th:text="${qc.name}"></option>
+								</select>
 							</div>
 
-							<!-- 품질기준 이름 -->
+							<!-- 측정결과 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name', '품질기준 이름', true,false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('qcResult', '측정결과', true,false,false)}"></div>
+							</div>
+
+							<!-- 측정값 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('value', '측정값', true,false,false)}"></div>
 							</div>
 
 							<!-- 단위 -->
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
-							</div>
-
-							<!-- 목표치 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('targetValue', '목표치', true,false,false)}"></div>
-							</div>
-
-							<!-- 최소치 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('minValue', '최소치', true,false,false)}"></div>
-							</div>
-
-							<!-- 최대치 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('maxValue', '최대치', true,false,false)}"></div>
 							</div>
 
 							<!-- 메모 -->
@@ -81,22 +74,22 @@ input, select {
 
 							<!-- 작성자 -->
 							<div class="col-md-6">
-								<label>작성자</label> <input th:value="${qcStandardDTO.regId}" class="form-control" readonly>
+								<label>작성자</label> <input th:value="${qcLogDTO.regId}" class="form-control" readonly>
 							</div>
 
 							<!-- 작성일자 -->
 							<div class="col-md-6">
-								<label>작성일자</label> <input th:value="${qcStandardDTO.regDate}" class="form-control" readonly>
+								<label>작성일자</label> <input th:value="${qcLogDTO.regDate}" class="form-control" readonly>
 							</div>
 
 							<!-- 최종작성자 -->
 							<div class="col-md-6">
-								<label>최종 작성자</label> <input th:value="${qcStandardDTO.modId}" class="form-control" readonly>
+								<label>최종 작성자</label> <input th:value="${qcLogDTO.modId}" class="form-control" readonly>
 							</div>
 
 							<!-- 최종작성일자 -->
 							<div class="col-md-6">
-								<label>최종 작성일자</label> <input th:value="${qcStandardDTO.modDate}" class="form-control" readonly>
+								<label>최종 작성일자</label> <input th:value="${qcLogDTO.modDate}" class="form-control" readonly>
 							</div>
 
 							<hr>
@@ -116,7 +109,7 @@ input, select {
 	    $(function () {
 	        // 목록 버튼 클릭 시
 	        $('#btnList').on("click", function () {
-	            location.href = "/mes/qcstandard";  // 품질기준 목록 페이지로 이동
+	            location.href = "/mes/qclog";  // 품질로그 목록 페이지로 이동
 	        });
 	
 	        // 수정 폼 제출 시
@@ -136,7 +129,7 @@ input, select {
 	            // idx를 실제 페이지 URL에서 받아오기
 	            const idx = $('#idx').val();  // 수정된 부분: id를 #idx로 수정
 	
-	            fetch(`/mes/qcstandard/updateQcStandard`, {
+	            fetch(`/mes/qclog/updateQcLog`, {
 	                method: "PUT",
 	                headers: {
 	                    "Content-Type": "application/json"
@@ -167,14 +160,14 @@ input, select {
 
 	            const idx = $('#idx').val();
 
-	            fetch(`/mes/qcstandard/${idx}`, {
+	            fetch(`/mes/qclog/${idx}`, {
 	                method: "DELETE"
 	            })
 	            .then(response => response.text())
 	            .then(data => {
 	                if (data === "success") {
 	                    alert("삭제되었습니다.");
-	                    location.href = "/mes/qcstandard"; // 목록으로 이동
+	                    location.href = "/mes/qclog"; // 목록으로 이동
 	                } else {
 	                    alert("삭제 실패: " + data);
 	                }

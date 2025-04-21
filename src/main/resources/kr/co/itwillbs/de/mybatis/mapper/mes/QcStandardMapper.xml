@@ -4,7 +4,7 @@
 
 <mapper namespace="kr.co.itwillbs.de.mes.mapper.QcStandardMapper">
 
-	<!-- 창고 등록 -->
+	<!-- 품질기준 등록 -->
 	<insert id="insertQcStandard" useGeneratedKeys="true"
 		keyProperty="idx"
 		parameterType="kr.co.itwillbs.de.mes.dto.QcStandardDTO">
@@ -120,7 +120,7 @@
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 
-	<!-- 창고 상세 조회 -->
+	<!-- 품질기준 상세 조회 -->
 	<select id="getQcStandardByIdx" parameterType="Long"
 		resultType="kr.co.itwillbs.de.mes.dto.QcStandardDTO">
 		SELECT *
@@ -128,7 +128,7 @@
 		WHERE idx = #{idx}
 	</select>
 
-	<!-- 창고 정보 수정 -->
+	<!-- 품질기준 정보 수정 -->
 	<update id="updateQcStandard"
 		parameterType="kr.co.itwillbs.de.mes.dto.QcStandardDTO">
 		UPDATE t_qc_standard
@@ -148,7 +148,7 @@
 	</update>
 
 
-	<!-- 창고 삭제 (Soft Delete) -->
+	<!-- 품질기준 삭제 (Soft Delete) -->
 	<update id="deleteQcStandard" parameterType="Long">
 		UPDATE t_qc_standard
 		<set>
@@ -158,5 +158,13 @@
 		</set>
 		WHERE idx = #{idx}
 	</update>
+	
+	<!-- 품질 기준 목록 들고가기 (외부용) -->
+	<select id="selectQcStandardList"
+		resultType="kr.co.itwillbs.de.mes.dto.QcStandardDTO">
+		SELECT idx, name
+		FROM t_qc_standard
+		WHERE is_deleted = 'N'
+	</select>
 
 </mapper>

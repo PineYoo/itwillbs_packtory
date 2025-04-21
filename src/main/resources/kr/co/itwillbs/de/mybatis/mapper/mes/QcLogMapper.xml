@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.mes.mapper.QcLogMapper">
+
+	<!-- 품질로그 등록 -->
+	<insert id="insertQcLog" useGeneratedKeys="true"
+		keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
+		INSERT INTO t_qc_log (
+		<trim suffixOverrides=",">
+			<if test='qcIdx !=null and !("".equals(qcIdx.trim()))'>
+				qc_idx,
+			</if>
+			<if test='qcResult !=null and !("".equals(qcResult.trim()))'>
+				qc_result,
+			</if>
+			<if test='value !=null and !("".equals(value.trim()))'>
+				value,
+			</if>
+			<if test='unit !=null and !("".equals(unit.trim()))'>
+				unit,
+			</if>
+			<if test='memo !=null and !("".equals(memo.trim()))'>
+				memo,
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+				is_deleted,
+			</if>
+			reg_id,
+			reg_date,
+		</trim>
+		) VALUES (
+		<trim suffixOverrides=",">
+
+			<if test='qcIdx !=null and !("".equals(qcIdx.trim()))'>
+				#{qcIdx},
+			</if>
+			<if test='qcResult !=null and !("".equals(qcResult.trim()))'>
+				#{qcResult},
+			</if>
+			<if test='value !=null and !("".equals(value.trim()))'>
+				#{value},
+			</if>
+			<if test='unit !=null and !("".equals(unit.trim()))'>
+				#{unit},
+			</if>
+			<if test='memo !=null and !("".equals(memo.trim()))'>
+				#{memo},
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+				#{isDeleted},
+			</if>
+			#{regId},
+			now(),
+		</trim>
+		)
+	</insert>
+
+	<!-- 목록 조회 + 페이징 -->
+	<select id="searchQcLogCount"
+		parameterType="kr.co.itwillbs.de.mes.dto.QcLogDTO" resultType="int">
+		SELECT count(*)
+		FROM t_qc_log l
+
+		<where>
+			<if test='qcIdx !=null and !("".equals(qcIdx.trim()))'>
+				AND l.qc_idx LIKE CONCAT('%', #{qcIdx}, '%')
+			</if>
+
+			<if test='qcResult !=null and !("".equals(qcResult.trim()))'>
+				AND l.qc_result LIKE CONCAT('%', #{qcResult}, '%')
+			</if>
+
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+				AND l.is_deleted = #{isDeleted}
+			</if>
+		</where>
+
+	</select>
+
+	<!-- 목록 조회 -->
+	<select id="searchQcLog"
+		parameterType="kr.co.itwillbs.de.mes.dto.QcLogSearchDTO"
+		resultType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
+
+		SELECT
+		l.*,
+		s.name AS qcStandardName
+		FROM t_qc_log l
+		LEFT JOIN t_qc_standard s ON l.qc_idx = s.idx
+
+		<where>
+			<if test='qcIdx != null and !("".equals(qcIdx.trim()))'>
+				AND l.qc_idx LIKE CONCAT('%', #{qcIdx}, '%')
+			</if>
+
+			<if test='qcResult != null and !("".equals(qcResult.trim()))'>
+				AND l.qc_result LIKE CONCAT('%', #{qcResult}, '%')
+			</if>
+
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
+				AND l.is_deleted = #{isDeleted}
+			</if>
+		</where>
+
+		ORDER BY l.idx ASC
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+
+	<!-- 품질로그 상세 조회 -->
+	<select id="getQcLogByIdx" parameterType="Long"
+		resultType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
+		SELECT *
+		FROM t_qc_log
+		WHERE idx = #{idx}
+	</select>
+
+	<!-- 품질로그 정보 수정 -->
+	<update id="updateQcLog"
+		parameterType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
+		UPDATE t_qc_log
+		<set>
+			<if test='qcIdx !=null and !("".equals(qcIdx.trim()))'>qc_idx = #{qcIdx},</if>
+			<if test='qcResult !=null and !("".equals(qcResult.trim()))'>qc_result = #{qcResult},</if>
+			<if test='value !=null and !("".equals(value.trim()))'>value = #{value},</if>
+			<if test='unit !=null and !("".equals(unit.trim()))'>unit = #{unit},</if>
+			<if test='memo !=null and !("".equals(memo.trim()))'>memo = #{memo},</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+		</set>
+		WHERE idx = #{idx}
+	</update>
+
+
+	<!-- 품질로그 삭제 (Soft Delete) -->
+	<update id="deleteQcLog" parameterType="Long">
+		UPDATE t_qc_log
+		<set>
+			<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+		</set>
+		WHERE idx = #{idx}
+	</update>
+
+</mapper>

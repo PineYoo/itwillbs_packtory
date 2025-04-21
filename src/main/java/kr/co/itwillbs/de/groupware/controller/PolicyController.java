@@ -2,9 +2,8 @@ package kr.co.itwillbs.de.groupware.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -19,12 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.persistence.EntityNotFoundException;
-import kr.co.itwillbs.de.common.service.CustomUserDetails;
+import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.service.FileService;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.FileUtil;
 import kr.co.itwillbs.de.common.vo.FileVO;
-import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.groupware.dto.PolicyDTO;
 import kr.co.itwillbs.de.groupware.dto.PolicySearchDTO;
 import kr.co.itwillbs.de.groupware.service.PolicyService;
@@ -46,18 +44,12 @@ public class PolicyController {
 	@GetMapping("/new")
 	public String policyRegisterForm(Model model) {
 		log.info("policyRegisterForm --- start");
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
-			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-			LoginVO loginVO = userDetails.getLoginVO();
-			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
-			log.info("userDetails is {}", userDetails);
-			log.info("loginVO is {}", loginVO);
-			model.addAttribute("userDetails", userDetails);
-			model.addAttribute("loginVO", loginVO);
-		}
 		model.addAttribute("policyDTO", new PolicyDTO());
-		model.addAttribute("policyTypes", commonCodeUtil.getCodeItems("POLICY_TYPE"));
+
+		// 공통 코드 리스트 (메시지 타입 선택용)
+		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("POLICY_TYPE");
+		model.addAttribute("codeItems", codeItems);
+
 		return "groupware/policy/form";
 	}
 
@@ -97,8 +89,24 @@ public class PolicyController {
 	@GetMapping("")
 	public String getPolicyList(@ModelAttribute PolicySearchDTO searchDTO, Model model) {
 		log.info("getPolicyList --- start");
-		model.addAttribute("policyDTOList", policyService.getPolicyList(searchDTO));
-		model.addAttribute("policyTypes", commonCodeUtil.getCodeItems("POLICY_TYPE"));
+
+		// 메시지 목록 조회 (검색 조건에 따라 페이징 처리)
+		Page<PolicyDTO> result = policyService.getPolicysBySearchDTO(searchDTO);
+
+		// 총 아이템 수 설정
+		searchDTO.getPageDTO().setTotalCount((int) result.getTotalElements());
+
+		// 모델에 메시지 목록과 페이징 정보 추가
+		model.addAttribute("policyDTOList", result.getContent());
+
+		// 역순 번호 계산 (페이징의 첫 번째 항목 번호 계산)
+		int startNo = searchDTO.getPageDTO().getTotalCount() - searchDTO.getPageDTO().getOffset();
+		model.addAttribute("startNo", startNo);
+
+		// 공통 코드 리스트 (메시지 타입 선택용)
+		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("POLICY_TYPE");
+		model.addAttribute("codeItems", codeItems);
+
 		model.addAttribute("searchDTO", searchDTO);
 		return "groupware/policy/list";
 	}

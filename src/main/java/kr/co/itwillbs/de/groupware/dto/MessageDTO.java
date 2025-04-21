@@ -1,6 +1,6 @@
 package kr.co.itwillbs.de.groupware.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotEmpty;
 import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
@@ -39,14 +39,14 @@ public class MessageDTO {
     private String fileIdxs;   // 첨부파일 ID 리스트
     private String isDeleted;  // 삭제 여부
 
-    private LocalDateTime sendDate;    // 발신일자
-    private LocalDateTime receiveDate; // 수신일자
+    private LocalDate sendDate;    // 발신일자
+    private LocalDate receiveDate; // 수신일자
 
     @Builder
     public MessageDTO(Long idx, String type, String title, String contents,
                       String senderId, String receiverId,
                       String status, String fileIdxs, String isDeleted,
-                      LocalDateTime sendDate, LocalDateTime receiveDate) {
+                      LocalDate sendDate, LocalDate receiveDate) {
         this.idx = idx;
         this.type = type;
         this.title = title;
@@ -71,7 +71,7 @@ public class MessageDTO {
                 .isDeleted(isDeleted)
                 .senderId(senderId)
                 .receiverId(receiverId)
-                .sendDate(sendDate != null ? sendDate : LocalDateTime.now())
+                .sendDate(sendDate != null ? sendDate : LocalDate.now())
                 .receiveDate(receiveDate)
                 .build();
     }

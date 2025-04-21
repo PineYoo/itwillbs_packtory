@@ -26,7 +26,7 @@ public class QcStandardService {
 		log.info("품질 등록 요청: {}", qcStandardDTO);
 		qcStandardMapper.insertQcStandard(qcStandardDTO);
 		log.info("품질 등록 완료 - name: {}", qcStandardDTO.getName());
-		return "redirect:/mes/warehouse";
+		return "redirect:/mes/qcstandard";
 	}
 
 	// 품질 총 개수 (검색 조건 포함)
@@ -66,6 +66,13 @@ public class QcStandardService {
 	public void deleteQcStandard(Long idx) {
 		log.info("품질 삭제 요청 - idx: {}", idx);
 		qcStandardMapper.deleteQcStandard(idx);
+	}
+
+	/*
+	 * ------------ 품질기준 로그에서 씀 ----------
+	 */
+	public List<QcStandardDTO> getQcStandardList() {
+		return qcStandardMapper.selectQcStandardList();
 	}
 
 }

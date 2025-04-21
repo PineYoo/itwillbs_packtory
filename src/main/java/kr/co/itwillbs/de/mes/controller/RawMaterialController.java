@@ -49,15 +49,7 @@ public class RawMaterialController {
 	// 원자재 등록 폼 페이지
 	@GetMapping("/new")
 	public String rawMaterialRegisterForm(Model model) {
-
-		// 로그인 유저 정보 세팅
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
-			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-			LoginVO loginVO = userDetails.getLoginVO();
-			model.addAttribute("userDetails", userDetails);
-			model.addAttribute("loginVO", loginVO);
-		}
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		// BOM 목록 조회
 		List<BomDTO> bomList = bomService.getBomList();

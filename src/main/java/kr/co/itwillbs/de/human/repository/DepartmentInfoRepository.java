@@ -11,25 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.itwillbs.de.human.dto.DepartmentCodeDTO;
 import kr.co.itwillbs.de.human.entity.DepartmentInfo;
-import kr.co.itwillbs.de.human.entity.PositionInfo;
 
 import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface DepartmentInfoRepository extends JpaRepository<DepartmentInfo, Long>, JpaSpecificationExecutor<DepartmentInfo> {
 
-    // 검색 시, 삭제되지 않은 부서만 조회하도록 수정
-	@Query("SELECT d FROM DepartmentInfo d WHERE d.isDeleted = 'N' "
-	        + "AND (:departmentCode IS NULL OR d.departmentCode LIKE %:departmentCode%) "
-	        + "AND (:childCode IS NULL OR d.childCode LIKE %:childCode%) "
-	        + "AND (:locationIdx IS NULL OR d.locationIdx = :locationIdx)")
-    List<DepartmentInfo> findBySearchParams(@Param("departmentCode") String departmentCode,
-                                            @Param("childCode") String childCode,
-                                            @Param("locationIdx") String locationIdx);
-
     // 삭제되지 않은 부서 리스트 조회
     List<DepartmentInfo> findByIsDeleted(String isDeleted);
 
+    // 업데이트
 	@Transactional
 	@Modifying
 	@Query("UPDATE DepartmentInfo d SET d.isDeleted = 'Y' WHERE d.idx = :idx")

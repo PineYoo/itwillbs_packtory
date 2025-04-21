@@ -97,6 +97,54 @@
 					    <input type="file" id="fileUpload" class="form-control" name="approvalFiles" multiple>
 					</div>
 					
+					<!-- ---------------- 레시피 결재 영역 ---------------- -->
+					<div id="recipeApprovalSection" style="display: none;">
+<!-- 					<div id="recipeApprovalSection"> -->
+						<div class="form-div">
+							<label for="productName">상품</label>
+				            <input type="hidden" id="productIdx" th:field="*{recipeMaster.productIdx}">
+				            <input type="text" id="productName" class="form-control" placeholder="상품을 선택해주세요." onclick="openProductSearch()" readonly>
+				        	<button class="btn btn-primary" id="searchProductBtn" type="button" onclick="openProductSearch()">검색 <i class="fa-solid fa-magnifying-glass"></i></button>
+						</div>
+						
+						<div class="form-div">
+						    <label for="name">이름</label>
+				            <input type="text" id="name" class="form-control" th:field="*{recipeMaster.name}">
+						</div>
+						<div class="form-div">
+						    <label for="version">버전</label>
+				            <input type="text" id="version" class="form-control" th:field="*{recipeMaster.version}">
+						</div>
+						<div class="form-div">
+						    <label for="batchSize">레시피단위</label>
+				            <input type="number" id="batchSize" class="form-control" th:field="*{recipeMaster.batchSize}" min="0" step="100">
+						</div>
+
+						<div class="form-div">
+						    <label for="validFrom">유효기간</label>
+							<div style="width: 100%;">
+								<div class="d-flex align-items-center">
+									<div class="input-group">
+										<input type="text" class="form-control" autocomplete="off" th:field="*{recipeMaster.validFrom}" id="validFrom">
+										<span class="input-group-text calendar-icon" data-target="validFrom">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+									<span class="mx-2">⁓</span>
+									<div class="input-group">
+										<input type="text" class="form-control" autocomplete="off" th:field="*{recipeMaster.validTo}" id="validTo">
+										<span class="input-group-text calendar-icon" data-target="validTo">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- ---------------- 레시피 결재 영역 끝 ---------------- -->
+					
+					
+					
 			        <div style="text-align: center; margin: 10px 0;">
 						<button type="submit" class="btn btn-primary" id="submitBtn">기안하기</button>
 						<button type="button" id="cancelBtn" class="btn btn-secondary ml-2" >돌아가기</button>

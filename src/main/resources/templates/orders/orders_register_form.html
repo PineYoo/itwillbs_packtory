@@ -359,6 +359,8 @@
 					});
 				
 					window.open('/product/search-popup', 'productSearch', 'width=800,height=600,location=no,scrollbars=yes');
+					window.isSingleSelect = false; // 상품 다중선택 가능
+
 				
 					// 자식창이 열릴 때 데이터 넘겨주기 위한 전역 변수
 					window.selectedIdxListFromParent = selectedIdxList;
