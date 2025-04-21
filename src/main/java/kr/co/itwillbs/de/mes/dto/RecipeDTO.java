@@ -1,5 +1,7 @@
 package kr.co.itwillbs.de.mes.dto;
 
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -35,8 +37,8 @@ public class RecipeDTO {
 	@Pattern(regexp = "^[YN]$", message = "사용 유무는 필수 입력 값입니다.")
 	private String isDeleted;	// 삭제여부
 	
-	private String regId;		// 작성자
-	private String regDate;		// 작성일시
-	private String modId;		// 최종작성자
-	private String modDate;		// 최종작성일시
+	private String regId;			// 작성자
+	private LocalDateTime regDate;	// 작성일시
+	private String modId;			// 최종작성자
+	private LocalDateTime modDate;	// 최종작성일시
 }
