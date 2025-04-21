@@ -63,14 +63,9 @@ public class RawMaterialService {
 	}
 
 	/*
-	 * ===== 필요하면 쓰세요 =====
 	 * 원자재 정보 담아 가기 (외부용)
 	 */
-	public RawMaterialDTO getRawMaterialById(Long idx) {
-		log.info("원자재 들고 가기 - idx: {}", idx);
-		return rawMaterialMapper.selectRawMaterialById(idx);
-		/*
-		 * ex) RawMaterialDTO rawMaterial = rawMaterialService.getRawMaterialById(rawMaterialIdx);
-		 */
+	public  List<RawMaterialDTO> getRawMaterialList() {
+		return rawMaterialMapper.selectRawMaterialList();
 	}
 }

@@ -1,12 +1,5 @@
 package kr.co.itwillbs.de.mes.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -14,13 +7,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString
-@Builder
 @RequiredSessionIds(fields = { "regId", "modId" })
 public class WarehouseDTO {	
 

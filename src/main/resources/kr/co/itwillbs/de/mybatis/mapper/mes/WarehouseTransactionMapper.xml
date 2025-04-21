@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="kr.co.itwillbs.de.mes.mapper.WarehouseTransactionMapper">
+
+	<!-- 창고 정보 등록 -->
+	<insert id="insertWarehouseTransaction" useGeneratedKeys="true"
+			keyProperty="idx"
+			parameterType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO">
+		INSERT INTO t_warehouse_transaction (
+		<trim suffixOverrides=",">
+			<if test='transType !=null and !("".equals(transType.trim()))'>
+				trans_type,
+			</if>
+			<if test='code !=null and !("".equals(code.trim()))'>
+				code,
+			</if>
+			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
+				product_idx,
+			</if>
+			<if test='materialIdx !=null and !("".equals(materialIdx.trim()))'>
+				material_idx,
+			</if>
+			<if test='unit !=null and !("".equals(unit.trim()))'>
+				unit,
+			</if>
+			<if test='quantity != null'>
+				quantity,
+			</if>
+			<if test='status !=null and !("".equals(status.trim()))'>
+				status,
+			</if>
+			<if test='manufacturingDate != null'>
+				manufacturing_date,
+			</if>
+			<if
+				test='sourceLocation !=null and !("".equals(sourceLocation.trim()))'>
+				source_location,
+			</if>
+			<if
+				test='destinationLocation !=null and !("".equals(destinationLocation.trim()))'>
+				destination_location,
+			</if>
+			<if test='memo !=null and !("".equals(memo.trim()))'>
+				memo,
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+				is_deleted,
+			</if>
+			reg_id,
+			reg_date,
+		</trim>
+		) VALUES (
+		<trim suffixOverrides=",">
+			<if test='transType !=null and !("".equals(transType.trim()))'>
+				#{trans_type},
+			</if>
+			<if test='code !=null and !("".equals(code.trim()))'>
+				#{code},
+			</if>
+			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
+				#{product_idx},
+			</if>
+			<if test='materialIdx !=null and !("".equals(materialIdx.trim()))'>
+				#{material_idx},
+			</if>
+			<if test='unit !=null and !("".equals(unit.trim()))'>
+				#{unit},
+			</if>
+			<if test='quantity != null'>
+				#{quantity},
+			</if>
+			<if test='status !=null and !("".equals(status.trim()))'>
+				#{status},
+			</if>
+			<if test='manufacturingDate != null'>
+				#{manufacturing_date},
+			</if>
+			<if
+				test='sourceLocation !=null and !("".equals(sourceLocation.trim()))'>
+				#{source_location},
+			</if>
+			<if
+				test='destinationLocation !=null and !("".equals(destinationLocation.trim()))'>
+				#{destination_location},
+			</if>
+			<if test='memo !=null and !("".equals(memo.trim()))'>
+				#{memo},
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+				#{is_deleted},
+			</if>
+			#{regId},
+			now(),
+		</trim>
+		)
+	</insert>
+
+	<!-- 창고 정보 목록 조회 + 페이징 -->
+	<select id="searchWarehouseTransactionCount"
+			parameterType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO"
+			resultType="int">
+		SELECT COUNT(*)
+		FROM t_warehouse_transaction w
+		LEFT JOIN t_product p ON t.product_idx = p.idx
+		LEFT JOIN t_raw_material m ON t.material_idx = m.idx
+		<where>
+			<if test='transType != null and !("".equals(transType.trim()))'>
+				AND w.trans_type LIKE CONCAT('%', #{transType}, '%')
+			</if>
+			<if test='code != null and !("".equals(code.trim()))'>
+				AND w.code LIKE CONCAT('%', #{code}, '%')
+			</if>
+			<if
+				test='productName != null and !("".equals(productName.trim()))'>
+				AND p.name LIKE CONCAT('%', #{productName}, '%')
+			</if>
+			<if test='productIdx != null and !("".equals(productIdx.trim()))'>
+				AND w.product_idx = #{productIdx}
+			</if>
+			<if
+				test='materialName != null and !("".equals(materialName.trim()))'>
+				AND m.name LIKE CONCAT('%', #{materialName}, '%')
+			</if>
+			<if
+				test='materialIdx != null and !("".equals(materialIdx.trim()))'>
+				AND w.material_idx = #{materialIdx}
+			</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
+				AND w.is_deleted = #{isDeleted}
+			</if>
+			<choose>
+				<when
+					test="startManufacturingDate != null and endManufacturingDate != null">
+					AND w.manufacturing_date BETWEEN
+					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
+					'%Y-%m-%d%H%i%S')
+					AND
+					STR_TO_DATE(CONCAT(#{endManufacturingDate},
+					'235959'), '%Y-%m-%d%H%i%S')
+				</when>
+				<when
+					test="startManufacturingDate != null and endManufacturingDate == null">
+					AND w.manufacturing_date <![CDATA[>=]]>
+					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
+					'%Y-%m-%d%H%i%S')
+				</when>
+				<when
+					test="startManufacturingDate == null and endManufacturingDate != null">
+					AND w.manufacturing_date <![CDATA[<=]]>
+					STR_TO_DATE(CONCAT(#{endManufacturingDate}, '235959'),
+					'%Y-%m-%d%H%i%S')
+				</when>
+			</choose>
+			<if test="minQuantity != null">
+				AND w.quantity &gt;= #{minQuantity}
+			</if>
+			<if test="maxQuantity != null">
+				AND w.quantity &lt;= #{maxQuantity}
+			</if>
+		</where>
+	</select>
+
+	<!-- 창고 정보 목록 조회 -->
+	<select id="searchWarehouseTransaction"
+			parameterType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO"
+			resultType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO">
+		SELECT 
+      	w.*, p.name AS productName, m.name AS materialName
+	    FROM t_warehouse_transaction w
+	    LEFT JOIN t_product p ON w.product_idx = p.idx
+	    LEFT JOIN t_raw_material m ON w.material_idx = m.idx
+		<where>
+			<if test='transType != null and !("".equals(transType.trim()))'>
+				AND w.trans_type LIKE CONCAT('%', #{transType}, '%')
+			</if>
+			<if test='code != null and !("".equals(code.trim()))'>
+				AND w.code LIKE CONCAT('%', #{code}, '%')
+			</if>
+			<if
+				test='productName != null and !("".equals(productName.trim()))'>
+				AND p.name LIKE CONCAT('%', #{productName}, '%')
+			</if>
+			<if test='productIdx != null and !("".equals(productIdx.trim()))'>
+				AND w.product_idx = #{productIdx}
+			</if>
+			<if
+				test='materialName != null and !("".equals(materialName.trim()))'>
+				AND m.name LIKE CONCAT('%', #{materialName}, '%')
+			</if>
+			<if
+				test='materialIdx != null and !("".equals(materialIdx.trim()))'>
+				AND w.material_idx = #{materialIdx}
+			</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
+				AND w.is_deleted = #{isDeleted}
+			</if>
+			<choose>
+				<when
+					test="startManufacturingDate != null and endManufacturingDate != null">
+					AND w.manufacturing_date BETWEEN
+					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
+					'%Y-%m-%d%H%i%S')
+					AND
+					STR_TO_DATE(CONCAT(#{endManufacturingDate},
+					'235959'), '%Y-%m-%d%H%i%S')
+				</when>
+				<when
+					test="startManufacturingDate != null and endManufacturingDate == null">
+					AND w.manufacturing_date <![CDATA[>=]]>
+					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
+					'%Y-%m-%d%H%i%S')
+				</when>
+				<when
+					test="startManufacturingDate == null and endManufacturingDate != null">
+					AND w.manufacturing_date <![CDATA[<=]]>
+					STR_TO_DATE(CONCAT(#{endManufacturingDate}, '235959'),
+					'%Y-%m-%d%H%i%S')
+				</when>
+			</choose>
+			<if test="minQuantity != null">
+				AND w.quantity &gt;= #{minQuantity}
+			</if>
+			<if test="maxQuantity != null">
+				AND w.quantity &lt;= #{maxQuantity}
+			</if>
+		</where>
+
+		ORDER BY l.idx ASC
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+
+	<!-- 창고 정보 상세 조회 -->
+	<select id="getWarehouseTransactionByIdx" parameterType="Long"
+		resultType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO">
+		SELECT *
+		FROM t_warehouse_transaction
+		WHERE idx = #{idx}
+	</select>
+
+	<!-- 창고 정보 정보 수정 -->
+	<update id="updateWarehouseTransaction"
+		parameterType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO">
+		UPDATE t_warehouse_transaction
+		 <set>
+	        <if test='trans_type != null and !("".equals(trans_type.trim()))'>trans_type = #{trans_type},</if>
+	        <if test='code != null and !("".equals(code.trim()))'>code = #{code},</if>
+	        <if test='product_idx != null and !("".equals(product_idx.trim()))'>product_idx = #{product_idx},</if>
+	        <if test='material_idx != null and !("".equals(material_idx.trim()))'>material_idx = #{material_idx},</if>
+	        <if test='unit != null and !("".equals(unit.trim()))'>unit = #{unit},</if>
+	        <if test='quantity != null'>quantity = #{quantity},</if>
+	        <if test='status != null and !("".equals(status.trim()))'>status = #{status},</if>
+	        <if test='manufacturing_date != null'>manufacturing_date = #{manufacturing_date},</if>
+	        <if test='source_location != null and !("".equals(source_location.trim()))'>source_location = #{source_location},</if>
+	        <if test='destination_location != null and !("".equals(destination_location.trim()))'>destination_location = #{destination_location},</if>
+	        <if test='memo != null and !("".equals(memo.trim()))'>memo = #{memo},</if>
+	        <if test='is_deleted != null and !("".equals(is_deleted.trim()))'>is_deleted = #{is_deleted},</if>
+	        <if test='mod_id != null and !("".equals(mod_id.trim()))'>mod_id = #{mod_id},</if>
+	        <if test='mod_id != null and !("".equals(mod_id.trim()))'>mod_date = now(),</if>
+	    </set>
+		WHERE idx = #{idx}
+	</update>
+
+
+	<!-- 창고 정보 삭제 (Soft Delete) -->
+	<update id="deleteWarehouseTransaction" parameterType="Long">
+		UPDATE t_warehouse_transaction
+		<set>
+			<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+		</set>
+		WHERE idx = #{idx}
+	</update>
+
+</mapper>

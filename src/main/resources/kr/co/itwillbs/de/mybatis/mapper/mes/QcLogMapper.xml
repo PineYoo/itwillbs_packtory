@@ -59,7 +59,7 @@
 
 	<!-- 목록 조회 + 페이징 -->
 	<select id="searchQcLogCount"
-		parameterType="kr.co.itwillbs.de.mes.dto.QcLogDTO" resultType="int">
+		parameterType="kr.co.itwillbs.de.mes.dto.QcLogSearchDTO" resultType="int">
 		SELECT count(*)
 		FROM t_qc_log l
 
