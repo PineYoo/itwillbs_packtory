@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.service.SearchService;
-import kr.co.itwillbs.de.common.util.CommonCodeUtil;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.human.dto.EmployeeCodeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
@@ -29,13 +28,11 @@ public class SearchController {
 	
 	@Autowired
 	private SearchService searchService;
-	@Autowired
-	private CommonCodeUtil commonCodeUtil;
 
 	// 사원 조회 팝업창으로 이동
 	@GetMapping(value = { "/employee/search-popup", "/employee/search-popup/" })
 	public String getEmployeeList(Model model, @ModelAttribute EmployeeSearchDTO employeeSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		// 사원 리스트 조회 요청(SELECT)
 		List<EmployeeDTO> employeeList = searchService.getEmployeeList(employeeSearchDTO);
 		model.addAttribute("employeeList", employeeList);
@@ -51,8 +48,7 @@ public class SearchController {
 	@PostMapping("/employee/search-popup")
 	@ResponseBody
 	public List<EmployeeDTO> searchEmployeeList(Model model, @ModelAttribute EmployeeSearchDTO employeeSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		System.out.println(">>>>>>>>>>>>>>>>>>" + employeeSearchDTO);
+		LogUtil.logStart(log);
 
 		//페이징용 totalCount
 		employeeSearchDTO.getPageDTO().setTotalCount(searchService.getEmployeeCountForPaging(employeeSearchDTO));
@@ -66,7 +62,7 @@ public class SearchController {
 	@GetMapping("/api/getDepartments")
 	@ResponseBody
 	public List<EmployeeCodeDTO> getDepartmentList() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		return searchService.getDepartmentList(); // major_code 기준
 	}
 	
@@ -74,7 +70,7 @@ public class SearchController {
 	@GetMapping("/api/getSubDepartments")
 	@ResponseBody
 	public List<EmployeeCodeDTO> getSubDepartmentList(@RequestParam("departmentCode") String departmentCode) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 	    return searchService.getSubDepartmentList(departmentCode); // 하위 minor_code
 	}
 
@@ -82,7 +78,7 @@ public class SearchController {
 	@GetMapping("/api/getPositions")
 	@ResponseBody
 	public List<EmployeeCodeDTO> getPositionList() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		return searchService.getPositionList(); // major_code 기준
 	}
 	
@@ -90,7 +86,7 @@ public class SearchController {
 	// 거래처 조회 팝업창으로 이동
 	@GetMapping(value = { "/client/search-popup", "/client/search-popup/" })
 	public String getClientList(Model model, @ModelAttribute ClientSearchDTO clientSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		// 사원 리스트 조회 요청(SELECT)
 		List<ClientDTO> clientList = searchService.getClientList(clientSearchDTO);
 		model.addAttribute("clientList", clientList);
@@ -106,8 +102,7 @@ public class SearchController {
 	@PostMapping("/client/search-popup")
 	@ResponseBody
 	public List<ClientDTO> searchClientList(Model model, @ModelAttribute ClientSearchDTO clientSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		System.out.println(">>>>>>>>>>>>>>>>>>" + clientSearchDTO);
+		LogUtil.logStart(log);
 		
 		//페이징용 totalCount
 		clientSearchDTO.getPageDTO().setTotalCount(searchService.getClientCountForPaging(clientSearchDTO));
@@ -120,7 +115,7 @@ public class SearchController {
 	// 상품 조회 팝업창으로 이동
 	@GetMapping(value = { "/product/search-popup", "/product/search-popup/" })
 	public String getProductList(Model model, @ModelAttribute ProductSearchDTO productSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		// 상품 리스트 조회 요청(SELECT)
 		List<ProductDTO> productList = searchService.getProductList(productSearchDTO);
 		model.addAttribute("productList", productList);
@@ -136,8 +131,7 @@ public class SearchController {
 	@PostMapping("/product/search-popup")
 	@ResponseBody
 	public List<ProductDTO> searchProductList(Model model, @ModelAttribute ProductSearchDTO productSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		System.out.println(">>>>>>>>>>>>>>>>>>" + productSearchDTO);
+		LogUtil.logStart(log);
 		
 		//페이징용 totalCount
 		productSearchDTO.getPageDTO().setTotalCount(searchService.getProductCountForPaging(productSearchDTO));

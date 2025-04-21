@@ -6,6 +6,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import kr.co.itwillbs.de.common.constant.ConsoleColor;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -26,7 +27,8 @@ public class StartUpInitializer {
 	@Order(2) // ApplicationReadyEvent.1st 순서를 제어하고 싶다면 Order 어노테이션으로 제어 가능
 	@EventListener(ApplicationReadyEvent.class) //@EventListener(ApplicationReadyEvent.class) 이벤트 리스너들의 순서는 보장되지 않는다고 함 
 	public void printWelcomeMessage() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
+		
 		// 아재 감성 그득 넣기 ASCII Art
 		// HREF: https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Packtory
 		// HREF2: https://fsymbols.com/generators/tarty/
