@@ -11,6 +11,7 @@ import jakarta.annotation.PostConstruct;
  * 각자 클래스에서 사용법은 기존과 크게 달라지지 않음
  * 여전히 Controller, Service 등에서 @Slf4j를 붙여놓고
  * 아래의 LogUtil.logStart, LogUtil.logEnd, LogUtil.logDetail 를 사용하면 됨
+ * try {} catch() {} 에서 쓸 수 있게 logUtil.warn,error 도 이용 가능
  * 스태틱 메서드이기에 클래스 생성자에 유틸 클래스 주입 없이 바로 사용 가능함
  * </pre>
  */
@@ -106,5 +107,46 @@ public class LogUtil {
 			logger.info(message, args);
 			break;
 		}
+	}
+	
+	
+	/**
+	 * LogUtil.warn
+	 * <br>trace를 로그를 남기기 위함
+	 * @param logger
+	 */
+	public static void trace(Logger logger, String message, Object... args) {
+		logger.trace(message, args);
+	}
+	
+	/**
+	 * LogUtil.warn
+	 * <br>debug를 로그를 남기기 위함
+	 * @param logger
+	 */
+	public static void debug(Logger logger, String message, Object... args) {
+		logger.debug(message, args);
+	}
+	
+	/**
+	 * info 레벨 로그는 위에 있는 logDetail 를 이용
+	 */
+	
+	/**
+	 * LogUtil.warn
+	 * <br>warn를 로그를 남기기 위함
+	 * @param logger
+	 */
+	public static void warn(Logger logger, String message, Object... args) {
+		logger.warn(message, args);
+	}
+	
+	/**
+	 * LogUtil.error
+	 * <br>error를 로그를 남기기 위함
+	 * @param logger
+	 */
+	public static void error(Logger logger, String message, Object... args) {
+		logger.error(message, args);
 	}
 }

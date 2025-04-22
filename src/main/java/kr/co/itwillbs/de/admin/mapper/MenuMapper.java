@@ -32,11 +32,11 @@ public interface MenuMapper {
 	List<MenuDTO> getMenuList(MenuSearchDTO menuSearchDTO);
 
 	/**
-	 * 메뉴 item 조회(parents_idx is not null)
+	 * 부모(parents_idx is null)의 하위 메뉴 조회(parents_idx = 부모메뉴row.idx)
 	 * @param menuSearchDTO
 	 * @return
 	 */
-	List<MenuDTO> getMenuItemListByMenuName(MenuSearchDTO menuSearchDTO);
+	List<MenuDTO> getMenuItemListByParentsIdx(MenuSearchDTO menuSearchDTO);
 
 	/**
 	 * 메뉴 목록에서 isDeleted 수정하기 

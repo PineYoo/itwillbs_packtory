@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.commute.dto.CommuteDTO;
@@ -54,7 +55,7 @@ public class MainController {
 	 */
 	@GetMapping(value = { "", "/" })
 	public String mainView() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 
 		return "/index";
 	}
@@ -88,7 +89,7 @@ public class MainController {
 	 */
 	@GetMapping(value = { "/login", "/login/" })
 	public String loginForm(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 
 		model.addAttribute("loginVO", new LoginVO());
 
@@ -103,15 +104,15 @@ public class MainController {
 	 */
 	@GetMapping(value = { "/main", "/main/" })
 	public String packtoryMainView(@ModelAttribute NoticeSearchDTO noticeSearchDTO, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 			LoginVO loginVO = userDetails.getLoginVO();
 			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
-			log.info("userDetails is {}", userDetails);
-			log.info("loginVO is {}", loginVO);
+			LogUtil.logDetail(log,"userDetails is {}", userDetails);
+			LogUtil.logDetail(log,"loginVO is {}", loginVO);
 			model.addAttribute("userDetails", userDetails);
 			model.addAttribute("loginVO", loginVO);
 		}
@@ -124,15 +125,14 @@ public class MainController {
 		// [ 근태 ]
 		// 출퇴근 기록 코드
 		List<CodeItemDTO> codeItemList = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
-		log.info("codeItemList : " + codeItemList);
 		model.addAttribute("codeItemList", codeItemList);
 		
 		// ------------------------------
 		// 세션 아이디(사번) 불러오는 코드
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
-        String id = userDetails.getUsername();
-        // ------------------------------
+		String id = userDetails.getUsername();
+		// ------------------------------
 		
 		// 로그인한 사번의 오늘 출퇴근 기록 조회
 		LocalDate today = LocalDate.now();
@@ -146,10 +146,8 @@ public class MainController {
 		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 		
-		log.info("checkInTime : " + checkInRecord);
 		model.addAttribute("checkInTime", checkInRecord != null ? checkInRecord.getRegDate().toLocalTime().format(formatter) : null);	// 오늘 출근기록 있을 경우 출근시간
 		model.addAttribute("checkOutTime", checkOutRecord != null ? checkOutRecord.getRegDate().toLocalTime().format(formatter) : null);	// 오늘 퇴근기록 있을 경우 퇴근시간
-		log.info("lastCommuteRecord : " + lastCommuteRecord);	// 오늘 출퇴근 마지막 기록
 		model.addAttribute("lastCommuteRecord", lastCommuteRecord);	// 오늘 출퇴근 마지막 기록
 		
 		return "/main/main";
@@ -160,9 +158,8 @@ public class MainController {
 	@PostMapping("/commute/save")	// "/commute/save"
 	@ResponseBody
 	public ResponseEntity<String> saveCommute(@RequestBody CommuteDTO commuteDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("commuteDTO : {}", StringUtil.objToString(commuteDTO));
-	    
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log,"commuteDTO : {}", StringUtil.objToString(commuteDTO));
 //		commuteDTO.setEmployeeId(id);	// 사번
 		LocalDateTime now = LocalDateTime.now();
 		commuteDTO.setRegDate(now); // 현재 시간 등록
@@ -171,7 +168,6 @@ public class MainController {
 		List<CodeItemDTO> tradeCode = commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_TRADE);
 		String checkInCode = getMinorCodeByMinorName(tradeCode, CHECKIN_NAME_KR); // "출근(1)"
 		String lateCode = getMinorCodeByMinorName(tradeCode, LATE_NAME_KR);       // "지각(5)"
-		log.info("checkInCode : " + checkInCode + ", lateCode : " + lateCode);
 		
 		
  		// 출근이면 지각 여부 확인
@@ -183,11 +179,9 @@ public class MainController {
 			}
 		}
 		
-		log.info("commuteDTO22 : {}", StringUtil.objToString(commuteDTO));
-		
 		// 출퇴근 기록 요청(insert)
 		commuteService.saveCommuteInfo(commuteDTO);
-	    return ResponseEntity.ok("저장 완료");
+		return ResponseEntity.ok("저장 완료");
 	}
 	
 	// ===================================================================

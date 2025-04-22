@@ -40,25 +40,28 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">소요자재 등록</h1>
+				<h1 class="h3 mb-4 text-gray-800">공정 등록</h1>
 			</div>
 			
 			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<form th:action="@{/mes/recipe/material}" method="post" th:object="${recipeMaterailDTO}" class="form row g-3" id="registerForm">
+						<form th:action="@{/mes/recipe/process}" method="post" th:object="${recipeProcessDTO}" class="form row g-3" id="registerForm">
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name','자재 이름',true,false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('name','공정 이름',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit','레시피 단위',true,false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('code','코드',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity','레시피 개수',true,false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('codeSeq','작업순서',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('mixSeq','혼합순서',true,false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('standardTime','표준 소요시간',true,false,false)}"></div>
+							</div>
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('maxTime','최대 소요시간',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,false,false)}"></div>
@@ -76,7 +79,7 @@
 		<script type="text/javascript">
 			$(function() {
 				$('#btnList').on("click", function() {
-					location.href="/mes/recipe/material";
+					location.href="/mes/recipe/process";
 				});
 				
 				// 레시피 등록
@@ -103,7 +106,7 @@
 					// 데이터 확인
 					console.log(_jsonObj);
 					// JSON 데이터를 서버로 전송
-					fetch("/mes/recipe/material", {
+					fetch("/mes/recipe/process", {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json"
@@ -115,7 +118,7 @@
 						console.log("서버 응답:", data);
 						if(data.status === "success") {
 							alert(data.message);
-							location.href="/mes/recipe/material";
+							location.href="/mes/recipe/process";
 						} else if(data.status === "validFail") {
 							console.log("hello validFail!");
 							//alert(data.message);

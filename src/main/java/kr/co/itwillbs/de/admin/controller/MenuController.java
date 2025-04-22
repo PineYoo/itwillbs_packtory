@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/admin/menu")
+@RequestMapping(value="/admin/menu", name = "메뉴 관리")
 public class MenuController {
 
 	private final MenuService menuService;
@@ -43,7 +43,7 @@ public class MenuController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value="/new")
+	@GetMapping(value="/new", name = "메뉴 등록")
 	public String menuRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -77,7 +77,7 @@ public class MenuController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value= {"","/"})
+	@GetMapping(value= {"","/"}, name = "메뉴 리스트")
 	public String getMenuTypeList(@ModelAttribute MenuSearchDTO menuSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("menuSearchDTO is {}", menuSearchDTO);
@@ -100,7 +100,7 @@ public class MenuController {
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping("/search")
+	@GetMapping(value="/search", name = "메뉴 리스트")
 	public String sampleGetList(@ModelAttribute MenuSearchDTO menuSearchDTO, Model model) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("request menuSearchDTO : {}", StringUtil.objToString(menuSearchDTO));
@@ -124,7 +124,7 @@ public class MenuController {
 	 * @param model menuDTO(1depth), menuDTOIdList(2depth)
 	 * @return
 	 */
-	@GetMapping("/{id}")
+	@GetMapping(value="/{id}", name="메뉴 상세")
 	public String getMenuIdList(@PathVariable("id") String id,
 								@ModelAttribute MenuSearchDTO menuSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -136,14 +136,14 @@ public class MenuController {
 		}
 		
 		try {
-			// 1depth 메뉴 조회를 위한 idx값 셋
+			// 그룹 메뉴 조회를 위한 idx값 셋
 			menuSearchDTO.setIdx(id);
-			// 1depth 메뉴 조회
+			// 그룹 메뉴 조회
 			MenuDTO menuDTO = menuService.getMenuTypeByIdx(menuSearchDTO);
 			model.addAttribute("menuDTO", menuDTO);
 			
-			menuSearchDTO.setMenuName(menuDTO.getMenuName());
-			model.addAttribute("menuDTOIdList", menuService.getMenuItemListByMenuName(menuSearchDTO));
+			menuSearchDTO.setParentsIdx(id);
+			model.addAttribute("menuDTOIdList", menuService.getMenuItemListByParentsIdx(menuSearchDTO));
 			
 			// 메뉴 등록을 위한 RequestMapping 리스트
 			model.addAttribute("mappingList", menuService.MappingConvertor());
@@ -237,7 +237,7 @@ public class MenuController {
 			return "redirect:"+MENU_PATH;
 		}
 		
-		menuDTO.setIdx(Long.parseLong(idx));
+		menuDTO.setIdx(idx);
 		menuService.modifyMenuIsDeleted(menuDTO);
 		
 		// 상품 상세정보 조회 페이지 리다이렉트(GET 방식 /items/ 와 id값 결합 필요)

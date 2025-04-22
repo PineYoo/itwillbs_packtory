@@ -21,12 +21,12 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.mes.dto.RecipeDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeMaterialSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
 import kr.co.itwillbs.de.mes.service.RecipeMaterailService;
-import kr.co.itwillbs.de.mes.service.RecipeService;
+import kr.co.itwillbs.de.mes.service.RecipeProcessService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

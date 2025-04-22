@@ -69,6 +69,47 @@
 	
 	<!-- 공통 함수 -->
 	<script type="text/javascript">
+		// 기간별 검색 필터링 제이쿼리 (datepicker) - 오늘날짜부터 조회 가능
+		function initDateRangePickerMinToday(startInputId, endInputId) {
+		    var $startInput = $('#' + startInputId);
+		    var $endInput = $('#' + endInputId);
+		    var $iconStart = $('[data-target="#' + startInputId + '"]');
+		    var $iconEnd = $('[data-target="#' + endInputId + '"]');
+		
+		    $startInput.daterangepicker({
+		        locale: {
+		            separator: " ~ ",
+		            format: 'YYYY-MM-DD',
+		            applyLabel: "확인",
+		            cancelLabel: "취소",
+		            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+		            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		            customRangeLabel: '기간 지정'
+		        },
+		        autoUpdateInput: false,
+		        timePicker: false,
+		        showDropdowns: true,
+		        autoApply: false,
+		        minDate: moment(), // 오늘부터 선택 가능하게 제한
+		        ranges: {
+		            '오늘': [moment()], // 오늘
+					'일주일' : [moment(), moment().add(7, 'days')],
+					'한달' : [moment(),  moment().add(1, 'months')]
+		        }
+		    }, function(start, end) {
+		        $startInput.val(start.format('YYYY-MM-DD'));
+		        $endInput.val(end.format('YYYY-MM-DD'));
+		    }).on('show.daterangepicker', function (ev, picker) {
+		        picker.container.addClass('packtoryCustomPicker');  // common.css                          
+		    });
+		
+		    // 아이콘과 requestEndDate를 클릭해도 캘린더 열리도록 설정
+		    $iconStart.add($iconEnd).add($endInput).on('click', function() {
+		        $startInput.trigger('click');
+		    });
+		}
+		
+		// -----------------------------------------------------------------
 		// 기간별 검색 필터링 제이쿼리 (datepicker) - 오늘날짜 까지만 조회 가능
 		function initDateRangePickerMaxToday(startInputId, endInputId) {
 		    var $startInput = $('#' + startInputId);
@@ -101,6 +142,8 @@
 		    }, function(start, end) {
 		        $startInput.val(start.format('YYYY-MM-DD'));
 		        $endInput.val(end.format('YYYY-MM-DD'));
+		    }).on('show.daterangepicker', function (ev, picker) {
+		        picker.container.addClass('packtoryCustomPicker');  // common.css                          
 		    });
 		
 		    // 아이콘과 requestEndDate를 클릭해도 캘린더 열리도록 설정
@@ -141,6 +184,8 @@
 		    }, function(start, end) {
 		        $startInput.val(start.format('YYYY-MM-DD'));
 		        $endInput.val(end.format('YYYY-MM-DD'));
+		    }).on('show.daterangepicker', function (ev, picker) {
+		        picker.container.addClass('packtoryCustomPicker');  // common.css                          
 		    });
 		
 		    // 아이콘과 requestEndDate를 클릭해도 캘린더 열리도록 설정

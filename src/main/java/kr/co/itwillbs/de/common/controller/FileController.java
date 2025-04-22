@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import kr.co.itwillbs.de.common.service.FileService;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +33,7 @@ public class FileController {
 	 */
 	@GetMapping("/view/{fileIdx}")
 	public ResponseEntity<Resource> getFileForView(@PathVariable("fileIdx") String fileIdx) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		if(!StringUtil.isLongValue(fileIdx)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다.");
@@ -40,7 +41,6 @@ public class FileController {
 		
 		try {
 			ResponseEntity<Resource> response = fileService.getFile(Long.parseLong(fileIdx));
-			log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 			return response;
 		} catch (ResponseStatusException e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -54,7 +54,7 @@ public class FileController {
 	 */
 	@GetMapping("/download/{fileIdx}")
 	public ResponseEntity<Resource> getFileForDownloads(@PathVariable("fileIdx") String fileIdx) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 
 		if (!StringUtil.isLongValue(null)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다.");

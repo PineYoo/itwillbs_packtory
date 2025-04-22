@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import kr.co.itwillbs.de.common.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -18,7 +19,7 @@ public class ErrorController {
  * AI 형님이 ExceptionTranslationFilter 에서 처리된다고 하는데... 과연?
  * 상세 설정을 위해서는 @ControllerAdvice
  */
-	
+	private final String VIEW_PATH = "/error"; // 이 클래스 내에서 사용 할 뷰 경로
 	
 	/**
 	 * 403 ERROR
@@ -28,10 +29,10 @@ public class ErrorController {
 	 */
 	@GetMapping("/403")
 	public String accessDenied(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		model.addAttribute("errorMessage", "해당 페이지에 접근할 권한이 없습니다.");
-		return "error/403"; // 에러 페이지 뷰 이름
+		return VIEW_PATH+"/403"; // 에러 페이지 뷰 이름
 	}
 	
 	/**
@@ -42,10 +43,10 @@ public class ErrorController {
 	 */
 	@GetMapping("/404")
 	public String fileNotFound(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		model.addAttribute("errorMessage", "해당 페이지를 찾을 수 없습니다.");
-		return "error/404"; // 에러 페이지 뷰 이름
+		return VIEW_PATH+"/404"; // 에러 페이지 뷰 이름
 	}
 	
 	/**
@@ -56,9 +57,9 @@ public class ErrorController {
 	 */
 	@GetMapping("/500")
 	public String internalServerError(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		model.addAttribute("errorMessage", "서버 에러가 발생.");
-		return "error/500"; // 에러 페이지 뷰 이름
+		return VIEW_PATH+"/500"; // 에러 페이지 뷰 이름
 	}
 }

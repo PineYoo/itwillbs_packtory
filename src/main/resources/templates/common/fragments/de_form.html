@@ -32,11 +32,11 @@
 	<th:block th:fragment="textArea(fieldName, labelText, rows, cols, isRequired, isReadonly, isDisabled)">
 		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
 		<textarea class="form-control" 
-			rows="${rows}"
-			cols="${cols}"
 			th:field="*{__${fieldName}__}"
 			th:placeholder="${labelText}"
-			th:attr="data-required=${isRequired},
+			th:attr="rows=${rows}, 
+					 cols=${cols},
+					 data-required=${isRequired},
 					 data-name=${labelText},
 					 readonly=${isReadonly ? 'readonly' : null},
 					 disabled=${isDisabled ? 'disabled' : null}"></textarea>

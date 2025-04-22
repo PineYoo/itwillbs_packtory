@@ -19,6 +19,7 @@ import kr.co.itwillbs.de.admin.dto.LogDTO;
 import kr.co.itwillbs.de.admin.mapper.LogMapper;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.common.util.ServletRequestUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,7 +60,7 @@ public class PacktoryAspect {
 	 */
 	@AfterReturning(pointcut = "@annotation(logExecution)", returning = "result")
 	public void logServiceMethod(JoinPoint joinPoint, LogExecution logExecution, Object result) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		try {
 			/*
 			 * // 메서드 정보 String serviceName =
@@ -100,7 +101,7 @@ public class PacktoryAspect {
 			logMapper.registerLog(logDTO);
 
 		} catch (Exception e) {
-			log.error("서비스 로그 저장 중 오류 발생: {}", e.getMessage());
+			LogUtil.error(log,"서비스 로그 저장 중 오류 발생: {}", e.getMessage());
 		}
 	}
 
@@ -121,7 +122,7 @@ public class PacktoryAspect {
 	 */
 	@Around("execution(* kr.co.itwillbs.de..service.*.*(..))")
 	public Object injectSessionIds(ProceedingJoinPoint joinPoint) throws Throwable {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		Object[] args = joinPoint.getArgs();
 		
 		for(Object arg : args) {
@@ -154,13 +155,11 @@ public class PacktoryAspect {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			String memberId = authentication != null ? authentication.getName() : null;
-			log.info("{}---start sessionId is {}", Thread.currentThread().getStackTrace()[1].getMethodName(), memberId);
 
 			if (memberId != null) {
 				RequiredSessionIds annotation = dto.getClass().getAnnotation(RequiredSessionIds.class);
 				String[] fields = annotation.fields();
 				
-				log.info("inject target fields: {}", Arrays.toString(fields));
 				for (String fieldName : fields) {
 					try {
 						Field field = dto.getClass().getDeclaredField(fieldName);
@@ -168,24 +167,22 @@ public class PacktoryAspect {
 						
 						// 타입 체크
 						if (!field.getType().equals(String.class)) {
-							log.error("{} 필드는 String 타입이어야 합니다. 현재 타입: {}", fieldName, field.getType().getName());
+							LogUtil.error(log,"{} 필드는 String 타입이어야 합니다. 현재 타입: {}", fieldName, field.getType().getName());
 							continue;
 						}
 						
 						// 현재 값 확인
 						Object currentValue = field.get(dto);
-						log.info("{} 필드 현재 값: {}", fieldName, currentValue);
 
 						// null인 경우에만 주입
 						if (currentValue == null) {
 							field.set(dto, memberId);
-							log.info("{} 필드에 memberId 주입 성공: {}", fieldName, memberId);
 						}
 						
 					} catch (NoSuchFieldException e) {
-						log.error("DTO에 {} 필드가 없습니다: {}", fieldName, dto.getClass().getName());
+						LogUtil.error(log,"DTO에 {} 필드가 없습니다: {}", fieldName, dto.getClass().getName());
 					} catch (IllegalAccessException e) {
-						log.error("{} 필드 접근 중 오류 발생: {}", fieldName, e.getMessage());
+						LogUtil.error(log,"{} 필드 접근 중 오류 발생: {}", fieldName, e.getMessage());
 					}
 				} // end of for (String fieldName : fields) {
 			} // end of if (memberId != null) {

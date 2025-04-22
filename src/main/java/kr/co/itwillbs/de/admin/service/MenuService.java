@@ -99,7 +99,7 @@ public class MenuService {
 	 * @param menuSearchDTO
 	 * @return
 	 */
-	public List<MenuDTO> getMenuItemListByMenuName(MenuSearchDTO menuSearchDTO) {
+	public List<MenuDTO> getMenuItemListByParentsIdx(MenuSearchDTO menuSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		// 컨트롤러에서 넘겨준 idx와 menuType 파라미터 확인
@@ -110,9 +110,8 @@ public class MenuService {
 		 * menuSearchDTO.setMenuType(menuDTOlist.get(0).getMenuType());
 		 * menuSearchDTO.setIsDeleted(IsDeleted.N);
 		 */
-		log.info("menuSearchDTO parameters : {}", menuSearchDTO);
 		
-		return menuMapper.getMenuItemListByMenuName(menuSearchDTO);
+		return menuMapper.getMenuItemListByParentsIdx(menuSearchDTO);
 	}
 
 	/**
@@ -178,21 +177,43 @@ public class MenuService {
 		
 		Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
 		for(Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
-			RequestMappingInfo requestMappingInfo = entry.getKey();
 			HandlerMethod handlerMethod = entry.getValue();
 			
+			/* 25.04.19 굳이 밑에까지 내려가야 할까?
+			 * 조건: error, sample, items ... 등등 컨트롤러는 바로 컨티뉴
+			 * handlerMethod.getBean(): (Object)mainController <- 좋은가? 1점
+			 * handlerMethod.getBeanType().getPackageName(): kr.co.itwillbs.de.common.controller 애매한데?
+			 * handlerMethod.getBeanType().getName(): kr.co.itwillbs.de.common.MainController endsWith()? 너인가?
+			 * handlerMethod.getBeanType().getSimpleName(): MainController equals 너님 채용
+			 */
+			if(handlerMethod.getBeanType().getPackageName().startsWith("kr.co.itwillbs.de.common") // error,file,main,search
+				|| handlerMethod.getBeanType().getPackageName().startsWith("kr.co.itwillbs.de.sample") // bs, items, sample
+				|| handlerMethod.getBeanType().getSimpleName().equals("AdminMainController")
+				) {
+				continue;
+			}
+				
+			RequestMappingInfo requestMappingInfo = entry.getKey();
+			
+			String description = requestMappingInfo.getName(); // @RequestMapping(name="bla") 를 가져온다
 			Set<String> patterns = requestMappingInfo.getPatternValues();
 			Set<RequestMethod> methods = requestMappingInfo.getMethodsCondition().getMethods();
-			
 			RequestMappingDTO dto = null;
 
 			for (String pattern : patterns) {
+				// 25.04.18 - 등록에 도움되지 않는 혹은 사용자에게 노출하지 않아도 되는 mapping 정보는 제외 시키자
+//				if(pattern.startsWith("/error") || pattern.startsWith("/sample") || pattern.startsWith("/items")) continue; // error||sample||items 페이지는 메뉴 등록을 필요치 않음
+				
 				for (RequestMethod method : methods) {
+					
+					if(!RequestMethod.GET.equals(method)) continue; // 메뉴 연결 uri 의 method는 GET 이임으로 이외 method는 by pass 핸들러 메서드를 가져올 떄 GetMapping만 가져오는건 어떨까?
+					
 					dto = new RequestMappingDTO();
+					dto.setUriPattern(pattern);
 					dto.setMethod(method.name());
 					dto.setMethodName(handlerMethod.getMethod().getName());
-					dto.setUrlPattern(pattern);
 					dto.setSimpleName(handlerMethod.getBeanType().getSimpleName());
+					dto.setDescription(description);
 					mappingList.add(dto);
 				}
 			}

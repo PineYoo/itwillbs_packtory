@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.co.itwillbs.de.mes.mapper.RecipeMapper">
+<mapper namespace="kr.co.itwillbs.de.mes.mapper.RecipeProcessMapper">
 
 	<!-- href: https://mybatis.org/mybatis-3/ko/dynamic-sql.html -->
 	<select id="templates" >
@@ -36,14 +36,12 @@
 	
 	<sql id="t_recipe_columns_forSelect">
 		  idx
-		, type
-		, product_idx
-		, bom_idx
+		, master_idx
 		, name
-		, unit
-		, quantity
-		, job_time
-		, memo
+		, code
+		, code_seq
+		, standard_time
+		, max_time
 		, is_deleted
 		, reg_id
 		, reg_date
@@ -52,129 +50,115 @@
 	</sql>
 	
 		<!-- useGeneratedKeys : true 일때, keyProperty : idx >> affectRow가 아닌 생성된 idx가 리턴타입에 셋 mysql은 확인됨 -->
-	<insert id="registerRecipe" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.RecipeDTO">
+	<insert id="registerRecipeProcess" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
 		INSERT INTO t_recipe (
 			<trim suffixOverrides=",">
-			type,
-			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
-			product_idx,
-			</if>
-			<if test='bomIdx !=null and !("".equals(bomIdx.trim()))'>
-			bom_idx,
+			<if test='masterIdx !=null and !("".equals(masterIdx.trim()))'>
+			master_idx,
 			</if>
 			<if test='name !=null and !("".equals(name.trim()))'>
 			name,
 			</if>
-			<if test='unit !=null and !("".equals(unit.trim()))'>
-			unit,
+			<if test='code !=null and !("".equals(code.trim()))'>
+			code,
 			</if>
-			<if test='quantity !=null'>
-			quantity,
+			<if test='codeSeq !=null and !("".equals(codeSeq.trim()))'>
+			code_seq,
 			</if>
-			<if test='jobTime !=null and !("".equals(jobTime.trim()))'>
-			job_time,
+			<if test='standardTime !=null and !("".equals(standardTime.trim()))'>
+			standard_time,
 			</if>
-			<if test='memo !=null and !("".equals(memo.trim()))'>
-			memo,
+			<if test='maxTime !=null and !("".equals(maxTime.trim()))'>
+			max_time,
 			</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
 			is_deleted,
 			</if>
 			reg_id,
 			reg_date,
-<!-- 			<if test='modId !=null and !("".equals(modId.trim()))'>
-			mod_id,
-			mod_date,
-			</if> -->
 			</trim>
 		) VALUES (
 			<trim suffixOverrides=",">
-			#{type},
-			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
-			#{productIdx},
-			</if>
-			<if test='bomIdx !=null and !("".equals(bomIdx.trim()))'>
-			#{bomIdx},
+			<if test='masterIdx !=null and !("".equals(masterIdx.trim()))'>
+			#{masterIdx},
 			</if>
 			<if test='name !=null and !("".equals(name.trim()))'>
 			#{name},
 			</if>
-			<if test='unit !=null and !("".equals(unit.trim()))'>
-			#{unit},
+			<if test='code !=null and !("".equals(code.trim()))'>
+			#{code},
 			</if>
-			<if test='quantity !=null'>
-			#{quantity},
+			<if test='codeSeq !=null and !("".equals(codeSeq.trim()))'>
+			#{codeSeq},
 			</if>
-			<if test='jobTime !=null and !("".equals(jobTime.trim()))'>
-			#{jobTime},
+			<if test='standardTime !=null and !("".equals(standardTime.trim()))'>
+			#{standardTime},
 			</if>
-			<if test='memo !=null and !("".equals(memo.trim()))'>
-			#{memo},
+			<if test='maxTime !=null and !("".equals(maxTime.trim()))'>
+			#{maxTime},
 			</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
 			#{isDeleted},
 			</if>
 			#{regId},
 			now(),
-			<!-- <if test='modId !=null and !("".equals(modId.trim()))'>
-			#{modId},
-			now(),
-			</if> -->
 			</trim>
 			)
 	</insert>
 	
-	<select id="getRecipesCountBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.RecipeSearchDTO"
+	<select id="getRecipesProcessCountBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO"
 										resultType="int">
 		SELECT 
 			count(*)
-		FROM t_recipe
+		FROM t_recipe_process_code
 		<where>
-			<if test='type !=null and !("".equals(type.trim()))'>AND type = #{type}</if>
+			<if test='masterIdx !=null and !("".equals(masterIdx.trim()))'>AND master_idx = #{masterIdx}</if>
 			<if test='name !=null and !("".equals(name.trim()))'>AND name LIKE CONCAT('%',#{name},'%')</if>
-			<if test='unit !=null and !("".equals(unit.trim()))'>AND unit LIKE CONCAT('%',#{unit},'%')</if>
-			<if test='jobTime !=null and !("".equals(jobTime.trim()))'>AND job_time LIKE CONCAT('%',#{jobTime},'%')</if>
+			<if test='code !=null and !("".equals(code.trim()))'>AND code LIKE CONCAT('%',#{code},'%')</if>
+			<if test='codeSeq !=null and !("".equals(codeSeq.trim()))'>AND code_seq LIKE CONCAT('%',#{codeSeq},'%')</if>
+			<if test='standardTime !=null and !("".equals(standardTime.trim()))'>AND standard_time LIKE CONCAT('%',#{standardTime},'%')</if>
+			<if test='maxTime !=null and !("".equals(maxTime.trim()))'>AND max_time LIKE CONCAT('%',#{maxTime},'%')</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
 		</where>
 	</select>
 
-	<select id="getRecipesBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.RecipeSearchDTO"
-									resultType="kr.co.itwillbs.de.mes.dto.RecipeDTO">
+	<select id="getRecipesProcessBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO"
+									resultType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
 		SELECT 
 			<include refid="t_recipe_columns_forSelect"></include> 
-		FROM t_recipe
+		FROM t_recipe_process_code
 		<where>
-			<if test='type !=null and !("".equals(type.trim()))'>AND type = #{type}</if>
+			<if test='masterIdx !=null and !("".equals(masterIdx.trim()))'>AND master_idx = #{masterIdx}</if>
 			<if test='name !=null and !("".equals(name.trim()))'>AND name LIKE CONCAT('%',#{name},'%')</if>
-			<if test='unit !=null and !("".equals(unit.trim()))'>AND unit LIKE CONCAT('%',#{unit},'%')</if>
-			<if test='jobTime !=null and !("".equals(jobTime.trim()))'>AND job_time LIKE CONCAT('%',#{jobTime},'%')</if>
+			<if test='code !=null and !("".equals(code.trim()))'>AND code LIKE CONCAT('%',#{code},'%')</if>
+			<if test='codeSeq !=null and !("".equals(codeSeq.trim()))'>AND code_seq LIKE CONCAT('%',#{codeSeq},'%')</if>
+			<if test='standardTime !=null and !("".equals(standardTime.trim()))'>AND standard_time LIKE CONCAT('%',#{standardTime},'%')</if>
+			<if test='maxTime !=null and !("".equals(maxTime.trim()))'>AND max_time LIKE CONCAT('%',#{maxTime},'%')</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
 		</where>
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
-	<select id="getRecipeByIdx" parameterType="string"
-									resultType="kr.co.itwillbs.de.mes.dto.RecipeDTO">
+	<select id="getRecipeProcessByIdx" parameterType="string"
+									resultType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
 		SELECT 
 			<include refid="t_recipe_columns_forSelect"></include> 
-		FROM t_recipe
+		FROM t_recipe_process_code
 		where idx = #{idx}
 	</select>
 	
 	
 	
 	<!-- <set>이 분명 마지막 , 를 제거해준다고 알고 있다? 맞나? -->
-	<update id="modifyRecipe" parameterType="kr.co.itwillbs.de.mes.dto.RecipeDTO">
-		UPDATE t_recipe
+	<update id="modifyRecipeProcess" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
+		UPDATE t_recipe_process_code
 			<set>
-				<if test='type !=null and !("".equals(type.trim()))'>type = #{type},</if>
-				<if test='productIdx !=null and !("".equals(productIdx.trim()))'>product_idx = #{productIdx},</if>
-				<if test='bomIdx !=null and !("".equals(bomIdx.trim()))'>bom_idx = #{bomIdx},</if>
+				<if test='masterIdx !=null and !("".equals(masterIdx.trim()))'>master_idx = #{masterIdx},</if>
 				<if test='name !=null and !("".equals(name.trim()))'>name = #{name},</if>
-				<if test='unit !=null and !("".equals(unit.trim()))'>unit = #{unit},</if>
-				<if test='quantity !=null'>quantity = #{quantity},</if>
-				<if test='jobTime !=null and !("".equals(jobTime.trim()))'>job_time = #{jobTime},</if>
-				<if test='memo !=null and !("".equals(memo.trim()))'>memo = #{memo},</if>
+				<if test='code !=null and !("".equals(code.trim()))'>code = #{code},</if>
+				<if test='codeSeq !=null and !("".equals(codeSeq.trim()))'>code_seq = #{codeSeq},</if>
+				<if test='standardTime !=null and !("".equals(standardTime.trim()))'>standard_time = #{standardTime},</if>
+				<if test='maxTime !=null and !("".equals(maxTime.trim()))'>max_time = #{maxTime},</if>
 				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
