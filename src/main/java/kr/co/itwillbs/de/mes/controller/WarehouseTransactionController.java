@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
-import kr.co.itwillbs.de.mes.dto.QcStandardDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO;
@@ -63,8 +62,7 @@ public class WarehouseTransactionController {
 	// 창고 정보 등록 폼 페이지 AJAX용
 	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> warehouseTransactionRegister(
-			@RequestBody @Valid WarehouseTransactionDTO warehouseTransactionDTO) {
+	private ResponseEntity<Map<String, Object>> warehouseTransactionRegister(@RequestBody @Valid WarehouseTransactionDTO warehouseTransactionDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(warehouseTransactionDTO));
 

@@ -217,7 +217,7 @@
 		resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
 		SELECT idx, name
 		FROM t_raw_material
-		WHERE idx = #{idx}
+		WHERE is_deleted = 'N'
 	</select>
 
 </mapper>

@@ -42,7 +42,9 @@ input, select {
 							<div class="col-md-6">
 								<label for="productIdx" class="form-label">상품</label> <select th:field="*{productIdx}" class="form-select" id="productIdx">
 									<option value="">상품을 선택하세요</option>
-									<option th:each="product : ${productList}" th:value="${product.idx}" th:text="${product.name}"></option>
+									<option th:each="product : ${productList}" 
+											th:value="${product.idx}" 
+											th:text="${product.name}"></option>
 								</select>
 							</div>
 

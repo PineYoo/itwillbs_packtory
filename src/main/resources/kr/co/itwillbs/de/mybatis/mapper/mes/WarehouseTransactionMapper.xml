@@ -55,16 +55,16 @@
 		) VALUES (
 		<trim suffixOverrides=",">
 			<if test='transType !=null and !("".equals(transType.trim()))'>
-				#{trans_type},
+				#{transType},
 			</if>
 			<if test='code !=null and !("".equals(code.trim()))'>
 				#{code},
 			</if>
 			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
-				#{product_idx},
+				#{productIdx},
 			</if>
 			<if test='materialIdx !=null and !("".equals(materialIdx.trim()))'>
-				#{material_idx},
+				#{materialIdx},
 			</if>
 			<if test='unit !=null and !("".equals(unit.trim()))'>
 				#{unit},
@@ -76,21 +76,21 @@
 				#{status},
 			</if>
 			<if test='manufacturingDate != null'>
-				#{manufacturing_date},
+				#{manufacturingDate},
 			</if>
 			<if
 				test='sourceLocation !=null and !("".equals(sourceLocation.trim()))'>
-				#{source_location},
+				#{sourceLocation},
 			</if>
 			<if
 				test='destinationLocation !=null and !("".equals(destinationLocation.trim()))'>
-				#{destination_location},
+				#{destinationLocation},
 			</if>
 			<if test='memo !=null and !("".equals(memo.trim()))'>
 				#{memo},
 			</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
-				#{is_deleted},
+				#{isDeleted},
 			</if>
 			#{regId},
 			now(),
@@ -104,8 +104,8 @@
 			resultType="int">
 		SELECT COUNT(*)
 		FROM t_warehouse_transaction w
-		LEFT JOIN t_product p ON t.product_idx = p.idx
-		LEFT JOIN t_raw_material m ON t.material_idx = m.idx
+		LEFT JOIN t_product p ON w.product_idx = p.idx
+		LEFT JOIN t_raw_material m ON w.material_idx = m.idx
 		<where>
 			<if test='transType != null and !("".equals(transType.trim()))'>
 				AND w.trans_type LIKE CONCAT('%', #{transType}, '%')
@@ -228,7 +228,7 @@
 			</if>
 		</where>
 
-		ORDER BY l.idx ASC
+		ORDER BY w.idx ASC
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 
