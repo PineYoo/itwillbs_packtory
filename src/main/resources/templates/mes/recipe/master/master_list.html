@@ -39,10 +39,11 @@
 									<input type="hidden" th:field="*{pageDTO.page}">
 									<input type="hidden" th:field="*{pageDTO.size}">
 									<!-- 페이징 히든 변수 -->
-									<div class="container-fluid px-5">
+									<div class="container-fluid px-5 mt-3">
 										<div class="row">
 											<!-- 왼쪽 컬럼 -->
-											<div class="col-md-6">
+											<div class="col-md-6 left-form">
+											
 												<!-- 자재 이름 -->
 												<div class="form-group row mb-3">
 													<div th:replace="~{common/fragments/de_search_form :: inputText('name','이름',false)}"></div>

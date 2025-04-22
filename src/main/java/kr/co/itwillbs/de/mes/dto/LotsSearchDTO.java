@@ -27,8 +27,12 @@ public class LotsSearchDTO {
 	private String workOrderDocumentNumber;
 	private String processCode;
 	private String manufacturingDate;
+	private String manufacturingStartDate;
+	private String manufacturingEndDate;
 	private String memo;
 	private String isDeleted;
+	
+	
 	
 	private List<CodeItemDTO> typeList;
 	

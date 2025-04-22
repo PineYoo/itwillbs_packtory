@@ -4,7 +4,7 @@
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
 <meta charset="UTF-8">
-<title>팩토리(PackTory) - 레시피 관리</title>
+<title>팩토리(PackTory) - Lot 관리</title>
 	<style type="text/css">
 		.form {
 			max-width: 800px;
@@ -40,7 +40,7 @@
 		<!-- Begin Page Content -->
 		<div class="container-fluid">
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">공정 상세</h1>
+				<h1 class="h3 mb-4 text-gray-800">Lot 상세</h1>
 			</div>
 			
 			<!-- ---------- 본문 컨테이너 ---------- -->
@@ -52,30 +52,39 @@
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('lotNumber','타입',true,false,false)}"></div>
 							</div>
+							
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('productIdx','상품번호',true,false,false)}"></div>
 							</div>
+							
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('materialIdx','자재번호',true,false,false)}"></div>
 							</div>
+							
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('workOrderDocumentNumber','문서번호',true,false,false)}"></div>
 							</div>
+							
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('processCode','프로세스',true,false,false)}"></div>
 							</div>
+							
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('unit','단위',true,false,false)}"></div>
 							</div>
+							
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('quantity','개수',true,false,false)}"></div>
 							</div>
+							
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('manufacturingDate','제조일자',true,false,false)}"></div>
 							</div>
+							
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,false,false)}"></div>
 							</div>
+							
 							<div class="col-md-12 mb-4">
 								<div th:replace="~{common/fragments/de_form :: inputText('memo','메모',true,false,false)}"></div>
 							</div>

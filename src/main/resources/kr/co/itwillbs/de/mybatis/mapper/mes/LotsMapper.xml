@@ -162,9 +162,28 @@
 			<if test='materialIdx !=null and !("".equals(materialIdx.trim()))'>AND material_idx LIKE CONCAT('%',#{materialIdx},'%')</if>
 			<if test='workOrderDocumentNumber !=null and !("".equals(workOrderDocumentNumber.trim()))'>AND work_order_document_number LIKE CONCAT('%',#{workOrderDocumentNumber},'%')</if>
 			<if test='processCode !=null and !("".equals(processCode.trim()))'>AND process_code LIKE CONCAT('%',#{processCode},'%')</if>
-			<if test='manufacturingDate !=null and !("".equals(manufacturingDate.trim()))'>AND manufacturing_date LIKE CONCAT('%',#{manufacturingDate},'%')</if>
+<!-- 			<if test='manufacturingDate !=null and !("".equals(manufacturingDate.trim()))'>AND manufacturing_date LIKE CONCAT('%',#{manufacturingDate},'%')</if> -->
 			<if test='memo !=null and !("".equals(memo.trim()))'>AND memo LIKE CONCAT('%',#{memo},'%')</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
+			<choose>
+				<when
+					test="manufacturingStartDate != null and manufacturingEndDate != null">
+					AND manufacturing_date BETWEEN
+					STR_TO_DATE(CONCAT(#{manufacturingStartDate},'000000'),'%Y-%m-%d%H%i%S')
+					AND
+					STR_TO_DATE(CONCAT(#{manufacturingEndDate},
+					'235959'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when
+					test="manufacturingStartDate != null and manufacturingEndDate == null">
+					STR_TO_DATE(CONCAT(#{manufacturingStartDate},'000000'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when
+					test="manufacturingStartDate == null and manufacturingEndDate != null">
+					STR_TO_DATE(CONCAT(#{manufacturingEndDate},
+					'235959'),'%Y-%m-%d%H%i%S')
+				</when>
+			</choose>
 		</where>
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>

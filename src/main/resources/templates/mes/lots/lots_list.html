@@ -3,7 +3,7 @@
 		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) - 메뉴 관리</title>
+<title>팩토리(PackTory) - Lot 관리</title>
 	
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 	<style type="text/css">
@@ -56,10 +56,10 @@
 
 											<!-- 오른쪽 컬럼 -->
 											<div class="col-md-6">
-												<!-- 표준 소요시간 -->
-<!-- 												<div class="form-group row mb-3"> -->
-<!-- 													<div th:replace="~{common/fragments/de_search_form :: inputText('standardTime','표준 소요시간',false)}"></div> -->
-<!-- 												</div> -->
+												<!-- 제조 일자 -->
+												<div class="form-group row mb-3">
+													<div th:replace="~{common/fragments/de_search_form :: inputDatePicker('manufacturingStartDate','manufacturingEndDate','제조일자',false)}"></div>
+												</div>
 												
 												<!-- 최대 소요시간 -->
 <!-- 												<div class="form-group row mb-3"> -->
@@ -157,6 +157,11 @@
 						}
 					}); // end of $('.clickable-row').on("click", function() { 
 					
+					// ---------------------------------------------------
+					// 기간별 날짜 검색(datepicker) 함수 활용 - (공통 페이지에 있음)
+					// 요청일자 적용
+					initDateRangePicker('manufacturingStartDate', 'manufacturingEndDate');
+					// ------------------------------------------------------------
 				}); // end of $(function() {
 			</script>
 		</div>
