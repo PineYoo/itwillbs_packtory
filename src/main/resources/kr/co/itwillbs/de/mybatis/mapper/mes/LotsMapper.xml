@@ -167,7 +167,8 @@
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
 			<choose>
 				<when
-					test="manufacturingStartDate != null and manufacturingEndDate != null">
+					test="(manufacturingStartDate != null and manufacturingStartDate.trim() != '')
+							and (manufacturingEndDate != null and manufacturingEndDate.trim() != '')">
 					AND manufacturing_date BETWEEN
 					STR_TO_DATE(CONCAT(#{manufacturingStartDate},'000000'),'%Y-%m-%d%H%i%S')
 					AND
@@ -175,13 +176,14 @@
 					'235959'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when
-					test="manufacturingStartDate != null and manufacturingEndDate == null">
-					STR_TO_DATE(CONCAT(#{manufacturingStartDate},'000000'),'%Y-%m-%d%H%i%S')
+					test="(manufacturingStartDate != null and manufacturingStartDate.trim() != '')
+							and (manufacturingEndDate == null or manufacturingEndDate.trim() == '')">
+					AND manufacturing_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{manufacturingStartDate},'000000'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when
-					test="manufacturingStartDate == null and manufacturingEndDate != null">
-					STR_TO_DATE(CONCAT(#{manufacturingEndDate},
-					'235959'),'%Y-%m-%d%H%i%S')
+					test="(manufacturingStartDate == null or manufacturingStartDate.trim() == '')
+							and (manufacturingEndDate != null and manufacturingEndDate.trim() != '')">
+					AND manufacturing_date <![CDATA[<=]]>STR_TO_DATE(CONCAT(#{manufacturingEndDate},'235959'),'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 		</where>
