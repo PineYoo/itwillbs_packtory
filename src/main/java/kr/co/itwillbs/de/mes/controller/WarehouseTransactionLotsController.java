@@ -20,42 +20,42 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
-import kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO;
-import kr.co.itwillbs.de.mes.service.LocationInfoService;
+import kr.co.itwillbs.de.mes.dto.WarehouseTransactionLotsDTO;
+import kr.co.itwillbs.de.mes.dto.WarehouseTransactionLotsSearchDTO;
+import kr.co.itwillbs.de.mes.service.WarehouseTransactionLotsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/mes/locationinfo")
-public class LocationInfoController {
+@RequestMapping("/mes/warehousetransactionlots")
+public class WarehouseTransactionLotsController {
 
-	private final LocationInfoService locationInfoService;
-	private final String QC_PATH = "/mes/locationinfo";
+	private final WarehouseTransactionLotsService warehouseTransactionLotsService;
+	private final String QC_PATH = "/mes/warehousetransactionlots";
 
-	// 공장 장소 정보 등록 폼 페이지
+	// 트랜잭션 LOT 등록 폼 페이지
 	@GetMapping("/new")
-	public String locationInfoRegisterForm(Model model) {
+	public String warehouseTransactionLotsRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		model.addAttribute("locationInfoDTO", new LocationInfoDTO());
+		model.addAttribute("wareouseTransactionLotsDTO", new WarehouseTransactionLotsDTO());
 
-		return QC_PATH + "/locationinfo_form";
+		return QC_PATH + "/warehousetransactionlots_form";
 	}
 
-	// 공장 장소 정보 등록 폼 페이지 AJAX용
+	// 트랜잭션 LOT 등록 폼 페이지 AJAX용
 	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> locationInfoRegister(@RequestBody @Valid LocationInfoDTO locationInfoDTO) {
+	private ResponseEntity<Map<String, Object>> warehouseTransactionLotsRegister(@RequestBody @Valid WarehouseTransactionLotsDTO warehouseTransactionLotsDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("requestDTO : {}", StringUtil.objToString(locationInfoDTO));
+		log.info("requestDTO : {}", StringUtil.objToString(warehouseTransactionLotsDTO));
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			locationInfoService.insertLocationInfo(locationInfoDTO);
+			warehouseTransactionLotsService.insertWarehouseTransactionLots(warehouseTransactionLotsDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -67,44 +67,44 @@ public class LocationInfoController {
 		return ResponseEntity.ok(response);
 	}
 
-	// 공장 장소 정보 목록 조회 (검색)
+	// 트랜잭션 LOT 목록 조회 (검색)
 	@GetMapping("")
-	public String getLocationInfoList(@ModelAttribute LocationInfoSearchDTO searchDTO, Model model) {
+	public String getWarehouseTransactionLotsList(@ModelAttribute WarehouseTransactionLotsSearchDTO searchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		// 페이징
-		searchDTO.getPageDTO().setTotalCount(locationInfoService.searchLocationInfoCount(searchDTO));
+		searchDTO.getPageDTO().setTotalCount(warehouseTransactionLotsService.searchWarehouseTransactionLotsCount(searchDTO));
 
-		// 공장 장소 정보 목록 조회
-		List<LocationInfoDTO> locationList = locationInfoService.searchLocationInfo(searchDTO);
-		model.addAttribute("locationList", locationList);
+		// 트랜잭션 LOT 목록 조회
+		List<WarehouseTransactionLotsDTO> transactionLotsList = warehouseTransactionLotsService.searchWarehouseTransactionLots(searchDTO);
+		model.addAttribute("transactionLotsList", transactionLotsList);
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
-		return QC_PATH + "/locationinfo_list";
+		return QC_PATH + "/warehousetransactionlots_list";
 	}
 
-	// 공장 장소 정보 상세 조회
+	// 트랜잭션 LOT 상세 조회
 	@GetMapping("/{idx}")
-	public String getLocationInfo(@PathVariable("idx") Long idx, Model model) {
+	public String getWarehouseTransactionLots(@PathVariable("idx") Long idx, Model model) {
 		log.info("{}---start, request param {}", Thread.currentThread().getStackTrace()[1].getMethodName(), idx);
 
-		// 공장 장소 정보 상세정보 조회
-		LocationInfoDTO locationInfoDTO = locationInfoService.getLocationInfoByIdx(idx);
-		model.addAttribute("locationInfoDTO", locationInfoDTO);
+		// 트랜잭션 LOT 상세정보 조회
+		WarehouseTransactionLotsDTO transactionLotDTO = warehouseTransactionLotsService.getWarehouseTransactionLotsByIdx(idx);
+		model.addAttribute("transactionLotDTO", transactionLotDTO);
 
-		return QC_PATH + "/locationinfo_detail";
+		return QC_PATH + "/warehousetransactionlots_detail";
 	}
 
-	// 공장 장소 정보 수정
-	@PutMapping("/updateLocationInfo")
-	public ResponseEntity<Map<String, Object>> updateLocationInfo(@RequestBody LocationInfoDTO locationInfoDTO) {
+	// 트랜잭션 LOT 수정
+	@PutMapping("/updateWarehouseTransactionLots")
+	public ResponseEntity<Map<String, Object>> updateWarehouseTransactionLots(@RequestBody WarehouseTransactionLotsDTO warehouseTransactionLotsDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			locationInfoService.updateLocationInfo(locationInfoDTO);
+			warehouseTransactionLotsService.updateWarehouseTransactionLots(warehouseTransactionLotsDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -117,15 +117,15 @@ public class LocationInfoController {
 		return ResponseEntity.ok(response);
 	}
 
-	// 공장 장소 정보 삭제 (Soft Delete)
+	// 트랜잭션 LOT 삭제 (Soft Delete)
 	@DeleteMapping("/{idx}")
 	@ResponseBody
-	public String deleteLocationInfo(@PathVariable("idx") Long idx) {
+	public String deleteWarehouseTransactionLots(@PathVariable("idx") Long idx) {
 		try {
-			locationInfoService.deleteLocationInfo(idx);
+			warehouseTransactionLotsService.deleteWarehouseTransactionLots(idx);
 			return "success";
 		} catch (Exception e) {
-			log.error("공장 장소 정보 삭제 실패: {}", e.getMessage());
+			log.error("트랜잭션LOT 삭제 실패: {}", e.getMessage());
 			return "error";
 		}
 	}

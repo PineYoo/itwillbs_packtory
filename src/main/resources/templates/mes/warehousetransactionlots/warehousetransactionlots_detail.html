@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 공장 장소 정보 상세</title>
+
+<style type="text/css">
+.form {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+input, select {
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 2px;
+}
+
+.essential {
+	background-color: white;
+}
+
+.filled {
+	background-color: white;
+}
+
+/* ----------------- */
+.addressInfo {
+	display: flex;
+}
+
+@media ( max-width : 768px) {
+	.addressInfo {
+		display: block;
+	}
+}
+</style>
+</head>
+
+<body id="page-top">
+	<div layout:fragment="contents" style="margin-top: 20px;">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-4 text-gray-800">공장 장소 정보 상세</h1>
+			</div>
+
+			<!-- ---------- 본문 컨테이너 ---------- -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive">
+						<form th:action="@{/mes/locationinfo/updateLocationInfo}" method="post" th:object="${locationInfoDTO}" class="form row g-3" id="registerForm">
+							<!-- hidden -->
+							<input type="hidden" th:field="*{idx}" id="idx" />
+							<!-- hidden -->
+
+							<!-- 타입 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
+							</div>
+
+							<!-- 공장명 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('name', '공장명', true,false,false)}"></div>
+							</div>
+
+							<!-- 메모 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true,false,false)}"></div>
+							</div>
+
+							<!-- 삭제 유무 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+							</div>
+
+							<!-- 주소 정보 -->
+							<div class="col-md-6">
+								<label for="postcode" class="form-label">주소</label>
+								<div class="row g-2">
+
+									<!-- 우편번호 -->
+									<div class="col-md-6">
+										<input type="text" id="postcode" class="form-control postCode_1 essential" th:field="*{postcode}" maxlength="5" placeholder="우편번호">
+									</div>
+									<div class="col-md-6">
+										<button type="button" id="searchAddressBtn_1" class="btn btn-outline-primary w-100">주소 찾기</button>
+									</div>
+
+									<!-- 기본 주소 -->
+									<div class="col-12">
+										<input type="text" id="address1_1" class="form-control address1_1 essential" th:field="*{address1}" placeholder="기본주소 입력">
+									</div>
+
+									<!-- 상세 주소 -->
+									<div class="col-12">
+										<input type="text" id="address2_1" class="form-control address2_1 essential" th:field="*{address2}" placeholder="상세주소 입력">
+									</div>
+								</div>
+							</div>
+
+							<hr>
+
+							<!-- 작성자 -->
+							<div class="col-md-6">
+								<label>작성자</label> <input th:value="${locationInfoDTO.regId}" class="form-control" readonly>
+							</div>
+
+							<!-- 작성일자 -->
+							<div class="col-md-6">
+								<label>작성일자</label> <input th:value="${locationInfoDTO.regDate}" class="form-control" readonly>
+							</div>
+
+							<!-- 최종작성자 -->
+							<div class="col-md-6">
+								<label>최종 작성자</label> <input th:value="${locationInfoDTO.modId}" class="form-control" readonly>
+							</div>
+
+							<!-- 최종작성일자 -->
+							<div class="col-md-6">
+								<label>최종 작성일자</label> <input th:value="${locationInfoDTO.modDate}" class="form-control" readonly>
+							</div>
+
+							<hr>
+
+							<div class="col-md-12 row align-items-center justify-content-center">
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
+								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+								<button type="button" id="deleteBtn" class="btn btn-danger btn-lg d-block col-3 ml-2 mb-3">삭제</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- ---------- 본문 컨테이너 끝 ---------- -->
+		</div>
+
+		<script type="text/javascript">
+	    $(function () {
+	        // 목록 버튼 클릭 시
+	        $('#btnList').on("click", function () {
+	            location.href = "/mes/locationinfo";  // 공장 장소 정보 목록 페이지로 이동
+	        });
+	        
+			//---------------------------------------------------
+			// 납품주소(다음 우편번호 API 활용)
+			// "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
+			$("#searchAddressBtn_1").click(function() {
+			    new daum.Postcode({
+			        oncomplete: function(data) {
+			            // 1) 우편번호(zonecode) 가져와서 우편번호 항목(postcode)에 출력
+			            $("#postcode").val(data.zonecode).addClass("filled");
+			
+			            // 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서
+			            //    기본주소 항목(address1)에 출력
+			            let address = data.address;
+			
+			            // 3) 만약, 건물명(buildingName)이 존재할 경우(= 널스트링이 아님)
+			            //    기본 주소 뒤에 건물명 결합
+			            if (data.buildingName !== '') {
+			                address += "(" + data.buildingName + ")";
+			            }
+			
+			            // 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
+			            $("#address1_1").val(address).addClass("filled");
+			
+			            // 5) 상세주소 항목(address2)에 포커스 요청
+			            $("#address2_1").focus();
+			        }
+			    }).open();
+			});
+	
+	        // 수정 폼 제출 시
+	        $('#btnSubmitForm').on("click", function () {
+	            // 에러 메시지 초기화
+	            $("div[id$='Error']").text("");
+	            
+	            // 폼 데이터 직렬화
+	            const _serializedData = $('#registerForm').serialize();
+	            const _pairs = _serializedData.split('&');
+	            const _jsonObj = {};
+	            _pairs.forEach(pair => {
+	                const [key, value] = pair.split('=');
+	                _jsonObj[decodeURIComponent(key)] = decodeURIComponent(value);
+	            });
+	
+	            // idx를 실제 페이지 URL에서 받아오기
+	            const idx = $('#idx').val();  // 수정된 부분: id를 #idx로 수정
+	
+	            fetch(`/mes/locationinfo/updateLocationInfo`, {
+	                method: "PUT",
+	                headers: {
+	                    "Content-Type": "application/json"
+	                },
+	                body: JSON.stringify(_jsonObj)  // JSON 형식으로 요청 본문 전달
+	            })
+	            .then(response => response.json())
+	            .then(data => {
+	                if (data.status === "success") {
+	                    alert(data.message);  // 성공 메시지
+	                    location.reload();  // 페이지 새로고침
+	                } else if (data.status === "validFail") {
+	                    const errors = data.errors;
+	                    for (let field in errors) {
+	                        $("#" + field + "Error").text(errors[field]);  // 유효성 검사 실패 시 에러 메시지 표시
+	                    }
+	                }
+	            })
+	            .catch(error => {
+	                console.error("서버 오류:", error);
+	                alert("요청 처리 중 문제가 발생했습니다.");
+	            });
+	        });
+	        
+	     	// 삭제 버튼 클릭 시
+	        $('#deleteBtn').on("click", function () {
+	            if (!confirm("정말 삭제하시겠습니까?")) return;
+
+	            const idx = $('#idx').val();
+
+	            fetch(`/mes/locationinfo/${idx}`, {
+	                method: "DELETE"
+	            })
+	            .then(response => response.text())
+	            .then(data => {
+	                if (data === "success") {
+	                    alert("삭제되었습니다.");
+	                    location.href = "/mes/locationinfo"; // 목록으로 이동
+	                } else {
+	                    alert("삭제 실패: " + data);
+	                }
+	            })
+	            .catch(error => {
+	                console.error("삭제 요청 오류:", error);
+	                alert("삭제 요청 중 문제가 발생했습니다.");
+	            });
+	        });
+	    });
+	</script>
+	</div>
+</body>
+</html>

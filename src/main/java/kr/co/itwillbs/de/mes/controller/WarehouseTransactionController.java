@@ -156,7 +156,7 @@ public class WarehouseTransactionController {
 			warehouseTransactionService.deleteWarehouseTransaction(idx);
 			return "success";
 		} catch (Exception e) {
-			log.error("품질 삭제 실패: {}", e.getMessage());
+			log.error("창고 정보 삭제 실패: {}", e.getMessage());
 			return "error";
 		}
 	}

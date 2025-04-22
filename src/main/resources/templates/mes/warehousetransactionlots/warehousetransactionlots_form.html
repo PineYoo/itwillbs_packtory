@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 공장 장소 정보 등록</title>
+<style type="text/css">
+.form {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+input, select {
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 2px;
+}
+
+.essential {
+	background-color: white;
+}
+
+.filled {
+	background-color: white;
+}
+
+/* ----------------- */
+.addressInfo {
+	display: flex;
+}
+
+@media ( max-width : 768px) {
+	.addressInfo {
+		display: block;
+	}
+}
+</style>
+<!-- 다음 우편번호 API -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body id="page-top">
+
+	<div layout:fragment="contents">
+		<!-- 페이지 내용 -->
+		<div class="container mt-5">
+			<!-- 카드 형식 -->
+			<div class="container-fluid">
+				<div class="d-sm-flex align-items-center justify-content-between mb-4">
+					<h1 class="h3 mb-4 text-gray-800">공장 장소 정보 등록</h1>
+				</div>
+
+				<!-- 본문 컨테이너 -->
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<div class="table-responsive">
+							<form th:action="@{/mes/locationinfo/new}" method="post" th:object="${locationInfoDTO}" class="form row g-3" id="registerForm">
+
+								<!-- 타입 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
+								</div>
+
+								<!-- 공장명 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('name', '공장명', true,false,false)}"></div>
+								</div>
+
+								<!-- 메모 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true,false,false)}"></div>
+								</div>
+
+								<!-- 삭제 유무 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+								</div>
+
+								<!-- 주소 정보 -->
+								<div class="col-md-6">
+									<label for="postcode" class="form-label">주소</label>
+									<div class="row g-2">
+
+										<!-- 우편번호 -->
+										<div class="col-md-6">
+											<input type="text" id="postcode" class="form-control postCode_1 essential" th:field="*{postcode}" maxlength="5" placeholder="우편번호">
+										</div>
+										<div class="col-md-6">
+											<button type="button" id="searchAddressBtn_1" class="btn btn-outline-primary w-100">주소 찾기</button>
+										</div>
+
+										<!-- 기본 주소 -->
+										<div class="col-12">
+											<input type="text" id="address1_1" class="form-control address1_1 essential" th:field="*{address1}" placeholder="기본주소 입력">
+										</div>
+
+										<!-- 상세 주소 -->
+										<div class="col-12">
+											<input type="text" id="address2_1" class="form-control address2_1 essential" th:field="*{address2}" placeholder="상세주소 입력">
+										</div>
+									</div>
+								</div>
+
+								<hr>
+
+								<!-- 버튼들 -->
+								<div class="col-md-12 row align-items-center justify-content-center">
+									<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+									<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			$(function() {
+				$('#btnList').on("click", function() {
+					location.href="/mes/locationinfo";
+				});
+				
+				//---------------------------------------------------
+				// 납품주소(다음 우편번호 API 활용)
+				// "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
+				$("#searchAddressBtn_1").click(function() {
+				    new daum.Postcode({
+				        oncomplete: function(data) {
+				            // 1) 우편번호(zonecode) 가져와서 우편번호 항목(postcode)에 출력
+				            $("#postcode").val(data.zonecode).addClass("filled");
+				
+				            // 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서
+				            //    기본주소 항목(address1)에 출력
+				            let address = data.address;
+				
+				            // 3) 만약, 건물명(buildingName)이 존재할 경우(= 널스트링이 아님)
+				            //    기본 주소 뒤에 건물명 결합
+				            if (data.buildingName !== '') {
+				                address += "(" + data.buildingName + ")";
+				            }
+				
+				            // 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
+				            $("#address1_1").val(address).addClass("filled");
+				
+				            // 5) 상세주소 항목(address2)에 포커스 요청
+				            $("#address2_1").focus();
+				        }
+				    }).open();
+				});
+				
+				// 공장 장소 정보 등록
+				$('#btnSubmitForm').on("click", function() {
+					console.group('click! #btnSubmitForm!');
+					// error 내용 삭제
+					$("div[id$='Error']").text("")
+					// 만세 폼이다!
+					const _serializedData = $('#registerForm').serialize();
+					// 문자열을 '&' 기준z으로 분리하여 배열로 변환
+					const _pairs = _serializedData.split('&');
+					// 빈 객체를 생성하여 데이터를 담을 준비
+					const _jsonObj = {};
+					// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
+					_pairs.forEach(pair => {
+						const [key, value] = pair.split('=');
+						_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
+					});
+					// @Valid 숫자 타입을 숫자로 변환
+						// 수량은 숫자형으로 전환
+					if (_jsonObj['quantity']) {
+						_jsonObj['quantity'] = parseInt(_jsonObj['quantity']);
+					}
+					// 데이터 확인
+					console.log(_jsonObj);
+					// JSON 데이터를 서버로 전송
+					fetch("/mes/locationinfo/new", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(_jsonObj)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.status === "success") {
+							alert(data.message);
+							location.href="/mes/locationinfo"; // 현재 페이지 새로 고침
+						} else if(data.status === "validFail") {
+							console.log("hello validFail!1");
+							//alert(data.message);
+							let _errors = data.errors;
+							console.log(_errors);
+							for (let field in _errors) {
+								$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
+							} // end of for (let field in errors) {
+						}
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						alert("요청 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해 주시기 바랍니다.");
+					});
+					
+					console.groupEnd();
+				}); // end of $('#btnSubmitForm').on("click", function() {
+				    
+			}); // end of $(function() {
+		</script>
+	</div>
+</body>
+</html>

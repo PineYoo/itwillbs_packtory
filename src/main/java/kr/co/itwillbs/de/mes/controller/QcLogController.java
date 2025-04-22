@@ -140,7 +140,7 @@ public class QcLogController {
 			qcLogService.deleteQcLog(idx);
 			return "success";
 		} catch (Exception e) {
-			log.error("품질 삭제 실패: {}", e.getMessage());
+			log.error("품질로그 삭제 실패: {}", e.getMessage());
 			return "error";
 		}
 	}
