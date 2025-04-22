@@ -105,6 +105,8 @@ public class ApprovalService {
 	public void modifyApproval(ApprovalDTO approvalDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		// INSERT 구문에 ON DUPLICATE KEY UPDATE 넣음으로써 따로 UPDATE구문 안써도 됨
+		// => 달라진거 알아서 비교하고 값 바꿔줌
 		approvalMapper.insertApproval(approvalDTO);
 		approvalMapper.insertApprovalItems(approvalDTO);
 		

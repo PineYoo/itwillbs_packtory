@@ -140,7 +140,7 @@
 <!-- 							    <input type="file" id="fileUpload" class="form-control" name="approvalFiles" multiple> -->
 <!-- 							</div> -->
 							
-							<!-- ---------------- 레시피 결재 영역 ---------------- -->
+							<!-- ---------------- 레시피 결재 영역 ------------------- -->
 							<div id="recipeApprovalSection" style="display: none;" class="col-md-12">
 				         	   <div class="d-flex justify-content-between align-items-center mb-2">
 									<label for="productName">결재할 레시피</label>
@@ -152,7 +152,28 @@
 							</div>
 							<!-- ---------------- 레시피 결재 영역 끝 ---------------- -->
 							
-							
+							<!-- ---------------- 휴가 결재 영역 --------------------- -->
+							<div id="vacationApprovalSection" style="display: none;" class="col-md-12">
+								<label for="eventStartDate">휴가 신청 기간</label>
+								<div style="width: 100%;">
+									<div class="d-flex align-items-center">
+										<div class="input-group">
+											<input type="text" class="form-control" autocomplete="off" th:field="*{eventStartDate}" id="eventStartDate">
+											<span class="input-group-text calendar-icon" data-target="eventStartDate">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+										<span class="mx-2">⁓</span>
+										<div class="input-group">
+											<input type="text" class="form-control" autocomplete="off" th:field="*{eventEndDate}" id="eventEndDate">
+											<span class="input-group-text calendar-icon" data-target="eventEndDate">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- ---------------- 휴가 결재 영역 끝 ------------------ -->
 							
 					        <div class="col-md-12 row align-items-center justify-content-center mt-3">
 								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">기안하기</button>

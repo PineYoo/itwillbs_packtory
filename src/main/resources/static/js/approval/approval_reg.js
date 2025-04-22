@@ -30,15 +30,13 @@ document.addEventListener("DOMContentLoaded", function(){
 	
 	// +++++++++++++ 최짐니 ++++++++++++++++++++++++++++++
 	// ---------------------------------------------------
-	// 결제유형 - 레시피결재 클릭 시 이벤트
+	// 페이지 로드 시 확인
+	toggleApprovalSection();
+
+	// 변경 이벤트 시 확인
 	$('#approvalType').on('change', function() {
-        var selectedValue = $(this).val();
-        if (selectedValue === '7') {	// 레시피결재 일 경우
-            $('#recipeApprovalSection').show();
-        } else {
-            $('#recipeApprovalSection').hide();
-        }
-    });
+	    toggleApprovalSection();
+	});
 	
 	// ---------------------------------------------------
 	// 기간별 날짜 검색(datepicker) 함수 활용 - (공통 페이지에 있음)
@@ -46,6 +44,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	initDateRangePickerMinToday('draftDate', 'dueDate');
 	// 유효기간 적용
 	initDateRangePickerMinToday('validFrom', 'validTo');
+	// 휴가신청기간 적용
+	initDateRangePickerMinToday('eventStartDate', 'eventEndDate');
 	
 	// ---------------------------------------------------
 	// 기안서 등록(submit)
@@ -173,4 +173,35 @@ function setSelectedEmployees(employeeList) {
 // 사원 정보를 문자열로 포맷팅하는 함수
 function formatApproverInfo(emp) {
     return emp.name + '(' + emp.departmentName + ', ' + emp.positionName + ')';
+}
+
+// 결제유형 선택에 따른 이벤트 함수 - 레시피결재 / 휴가결재
+function toggleApprovalSection() {
+    var selectedValue = $('#approvalType').val();
+    if (selectedValue === '4') {
+        $('#vacationApprovalSection').show();
+        $('#recipeApprovalSection').hide();
+		
+		// 레시피결재 정보 지우기
+		$("#recipeMasterIdx").val('');
+		$("#recipeName").val('');
+		
+    } else if (selectedValue === '7') {
+        $('#vacationApprovalSection').hide();
+        $('#recipeApprovalSection').show();
+		
+		// 휴가결재 정보 지우기
+		$("#eventStartDate").val('');
+		$("#eventEndDate").val('');
+		
+    } else {
+        $('#vacationApprovalSection').hide();
+        $('#recipeApprovalSection').hide();
+		
+		// 다지워
+		$("#eventStartDate").val('');
+		$("#eventEndDate").val('');
+		$("#recipeMasterIdx").val('');
+		$("#recipeName").val('');
+    }
 }

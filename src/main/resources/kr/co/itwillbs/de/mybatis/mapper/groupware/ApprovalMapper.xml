@@ -380,6 +380,7 @@
 		<include refid="withEmpBase"></include>
 		SELECT 
 		<include refid="t_approval_join_columns_forSelect"></include>
+			 , rm.name AS recipeMasterName	-- 수정페이지에서 보여주려고
 			 , emp1.name AS approver1Name
 			 , emp2.name AS approver2Name
 			 , emp3.name AS approver3Name
@@ -404,6 +405,10 @@
 		  -- 결재자3 사원정보
 		  LEFT JOIN t_employee emp3
 		    ON ai.approver3 = emp3.id
+		 
+		 -- 레시피 결재 시 레시피마스터 정보
+		 LEFT JOIN t_recipe_master rm
+		   ON a.recipe_master_idx = rm.idx
 		 
 		 WHERE a.doc_no = #{docNo}
 	</select>
