@@ -39,7 +39,7 @@
 		 -->
 	</sql>
 	
-	<sql id="withEmpBase">
+	<sql id="OldwithEmpBase">
 		WITH empBase AS (
 			SELECT
 				emp.id,
@@ -81,6 +81,58 @@
 				AND emp.sub_department_code = tdi.child_code
 			LEFT JOIN t_position_info AS tpi
 				ON emp.position_code = tpi.idx
+			)
+	</sql>
+	
+	<sql id="withEmpBase">
+		WITH empBase AS (
+			SELECT
+				te.idx,
+				te.id,
+				te.name,
+				te.ssn,
+				te.department_code,
+				tdi.department_name,
+				te.sub_department_code,
+				tdi.child_name AS sub_department_name,
+				te.position_code,
+				tpi.position_name,
+				tpi.is_manager,
+				te.hire_date,
+				te.work_experience,
+				te.is_deleted,
+				ted.phone_number,
+				ted.email,
+				ted.file_idxs,
+				ted.employee_status_code
+			FROM t_employee AS te
+			LEFT JOIN t_employee_detail AS ted
+				ON te.id = ted.id
+			LEFT JOIN (
+					SELECT
+						tdi.department_code,
+						cci.minor_name AS department_name,
+						tdi.parent_code,
+						tdi.child_code,
+						tdi.child_name,
+						tdi.rank_number,
+						tdi.is_deleted,
+						tdi.location_idx
+					FROM t_department_info AS tdi
+					LEFT JOIN t_commoncode_item AS cci
+						ON cci.major_code = 'DEPARTMENT_CODE'
+						AND tdi.department_code = cci.minor_code
+					WHERE tdi.is_deleted = 'N'
+					) AS tdi ON te.department_code = tdi.department_code
+							AND te.sub_department_code = tdi.child_code
+			LEFT JOIN (
+					SELECT 
+						position_code,
+						position_name,
+						is_manager
+					FROM t_position_info
+					WHERE is_deleted = 'N'
+					) AS tpi ON te.position_code = tpi.position_code
 			)
 	</sql>
 	
