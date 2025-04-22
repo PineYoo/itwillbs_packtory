@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.service.CustomUserDetails;
@@ -37,12 +38,7 @@ import kr.co.itwillbs.de.common.vo.FileVO;
 import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.groupware.dto.ApprovalDTO;
 import kr.co.itwillbs.de.groupware.dto.ApprovalSearchDTO;
-import kr.co.itwillbs.de.groupware.dto.DraftDTO;
-import kr.co.itwillbs.de.groupware.dto.NoticeDTO;
-import kr.co.itwillbs.de.groupware.dto.NoticeSearchDTO;
 import kr.co.itwillbs.de.groupware.service.ApprovalService;
-import kr.co.itwillbs.de.mes.dto.ProductDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
 import lombok.extern.slf4j.Slf4j;
 
 /* 전자결재 */
@@ -66,47 +62,45 @@ public class ApprovalController {
 //	private final String COMMON_MAJOR_CODE_DOC_TYPE = "FORM_TEMPLATE";
 	private final String FILE_COMMON_TYPE = "T_APPROVAL";
 	
-	//------------------------------------------------------------------------------------------------
 	// 전자결재 페이지 매핑
 	@GetMapping(value={"","/"})
 	public String approvalForm(@ModelAttribute ApprovalSearchDTO approvalSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		//	------------------------------------------
+		// 세션 아이디(사번) 불러오는 코드
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 			String memberId = userDetails.getUsername();
 			approvalSearchDTO.setDrafterId(memberId);
 			//	--------------------------------------------
-			
-			approvalSearchDTO.getPageDTO().setTotalCount(approvalService.getApprovalCountBySearchDTO(approvalSearchDTO));
-			model.addAttribute("progressStatusList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_PROGRESS_TYPE));
-			model.addAttribute("approvalTypeList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
-//			approvalSearchDTO.setProgressStatusList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_PROGRESS_TYPE));
-//			approvalSearchDTO.setApprovalTypeList(commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
-			
-			
+
+			// 전자결재 리스트 조회(로그인 한 회원 기준)
 			List<ApprovalDTO> approvalDTOList = approvalService.getApprovalList(approvalSearchDTO);
-			model.addAttribute("approvalDTOList", approvalDTOList);
+			//페이징용 totalCount
+			approvalSearchDTO.getPageDTO().setTotalCount(approvalService.getApprovalCountBySearchDTO(approvalSearchDTO));
 			
-		
+			model.addAttribute("progressStatusList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_PROGRESS_TYPE));	// 전자결재 진행상태
+			model.addAttribute("approvalTypeList", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));	// 전자결재 타입
+			model.addAttribute("approvalDTOList", approvalDTOList);
 		}
 		
 		return "groupware/approval/approval_list";
 	}
-	//------------------------------------------------------------------------------------------------
+	// ==================================================================================================================================
 	// 기안서 작성 페이지 매핑 (GET)
 	@GetMapping(value={"/regist"})
 	public String apporvalRegisterForm(@ModelAttribute ApprovalDTO approvalDTO, Model model) {
 //	public String apporvalRegisterForm(@RequestParam("userId") String userId, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		//	------------------------------------------------------------
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		// 세션 아이디(사번) 불러오는 코드
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
 		LoginVO loginVO = userDetails.getLoginVO();
-		String memberId = userDetails.getUsername();
 		//	------------------------------------------------------------
 		
+		// 기안자 정보 set(id, name, departmentName, positionName)
 		approvalDTO.setDrafterId(loginVO.getId());
 		approvalDTO.setName(loginVO.getName());
 		approvalDTO.setDepartmentName(loginVO.getDepartmentName());
@@ -121,7 +115,7 @@ public class ApprovalController {
 		return "groupware/approval/approval_reg_form";
 	}
 	
-	//------------------------------------------------------------------------------------------------
+	// ==================================================================================================================================
 	/**
 	 * 전자결재 문서 등록(INSERT)을 하는 "/groupware/regist" 연결(POST)
 	 * @param approvalDTO
@@ -131,7 +125,8 @@ public class ApprovalController {
 	 * @return
 	 * @throws JsonProcessingException
 	 */
-	@PostMapping(value={"/regist"})
+//	@PostMapping(value={"/regist"})
+	@Deprecated
 	public String approvalRegister(
 			@ModelAttribute("approvalDTO") @Valid ApprovalDTO approvalDTO,
 			@RequestParam("approvalFiles") List<MultipartFile> approvalFiles,
@@ -185,69 +180,87 @@ public class ApprovalController {
 			fileService.registerFile(fileVO);
 		}
 		
-		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-		// 25.04.21
-		// 레시피결재 정보 등록
-		if (approvalDTO.getApprovalType().equals("7")) {	// approvalType이 레시피결재(7) 일 경우
-			approvalService.registRecipeMaster(approvalDTO.getRecipeMaster());
-		}
-		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-		
 		//	전자결재 리스트페이지 리다이렉트
 		return "redirect:/groupware/approval";
 		
 	}
 	
-	//------------------------------------------------------------------------------------------------
+	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	/**
-	 * 결재라인 부분
-	 * @param model
-	 * @return String
+	 * 전자결재 문서 등록(파일 포함, AJAX용) 25.04.22
+	 * @param approvalDTO
+	 * @param approvalFiles
+	 * @param bindingResult
+	 * @return JSON 응답
 	 */
-	@GetMapping("/line/{idx}")
-	public String getLineList(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		//	전자결재를 위한 모든 회원 목록 조회
-		List<ApprovalDTO> approvalDTOList = approvalService.getAllEmployeeInfo();
-		model.addAttribute("approvalDTOList", approvalDTOList);
-		return "groupware/approval/approval_sign_line";
-	}
-	
-	/**
-	 * 결재라인 AJAX로 검색어 조회 
-	 * @param keyword
-	 * @return List<ApprovalDTO>
-	 */
-	@PostMapping("/line/search")
+//	@PostMapping(value = "/regist", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value={"/regist"})
 	@ResponseBody
-	public List<ApprovalDTO> getLineSearch(@RequestParam("keyword") String keyword) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-//		log.info("keyword : " + keyword);
-		
-		List<ApprovalDTO> approvalDTOList = approvalService.getSearchEmployeeInfo(keyword);
-		
-		return approvalDTOList;
+	public ResponseEntity<Map<String, Object>> approvalRegisterForJson(
+			@RequestBody @Valid ApprovalDTO approvalDTO,
+//	        @RequestParam("approvalFiles") List<MultipartFile> approvalFiles,
+	        BindingResult bindingResult) {
+	    log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+	    log.info("입력한 정보 : {}", approvalDTO);
+
+		//리턴 객체 생성
+	    Map<String, Object> response = new HashMap<>();
+
+	    try {
+	        // 1. 기안서 등록
+	        String approvalNo = approvalService.registerApproval(approvalDTO);
+
+	        // 2. 파일 처리 - 보류 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//	        List<FileVO> fileList = new ArrayList<>();
+//	        int rankNumber = 1;
+//
+//	        for (MultipartFile file : approvalFiles) {
+//	            if (!StringUtils.hasLength(file.getOriginalFilename())) continue;
+//
+//	            try {
+//	                FileVO fileVO = fileUtil.setFile(file);
+//	                fileVO.setMajorIdx(approvalNo);
+//	                fileVO.setType("t_approval");
+//	                fileVO.setIsDeleted("N");
+//	                fileVO.setRankNumber(String.valueOf(rankNumber++));
+//	                fileService.registerFile(fileVO);
+//	            } catch (Exception e) {
+//	                log.error("파일 처리 실패", e);
+//	            }
+//	        }
+
+	        // 성공 응답
+	        response.put("status", "success");
+	        response.put("message", "등록이 완료되었습니다.");
+//	        response.put("approvalNo", approvalNo);
+
+	    } catch (Exception e) {
+	        log.error("전자결재 등록 실패", e);
+	        response.put("status", "fail");
+	        response.put("message", "오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+	    }
+
+	    return ResponseEntity.ok(response);
 	}
-	
+	// ==================================================================================================================================
 	/**
 	 * 단일 전자결재 조회(SELECT) "/approval/{idx}" 주소 매핑(GET)
 	 * @param idx 샘플 테이블 PK값
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("/{approvalNo}")
-	public String getApproval(@PathVariable(name = "approvalNo") String approvalNo, Model model) {
+	@GetMapping("/{docNo}")
+	public String getApproval(@PathVariable(name = "docNo") String docNo, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("idx 넘어오는거 확인" + approvalNo);
+		log.info("idx 넘어오는거 확인" + docNo);
 		
-		ApprovalDTO approvalDTO = approvalService.getApprovalByApprovalNo(approvalNo);
-		log.info(">>>>>>>>>>>>>>>>>>>>>>>> : " + approvalDTO.toString());
+		ApprovalDTO approvalDTO = approvalService.getApprovalByDocNo(docNo);
 		//	결재번호를 기준으로 문서 정보 가져오기
 		model.addAttribute("approvalDTO", approvalDTO);
 		//	결재번호를 기준으로 첨부된 파일 가져오기
-		model.addAttribute("fileList", fileService.getFilesByTypeAndMajorIdx(FILE_COMMON_TYPE, approvalNo));
+//		model.addAttribute("fileList", fileService.getFilesByTypeAndMajorIdx(FILE_COMMON_TYPE, docNo));
 		//	기안서, 품위서 등 결재유형 가져오기
-		model.addAttribute("codeType" ,commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
+		model.addAttribute("approvalTypeList" ,commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
 		
 		return "groupware/approval/approval_detail";
 	}
@@ -259,13 +272,15 @@ public class ApprovalController {
 	 * @param approvalFiles
 	 * @return
 	 */
-	@PutMapping("/{approvalNo}")
-	public String putApproval(@PathVariable(name = "approvalNo") String approvalNo,
-							@ModelAttribute("approvalDTO") ApprovalDTO approvalDTO,
-							@RequestParam("approvalFiles") List<MultipartFile> approvalFiles) {
+	@PutMapping("/{docNo}")
+	public String putApproval(@PathVariable(name = "docNo") String docNo,
+//							@RequestParam("approvalFiles") List<MultipartFile> approvalFiles,
+							@ModelAttribute("approvalDTO") ApprovalDTO approvalDTO
+							) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		log.info("requestData : param = {}, dto = {}, file[0] = {} ", approvalNo, approvalDTO, approvalFiles.get(0));
+//		log.info("requestData : param = {}, dto = {}, file[0] = {} ", docNo, approvalDTO, approvalFiles.get(0));
+		log.info("requestData : param = {}, dto = {}, file[0] = {} ", docNo, approvalDTO);
 		
 		try {
 			approvalService.modifyApproval(approvalDTO);
@@ -275,36 +290,36 @@ public class ApprovalController {
 		}
 		
 		//	approvalFiles 안에 들어있는 값을 넣기위한 List 객체 선언
-		List<FileVO> fileList = new ArrayList<>();
-		int maxRankNumber = fileService.getMaxRankNumberByTypeAndMajorIdx(FILE_COMMON_TYPE, approvalNo) + 1;
-		
-		for(MultipartFile file : approvalFiles) {
-			if(!StringUtils.hasLength(file.getOriginalFilename())) {
-				break;
-			}
-			
-			try {
-				//	setFile 메서드 호출하여 FileVO 리턴 받아 List에 저장
-				fileList.add(fileUtil.setFile(file));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		for(FileVO fileVO : fileList) {
-			//	문서번호 세팅
-			fileVO.setMajorIdx(approvalNo);
-			//	type 세팅
-			fileVO.setType(FILE_COMMON_TYPE);
-			//	삭제유무 기본값 N
-			fileVO.setIsDeleted("N");
-			//	랭크넘버 세팅(int 값 String으로 변환)
-			fileVO.setRankNumber(String.valueOf(maxRankNumber));
-			//	랭크넘버 값 증가
-			maxRankNumber++;
-			
-			fileService.registerFile(fileVO);
-		}
+//		List<FileVO> fileList = new ArrayList<>();
+//		int maxRankNumber = fileService.getMaxRankNumberByTypeAndMajorIdx(FILE_COMMON_TYPE, docNo) + 1;
+//		
+//		for(MultipartFile file : approvalFiles) {
+//			if(!StringUtils.hasLength(file.getOriginalFilename())) {
+//				break;
+//			}
+//			
+//			try {
+//				//	setFile 메서드 호출하여 FileVO 리턴 받아 List에 저장
+//				fileList.add(fileUtil.setFile(file));
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		for(FileVO fileVO : fileList) {
+//			//	문서번호 세팅
+//			fileVO.setMajorIdx(docNo);
+//			//	type 세팅
+//			fileVO.setType(FILE_COMMON_TYPE);
+//			//	삭제유무 기본값 N
+//			fileVO.setIsDeleted("N");
+//			//	랭크넘버 세팅(int 값 String으로 변환)
+//			fileVO.setRankNumber(String.valueOf(maxRankNumber));
+//			//	랭크넘버 값 증가
+//			maxRankNumber++;
+//			
+//			fileService.registerFile(fileVO);
+//		}
 		
 		return "redirect:/groupware/approval";
 	}
@@ -376,6 +391,7 @@ public class ApprovalController {
 		
 	}
 	
+	// 검색바
 	@PostMapping("/filter")
 	@ResponseBody
 //	public List<ApprovalDTO> approvalFilter(@RequestParam("filter") String filter, @RequestParam("memberId") String memberId) {

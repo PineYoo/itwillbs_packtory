@@ -53,7 +53,7 @@
 	        </if>
 	        <if test="searchKeyword != null and searchKeyword != ''">
 	            AND (
-	                e.id LIKE CONCAT('%', #{searchKeyword}, '%')
+	                   e.id LIKE CONCAT('%', #{searchKeyword}, '%')
 	                OR e.name LIKE CONCAT('%', #{searchKeyword}, '%')
 	            )
 	        </if>
@@ -97,7 +97,7 @@
 	        </if>
 	        <if test="searchKeyword != null and searchKeyword != ''">
 	            AND (
-	                e.id LIKE CONCAT('%', #{searchKeyword}, '%')
+	                   e.id LIKE CONCAT('%', #{searchKeyword}, '%')
 	                OR e.name LIKE CONCAT('%', #{searchKeyword}, '%')
 	            )
 	        </if>
@@ -164,7 +164,7 @@
 	    <where>
 	        <if test="searchKeyword != null and searchKeyword != ''">
 	            AND (
-	                c.company_number LIKE CONCAT('%', #{searchKeyword}, '%')
+	                   c.company_number LIKE CONCAT('%', #{searchKeyword}, '%')
 	                OR c.company_name LIKE CONCAT('%', #{searchKeyword}, '%')
 	                OR c.owner_name LIKE CONCAT('%', #{searchKeyword}, '%')
 	            )
@@ -185,7 +185,7 @@
 	    <where>
 	        <if test="searchKeyword != null and searchKeyword != ''">
 	            AND (
-	                c.company_number LIKE CONCAT('%', #{searchKeyword}, '%')
+	                   c.company_number LIKE CONCAT('%', #{searchKeyword}, '%')
 	                OR c.company_name LIKE CONCAT('%', #{searchKeyword}, '%')
 	                OR c.owner_name LIKE CONCAT('%', #{searchKeyword}, '%')
 	            )
@@ -196,7 +196,7 @@
 	<!-- =========================================================== -->
 	<!-- 상품 리스트 컬럼 -->
 	<sql id="product_list_columns_forSelect">
-	      p.idx   				      -- 인덱스
+	      p.idx   				     	-- 인덱스
 	    , p.type						-- 타입
 	    , p.name						-- 이름
 	    , p.unit	   					-- 단위
@@ -205,7 +205,7 @@
 	    , DATE(p.reg_date) AS reg_date	-- 등록일
 	</sql>
 	
-	<!-- 검색조건에 따른 거래처 리스트 조회 -->
+	<!-- 검색조건에 따른 상품 리스트 조회 -->
 	<select id="getProductList" parameterType="kr.co.itwillbs.de.mes.dto.ProductSearchDTO"
 								resultType="kr.co.itwillbs.de.mes.dto.ProductDTO">
 		SELECT 
@@ -220,7 +220,7 @@
 	        p.is_deleted = 'N'
 	        <if test="searchKeyword != null and searchKeyword != ''">
 	            AND (
-	                p.name LIKE CONCAT('%', #{searchKeyword}, '%')
+	                   p.name LIKE CONCAT('%', #{searchKeyword}, '%')
 	                OR p.unit LIKE CONCAT('%', #{searchKeyword}, '%')
 	            )
 	        </if>
@@ -229,7 +229,7 @@
 		 LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
-	<!-- 검색조건에 따른 거래처 리스트 조회(페이징처리용) -->
+	<!-- 검색조건에 따른 상품 리스트 조회(페이징처리용) -->
 	<select id="getProductCountForPaging" parameterType="kr.co.itwillbs.de.mes.dto.ProductSearchDTO"
 									 	  resultType="int">
 		SELECT COUNT(*) 
@@ -243,11 +243,77 @@
 	        p.is_deleted = 'N'
 	        <if test="searchKeyword != null and searchKeyword != ''">
 	            AND (
-	                p.name LIKE CONCAT('%', #{searchKeyword}, '%')
+	                   p.name LIKE CONCAT('%', #{searchKeyword}, '%')
 	                OR p.unit LIKE CONCAT('%', #{searchKeyword}, '%')
 	            )
 	        </if>
 	    </where>
+	</select>
+	
+	<!-- 레시피 리스트 컬럼 -->
+	<sql id="recipe_list_columns_forSelect">
+		  rm.idx					-- 테이블 인덱스
+		, rm.product_idx			-- 상품_idx
+		, p.name AS product_name	-- 상품명
+		, rm.name					-- 이름
+		, rm.version				-- 버전
+		, rm.batch_size				-- 레시피_단위
+		, rm.status					-- 상태
+		, rm.approval_status		-- 결재_상태
+		, rm.valid_from				-- 유효기간 시작일
+		, rm.valid_to				-- 유효기간 종료일
+		, rm.is_deleted				-- 삭제여부
+		, rm.reg_id					-- 작성자
+		, rm.reg_date				-- 작성일시
+		, rm.mod_id					-- 최종작성자
+		, rm.mod_date				-- 최종작성일시
+	</sql>
+	
+	<!-- 검색조건에 따른 레시피 리스트 조회 -->
+	<select id="getRecipeList" parameterType="kr.co.itwillbs.de.mes.dto.RecipeSearchDTO"
+								resultType="kr.co.itwillbs.de.mes.dto.RecipeMasterDTO">
+		SELECT 
+			<include refid="recipe_list_columns_forSelect"></include>
+		  FROM t_recipe_master rm
+		
+		-- 상품 idx
+		  JOIN t_product p
+		    ON p.idx = rm.product_idx
+	    <where>
+		        rm.is_deleted = 'N'
+	        AND rm.approval_status = '0'
+	        <if test="searchKeyword != null and searchKeyword != ''">
+	            AND (
+	                   rm.name LIKE CONCAT('%', #{searchKeyword}, '%')
+	                OR p.name LIKE CONCAT('%', #{searchKeyword}, '%')
+	            )
+	        </if>
+	    </where>
+		 ORDER BY rm.reg_date desc						-- 최근 등록 순
+		 LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+	
+	<!-- 검색조건에 따른 레시피 리스트 조회(페이징처리용) -->
+	<select id="getRecipeCountForPaging" parameterType="kr.co.itwillbs.de.mes.dto.RecipeSearchDTO"
+								resultType="int">
+		SELECT COUNT(*)
+		  FROM t_recipe_master rm
+		
+		-- 상품 idx
+		  JOIN t_product p
+		    ON p.idx = rm.product_idx
+	    <where>
+		        rm.is_deleted = 'N'
+	        AND rm.approval_status = '0'	-- 작성완료(RECIPE_MASTER_APPROVAL)
+	        <if test="searchKeyword != null and searchKeyword != ''">
+	            AND (
+	                   rm.name LIKE CONCAT('%', #{searchKeyword}, '%')
+	                OR p.name LIKE CONCAT('%', #{searchKeyword}, '%')
+	            )
+	        </if>
+	    </where>
+		 ORDER BY rm.reg_date desc						-- 최근 등록 순
+		 LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
 	

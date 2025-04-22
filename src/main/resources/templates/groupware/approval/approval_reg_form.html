@@ -37,6 +37,15 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<form th:action="@{/groupware/approval/regist}" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${approvalDTO}" class="form row g-3">
+							<!-- hidden -->
+				            <input type="hidden" id="progressStatus" name="progressStatus" value="1"><!-- 결재요청(1) -->
+				            <input type="hidden" id="approver1" th:field=*{approver1}>
+				            <input type="hidden" id="approver1Name" th:field=*{approver1Name}>
+				            <input type="hidden" id="approver2" th:field=*{approver2}>
+				            <input type="hidden" id="approver2Name" th:field=*{approver2Name}>
+				            <input type="hidden" id="approver3" th:field=*{approver3}>
+				            <input type="hidden" id="approver3Name" th:field=*{approver3Name}>
+							
 							<!-- 기안자 정보(disabled) -->
 					        <div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('drafterId', '사원번호', false, false, true)}"></div>
@@ -64,27 +73,27 @@
 					        
 					        <div class="col-md-12">
 					            <div class="d-flex justify-content-between align-items-center mb-2">
-								    <label for="approverId" class="mb-0">결재라인</label>
+								    <div class="d-flex justify-content-between">
+									    <label for="approverId" class="mb-0">결재라인</label>&nbsp;&nbsp;
+										<div id="approver3Error" class="text-danger"></div>
+								    </div>
 								    <button type="button" class="btn btn-primary" onclick="openEmployeeSearch()">결재라인 조회</button>
 								</div>
 							    <div class="row mt-2 gx-2">
-							        <div class="col">
-							            <input type="text" id="approverName1" class="form-control" placeholder="결재자 1" readonly>
-							            <input type="hidden" id="approver1" class="form-control" th:value=*{approver1}>
+							        <div class="col mb-2">
+							            <input type="text" id="approver1Ifno" class="form-control" placeholder="결재자 1" readonly>
 							        </div>
-							        <div class="col">
-							            <input type="text" id="approverName2" class="form-control" placeholder="결재자 2" readonly>
-							            <input type="hidden" id="approver2" class="form-control" th:value=*{approver2}>
+							        <div class="col mb-2">
+							            <input type="text" id="approver2Ifno" class="form-control" placeholder="결재자 2" readonly>
 							        </div>
-							        <div class="col">
-							            <input type="text" id="approverName3" class="form-control" placeholder="결재자 3" readonly>
-							            <input type="hidden" id="approver3" class="form-control" th:value=*{approver3}>
+							        <div class="col mb-2">
+							            <input type="text" id="approver3Ifno" class="form-control" placeholder="결재자 3" readonly>
 							        </div>
 							    </div>
 							</div>
 
 							<div class="col-md-12">
-							    <label for="draftDate">결재기간</label>
+					   			<label for="draftDate">결재기간</label>
 								<div style="width: 100%;">
 									<div class="d-flex align-items-center">
 										<div class="input-group">
@@ -102,6 +111,7 @@
 										</div>
 									</div>
 								</div>
+								<div id="draftDateError" class="text-danger"></div>
 							</div>
 							
 					        <div class="col-md-12">
@@ -112,72 +122,40 @@
 <!-- 					            Editor 라이브러리 일단 나중에......... -->
 							</div>
 					        
-					        <div class="col-md-12 custom-div" th:if="${fileList != null and not #lists.isEmpty(fileList)}">
-								<h6 class="card-title">첨부파일 목록</h6>
+<!-- 					        <div class="col-md-12 custom-div" th:if="${fileList != null and not #lists.isEmpty(fileList)}"> -->
+<!-- 								<h6 class="card-title">첨부파일 목록</h6> -->
 		<!-- 								<ul class="list-group custom-ul"> -->
-								<ul class="list-group">
-								    <li th:each="file : ${fileList}"
-								    	th:if="${file.isDeleted == 'N'}"
-								    	th:id="'file-' + ${file.idx}"
-								    	class="list-group-item d-flex justify-content-between align-items-center">
-							            <span th:text="${file.fileOriginalName}"></span>
-							            <button type="button" class="btn btn-danger btn-sm fileDeleteButton" th:data-id="${file.idx}">삭제</button>
-							        </li>
-								</ul>
-							</div>
-							<div class="col-md-12">
-							    <label for="fileUpload">첨부파일</label>
-							    <input type="file" id="fileUpload" class="form-control" name="approvalFiles" multiple>
-							</div>
+<!-- 								<ul class="list-group"> -->
+<!-- 								    <li th:each="file : ${fileList}" -->
+<!-- 								    	th:if="${file.isDeleted == 'N'}" -->
+<!-- 								    	th:id="'file-' + ${file.idx}" -->
+<!-- 								    	class="list-group-item d-flex justify-content-between align-items-center"> -->
+<!-- 							            <span th:text="${file.fileOriginalName}"></span> -->
+<!-- 							            <button type="button" class="btn btn-danger btn-sm fileDeleteButton" th:data-id="${file.idx}">삭제</button> -->
+<!-- 							        </li> -->
+<!-- 								</ul> -->
+<!-- 							</div> -->
+<!-- 							<div class="col-md-12"> -->
+<!-- 							    <label for="fileUpload">첨부파일</label> -->
+<!-- 							    <input type="file" id="fileUpload" class="form-control" name="approvalFiles" multiple> -->
+<!-- 							</div> -->
 							
 							<!-- ---------------- 레시피 결재 영역 ---------------- -->
-							<div id="recipeApprovalSection" style="display: none; border: 1px solid #cccccc; border-radius: 10px; padding: 0 10px 10px;" class="row g-3 mt-3">
-								<div class="col-md-12">
-					         	   <div class="d-flex justify-content-between align-items-center mb-2">
-										<label for="productName">상품</label>
-							        	<button class="btn btn-primary" id="searchProductBtn" type="button" onclick="openProductSearch()">검색 <i class="fa-solid fa-magnifying-glass"></i></button>
-									</div>
-						            <input type="hidden" id="productIdx" th:field="*{recipeMaster.productIdx}">
-						            <input type="text" id="productName" class="form-control" placeholder="상품을 선택해주세요." onclick="openProductSearch()" readonly>
+							<div id="recipeApprovalSection" style="display: none;" class="col-md-12">
+				         	   <div class="d-flex justify-content-between align-items-center mb-2">
+									<label for="productName">결재할 레시피</label>
+						        	<button class="btn btn-primary" id="searchProductBtn" type="button" onclick="openRecipeSearch()">검색 <i class="fa-solid fa-magnifying-glass"></i></button>
 								</div>
-								
-								<div class="col-md-12">
-									<div th:replace="~{common/fragments/de_form :: inputText('recipeMaster.name', '이름', false, false, false)}"></div>
-								</div>
-								<div class="col-md-12">
-									<div th:replace="~{common/fragments/de_form :: inputText('recipeMaster.version', '버전', false, false, false)}"></div>
-								</div>
-								<div class="col-md-12">
-									<div th:replace="~{common/fragments/de_form :: inputText('recipeMaster.batchSize', '레시피단위', false, false, false)}"></div>
-								</div>
+					            <input type="hidden" id="recipeMasterIdx" th:field="*{recipeMasterIdx}">
+					            <input type="text" id="recipeName" name="recipeMaster.recipeName" class="form-control" placeholder="결재할 레시피를 선택해주세요." onclick="openRecipeSearch()" readonly>
 		
-								<div class="col-md-12">
-								    <label for="validFrom">유효기간</label>
-									<div style="width: 100%;">
-										<div class="d-flex align-items-center">
-											<div class="input-group">
-												<input type="text" class="form-control" autocomplete="off" th:field="*{recipeMaster.validFrom}" id="validFrom">
-												<span class="input-group-text calendar-icon" data-target="validFrom">
-													<i class="fa fa-calendar"></i>
-												</span>
-											</div>
-											<span class="mx-2">⁓</span>
-											<div class="input-group">
-												<input type="text" class="form-control" autocomplete="off" th:field="*{recipeMaster.validTo}" id="validTo">
-												<span class="input-group-text calendar-icon" data-target="validTo">
-													<i class="fa fa-calendar"></i>
-												</span>
-											</div>
-										</div>
-									</div>
-								</div>
 							</div>
 							<!-- ---------------- 레시피 결재 영역 끝 ---------------- -->
 							
 							
 							
-					        <div class="col-md-12 row align-items-center justify-content-center mt-2">
-								<button type="submit" id="submitBtn" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">기안하기</button>
+					        <div class="col-md-12 row align-items-center justify-content-center mt-3">
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">기안하기</button>
 								<button type="button" id="cancelBtn" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3" >돌아가기</button>
 					        </div>
 						</form>

@@ -15,14 +15,25 @@ import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
 public interface ApprovalMapper {
 	//	=========================================================
 	//	보라씨 작업
-	//	로그인한 userId로 사원 정보 가져오기
-	ApprovalDTO selectEmployeeInfo(String memberId);
+	/**
+	 * SELECT 
+		   id AS drafterId
+		 , name
+		 , department_name
+		 , position_name
+	  FROM empBase
+	 WHERE id = #{memberId}
+	 * @param approvalDTO
+	 * @return
+	 */
+//	ApprovalDTO selectEmployeeInfo(String memberId);
 	
 	//	기안번호 중복 확인
-	String getLastApprovalNo(String today);
+//	String getLastApprovalNo(String today);
 	
 	//	기안서 저장
 	int insertApproval(ApprovalDTO approvalDTO);
+	int insertApprovalItems(ApprovalDTO approvalDTO);
 	
 	//	=========================================================
 	//	전자결재 목록 조회	
@@ -40,7 +51,7 @@ public interface ApprovalMapper {
 	 * @param approvalNo
 	 * @return ApprovalDTO
 	 */
-	ApprovalDTO getApprovalByApprovalNo(String approvalNo);
+	ApprovalDTO getApprovalByDocNo(String docNo);
 	
 	/**
 	 * 전자결재문서 업데이트
@@ -49,19 +60,12 @@ public interface ApprovalMapper {
 	 */
 	int modifyApproval(ApprovalDTO approvalDTO);
 
-	List<ApprovalDTO> getApprovalSearchList(@Param("memberId") String memberId,
-											@Param("search") ApprovalSearchDTO approvalSearchDTO);
+//	List<ApprovalDTO> getApprovalSearchList(@Param("memberId") String memberId,
+//											@Param("search") ApprovalSearchDTO approvalSearchDTO);
 
 	List<ApprovalDTO> getApprovalListByFilter(@Param("filter") String filter,
-											@Param("memberId") String memberId);
+											  @Param("memberId") String memberId);
 
 	int getApprovalCountBySearchDTO(ApprovalSearchDTO approvalSearchDTO);
 
-	/**
-	 * INSERT INTO t_recipe_master VALUES()
-	 * @param recipeMasterDTO
-	 */
-	void registRecipeMaster(RecipeMasterDTO recipeMasterDTO);
-	
-	
 }

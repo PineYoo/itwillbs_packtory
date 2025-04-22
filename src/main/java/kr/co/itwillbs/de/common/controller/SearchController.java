@@ -18,6 +18,8 @@ import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -127,7 +129,7 @@ public class SearchController {
 		return "/common/product_search_form";
 	}
 	
-	// 검색조건에 따른 거래처 목록
+	// 검색조건에 따른 상품 목록
 	@PostMapping("/product/search-popup")
 	@ResponseBody
 	public List<ProductDTO> searchProductList(Model model, @ModelAttribute ProductSearchDTO productSearchDTO) {
@@ -138,6 +140,35 @@ public class SearchController {
 		model.addAttribute("productSearchDTO", productSearchDTO);
 		
 		return searchService.getProductList(productSearchDTO);
+	}
+	
+	// ==================================================================================
+	// 레시피 조회 팝업창으로 이동
+	@GetMapping(value = { "/recipe/search-popup", "/recipe/search-popup/" })
+	public String getRecipeList(Model model, @ModelAttribute RecipeSearchDTO recipeSearchDTO) {
+		LogUtil.logStart(log);
+		// 레시피 리스트 조회 요청(SELECT)
+		List<RecipeMasterDTO> recipeList = searchService.getRecipeList(recipeSearchDTO);
+		model.addAttribute("recipeList", recipeList);
+		
+//		//페이징용 totalCount
+		recipeSearchDTO.getPageDTO().setTotalCount(searchService.getRecipeCountForPaging(recipeSearchDTO));
+		model.addAttribute("recipeSearchDTO", recipeSearchDTO);
+		
+		return "/common/recipe_search_form";
+	}
+	
+	// 검색조건에 따른 레시피 목록
+	@PostMapping("/recipe/search-popup")
+	@ResponseBody
+	public List<RecipeMasterDTO> searchRecipeList(Model model, @ModelAttribute RecipeSearchDTO recipeSearchDTO) {
+		LogUtil.logStart(log);
+		
+		//페이징용 totalCount
+		recipeSearchDTO.getPageDTO().setTotalCount(searchService.getRecipeCountForPaging(recipeSearchDTO));
+		model.addAttribute("recipeSearchDTO", recipeSearchDTO);
+		
+		return searchService.getRecipeList(recipeSearchDTO);
 	}
 	
 

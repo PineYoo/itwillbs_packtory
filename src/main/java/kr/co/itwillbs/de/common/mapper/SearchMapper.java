@@ -9,6 +9,8 @@ import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 
@@ -71,6 +73,19 @@ public interface SearchMapper {
 	 * 페이징용 카운트
 	 */
 	int getProductCountForPaging(ProductSearchDTO productSearchDTO);
+	
+	// ====================================================================
+	/**
+	 * 검색조건에 따른 레시피 리스트 조회
+	 * @param recipeSearchDTO
+	 * @return List<RecipeMasterDTO>
+	 */
+	List<RecipeMasterDTO> getRecipeList(RecipeSearchDTO recipeSearchDTO);
+	
+	/**
+	 * 페이징용 카운트
+	 */
+	int getRecipeCountForPaging(RecipeSearchDTO recipeSearchDTO);
 
 
 }

@@ -31,5 +31,8 @@ public class RecipeMasterDTO {
 	private LocalDateTime regDate;	// 작성일시
 	private String modId;			// 최종작성자
 	private LocalDateTime modDate;	// 최종작성일시
+	
+	
+	private String productName;		// 상품명
 
 }
