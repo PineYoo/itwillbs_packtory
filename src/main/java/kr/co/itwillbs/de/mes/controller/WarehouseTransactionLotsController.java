@@ -40,7 +40,7 @@ public class WarehouseTransactionLotsController {
 	public String warehouseTransactionLotsRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		model.addAttribute("wareouseTransactionLotsDTO", new WarehouseTransactionLotsDTO());
+		model.addAttribute("warehouseTransactionLotsDTO", new WarehouseTransactionLotsDTO());
 
 		return QC_PATH + "/warehousetransactionlots_form";
 	}

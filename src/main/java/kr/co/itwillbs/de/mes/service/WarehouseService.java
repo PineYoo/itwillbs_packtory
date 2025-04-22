@@ -61,24 +61,9 @@ public class WarehouseService {
         } 
     }
 
-	// 창고 삭제 (Soft delete)
-	@Transactional
-	public void deleteWarehouse(Long idx) {
-		log.info("창고 삭제 요청 - idx: {}", idx);
-		warehouseMapper.deleteWarehouse(idx);
-	}
-	
-	/*
-	 * =================================================================
-	 * 필요하면 쓰세요
-	 */
-	// 창고 정보 담아 가기
+	// 창고 정보 담아 가기 (외부용)
 	public List<WarehouseDTO> getWarehouseList() {
 		return warehouseMapper.selectWarehouseList();
-		/*
-		 * ex)
-		 * ProductDTO product = productService.getProductById(productIdx);
-		 */
 	}
 	
 }

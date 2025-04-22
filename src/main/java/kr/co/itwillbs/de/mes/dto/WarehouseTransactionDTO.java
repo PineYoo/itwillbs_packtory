@@ -36,7 +36,7 @@ public class WarehouseTransactionDTO {
 	private String unit; // 단위
 	private String status; // 상태
 	
-	private LocalDate manufacturingDate; // 제조일자
+	private String manufacturingDate; // 제조일자
 	private String sourceLocation; // 출발지
 	private String destinationLocation; // 도착지
 	

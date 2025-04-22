@@ -142,20 +142,17 @@
 			<if test='memo !=null and !("".equals(memo.trim()))'>memo = #{memo},</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
 			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+			<if test='modDate !=null and !("".equals(modDate.trim()))'>mod_date = now(),</if>
 		</set>
 		WHERE idx = #{idx}
 	</update>
 
 
 	<!-- 품질기준 삭제 (Soft Delete) -->
-	<update id="deleteQcStandard" parameterType="Long">
+	<update id="deleteQcStandard" parameterType="map">
 		UPDATE t_qc_standard
-		<set>
-			<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
-		</set>
+		is_deleted = 'Y',
+		mod_date = NOW()
 		WHERE idx = #{idx}
 	</update>
 	

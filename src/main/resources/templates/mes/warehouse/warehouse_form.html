@@ -2,18 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>팩토리(PackTory) - 창고 등록</title>
-<style>
-.form-label {
-	font-weight: bold;
+<style type="text/css">
+.form {
+	max-width: 800px;
+	margin: 0 auto;
 }
 
-.card-header {
-	background-color: #f8f9fc;
-	font-weight: bold;
+input, select {
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 2px;
 }
 
-.card-body {
-	padding: 2rem;
+.essential {
+	background-color: #fffbe6; /* 연한 노랑 */
+}
+
+.filled {
+	background-color: white;
+}
+
+/* ----------------- */
+.addressInfo {
+	display: flex;
+}
+
+@media ( max-width : 768px) {
+	.addressInfo {
+		display: block;
+	}
 }
 </style>
 </head>
@@ -31,100 +48,151 @@
 				<!-- 본문 컨테이너 -->
 				<div class="card shadow mb-4">
 					<div class="card-body">
-						<form th:action="@{/mes/warehouse/new}" method="post" th:object="${warehouseDTO}" class="form row g-3" id="registerForm">
+						<div class="table-responsive">
+							<form th:action="@{/mes/warehouse/new}" method="post" th:object="${warehouseDTO}" class="form row g-3" id="registerForm">
 
-							<!-- 상품 선택 -->
-							<div class="col-md-6">
-								<label for="productIdx" class="form-label">상품</label> <select th:field="*{productIdx}" class="form-select">
-									<option value="">상품을 선택하세요</option>
-									<option th:each="pro : ${productList}" th:value="${pro.idx}" th:text="${pro.name}"></option>
-								</select>
-							</div>
-
-							<!-- LOT_Idx -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('lotIdx', 'LOT_Idx', true,false,false)}"></div>
-							</div>
-
-							<!-- 타입 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
-							</div>
-
-							<!-- 창고 이름 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name', '창고 이름', true,false,false)}"></div>
-							</div>
-
-							<!-- 입출고 상태 -->
-							<div class="col-md-6">
-								<label for="directionCode" class="form-class">입출고 상태</label> <select th:field="*{directionCode}" class="form-select">
-									<option value="">입출고 상태를 선택하세요</option>
-									<option value="입고">입고</option>
-									<option value="출고">출고</option>
-									<option value="기타">기타</option>
-								</select>
-							</div>
-
-							<!-- 총 수량 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '총 수량', true,false,false)}"></div>
-							</div>
-
-							<!-- 사용 수량 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('usedQuantity', '사용 수량', true,false,false)}"></div>
-							</div>
-
-							<!-- 단위 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
-							</div>
-
-							<!-- 상태 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('status', '상태', true,false,false)}"></div>
-							</div>
-
-							<!-- 메모 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true,false,false)}"></div>
-							</div>
-
-							<!-- 제조일자 -->
-							<div class="col-md-6">
-								<label for="manufacturingDate" class="form-class">제조일자</label>
-								<div onclick="document.getElementById('manufacturingDate').showPicker()" style="cursor: pointer;">
-									<input type="date" class="form-control" id="manufacturingDate" th:field="*{manufacturingDate}">
+								<!-- 상품 선택 -->
+								<div class="col-md-6">
+									<label for="productIdx" class="form-label">상품</label> <select th:field="*{productIdx}" class="form-select">
+										<option value="">상품을 선택하세요</option>
+										<option th:each="pro : ${productList}" th:value="${pro.idx}" th:text="${pro.name}"></option>
+									</select>
 								</div>
-							</div>
 
-							<!-- 사용기한 -->
-							<div class="col-md-6">
-								<label for="expiryDate" class="form-class">사용기한</label>
-								<div onclick="document.getElementById('expiryDate').showPicker()" style="cursor: pointer;">
-									<input type="date" class="form-control" id="expiryDate" th:field="*{expiryDate}">
+								<!-- LOT_Idx -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('lotIdx', 'LOT_Idx', true,false,false)}"></div>
 								</div>
-							</div>
 
-							<hr>
+								<!-- 타입 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
+								</div>
 
-							<!-- 버튼들 -->
-							<div class="col-md-12 row align-items-center justify-content-center">
-								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
-								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
-							</div>
-						</form>
+								<!-- 창고 이름 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('name', '창고 이름', true,false,false)}"></div>
+								</div>
+
+								<!-- 입출고 상태 -->
+								<div class="col-md-6">
+									<label for="directionCode" class="form-class">입출고 상태</label> <select th:field="*{directionCode}" class="form-select">
+										<option value="">입출고 상태를 선택하세요</option>
+										<option value="입고">입고</option>
+										<option value="출고">출고</option>
+										<option value="기타">기타</option>
+									</select>
+								</div>
+
+								<!-- 총 수량 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '총 수량', true,false,false)}"></div>
+								</div>
+
+								<!-- 사용 수량 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputNumber('usedQuantity', '사용 수량', true,false,false)}"></div>
+								</div>
+
+								<!-- 단위 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
+								</div>
+
+								<!-- 상태 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('status', '상태', true,false,false)}"></div>
+								</div>
+
+								<!-- 메모 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true,false,false)}"></div>
+								</div>
+
+								<!-- 제조일자 -->
+								<div class="col-md-6">
+									<label for="manufacturingDate" class="form-label">제조일자</label> <input type="text" id="manufacturingDate" th:field="*{manufacturingDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
+									<div th:id="|manufacturingDateError|" class="text-danger"></div>
+								</div>
+								
+								<!-- 사용기한 -->
+								<div class="col-md-6">
+									<label for="expiryDate" class="form-label">사용기한</label> <input type="text" id="expiryDate" th:field="*{expiryDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
+									<div th:id="|expiryDateError|" class="text-danger"></div>
+								</div>
+								
+								<!-- 삭제 유무 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+								</div>
+
+								<hr>
+
+								<!-- 버튼들 -->
+								<div class="col-md-12 row align-items-center justify-content-center">
+									<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+									<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<script type="text/javascript">
+			<script type="text/javascript">
 			$(function() {
 				$('#btnList').on("click", function() {
 					location.href="/mes/warehouse";
 				});
+				
+				// ===== 캘린더 ===============================================
+				// 제조일자 선택 (datepicker)
+			    $('#manufacturingDate').daterangepicker({
+			        singleDatePicker: true, // 단일 날짜 선택 모드
+			        showDropdowns: true, // 년월 수동 선택 가능
+			        autoApply: true, // 확인/취소 버튼 없이 즉시 반영
+			        autoUpdateInput: false, // 초기 입력 필드 비우기
+			        locale: {
+			            format: 'YYYY-MM-DD', // 날짜 형식
+			            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+			            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+			            applyLabel: "확인",
+			            cancelLabel: "취소"
+			        },
+			        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
+			        minDate: moment(), // 오늘 이후 선택 가능
+			        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
+			        // ---------------------------------------------------------------
+			    }).on('apply.daterangepicker', function(ev, picker) {
+			        $(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
+			        $(this).addClass("filled");
+			    });
+				
+				// 사용기한 선택 (datepicker)
+			    $('#expiryDate').daterangepicker({
+			        singleDatePicker: true, // 단일 날짜 선택 모드
+			        showDropdowns: true, // 년월 수동 선택 가능
+			        autoApply: true, // 확인/취소 버튼 없이 즉시 반영
+			        autoUpdateInput: false, // 초기 입력 필드 비우기
+			        locale: {
+			            format: 'YYYY-MM-DD', // 날짜 형식
+			            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+			            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+			            applyLabel: "확인",
+			            cancelLabel: "취소"
+			        },
+			        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
+			        minDate: function() {
+			            const manuDate = $('#manufacturingDate').val();
+			            return manuDate ? moment(manuDate, 'YYYY-MM-DD') : moment();
+			        }(),
+			        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
+			        // ---------------------------------------------------------------
+			    }).on('apply.daterangepicker', function(ev, picker) {
+			        $(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
+			        $(this).addClass("filled");
+			    });
+				// ===== 캘린더 ===============================================
 				
 				// 창고 등록
 				$('#btnSubmitForm').on("click", function() {
@@ -183,6 +251,6 @@
 				    
 			}); // end of $(function() {
 		</script>
-	</div>
+		</div>
 </body>
 </html>

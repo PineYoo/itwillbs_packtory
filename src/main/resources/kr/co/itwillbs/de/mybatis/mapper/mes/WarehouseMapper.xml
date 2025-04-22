@@ -10,95 +10,149 @@
 		parameterType="kr.co.itwillbs.de.mes.dto.WarehouseDTO">
 		INSERT INTO t_warehouse (
 		<trim suffixOverrides=",">
-			product_idx,
-			lot_idx,
-			type,
-			name,
-			direction_code,
-			unit,
-			quantity,
-			used_quantity,
-			manufacturing_date,
-			expiry_date,
-			status,
-			memo,
+			<if test='productIdx != null and !("".equals(productIdx.trim()))'>
+				product_idx,
+			</if>
+			<if test='lotIdx != null and !("".equals(lotIdx.trim()))'>
+				lot_idx,
+			</if>
+			<if test='type != null and !("".equals(type.trim()))'>
+				type,
+			</if>
+			<if test='name != null and !("".equals(name.trim()))'>
+				name,
+			</if>
+			<if
+				test='directionCode != null and !("".equals(directionCode.trim()))'>
+				direction_code,
+			</if>
+			<if test='unit != null and !("".equals(unit.trim()))'>
+				unit,
+			</if>
+			<if test='quantity != null'>
+				quantity,
+			</if>
+			<if test='usedQuantity != null'>
+				used_quantity,
+			</if>
+			<if test='manufacturingDate != null'>
+				manufacturing_date,
+			</if>
+			<if test='expiryDate != null'>
+				expiry_date,
+			</if>
+			<if test='status != null and !("".equals(status.trim()))'>
+				status,
+			</if>
+			<if test='memo !=null and !("".equals(memo.trim()))'>
+				memo,
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+				is_deleted,
+			</if>
 			reg_id,
 			reg_date,
-			is_deleted
 		</trim>
 		) VALUES (
 		<trim suffixOverrides=",">
-			#{productIdx},
-			#{lotIdx},
-			#{type},
-			#{name},
-			#{directionCode},
-			#{unit},
-			#{quantity},
-			#{usedQuantity},
-			#{manufacturingDate},
-			#{expiryDate},
-			#{status},
-			#{memo},
+			<if test='productIdx != null and !("".equals(productIdx.trim()))'>
+				#{productIdx},
+			</if>
+			<if test='lotIdx != null and !("".equals(lotIdx.trim()))'>
+				#{lotIdx},
+			</if>
+			<if test='type != null and !("".equals(type.trim()))'>
+				#{type},
+			</if>
+			<if test='name != null and !("".equals(name.trim()))'>
+				#{name},
+			</if>
+			<if
+				test='directionCode != null and !("".equals(directionCode.trim()))'>
+				#{directionCode},
+			</if>
+			<if test='unit != null and !("".equals(unit.trim()))'>
+				#{unit},
+			</if>
+			<if test='quantity != null'>
+				#{quantity},
+			</if>
+			<if test='usedQuantity != null'>
+				#{usedQuantity},
+			</if>
+			<if test='manufacturingDate != null'>
+				#{manufacturingDate},
+			</if>
+			<if test='expiryDate != null'>
+				#{expiryDate},
+			</if>
+			<if test='status !=null and !("".equals(status.trim()))'>
+				#{status},
+			</if>
+			<if test='memo !=null and !("".equals(memo.trim()))'>
+				#{memo},
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+				#{isDeleted},
+			</if>
 			#{regId},
-			NOW(),
-			'N'
+			now(),
 		</trim>
 		)
 	</insert>
 
-	<!-- 목록 조회 + 페이징 -->
+	<!-- 창고 목록 조회 + 페이징 -->
 	<select id="searchWarehouseCount"
 		parameterType="kr.co.itwillbs.de.mes.dto.WarehouseSearchDTO"
 		resultType="int">
 		SELECT count(*)
 		FROM t_warehouse w
-		WHERE w.is_deleted = 'N'
+		<where>
+			<if test="name != null and name != ''">
+				AND w.name LIKE CONCAT('%', #{name}, '%')
+			</if>
 
-		<if test="directionCode != null and directionCode != ''">
-			AND w.direction_code = #{directionCode}
-		</if>
+			<if test="directionCode != null and directionCode != ''">
+				AND w.direction_code = #{directionCode}
+			</if>
 
-		<if test="name != null and name != ''">
-			AND w.name LIKE CONCAT('%', #{name}, '%')
-		</if>
+			<if test="productIdx != null and productIdx != ''">
+				AND w.product_idx = #{productIdx}
+			</if>
 
-		<if test="productIdx != null and productIdx != ''">
-			AND w.product_idx = #{productIdx}
-		</if>
+			<choose>
+				<when
+					test="startManufacturingDate != null and startManufacturingDate != null">
+					and w.manufacturing_date BETWEEN
+					STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
+					AND
+					STR_TO_DATE(CONCAT(#{endManufacturingDate},
+					'235959'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when
+					test="startManufacturingDate != null and endManufacturingDate == null">
+					and w.manufacturing_date <![CDATA[>=]]>
+					STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when
+					test="startManufacturingDate == null and endManufacturingDate != null">
+					and w.manufacturing_date <![CDATA[<=]]>
+					STR_TO_DATE(CONCAT(#{endManufacturingDate},
+					'235959'),'%Y-%m-%d%H%i%S')
+				</when>
+			</choose>
 
-		<choose>
-			<when
-				test="startManufacturingDate != null and startManufacturingDate != null">
-				and w.manufacturing_date BETWEEN
-				STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
-				AND
-				STR_TO_DATE(CONCAT(#{endManufacturingDate},
-				'235959'),'%Y-%m-%d%H%i%S')
-			</when>
-			<when
-				test="startManufacturingDate != null and endManufacturingDate == null">
-				and w.manufacturing_date <![CDATA[>=]]>
-				STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
-			</when>
-			<when
-				test="startManufacturingDate == null and endManufacturingDate != null">
-				and w.manufacturing_date <![CDATA[<=]]>
-				STR_TO_DATE(CONCAT(#{endManufacturingDate},
-				'235959'),'%Y-%m-%d%H%i%S')
-			</when>
-		</choose>
+			<if test="minQuantity != null">
+				AND w.quantity &gt;= #{minQuantity}
+			</if>
 
-		<if test="minQuantity != null">
-			AND w.quantity &gt;= #{minQuantity}
-		</if>
-
-		<if test="maxQuantity != null">
-			AND w.quantity &lt;= #{maxQuantity}
-		</if>
+			<if test="maxQuantity != null">
+				AND w.quantity &lt;= #{maxQuantity}
+			</if>
+		</where>
 	</select>
 
-
+	<!-- 창고 목록 조회 -->
 	<select id="searchWarehouse"
 		parameterType="kr.co.itwillbs.de.mes.dto.WarehouseSearchDTO"
 		resultType="kr.co.itwillbs.de.mes.dto.WarehouseDTO">
@@ -109,49 +163,49 @@
 		FROM t_warehouse w
 		LEFT JOIN t_product
 		p ON w.product_idx = CAST(p.idx AS CHAR)
-		WHERE w.is_deleted = 'N'
+		<where>
+			<if test="directionCode != null and directionCode != ''">
+				AND w.direction_code = #{directionCode}
+			</if>
 
-		<if test="directionCode != null and directionCode != ''">
-			AND w.direction_code = #{directionCode}
-		</if>
+			<if test="name != null and name != ''">
+				AND w.name LIKE CONCAT('%', #{name}, '%')
+			</if>
 
-		<if test="name != null and name != ''">
-			AND w.name LIKE CONCAT('%', #{name}, '%')
-		</if>
+			<if test="productIdx != null and productIdx != ''">
+				AND w.product_idx = #{productIdx}
+			</if>
 
-		<if test="productIdx != null and productIdx != ''">
-			AND w.product_idx = #{productIdx}
-		</if>
+			<choose>
+				<when
+					test="startManufacturingDate != null and startManufacturingDate != null">
+					and w.manufacturing_date BETWEEN
+					STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
+					AND
+					STR_TO_DATE(CONCAT(#{endManufacturingDate},
+					'235959'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when
+					test="startManufacturingDate != null and endManufacturingDate == null">
+					and hire_date <![CDATA[>=]]>
+					STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
+				</when>
+				<when
+					test="startManufacturingDate == null and endManufacturingDate != null">
+					and hire_date <![CDATA[<=]]>
+					STR_TO_DATE(CONCAT(#{endManufacturingDate},
+					'235959'),'%Y-%m-%d%H%i%S')
+				</when>
+			</choose>
 
-		<choose>
-			<when
-				test="startManufacturingDate != null and startManufacturingDate != null">
-				and w.manufacturing_date BETWEEN
-				STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
-				AND
-				STR_TO_DATE(CONCAT(#{endManufacturingDate},
-				'235959'),'%Y-%m-%d%H%i%S')
-			</when>
-			<when
-				test="startManufacturingDate != null and endManufacturingDate == null">
-				and hire_date <![CDATA[>=]]>
-				STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
-			</when>
-			<when
-				test="startManufacturingDate == null and endManufacturingDate != null">
-				and hire_date <![CDATA[<=]]>
-				STR_TO_DATE(CONCAT(#{endManufacturingDate},
-				'235959'),'%Y-%m-%d%H%i%S')
-			</when>
-		</choose>
+			<if test="minQuantity != null">
+				AND w.quantity &gt;= #{minQuantity}
+			</if>
 
-		<if test="minQuantity != null">
-			AND w.quantity &gt;= #{minQuantity}
-		</if>
-
-		<if test="maxQuantity != null">
-			AND w.quantity &lt;= #{maxQuantity}
-		</if>
+			<if test="maxQuantity != null">
+				AND w.quantity &lt;= #{maxQuantity}
+			</if>
+		</where>
 
 		<!-- 페이징 처리 -->
 		ORDER BY w.idx ASC
@@ -164,41 +218,29 @@
 		SELECT *
 		FROM t_warehouse
 		WHERE idx = #{idx}
-		AND 
-		is_deleted ='N'
 	</select>
 
 	<!-- 창고 정보 수정 -->
 	<update id="updateWarehouse"
 		parameterType="kr.co.itwillbs.de.mes.dto.WarehouseDTO">
 		UPDATE t_warehouse
-		SET
-		product_idx = #{productIdx},
-		lot_idx = #{lotIdx},
-		type = #{type},
-		direction_code = #{directionCode},
-		quantity = #{quantity},
-		used_quantity = #{usedQuantity},
-		unit = #{unit},
-		manufacturing_date = #{manufacturingDate},
-		expiry_date = #{expiryDate},
-		name = #{name},
-		memo = #{memo},
-		status = #{status},
-		mod_id = #{modId},
-		mod_date = NOW()
-		WHERE idx = #{idx}
-		AND
-		is_deleted = 'N'
-	</update>
-
-
-	<!-- 창고 삭제 (Soft Delete) -->
-	<update id="deleteWarehouse" parameterType="Long">
-		UPDATE t_warehouse
-		SET
-		is_deleted = 'Y',
-		mod_date = NOW()
+		<set>
+			<if test='productIdx != null and !("".equals(productIdx.trim()))'>product_idx = #{productIdx},</if>
+			<if test='lotIdx != null and !("".equals(lotIdx.trim()))'>lot_idx = #{lotIdx},</if>
+			<if test='type != null and !("".equals(type.trim()))'>type = #{type},</if>
+			<if test='directionCode != null and !("".equals(directionCode.trim()))'>direction_code = #{directionCode},</if>
+			<if test='quantity != null'>quantity = #{quantity},</if>
+			<if test='usedQuantity != null'>used_quantity = #{usedQuantity},</if>
+			<if test='unit != null and !("".equals(unit.trim()))'>unit = #{unit},</if>
+			<if test='manufacturingDate != null'>manufacturing_date = #{manufacturingDate},</if>
+			<if test='expiryDate != null'>expiry_date = #{expiryDate},</if>
+			<if test='name != null and !("".equals(name.trim()))'>name = #{name},</if>
+			<if test='memo != null and !("".equals(memo.trim()))'>memo = #{memo},</if>
+			<if test='status != null and !("".equals(status.trim()))'>status = #{status},</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+			<if test='modId != null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+		</set>
 		WHERE idx = #{idx}
 	</update>
 

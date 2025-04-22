@@ -135,13 +135,10 @@
 
 
 	<!-- 품질로그 삭제 (Soft Delete) -->
-	<update id="deleteQcLog" parameterType="Long">
+	<update id="deleteQcLog" parameterType="map">
 		UPDATE t_qc_log
-		<set>
-			<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
-		</set>
+		is_deleted = 'Y',
+		mod_date = NOW()
 		WHERE idx = #{idx}
 	</update>
 

@@ -33,7 +33,8 @@
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
 								<form th:action="@{/mes/warehouse}" method="get" th:object="${searchDTO}" id="searchForm">
-									<input type="hidden" name="pageDTO.page" th:value="${searchDTO.pageDTO.page}"> <input type="hidden" name="pageDTO.size" th:value="${searchDTO.pageDTO.size}">
+									<input type="hidden" name="pageDTO.page" th:value="${searchDTO.pageDTO.page}"> 
+									<input type="hidden" name="pageDTO.size" th:value="${searchDTO.pageDTO.size}">
 
 									<div class="container-fluid px-5 mt-3">
 										<div class="row">

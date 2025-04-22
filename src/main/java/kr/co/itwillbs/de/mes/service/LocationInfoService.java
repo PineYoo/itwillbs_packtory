@@ -60,12 +60,4 @@ public class LocationInfoService {
 			log.info("공장 장소 정보 수정 완료 - qcIdx: {}", locationInfoDTO.getIdx());
 		}
 	}
-
-	// 공장 장소 정보 삭제 (Soft delete)
-	@Transactional
-	public void deleteLocationInfo(Long idx) {
-		log.info("공장 장소 정보 삭제 요청 - idx: {}", idx);
-		locationInfoMapper.deleteLocationInfo(idx);
-	}
-
 }

@@ -17,7 +17,7 @@
 				test='transactionIdx != null and !("".equals(transactionIdx.trim()))'>
 				transaction_idx,
 			</if>
-			<if test='quantity != null and !("".equals(quantity.trim()))'>
+			<if test="quantity != null">
 				quantity,
 			</if>
 			<if test='unit != null and !("".equals(unit.trim()))'>
@@ -41,7 +41,7 @@
 				test='transactionIdx != null and !("".equals(transactionIdx.trim()))'>
 				#{transactionIdx},
 			</if>
-			<if test='quantity != null and !("".equals(quantity.trim()))'>
+			<if test="quantity != null">
 				#{quantity},
 			</if>
 			<if test='unit != null and !("".equals(unit.trim()))'>
@@ -142,13 +142,10 @@
 
 
 	<!-- 트랜잭션 LOT 삭제 (Soft Delete) -->
-	<update id="deleteWarehouseTransactionLots" parameterType="Long">
+	<update id="deleteWarehouseTransactionLots" parameterType="map">
 		UPDATE t_warehouse_transaction_lots
-		<set>
-			<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
-		</set>
+		is_deleted = 'Y',
+		mod_date = NOW()
 		WHERE idx = #{idx}
 	</update>
 

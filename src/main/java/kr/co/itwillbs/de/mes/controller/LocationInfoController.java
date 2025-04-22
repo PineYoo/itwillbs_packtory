@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LocationInfoController {
 
 	private final LocationInfoService locationInfoService;
-	private final String QC_PATH = "/mes/locationinfo";
+	private final String PATH = "/mes/locationinfo";
 
 	// 공장 장소 정보 등록 폼 페이지
 	@GetMapping("/new")
@@ -42,7 +41,7 @@ public class LocationInfoController {
 
 		model.addAttribute("locationInfoDTO", new LocationInfoDTO());
 
-		return QC_PATH + "/locationinfo_form";
+		return PATH + "/locationinfo_form";
 	}
 
 	// 공장 장소 정보 등록 폼 페이지 AJAX용
@@ -81,7 +80,7 @@ public class LocationInfoController {
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
-		return QC_PATH + "/locationinfo_list";
+		return PATH + "/locationinfo_list";
 	}
 
 	// 공장 장소 정보 상세 조회
@@ -93,7 +92,7 @@ public class LocationInfoController {
 		LocationInfoDTO locationInfoDTO = locationInfoService.getLocationInfoByIdx(idx);
 		model.addAttribute("locationInfoDTO", locationInfoDTO);
 
-		return QC_PATH + "/locationinfo_detail";
+		return PATH + "/locationinfo_detail";
 	}
 
 	// 공장 장소 정보 수정
@@ -115,18 +114,5 @@ public class LocationInfoController {
 
 		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
 		return ResponseEntity.ok(response);
-	}
-
-	// 공장 장소 정보 삭제 (Soft Delete)
-	@DeleteMapping("/{idx}")
-	@ResponseBody
-	public String deleteLocationInfo(@PathVariable("idx") Long idx) {
-		try {
-			locationInfoService.deleteLocationInfo(idx);
-			return "success";
-		} catch (Exception e) {
-			log.error("공장 장소 정보 삭제 실패: {}", e.getMessage());
-			return "error";
-		}
 	}
 }
