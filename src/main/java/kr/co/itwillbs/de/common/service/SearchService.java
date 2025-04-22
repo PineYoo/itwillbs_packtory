@@ -11,8 +11,8 @@ import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -120,9 +120,9 @@ public class SearchService {
 	 * @param recipeSearchDTO
 	 * @return List<RecipeMasterDTO>
 	 */
-	public List<RecipeMasterDTO> getRecipeList(RecipeMasterSearchDTO recipeMasterSearchDTO) {
+	public List<RecipeDTO> getRecipeList(RecipeSearchDTO recipeSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return searchMapper.getRecipeList(recipeMasterSearchDTO);
+		return searchMapper.getRecipeList(recipeSearchDTO);
 	}
 	
 	/**
@@ -130,8 +130,8 @@ public class SearchService {
 	 * @param recipeSearchDTO
 	 * @return
 	 */
-	public int getRecipeCountForPaging(RecipeMasterSearchDTO recipeMasterSearchDTO) {
+	public int getRecipeCountForPaging(RecipeSearchDTO recipeSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return searchMapper.getRecipeCountForPaging(recipeMasterSearchDTO);
+		return searchMapper.getRecipeCountForPaging(recipeSearchDTO);
 	}
 }

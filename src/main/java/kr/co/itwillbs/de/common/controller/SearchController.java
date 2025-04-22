@@ -18,8 +18,9 @@ import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -145,15 +146,15 @@ public class SearchController {
 	// ==================================================================================
 	// 레시피 조회 팝업창으로 이동
 	@GetMapping(value = { "/recipe/search-popup", "/recipe/search-popup/" })
-	public String getRecipeList(Model model, @ModelAttribute RecipeMasterSearchDTO recipeMasterSearchDTO) {
+	public String getRecipeList(Model model, @ModelAttribute RecipeSearchDTO recipeSearchDTO) {
 		LogUtil.logStart(log);
 		// 레시피 리스트 조회 요청(SELECT)
-		List<RecipeMasterDTO> recipeList = searchService.getRecipeList(recipeMasterSearchDTO);
+		List<RecipeDTO> recipeList = searchService.getRecipeList(recipeSearchDTO);
 		model.addAttribute("recipeList", recipeList);
 		
 //		//페이징용 totalCount
-		recipeMasterSearchDTO.getPageDTO().setTotalCount(searchService.getRecipeCountForPaging(recipeMasterSearchDTO));
-		model.addAttribute("recipeSearchDTO", recipeMasterSearchDTO);
+		recipeSearchDTO.getPageDTO().setTotalCount(searchService.getRecipeCountForPaging(recipeSearchDTO));
+		model.addAttribute("recipeSearchDTO", recipeSearchDTO);
 		
 		return "/common/recipe_search_form";
 	}
@@ -161,7 +162,7 @@ public class SearchController {
 	// 검색조건에 따른 레시피 목록
 	@PostMapping("/recipe/search-popup")
 	@ResponseBody
-	public List<RecipeMasterDTO> searchRecipeList(Model model, @ModelAttribute RecipeMasterSearchDTO recipeSearchDTO) {
+	public List<RecipeDTO> searchRecipeList(Model model, @ModelAttribute RecipeSearchDTO recipeSearchDTO) {
 		LogUtil.logStart(log);
 		
 		//페이징용 totalCount

@@ -9,8 +9,8 @@ import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 
@@ -80,12 +80,12 @@ public interface SearchMapper {
 	 * @param recipeSearchDTO
 	 * @return List<RecipeMasterDTO>
 	 */
-	List<RecipeMasterDTO> getRecipeList(RecipeMasterSearchDTO recipeMasterSearchDTO);
+	List<RecipeDTO> getRecipeList(RecipeSearchDTO recipeSearchDTO);
 	
 	/**
 	 * 페이징용 카운트
 	 */
-	int getRecipeCountForPaging(RecipeMasterSearchDTO recipeMasterSearchDTO);
+	int getRecipeCountForPaging(RecipeSearchDTO recipeSearchDTO);
 
 
 }
