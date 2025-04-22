@@ -15,7 +15,7 @@ input, select {
 }
 
 .essential {
-	background-color: #fffbe6; /* 연한 노랑 */
+	background-color: white;
 }
 
 .filled {
@@ -33,6 +33,8 @@ input, select {
 	}
 }
 </style>
+<!-- 다음 우편번호 API -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 <body id="page-top">
 
@@ -49,63 +51,16 @@ input, select {
 				<div class="card shadow mb-4">
 					<div class="card-body">
 						<div class="table-responsive">
-							<form th:action="@{/mes/warehousetransaction/new}" method="post" th:object="${warehouseTransactionDTO}" class="form row g-3" id="registerForm">
+							<form th:action="@{/mes/locationinfo/new}" method="post" th:object="${locationInfoDTO}" class="form row g-3" id="registerForm">
 
 								<!-- 타입 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('transType', '타입', true,false,false)}"></div>
+									<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
 								</div>
 
-								<!-- 코드 -->
+								<!-- 공장명 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('code', '코드', true,false,false)}"></div>
-								</div>
-
-								<!-- 품질기준 선택 -->
-								<div class="col-md-6">
-									<label for="productIdx" class="form-label">상품</label> <select th:field="*{productIdx}" class="form-select">
-										<option value="">상품을 선택하세요</option>
-										<option th:each="pro : ${productList}" th:value="${pro.idx}" th:text="${pro.name}"></option>
-									</select>
-								</div>
-
-								<!-- 품질기준 선택 -->
-								<div class="col-md-6">
-									<label for="materialIdx" class="form-label">자재</label> <select th:field="*{materialIdx}" class="form-select">
-										<option value="">자재 선택하세요</option>
-										<option th:each="raw : ${rawMaterialList}" th:value="${raw.idx}" th:text="${raw.name}"></option>
-									</select>
-								</div>
-
-								<!-- 개수 -->
-								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '개수', true,false,false)}"></div>
-								</div>
-
-								<!-- 단위 -->
-								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
-								</div>
-
-								<!-- 상태 -->
-								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('status', '상태', true,false,false)}"></div>
-								</div>
-
-								<!-- 제조일자 -->
-								<div class="col-md-6">
-									<label for="manufacturingDate" class="form-label">제조일자</label> <input type="text" id="manufacturingDate" th:field="*{manufacturingDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
-									<div th:id="|manufacturingDateError|" class="text-danger"></div>
-								</div>
-
-								<!-- 출발지 -->
-								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('sourceLocation', '출발지', true,false,false)}"></div>
-								</div>
-
-								<!-- 도착지 -->
-								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('destinationLocation', '도착지', true,false,false)}"></div>
+									<div th:replace="~{common/fragments/de_form :: inputText('name', '공장명', true,false,false)}"></div>
 								</div>
 
 								<!-- 메모 -->
@@ -116,6 +71,31 @@ input, select {
 								<!-- 삭제 유무 -->
 								<div class="col-md-6">
 									<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+								</div>
+
+								<!-- 주소 정보 -->
+								<div class="col-md-6">
+									<label for="postcode" class="form-label">주소</label>
+									<div class="row g-2">
+
+										<!-- 우편번호 -->
+										<div class="col-md-6">
+											<input type="text" id="postcode" class="form-control postCode_1 essential" th:field="*{postcode}" maxlength="5" placeholder="우편번호">
+										</div>
+										<div class="col-md-6">
+											<button type="button" id="searchAddressBtn_1" class="btn btn-outline-primary w-100">주소 찾기</button>
+										</div>
+
+										<!-- 기본 주소 -->
+										<div class="col-12">
+											<input type="text" id="address1_1" class="form-control address1_1 essential" th:field="*{address1}" placeholder="기본주소 입력">
+										</div>
+
+										<!-- 상세 주소 -->
+										<div class="col-12">
+											<input type="text" id="address2_1" class="form-control address2_1 essential" th:field="*{address2}" placeholder="상세주소 입력">
+										</div>
+									</div>
 								</div>
 
 								<hr>
@@ -138,28 +118,33 @@ input, select {
 					location.href="/mes/locationinfo";
 				});
 				
-				// ===== 캘린더 ===============================================
-				// 제조일자 선택 (datepicker)
-			    $('#manufacturingDate').daterangepicker({
-			        singleDatePicker: true, // 단일 날짜 선택 모드
-			        showDropdowns: true, // 년월 수동 선택 가능
-			        autoApply: true, // 확인/취소 버튼 없이 즉시 반영
-			        autoUpdateInput: false, // 초기 입력 필드 비우기
-			        locale: {
-			            format: 'YYYY-MM-DD', // 날짜 형식
-			            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
-			            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-			            applyLabel: "확인",
-			            cancelLabel: "취소"
-			        },
-			        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
-			        minDate: moment(), // 오늘 이후 선택 가능
-			        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
-			        // ---------------------------------------------------------------
-			    }).on('apply.daterangepicker', function(ev, picker) {
-			        $(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
-			        $(this).addClass("filled");
-			    });
+				//---------------------------------------------------
+				// 납품주소(다음 우편번호 API 활용)
+				// "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
+				$("#searchAddressBtn_1").click(function() {
+				    new daum.Postcode({
+				        oncomplete: function(data) {
+				            // 1) 우편번호(zonecode) 가져와서 우편번호 항목(postcode)에 출력
+				            $("#postcode").val(data.zonecode).addClass("filled");
+				
+				            // 2) 기본주소(address) 또는 도로명주소(roadAddress) 가져와서
+				            //    기본주소 항목(address1)에 출력
+				            let address = data.address;
+				
+				            // 3) 만약, 건물명(buildingName)이 존재할 경우(= 널스트링이 아님)
+				            //    기본 주소 뒤에 건물명 결합
+				            if (data.buildingName !== '') {
+				                address += "(" + data.buildingName + ")";
+				            }
+				
+				            // 4) 기본주소(+ 건물명)를 기본주소 항목(address1)에 출력
+				            $("#address1_1").val(address).addClass("filled");
+				
+				            // 5) 상세주소 항목(address2)에 포커스 요청
+				            $("#address2_1").focus();
+				        }
+				    }).open();
+				});
 				
 				// 공장 장소 정보 등록
 				$('#btnSubmitForm').on("click", function() {

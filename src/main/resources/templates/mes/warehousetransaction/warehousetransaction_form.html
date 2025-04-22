@@ -61,7 +61,7 @@ input, select {
 									<div th:replace="~{common/fragments/de_form :: inputText('code', '코드', true,false,false)}"></div>
 								</div>
 
-								<!-- 품질기준 선택 -->
+								<!-- 상품 선택 -->
 								<div class="col-md-6">
 									<label for="productIdx" class="form-label">상품</label> <select th:field="*{productIdx}" class="form-select">
 										<option value="">상품을 선택하세요</option>
@@ -69,7 +69,7 @@ input, select {
 									</select>
 								</div>
 
-								<!-- 품질기준 선택 -->
+								<!-- 자재 선택 -->
 								<div class="col-md-6">
 									<label for="materialIdx" class="form-label">자재</label> <select th:field="*{materialIdx}" class="form-select">
 										<option value="">자재 선택하세요</option>

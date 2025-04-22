@@ -22,7 +22,7 @@ public class LocationInfoDTO {
 	private String type; // 타입
 	
 	@NotBlank(message = "이름은 필수 입력 값입니다.")
-	private String name; // 공장 이름
+	private String name; // 공장명
 	
 	@NotBlank(message = "우편번호는 필수 입력 값입니다.")
 	private String postcode; // 우편번호

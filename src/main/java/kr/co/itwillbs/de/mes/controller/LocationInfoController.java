@@ -76,8 +76,8 @@ public class LocationInfoController {
 		searchDTO.getPageDTO().setTotalCount(locationInfoService.searchLocationInfoCount(searchDTO));
 
 		// 공장 장소 정보 목록 조회
-		List<LocationInfoDTO> locationInfoDTO = locationInfoService.searchLocationInfo(searchDTO);
-		model.addAttribute("locationInfoDTO", locationInfoDTO);
+		List<LocationInfoDTO> locationList = locationInfoService.searchLocationInfo(searchDTO);
+		model.addAttribute("locationList", locationList);
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 

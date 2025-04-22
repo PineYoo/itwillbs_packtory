@@ -87,7 +87,7 @@
 	<select id="searchLocationInfo"
 		parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO"
 		resultType="kr.co.itwillbs.de.mes.dto.LocationInfoDTO">
-		SELECT l.*,
+		SELECT l.*
 		FROM t_location_info l
 		<where>
 			<if test="name != null and !(''.equals(name.trim()))">

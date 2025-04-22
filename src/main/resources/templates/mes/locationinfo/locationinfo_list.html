@@ -32,7 +32,7 @@
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
-								<form th:action="@{/mes/warehousetransaction}" method="get" th:object="${searchDTO}" id="searchForm">
+								<form th:action="@{/mes/locationinfo}" method="get" th:object="${searchDTO}" id="searchForm">
 									<input type="hidden" th:field="*{pageDTO.page}"> 
 									<input type="hidden" th:field="*{pageDTO.size}">
 
@@ -42,72 +42,26 @@
 											<!-- 왼쪽 컬럼 -->
 											<div class="col-md-6 left-form">
 
-												<!-- 타입 -->
+												<!-- 공장 이름 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('transType','타입',false)}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('name','공장명',false)}"></div>
 												</div>
 												
-												<!-- 코드 -->
+												<!-- 주소 정보 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('code','코드',false)}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('address','주소',false)}"></div>
 												</div>
 												
-												<!-- 상품_IDX -->
-												<div class="form-group row mb-3">
-													<label for="productIdx" class="col-sm-3 col-form-label">상품정보</label>
-													<div class="col-sm-9">
-														<select class="form-select" name="productIdx" id="productIdx" th:field="*{productIdx}">
-															<option value="">상품선택</option>
-															<option th:each="pro : ${productList}" 
-																	th:value="${pro.idx}" 
-																	th:text="${pro.name}"
-																	th:selected="${pro.idx} == ${searchDTO.productIdx}">
-															</option>
-														</select>
-													</div>
-												</div>
-												
-												<!-- 자재_IDX -->
-												<div class="form-group row mb-3">
-													<label for="materialIdx" class="col-sm-3 col-form-label">자재정보</label>
-													<div class="col-sm-9">
-														<select class="form-select" name="materialIdx" id="materialIdx" th:field="*{materialIdx}">
-															<option value="">자재선택</option>
-															<option th:each="raw : ${rawMaterialList}" 
-																	th:value="${raw.idx}" 
-																	th:text="${raw.name}"
-																	th:selected="${raw.idx} == ${searchDTO.materialIdx}">
-															</option>
-														</select>
-													</div>
-												</div>
 											</div>
 											<!-- 왼쪽 컬럼 끝 -->
 
 											<!-- 오른쪽 컬럼 -->
 											<div class="col-md-6">
-											
-												<!-- 제조일자 범위 -->
-												<div class="row mb-3">
-													<th:block th:replace="~{common/fragments/de_search_form::inputDatePicker('startManufacturingDate', 'endManufacturingDate', '제조일자', false)}" />
-												</div>
-												
-												<!-- 최소 총개수 -->
-												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('minQuantity','최소 총개수',false)}"></div>
-												</div>
-
-												<!-- 최소 총개수 -->
-												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('maxQuantity','최대 총개수',false)}"></div>
-												</div>
 												
 												<!-- 삭제 유무 -->
 												<div class="form-group row mb-3">
 													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제유무',false)}"></div>
 												</div>
-												
-
 											</div>
 											<!-- 오른쪽 컬럼 끝 -->
 
@@ -144,28 +98,22 @@
 							<thead class="table-light">
 								<tr>
 									<th>타입</th>
-									<th>코드</th>
-									<th>상품명</th>
-									<th>자재명</th>
-									<th>개수</th>
-									<th>단위</th>
-									<th>제조일자</th>
-									<th>출발지</th>
-									<th>도착지</th>
+									<th>공장명</th>
+									<th>우편번호</th>
+									<th>주소1</th>
+									<th>주소2</th>
+									<th>메모</th>
 									<th>삭제유무</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item : ${warehouseTransactionList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
-									<td th:text="${item.transType}"></td>
-									<td th:text="${item.code}"></td>
-									<td th:text="${item.productName}"></td>
-									<td th:text="${item.materialName}"></td>
-									<td th:text="${item.quantity}"></td>
-									<td th:text="${item.unit}"></td>
-									<td th:text="${item.manufacturingDate}"></td>
-									<td th:text="${item.sourceLocation}"></td>
-									<td th:text="${item.destinationLocation}"></td>
+								<tr th:each="item : ${locationList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
+									<td th:text="${item.type}"></td>
+									<td th:text="${item.name}"></td>
+									<td th:text="${item.postcode}"></td>
+									<td th:text="${item.address1}"></td>
+									<td th:text="${item.address2}"></td>
+									<td th:text="${item.memo}"></td>
 									<td th:text="${item.isDeleted}"></td>
 								</tr>
 							</tbody>
@@ -204,9 +152,8 @@
                     if(!documentNumber) {
                         return; // 페이지 이동 막기
                     }
-                    location.href = `/mes/warehousetransaction/${documentNumber}`;
+                    location.href = `/mes/locationinfo/${documentNumber}`;
                 });
-                initDateRangePickerMaxToday('startManufacturingDate', 'endManufacturingDate');
             });
         </script>
 	</div>
