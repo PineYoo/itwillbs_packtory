@@ -24,7 +24,7 @@ public class TaskHealthMonitorService {
 	/**
 	 * (테스트값)모니터링 30초 마다 전체 스캔 TaskPool
 	 */
-	@Scheduled(fixedDelay = 30000) // unit milliseconds sec * 1000
+//	@Scheduled(fixedDelay = 30000) // unit milliseconds sec * 1000
 	public void monitorTasks() {
 		LogUtil.logStart(log);
 
