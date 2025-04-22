@@ -7,17 +7,17 @@
 	
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 	<style type="text/css">
-	/* 검색바 중앙에 세로줄 */
+/* 검색바 중앙에 세로줄 */
+.left-form {
+	border-right: 1px solid #e3e6f0;
+}
+
+@media ( max-width : 768px) {
 	.left-form {
-		border-right: 1px solid #e3e6f0;
+		border-right: none !important;
 	}
-	
-	@media (max-width: 768px) {
-	  .left-form {
-	    border-right: none !important;
-	  }
-	}
-	</style>
+}
+</style>
 </head>
 <body id="page-top">
 	<th:block layout:fragment="contents">
@@ -59,7 +59,7 @@
 											<div class="col-md-6">
 												<!-- 결재상태 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_form :: selectCodeItems('approvalStatus', '결재상태', true, *{typeList}, false, false)}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('approvalStatus', '결재상태', true, *{typeList})}"></div>
 												</div>
 												
 												<!-- 혼합순서 -->
@@ -120,9 +120,6 @@
 									<td th:text="${item.regId}"></td>
 									<td th:text="${item.regDate}"></td>
 								</tr>
-								<tr th:if="${#lists.isEmpty(recipeMasterDTOList)}" class="clickable-row menu2depth_items">
-									<td colspan="9"><span>조회 된 데이터가 없습니다.</span></td>
-								</tr>
 							</tbody>
 						</table>
 					</div>
@@ -138,6 +135,9 @@
 						searching : false,
 						paging : false,
 						info : false,
+						language: {
+							emptyTable: "조회 된 데이터가 없습니다."
+						},
 						order: [0, "asc"],
 						responsive: true
 					}); // end of $('#dataTables').DataTable({
