@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.mes.mapper.RecipeMasterMapper">
+
+	<!-- href: https://mybatis.org/mybatis-3/ko/dynamic-sql.html -->
+	<select id="templates" >
+		<![CDATA[]]><!-- Character DATA(CDATA) 는 <![CDATA[문자열]]> 파싱되지 않고 그대로 출력을 위함, 쿼리에서 이스케이프 문자를 사용하지 않기 위해 썼음 -->
+		<!-- 예시) 컬럼명 &gt;(&lt;) #{필드명} -> 컬럼명<![CDATA[>(<)]]> #{필드명} -->
+		<if test="blabla != null"></if><!-- mybatis가 동적쿼리가 되는 시작 점. -->
+		
+		<choose><!-- mybatis switch 문 -->
+			<when test="bla != null">
+			</when>
+			<when test="bla != null and blabla != null">
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		
+		<where></where><!-- where 엘리먼트는 태그에 의해 컨텐츠가 리턴되면 단순히 “WHERE”만을 추가한다. 게다가 컨텐츠가 “AND”나 “OR”로 시작한다면 그 “AND”나 “OR”를 지워버린다. -->
+		<trim prefix="WHERE" prefixOverrides="AND |OR "></trim><!-- 위의<where>의 <trim>버전 -->
+		
+		<set></set><!--  set 엘리먼트는 동적으로 SET 키워드를 붙히고 필요없는 콤마를 제거한다. -->
+		<trim prefix="SET" suffixOverrides=","></trim><!-- 위의<set>의 <trim>버전 -->
+		
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")" nullable="true">
+			#{item}
+		</foreach>
+		
+		<foreach item="item" index="index" collection="list">
+			(#{item.index}, #{item.id}, #{item.name}, #{item.isDeleted})
+		</foreach>
+	</select>
+	
+	<sql id="t_recipe_columns_forSelect">
+		r.idx
+		, r.product_idx
+		, r.name
+		, r.version
+		, r.batch_size
+		, r.status
+		, r.approval_status
+		, r.valid_from
+		, r.valid_to
+		, r.is_deleted
+		, r.reg_id
+		, DATE_FORMAT(r.reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date
+		, r.mod_id
+		, DATE_FORMAT(r.mod_date, '%Y-%m-%d %H:%i:%s') AS mod_date
+	</sql>
+	
+		<!-- useGeneratedKeys : true 일때, keyProperty : idx >> affectRow가 아닌 생성된 idx가 리턴타입에 셋 mysql은 확인됨 -->
+	<insert id="registerRecipeMaster" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.RecipeMasterDTO">
+		INSERT INTO t_recipe_master (
+			<trim suffixOverrides=",">
+			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
+			product_idx,
+			</if>
+			<if test='name !=null and !("".equals(name.trim()))'>
+			name,
+			</if>
+			<if test='version !=null and !("".equals(version.trim()))'>
+			version,
+			</if>
+			<if test='batchSize !=null and !("".equals(batchSize.trim()))'>
+			batch_size,
+			</if>
+			<if test='status !=null and !("".equals(status.trim()))'>
+			status,
+			</if>
+			approval_status,
+			<if test='validFrom !=null and !("".equals(validFrom.trim()))'>
+			valid_from,
+			</if>
+			<if test='validTo !=null and !("".equals(validTo.trim()))'>
+			valid_to,
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+			is_deleted,
+			</if>
+			reg_id,
+			reg_date,
+			</trim>
+		) VALUES (
+			<trim suffixOverrides=",">
+			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
+			#{productIdx},
+			</if>
+			<if test='name !=null and !("".equals(name.trim()))'>
+			#{name},
+			</if>
+			<if test='version !=null and !("".equals(version.trim()))'>
+			#{version},
+			</if>
+			<if test='batchSize !=null and !("".equals(batchSize.trim()))'>
+			#{batchSize},
+			</if>
+			<if test='status !=null and !("".equals(status.trim()))'>
+			#{status},
+			</if>
+			0,	-- approval_status 기본값 0(작성완료)
+			<if test='validFrom !=null and !("".equals(validFrom.trim()))'>
+			#{validFrom},
+			</if>
+			<if test='validTo !=null and !("".equals(validTo.trim()))'>
+			#{validTo},
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
+			#{isDeleted},
+			</if>
+			#{regId},
+			now(),
+			</trim>
+			)
+	</insert>
+	
+	<select id="getRecipeMasterCountBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO"
+										resultType="int">
+		SELECT 
+			count(*)
+		FROM t_recipe_master
+		<where>
+			<if test='name !=null and !("".equals(name.trim()))'>AND name LIKE CONCAT('%',#{name},'%')</if>
+			<if test='version !=null and !("".equals(version.trim()))'>AND version = #{version}</if>
+			<if test='status !=null and !("".equals(status.trim()))'>AND status LIKE CONCAT('%',#{status},'%')</if>
+			<if test='approvalStatus !=null and !("".equals(approvalStatus.trim()))'>AND approval_status = #{approvalStatus}</if>
+			<if test='validFrom !=null and !("".equals(validFrom.trim()))'>AND valid_from = #{validFrom}</if>
+			<if test='validTo !=null and !("".equals(validTo.trim()))'>AND valid_to = #{validTo}</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
+		</where>
+	</select>
+
+	<select id="getRecipeMasterBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO"
+									resultType="kr.co.itwillbs.de.mes.dto.RecipeMasterDTO">
+		SELECT 
+		<include refid="t_recipe_columns_forSelect"></include>,
+			   c.minor_name AS approvalStatusName
+		  FROM t_recipe_master r
+		  LEFT
+		  JOIN t_commoncode_item c
+			ON r.approval_status = c.minor_code
+		   AND c.major_code = 'RECIPE_MASTER_APPROVAL'
+		<where>
+			<if test='name !=null and !("".equals(name.trim()))'>AND r.name LIKE CONCAT('%',#{name},'%')</if>
+			<if test='version !=null and !("".equals(version.trim()))'>AND r.version = #{version}</if>
+			<if test='status !=null and !("".equals(status.trim()))'>AND r.status LIKE CONCAT('%',#{status},'%')</if>
+			<if test='approvalStatus !=null and !("".equals(approvalStatus.trim()))'>AND r.approval_status = #{approvalStatus}</if>
+			<if test='validFrom !=null and !("".equals(validFrom.trim()))'>AND r.valid_from = #{validFrom}</if>
+			<if test='validTo !=null and !("".equals(validTo.trim()))'>AND r.valid_to = #{validTo}</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND r.is_deleted = #{isDeleted}</if>
+		</where>
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+	
+	<select id="getRecipeMasterByIdx" parameterType="string"
+									resultType="kr.co.itwillbs.de.mes.dto.RecipeMasterDTO">
+		SELECT 
+			<include refid="t_recipe_columns_forSelect"></include> 
+		FROM t_recipe_master r
+		where idx = #{idx}
+	</select>
+	
+	<update id="modifyRecipeMaster" parameterType="kr.co.itwillbs.de.mes.dto.RecipeMasterDTO">
+		UPDATE t_recipe_master
+			<set>
+				<if test='productIdx !=null and !("".equals(productIdx.trim()))'>product_idx = #{productIdx},</if>
+				<if test='name !=null and !("".equals(name.trim()))'>name = #{name},</if>
+				<if test='version !=null and !("".equals(version.trim()))'>version = #{version},</if>
+				<if test='batchSize !=null and !("".equals(batchSize.trim()))'>batch_size = #{batchSize},</if>
+				<if test='status !=null and !("".equals(status.trim()))'>status = #{status},</if>
+				<if test='approvalStatus !=null and !("".equals(approvalStatus.trim()))'>approval_status = #{approvalStatus},</if>
+				<if test='validFrom !=null and !("".equals(validFrom.trim()))'>valid_from = #{validFrom},</if>
+				<if test='validTo !=null and !("".equals(validTo.trim()))'>valid_to = #{validTo},</if>
+				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+			</set>
+		WHERE idx = #{idx}
+	</update>
+	
+	<update id="removeSample" parameterType="kr.co.itwillbs.de.sample.dto.SampleSearchDTO">
+		update t_demo
+			<set>
+				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+			</set>
+		where idx = #{idx}
+	</update>
+	
+</mapper>

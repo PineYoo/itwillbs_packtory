@@ -53,7 +53,6 @@
 	<insert id="registerRecipeMaterial" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO">
 		INSERT INTO t_recipe_material (
 			<trim suffixOverrides=",">
-			type,
 			<if test='processIdx !=null and !("".equals(processIdx.trim()))'>
 			process_idx,
 			</if>
@@ -80,7 +79,6 @@
 			</trim>
 		) VALUES (
 			<trim suffixOverrides=",">
-			#{type},
 			<if test='processIdx !=null and !("".equals(processIdx.trim()))'>
 			#{processIdx},
 			</if>

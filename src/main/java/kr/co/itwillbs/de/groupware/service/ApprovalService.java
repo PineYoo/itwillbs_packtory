@@ -35,10 +35,10 @@ public class ApprovalService {
 	//	보라씨 작업
 	//	------------------------------------------------------------
 	// 로그인한 userId로 사원 정보 가져오기
-	public ApprovalDTO getEmployeeInfo(String memberId) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		return approvalMapper.selectEmployeeInfo(memberId);
-	}
+//	public ApprovalDTO getEmployeeInfo(String memberId) {
+//		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+//		return approvalMapper.selectEmployeeInfo(memberId);
+//	}
 	
 	//	------------------------------------------------------------
 	//	기안서 등록(저장) 요청
@@ -46,23 +46,23 @@ public class ApprovalService {
 	public String registerApproval(ApprovalDTO approvalDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		//	------------------------------------------------------------
-		//	approval_no 결재번호 생성
+		//	doc_no 서류코드 생성(A2025-01)
 		String year = new SimpleDateFormat("yyyy").format(new Date());
-		String approvalNo = "A" + year + "-" + commonService.getApprovalNoFromMySQL();
-		
-		approvalDTO.setApprovalNo(approvalNo);
+		String docNo = "A" + year + "-" + commonService.getApprovalNoFromMySQL();
+		approvalDTO.setDocNo(docNo);	// 서류코드 set
 		
 		log.info("draftDTO : " + approvalDTO);
 		//DraftDTO(approval_no=A202503280001, drafter_id=100008, drafter_name=김보라, drafter_department=아이티윌, drafter_position=주임, 
-		// approval_type=null, doc_no=, approver1=, approver2=, approver3=, title=ㅇㅇㄹㄴ, content=ㅇㄴㄹㅇ, due_date=null, approvalStatus=null)
+		// 		   approval_type=null, doc_no=, approver1=, approver2=, approver3=, title=ㅇㅇㄹㄴ, content=ㅇㄴㄹㅇ, due_date=null, approvalStatus=null)
 		//	-------------------------------------------------------------
 		//	기안서 저장
-		approvalMapper.insertApproval(approvalDTO); // DB 비즈니스 로직 처리
+		approvalMapper.insertApproval(approvalDTO);
+		approvalMapper.insertApprovalItems(approvalDTO);
 		
 		//	생성한 결재번호 리턴
-		return approvalNo;
-		
+		return docNo;
 	}
+	
 	//	=====================================================================================
 	
 	//	------------------------------------------------------------
@@ -90,10 +90,10 @@ public class ApprovalService {
 	 * @param approvalNo
 	 * @return ApprovalDTO
 	 */
-	public ApprovalDTO getApprovalByApprovalNo(String approvalNo) {
+	public ApprovalDTO getApprovalByDocNo(String docNo) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		ApprovalDTO approvalDTO = approvalMapper.getApprovalByApprovalNo(approvalNo);
+		ApprovalDTO approvalDTO = approvalMapper.getApprovalByDocNo(docNo);
 		return approvalDTO;
 	}
 
@@ -105,17 +105,15 @@ public class ApprovalService {
 	public void modifyApproval(ApprovalDTO approvalDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		//	기안일자 세팅
-		approvalDTO.setDraftDate(approvalDTO.getDueDate().split("~")[0].trim());
-		//	마감일자 세팅
-		approvalDTO.setDueDate(approvalDTO.getDueDate().split("~")[1].trim());
+		approvalMapper.insertApproval(approvalDTO);
+		approvalMapper.insertApprovalItems(approvalDTO);
 		
-		int affectedRow = approvalMapper.modifyApproval(approvalDTO);
-		log.info("affectedRow is {}", affectedRow);
-		//TODO 0이 나올 경우 예외처리 필요? 다음엔 좀더 예쁘게?
-		if(affectedRow < 1) {
-			throw new Exception("수정할 문서가 존재하지 않습니다.");
-		}
+//		int affectedRow = approvalMapper.modifyApproval(approvalDTO);
+//		log.info("affectedRow is {}", affectedRow);
+//		//TODO 0이 나올 경우 예외처리 필요? 다음엔 좀더 예쁘게?
+//		if(affectedRow < 1) {
+//			throw new Exception("수정할 문서가 존재하지 않습니다.");
+//		}
 		
 		
 	}
@@ -125,9 +123,9 @@ public class ApprovalService {
 	 * @param approvalSearchDTO
 	 * @return
 	 */
-	public List<ApprovalDTO> getApprovalSearchList(String memberId, ApprovalSearchDTO approvalSearchDTO) {
-		return approvalMapper.getApprovalSearchList(memberId, approvalSearchDTO);
-	}
+//	public List<ApprovalDTO> getApprovalSearchList(String memberId, ApprovalSearchDTO approvalSearchDTO) {
+//		return approvalMapper.getApprovalSearchList(memberId, approvalSearchDTO);
+//	}
 
 	/**
 	 * 전자결재 파일 개별 삭제(AJAX) 
@@ -171,17 +169,5 @@ public class ApprovalService {
 		return approvalMapper.getApprovalCountBySearchDTO(approvalSearchDTO);
 	}
 
-	/**
-	 * 레시피 마스터 정보 저장(INSERT)
-	 * @param recipeMasterDTO
-	 */
-	public void registRecipeMaster(RecipeMasterDTO recipeMasterDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		approvalMapper.registRecipeMaster(recipeMasterDTO);
-		
-	}
-
-	
-	
 	
 }

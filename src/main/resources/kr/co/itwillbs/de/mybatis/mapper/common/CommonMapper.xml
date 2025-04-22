@@ -51,8 +51,8 @@
 		SELECT nextVal('seq_order_number')
 	</select>
 	
-	<select id="getApprovalNoFromMySQL" resultType="string">
-		SELECT nextVal('approval_no')
+	<select id="getWorkOrderDocNoFromMySQL" resultType="string">
+		SELECT nextVal('work_order_document_number')
 	</select>
 	
 </mapper>

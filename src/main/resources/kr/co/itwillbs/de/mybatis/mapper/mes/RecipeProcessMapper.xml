@@ -44,9 +44,9 @@
 		, max_time
 		, is_deleted
 		, reg_id
-		, reg_date
+		, DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date
 		, mod_id
-		, mod_date
+		, DATE_FORMAT(mod_date, '%Y-%m-%d %H:%i:%s') AS mod_date
 	</sql>
 	
 		<!-- useGeneratedKeys : true 일때, keyProperty : idx >> affectRow가 아닌 생성된 idx가 리턴타입에 셋 mysql은 확인됨 -->

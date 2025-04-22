@@ -11,6 +11,8 @@ import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -109,5 +111,27 @@ public class SearchService {
 	public int getProductCountForPaging(ProductSearchDTO productSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		return searchMapper.getProductCountForPaging(productSearchDTO);
+	}
+
+	
+	// ======================================================================================
+	/**
+	 *  레시피 정보 리스트 조회
+	 * @param recipeSearchDTO
+	 * @return List<RecipeMasterDTO>
+	 */
+	public List<RecipeMasterDTO> getRecipeList(RecipeMasterSearchDTO recipeMasterSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getRecipeList(recipeMasterSearchDTO);
+	}
+	
+	/**
+	 * 검색조건에 따른 레시피 count 가져오기 페이징용
+	 * @param recipeSearchDTO
+	 * @return
+	 */
+	public int getRecipeCountForPaging(RecipeMasterSearchDTO recipeMasterSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getRecipeCountForPaging(recipeMasterSearchDTO);
 	}
 }

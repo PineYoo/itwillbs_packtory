@@ -35,7 +35,7 @@ public class RecipeProcessDTO {
 	private String isDeleted;	// 삭제여부
 	
 	private String regId;			// 작성자
-	private LocalDateTime regDate;	// 작성일시
+	private String regDate;	// 작성일시
 	private String modId;			// 최종작성자
-	private LocalDateTime modDate;	// 최종작성일시
+	private String modDate;	// 최종작성일시
 }

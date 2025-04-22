@@ -13,20 +13,22 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-public class RecipeSearchDTO {
-
-	private String type;		// 타입
-	private String name;		// 이름
-	private String unit;		// 단위
-	private String jobTime;		// 작업시간
-	private String isDeleted;	// 삭제여부
+public class RecipeMasterSearchDTO {
 	
-	private String regStartDate;	// 작성 시작일
-	private String regEndDate;		// 작성 종료일
+	private String name;
+	private String version;
+	private String status;
+	private String approvalStatus;
+	private String isDeleted;
+	
+	private String validFrom;	// 유효기간 시작일
+	private String validTo;		// 유효기간 종료일
 	
 	private List<CodeItemDTO> typeList;
 	
 	// 페이징용 DTO composition
 	private PageDTO pageDTO = new PageDTO();
 	
+	
+
 }

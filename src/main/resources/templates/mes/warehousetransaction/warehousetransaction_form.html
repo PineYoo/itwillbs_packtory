@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 창고 정보 등록</title>
+<style type="text/css">
+.form {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+input, select {
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 2px;
+}
+
+.essential {
+	background-color: #fffbe6; /* 연한 노랑 */
+}
+
+.filled {
+	background-color: white;
+}
+
+/* ----------------- */
+.addressInfo {
+	display: flex;
+}
+
+@media ( max-width : 768px) {
+	.addressInfo {
+		display: block;
+	}
+}
+</style>
+</head>
+<body id="page-top">
+
+	<div layout:fragment="contents">
+		<!-- 페이지 내용 -->
+		<div class="container mt-5">
+			<!-- 카드 형식 -->
+			<div class="container-fluid">
+				<div class="d-sm-flex align-items-center justify-content-between mb-4">
+					<h1 class="h3 mb-4 text-gray-800">창고 정보 등록</h1>
+				</div>
+
+				<!-- 본문 컨테이너 -->
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<div class="table-responsive">
+							<form th:action="@{/mes/warehousetransaction/new}" method="post" th:object="${warehouseTransactionDTO}" class="form row g-3" id="registerForm">
+
+								<!-- 타입 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('transType', '타입', true,false,false)}"></div>
+								</div>
+
+								<!-- 코드 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('code', '코드', true,false,false)}"></div>
+								</div>
+
+								<!-- 상품 선택 -->
+								<div class="col-md-6">
+									<label for="productIdx" class="form-label">상품</label> <select th:field="*{productIdx}" class="form-select">
+										<option value="">상품을 선택하세요</option>
+										<option th:each="pro : ${productList}" th:value="${pro.idx}" th:text="${pro.name}"></option>
+									</select>
+								</div>
+
+								<!-- 자재 선택 -->
+								<div class="col-md-6">
+									<label for="materialIdx" class="form-label">자재</label> <select th:field="*{materialIdx}" class="form-select">
+										<option value="">자재 선택하세요</option>
+										<option th:each="raw : ${rawMaterialList}" th:value="${raw.idx}" th:text="${raw.name}"></option>
+									</select>
+								</div>
+
+								<!-- 개수 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '개수', true,false,false)}"></div>
+								</div>
+
+								<!-- 단위 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
+								</div>
+
+								<!-- 상태 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('status', '상태', true,false,false)}"></div>
+								</div>
+
+								<!-- 제조일자 -->
+								<div class="col-md-6">
+									<label for="manufacturingDate" class="form-label">제조일자</label> <input type="text" id="manufacturingDate" th:field="*{manufacturingDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
+									<div th:id="|manufacturingDateError|" class="text-danger"></div>
+								</div>
+
+								<!-- 출발지 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('sourceLocation', '출발지', true,false,false)}"></div>
+								</div>
+
+								<!-- 도착지 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('destinationLocation', '도착지', true,false,false)}"></div>
+								</div>
+
+								<!-- 메모 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true,false,false)}"></div>
+								</div>
+
+								<!-- 삭제 유무 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+								</div>
+
+								<hr>
+
+								<!-- 버튼들 -->
+								<div class="col-md-12 row align-items-center justify-content-center">
+									<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+									<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			$(function() {
+				$('#btnList').on("click", function() {
+					location.href="/mes/warehousetransaction";
+				});
+				
+				// ===== 캘린더 ===============================================
+				// 제조일자 선택 (datepicker)
+			    $('#manufacturingDate').daterangepicker({
+			        singleDatePicker: true, // 단일 날짜 선택 모드
+			        showDropdowns: true, // 년월 수동 선택 가능
+			        autoApply: true, // 확인/취소 버튼 없이 즉시 반영
+			        autoUpdateInput: false, // 초기 입력 필드 비우기
+			        locale: {
+			            format: 'YYYY-MM-DD', // 날짜 형식
+			            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+			            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+			            applyLabel: "확인",
+			            cancelLabel: "취소"
+			        },
+			        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
+			        minDate: moment(), // 오늘 이후 선택 가능
+			        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
+			        // ---------------------------------------------------------------
+			    }).on('apply.daterangepicker', function(ev, picker) {
+			        $(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
+			        $(this).addClass("filled");
+			    });
+				
+				// 창고 정보 등록
+				$('#btnSubmitForm').on("click", function() {
+					console.group('click! #btnSubmitForm!');
+					// error 내용 삭제
+					$("div[id$='Error']").text("")
+					// 만세 폼이다!
+					const _serializedData = $('#registerForm').serialize();
+					// 문자열을 '&' 기준z으로 분리하여 배열로 변환
+					const _pairs = _serializedData.split('&');
+					// 빈 객체를 생성하여 데이터를 담을 준비
+					const _jsonObj = {};
+					// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
+					_pairs.forEach(pair => {
+						const [key, value] = pair.split('=');
+						_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
+					});
+					// @Valid 숫자 타입을 숫자로 변환
+						// 수량은 숫자형으로 전환
+					if (_jsonObj['quantity']) {
+						_jsonObj['quantity'] = parseInt(_jsonObj['quantity']);
+					}
+					// 데이터 확인
+					console.log(_jsonObj);
+					// JSON 데이터를 서버로 전송
+					fetch("/mes/warehousetransaction/new", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(_jsonObj)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.status === "success") {
+							alert(data.message);
+							location.href="/mes/warehousetransaction"; // 현재 페이지 새로 고침
+						} else if(data.status === "validFail") {
+							console.log("hello validFail!1");
+							//alert(data.message);
+							let _errors = data.errors;
+							console.log(_errors);
+							for (let field in _errors) {
+								$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
+							} // end of for (let field in errors) {
+						}
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						alert("요청 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해 주시기 바랍니다.");
+					});
+					
+					console.groupEnd();
+				}); // end of $('#btnSubmitForm').on("click", function() {
+				    
+			}); // end of $(function() {
+		</script>
+	</div>
+</body>
+</html>

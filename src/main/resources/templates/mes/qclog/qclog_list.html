@@ -47,11 +47,7 @@
 													<div class="col-sm-9">
 														<select class="form-select" name="qcIdx" id="qcIdx" th:field="*{qcIdx}">
 															<option value="">품질기준 선택</option>
-															<option th:each="qc : ${qcStandaradList}" 
-																	th:value="${qc.idx}" 
-																	th:text="${qc.name}"
-																	th:selected="${qc.idx} == ${searchDTO.qcIdx}">
-															</option>
+															<option th:each="qc : ${qcStandaradList}" th:value="${qc.idx}" th:text="${qc.name}" th:selected="${qc.idx} == ${searchDTO.qcIdx}"></option>
 														</select>
 													</div>
 												</div>

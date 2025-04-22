@@ -3,36 +3,22 @@
 		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>기안서 작성</title>
-<!-- 부트스트랩 icons 가져오기 -->
-<th:block layout:fragment="headContents">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-</th:block>
+<title>팩토리(PackTory) - 기안서 수정</title>
 <!-- CSS -->
 <th:block layout:fragment="css">
-	<!-- dataTables 가져오기 -->
-	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-	<link href="/css/datatables/datatables.min.css" rel="stylesheet">
-	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
-	<!-- 폰트어썸 가져오기 -->
-	<link href="/css/fontawesome/all.min.css" rel="stylesheet">
-	<script src="/css/fontawesome/all.min.js"></script>
-	<!-- 파비콘 -->
-	<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
-	<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
-	<!-- CSS for Page -->
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
-	<link href="/css/sb-admin-2.css" rel="stylesheet">
-	<link href="/css/common.css" rel="stylesheet">
 	<!-- 개별 CSS-->
 	<link href="/css/approval/approval_reg_form.css" rel="stylesheet">
 </th:block>
 <style type="text/css">
 	.approver-group { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
 	.fileSpan { margin-right: 30px; }
+	.form-control[readonly] {
+		background-color: white;
+	}
+	.form {
+		max-width: 800px;
+		margin: 0 auto;
+	}
 </style>
 </head>
 
@@ -43,164 +29,134 @@
 		<div class="container-fluid">
 		
 			<!-- Page Heading -->
-			<h3 class="reg-title">기안서 수정</h3>
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">기안서 수정</h1>
+			</div>
+			
 			<!-- 본문 컨테이너 -->
-			<div class="main-container">
-				<form th:action="@{/groupware/approval/{approvalNo}(approvalNo=${approvalDTO.approvalNo})}" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${approvalDTO}" >
-					<input type="hidden" name="_method" value="put">
-			        <div class="form-div">
-			            <label th:for="drafterId">사원번호</label>
-			            <input type="text" id=drafterId th:field="*{drafterId}" class="form-control" readonly>
-			        </div>
-			        <div class="form-div">
-			            <label th:for="name">작성자</label>
-			            <input type="text" id="name" th:field="*{name}" class="form-control" readonly>
-			        </div>
-			        <div class="form-div">
-			            <input type="hidden" th:field="*{departmentCode}" class="form-control" readonly>
-			            <label th:for="departmentName">부서</label>
-			            <input type="text" id="departmentName" th:field="*{departmentName}" class="form-control" readonly>
-			        </div>
-			        <div class="form-div">
-			            <input type="hidden" th:field="*{positionCode}" class="form-control" readonly>
-			            <label th:for="positionName">직급</label>
-			            <input type="text" id="positionName" th:field="*{positionName}" class="form-control" readonly>
-			        </div>
-			        
-			        <div class="form-div">
-			            <label th:for="type">결재유형</label>
-			            <select id="type" class="form-control" th:field="*{approvalType}">
-			            	<option value="">선택</option>
-			            	<option th:each="item : ${codeType}" th:value="${item.minorCode}" th:text="${item.minorName}"></option>
-			            </select>
-			        </div>
-			        
-			        <div class="form-div">
-			            <label th:for="docNo">기안서 양식</label>
-			            <input type="text" id="docNo" th:field="*{docNo}" class="form-control" placeholder="양식을 선택해주세요." readonly>
-			        	<button class="btn btn-primary" id="searchDocumentBtn" type="button">검색 <i class="fa-solid fa-magnifying-glass"></i></button>
-			        </div>
-			        
-			        <div class="form-div">
-			            <label th:for="approverId">결재라인</label>
-						<div class="approver-line">
-			        		<button type="button" class="btn btn-primary" id="addApproverLineBtn" >결재라인 추가 <i class="fa-solid fa-plus"></i></button>
-			        		<div class="approver-group" id="approver-1" th:if="${approvalDTO.approver1 != null and !#strings.isEmpty(approvalDTO.approver1)}">
-			        			<input type="hidden" class="approver-id" name="approver1" th:value="${approvalDTO.approver1}">
-			        			<input type="text"
-			        					class="form-control approver-input"
-			        					data-index="1"
-			        					th:value="*{approver1Name}"
-			        					readonly>
-			        			<button type="button" class="btn btn-primary search-approver"
-										id="searchApproverBtn1" data-index="1">
-										검색 <i class="fa-solid fa-magnifying-glass"></i>
-								</button>
-				                <button type="button" class="btn btn-danger remove-approver"
-										data-id="1" data-index="1">
-										삭제
-								</button>
-				            </div>
-			        		<div class="approver-group" id="approver-2" th:if="${approvalDTO.approver2 != null and !#strings.isEmpty(approvalDTO.approver2)}">
-			        			<input type="hidden" class="approver-id" name="approver2" th:value="${approvalDTO.approver2}">
-			        			<input type="text"
-			        					class="form-control approver-input"
-			        					data-index="2"
-			        					th:value="*{approver2Name}"
-			        					readonly>
-			        			<button type="button" class="btn btn-primary search-approver"
-										id="searchApproverBtn2" data-index="2">
-										검색 <i class="fa-solid fa-magnifying-glass"></i>
-								</button>
-				                <button type="button" class="btn btn-danger remove-approver"
-										data-id="2" data-index="2">
-										삭제
-								</button>
-				            </div>
-			        		<div class="approver-group" id="approver-3" th:if="${approvalDTO.approver3 != null and !#strings.isEmpty(approvalDTO.approver3)}">
-			        			<input type="hidden" class="approver-id" name="approver3" th:value="${approvalDTO.approver3}">
-			        			<input type="text"
-			        					class="form-control approver-input"
-			        					data-index="3"
-			        					th:value="*{approver3Name}"
-			        					readonly>
-			        			<button type="button" class="btn btn-primary search-approver"
-										id="searchApproverBtn3" data-index="3">
-										검색 <i class="fa-solid fa-magnifying-glass"></i>
-								</button>
-				                <button type="button" class="btn btn-danger remove-approver"
-										data-id="3" data-index="3">
-										삭제
-								</button>
-				            </div>
-						</div>
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive">
+		<!-- 				<form th:action="@{/groupware/approval/{docNo}(docNo=${approvalDTO.docNo})}" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${approvalDTO}" class="form row g-3"> -->
+						<form th:action="@{/groupware/approval/{docNo}(docNo=${approvalDTO.docNo})}" id="approvalForm" role="form" method="post" th:object="${approvalDTO}" class="form row g-3">
+							<input type="hidden" name="_method" value="put">
+							<!-- hidden -->
+				            <input type="hidden" id="progressStatus" name="progressStatus" value="1"><!-- 결재요청(1) -->
+				            <input type="hidden" id="approver1" th:field=*{approver1}>
+				            <input type="hidden" id="approver1Name" th:field=*{approver1Name}>
+				            <input type="hidden" id="approver2" th:field=*{approver2}>
+				            <input type="hidden" id="approver2Name" th:field=*{approver2Name}>
+				            <input type="hidden" id="approver3" th:field=*{approver3}>
+				            <input type="hidden" id="approver3Name" th:field=*{approver3Name}>
+
+							<!-- 기안자 정보(disabled) -->
+					        <div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('drafterId', '사원번호', false, false, true)}"></div>
+							</div>
+					        <div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('name', '작성자', false, false, true)}"></div>
+							</div>
+					        <div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('departmentName', '부서', false, false, true)}"></div>
+							</div>
+					        <div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('positionName', '직급', false, false, true)}"></div>
+							</div>
+					        
+					        <!-- 기안서 작성 영역 -->
+					        <div class="col-md-12">
+   								<div th:replace="~{common/fragments/de_form :: selectCodeItems('approvalType', '결재유형', true, ${approvalTypeList}, false, false)}"></div>
+					        </div>
+					        
+<!-- 					        <div class="col-md-12"> -->
+<!-- 					            <label for="docNo">기안서 양식</label> -->
+<!-- 					            <input type="text" id="docNo" th:field="*{docNo}" class="form-control" placeholder="양식을 선택해주세요." readonly> -->
+<!-- 					        	<button class="btn btn-primary" id="searchDocumentBtn" type="button">검색 <i class="fa-solid fa-magnifying-glass"></i></button> -->
+<!-- 					        </div> -->
+					        
+					        <div class="col-md-12">
+					            <div class="d-flex justify-content-between align-items-center mb-2">
+								    <div class="d-flex justify-content-between">
+									    <label for="approverId" class="mb-0">결재라인</label>&nbsp;&nbsp;
+										<div id="approver3Error" class="text-danger"></div>
+								    </div>
+								    <button type="button" class="btn btn-primary" onclick="openEmployeeSearch()">결재라인 조회</button>
+								</div>
+							    <div class="row mt-2 gx-2">
+							        <div class="col mb-2">
+							            <input type="text" id="approver1Ifno" class="form-control" th:value=*{approver1Name} placeholder="결재자 1" readonly>
+							        </div>
+							        <div class="col mb-2">
+							            <input type="text" id="approver2Ifno" class="form-control" th:value=*{approver2Name} placeholder="결재자 2" readonly>
+							        </div>
+							        <div class="col mb-2">
+							            <input type="text" id="approver3Ifno" class="form-control" th:value=*{approver3Name} placeholder="결재자 3" readonly>
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="col-md-12">
+					   			<label for="draftDate">결재기간</label>
+								<div style="width: 100%;">
+									<div class="d-flex align-items-center">
+										<div class="input-group">
+											<input type="text" class="form-control" autocomplete="off" th:field="*{draftDate}" id="draftDate">
+											<span class="input-group-text calendar-icon" data-target="draftDate">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+										<span class="mx-2">⁓</span>
+										<div class="input-group">
+											<input type="text" class="form-control" autocomplete="off" th:field="*{dueDate}" id="dueDate">
+											<span class="input-group-text calendar-icon" data-target="dueDate">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div id="draftDateError" class="text-danger"></div>
+							</div>
+							
+					        <div class="col-md-12">
+								<div th:replace="~{common/fragments/de_form :: inputText('title', '제목', true, false, false)}"></div>
+							</div>
+					        <div class="col-md-12">
+								<div th:replace="~{common/fragments/de_form :: textArea('content', '내용', '10', '40', true, false, false)}"></div>
+<!-- 					            Editor 라이브러리 일단 나중에......... -->
+							</div>
+							
+<!-- 							<div class="form-div" th:if="${fileList != null and not #lists.isEmpty(fileList)}"> -->
+<!-- 								<label th:for="file">첨부파일 목록</label> -->
+<!-- 								<ul id="file" class="list-group"> -->
+<!-- 								    <li th:each="file : ${fileList}" -->
+<!-- 								    	th:if="${file.isDeleted == 'N'}" -->
+<!-- 								    	th:id="'file-' + ${file.idx}" -->
+<!-- 								    	class="list-group-item d-flex justify-content-between align-items-center"> -->
+<!-- 							            <span th:text="${file.fileOriginalName}" class="fileSpan"></span> -->
+<!-- 							            <button type="button" class="btn btn-danger btn-sm fileDeleteButton" th:data-id="${file.idx}">삭제</button> -->
+<!-- 							        </li> -->
+<!-- 								</ul> -->
+<!-- 							</div> -->
+							
+<!-- 							<div class="form-div"> -->
+<!-- 							    <label for="fileUpload">첨부파일</label> -->
+<!-- 							    <input type="file" id="fileUpload" class="form-control mb-3" name="approvalFiles" multiple> -->
+<!-- 							</div> -->
+							
+					        <div class="col-md-12 row align-items-center justify-content-center mt-3">
+<!-- 								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정하기</button> -->
+								<button type="submit" id="submitBtn" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정하기</button>
+								<button type="button" id="cancelBtn" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3" >돌아가기</button>
+					        </div>
+						</form>
 					</div>
-					<!-- datepicker 사용 -->
-					<div class="form-div">
-					    <label for="dueDate">결재기간</label>
-					    <input type="text" id="dueDate" name="dueDate" th:value="${approvalDTO.draftDate} + ' ~ ' + ${approvalDTO.dueDate}" class="form-control" placeholder="결재 기간을 선택하세요.">
-						<button class="btn btn-success ml-2" id="initDateBtn" type="button"><i class="fa-solid fa-rotate"></i></button>
-					</div>
-					
-					
-			        <div class="form-div">
-			            <label th:for="title">제목</label>
-			            <input type="text" id="title" th:field="*{title}" class="form-control">
-			        </div>
-			        
-			        <div class="form-div">
-			            <label th:for="content">내용</label>
-			            <textarea id="content" th:field="*{content}" class="form-control" rows="10"></textarea>
-<!-- 			            Editor 라이브러리 일단 나중에......... -->
-			        </div>
-					
-					<div class="form-div" th:if="${fileList != null and not #lists.isEmpty(fileList)}">
-						<label th:for="file">첨부파일 목록</label>
-						<ul id="file" class="list-group">
-						    <li th:each="file : ${fileList}"
-						    	th:if="${file.isDeleted == 'N'}"
-						    	th:id="'file-' + ${file.idx}"
-						    	class="list-group-item d-flex justify-content-between align-items-center">
-					            <span th:text="${file.fileOriginalName}" class="fileSpan"></span>
-					            <button type="button" class="btn btn-danger btn-sm fileDeleteButton" th:data-id="${file.idx}">삭제</button>
-					        </li>
-						</ul>
-					</div>
-					
-					<div class="form-div">
-					    <label for="fileUpload">첨부파일</label>
-					    <input type="file" id="fileUpload" class="form-control mb-3" name="approvalFiles" multiple>
-					</div>
-					
-			        <div style="text-align: center; margin: 10px 0;">
-						<button type="submit" class="btn btn-primary" id="submitBtn">수정하기</button>
-						<button type="button" id="cancelBtn" class="btn btn-secondary ml-2" >돌아가기</button>
-			        </div>
-				</form>
+				</div>
 			</div>
 		</div>
 		<!-- /.container-fluid -->
 	</th:block>
 <!-- JS -->
 <th:block layout:fragment="script">
-	<!-- Bootstrap core JavaScript-->
-	<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<script src="/js/jquery-3.7.1.js"></script>
-    <!-- Core plugin JavaScript-->
-    <script src="/js/jquery-easing/jquery.easing.min.js"></script>
-    <!-- Custom scripts for all pages-->
-    <script src="/js/sb-admin-2.min.js"></script>
-   	<!-- Page level plugins -->
-	<script src="/js/datatables/jquery.dataTables.min.js"></script>
-	<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
-	<script src="/js/demo/datatables-demo.js"></script>
-<!-- 	<script src="/js/datatables/datatables.min.js"></script> --> <!-- 반응형 -->
-   	<script src="/js/datepicker/moment.min.js"></script>
-   	<script src="/js/datepicker/daterangepicker.js"></script>
-   	<script src="/js/datatables/dataTables.buttons.min.js"></script>
-	<script src="/js/datatables/buttons.html5.min.js"></script>
-	<script src="/js/datatables/jszip.min.js"></script>
-	<script src="/js/datatables/buttons.print.min.js"></script>
 	<!-- 개별 js -->
     <script src="/js/approval/approval_reg.js"></script>
 </th:block>

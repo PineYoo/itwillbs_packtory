@@ -44,4 +44,12 @@ public class CommonService {
 	public String getApprovalNoFromMySQL() {
 		return commonMapper.getApprovalNoFromMySQL();
 	}
+	
+	/**
+	 * MySQL DB에서 시퀀스 가져오기 >> t_work_orders_master >> document_number
+	 * @return String seq_*!
+	 */
+	public String getWorkOrderDocNoFromMySQL() {
+		return commonMapper.getWorkOrderDocNoFromMySQL();
+	}
 }

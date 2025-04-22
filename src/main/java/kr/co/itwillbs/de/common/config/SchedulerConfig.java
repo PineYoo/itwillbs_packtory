@@ -29,7 +29,7 @@ public class SchedulerConfig{
 		scheduler.setAwaitTerminationSeconds(1); // 종료시 (n) 대기시간 단위:초(sec)
 		scheduler.setWaitForTasksToCompleteOnShutdown(true); // graceful shutdown 지원 이게 있음으로 이제 서버 끄고 켜는게 늦어져서 답답할껄?
 		// 사용자들이 그레이스풀하게 셧다운 할거란걸 기대는 하지 않지만 ... 그래도 안전벨트는 착용하자
-
+		// TODO 25.04.22 추가로 커스텀해야 할 것들이 보여서 투두!
 		return scheduler;
 	}
 

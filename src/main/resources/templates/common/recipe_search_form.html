@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- 		layout:decorate="~{common/layouts/de_layout}"> -->
+<head>
+<title>팩토리(PackTory) - 레시피 검색</title>
+<!-- 부트스트랩 icons 가져오기 -->
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+<!-- CSS -->
+<th:block layout:fragment="css">
+	<!-- Custom fonts for this template-->
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	
+	<!-- dataTables -->
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<!-- 	<link href="/css/datatables/datatables.min.css" rel="stylesheet"> -->
+	<link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" rel="stylesheet">
+	
+	<!-- datepicker -->
+	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
+	
+	<!-- fontawesome -->	
+	<link href="/css/fontawesome-free/all.min.css" rel="stylesheet" type="text/css">
+	
+	<!-- Custom styles for this template-->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+	
+	<!-- 부트스트랩 icons 가져오기 -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+	<link href="/css/sb-admin-2.min.css" rel="stylesheet" type="text/css">
+<!-- 	<link href="/css/sb-admin-2.css" rel="stylesheet" type="text/css"> -->
+	
+	<!-- 파비콘 -->
+	<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+	<!-- 개별 CSS-->
+	<link href="/css/approval/approval_reg_form.css" rel="stylesheet">
+</th:block>
+
+</head>
+
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+		
+			<!-- Page Heading -->
+			<h3 class="reg-title">레시피 검색</h3>
+			
+			<!-- 본문 컨테이너 -->
+			<div class="card-body">
+				<!-- 검색폼 -->
+				<form id="searchForm" th:object="${recipeSearchDTO}">
+				    <input type="hidden" th:field="*{pageDTO.page}">
+					<input type="hidden" th:field="*{pageDTO.size}">
+		            
+		            <div class="row g-2 mb-2">
+					    <div class="col-md-12 col-sm-6 mb-2">
+					        <input type="text" id="searchKeyword" class="form-control" placeholder="레시피명 / 단위 검색">
+					    </div>
+					</div>
+		        </form>
+
+			    <div class="text-end">
+			        <button class="btn btn-danger mb-2" onclick="window.close()">선택완료</button>
+			    </div>
+
+				<div class="table-responsive">
+				     <table class="table table-striped table-hover text-center">
+				        <thead>
+				            <tr>
+				                <th class="text-nowrap">레시피명</th>
+				                <th class="text-nowrap">상품명</th>
+				                <th class="text-nowrap">버전</th>
+				                <th class="text-nowrap">레시피단위</th>
+				                <th class="text-nowrap">유효기간</th>
+				                <th class="text-nowrap">선택</th>
+				            </tr>
+				        </thead>
+				        <tbody id="recipeList">
+				        	<tr th:each="item , status : ${recipeList}" th:data-id="${item.idx}">
+								<td class="name" th:text="${item.name}"></td>
+								<td class="product-name" th:text="${item.productName}"></td>
+								<td class="version" th:text="${item.version}"></td>
+								<td class="batch-size" th:text="${item.batchSize}"></td>
+								<td class="valid" th:text="${item.validFrom} + ' ~ ' + ${item.validTo}"></td>
+				        		<td>
+				        			<!-- hidden ! -->
+									<input type="hidden" class="idx" th:value="${item.idx}" />
+									<input type="hidden" class="product-idx" th:value="${item.productIdx}" />
+									<input type="hidden" class="status" th:value="${item.status}" />
+									<input type="hidden" class="valid-from" th:value="${item.validFrom}" />
+									<input type="hidden" class="valid-to" th:value="${item.validTo}" />
+				        			<!-- hidden ! -->
+									<button class="btn btn-success select-btn">선택</button>
+				        		</td>
+				        	</tr>
+				        </tbody>
+				    </table>
+				</div>
+				<div th:replace="~{common/fragments/de_pagination :: pagination(${recipeSearchDTO})}"></div>
+			</div>
+		</div>
+		<!-- /.container-fluid -->
+	</th:block>
+	
+<!-- JS -->
+<th:block layout:fragment="script">
+	<!-- Bootstrap core JavaScript-->
+	<script src="/js/jquery-3.7.1.js"></script>
+	<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
+	
+		<!-- Custom scripts for all pages-->
+	<script src="/js/sb-admin-2.min.js"></script>
+	
+	<!-- Core plugin JavaScript-->
+	<script src="/js/jquery-easing/jquery.easing.min.js"></script>
+
+	<!-- dataTables -->
+	<script src="/js/datatables/jquery.dataTables.min.js"></script>
+	<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+	<script src="/js/datatables/dataTables.buttons.min.js"></script>
+	<script src="/js/datatables/buttons.html5.min.js"></script>
+	<script src="/js/datatables/jszip.min.js"></script>
+	<script src="/js/datatables/buttons.print.min.js"></script>
+	
+	<!-- fontawesome -->	
+	<script src="/css/fontawesome/all.min.js"></script>
+	
+	<script type="text/javascript">
+		const isSingleSelect = window.opener.isSingleSelect ?? false;
+		
+		$(document).ready(function() {
+			
+		    // 검색조건에 따른 레시피 조회 함수
+			function searchRecipes() {
+				var searchKeyword = $('#searchKeyword').val();
+
+			    // 페이지 관련 값도 가져오기
+			    var page = $('input[name="pageDTO.page"]').val();
+			    var size = $('input[name="pageDTO.size"]').val();
+			    
+		        $.ajax({
+		            url: '/recipe/search-popup',
+		            type: 'POST',
+		            data: {
+		            	searchKeyword : searchKeyword,
+		            	'pageDTO.page': page,
+		                'pageDTO.size': size
+		            },
+		            success: function (data) {
+		                const $tbody = $('#recipeList');
+		                $tbody.empty();
+
+		                if (data.length === 0) {
+		                    $tbody.append('<tr><td colspan="6">조회 된 데이터가 없습니다.</td></tr>');
+		                    return;
+		                }
+
+		                $.each(data, function (i, item) {
+		                    const validFrom = item.validFrom || '-';
+		                    const validTo = item.validTo || '-';
+		                    const validRange = `${validFrom} ~ ${validTo}`;
+
+		                    const row = `
+		                        <tr data-id="${item.idx}">
+		                            <td class="name">${item.name || '-'}</td>
+		                            <td class="product-name">${item.productName || '-'}</td>
+		                            <td class="version">${item.version || '-'}</td>
+		                            <td class="batch-size">${item.batchSize || '-'}</td>
+		                            <td class="valid">${validRange}</td>
+		                            <td>
+		                                <input type="hidden" class="idx" value="${item.idx || ''}" />
+		                                <input type="hidden" class="product-idx" value="${item.productIdx || ''}" />
+		                                <input type="hidden" class="status" value="${item.status || ''}" />
+		                                <input type="hidden" class="valid-from" value="${item.validFrom || ''}" />
+		                                <input type="hidden" class="valid-to" value="${item.validTo || ''}" />
+		                                <button class="btn btn-success select-btn">선택</button>
+		                            </td>
+		                        </tr>
+		                    `;
+		                    $tbody.append(row);
+		                });
+		            },
+		            error: function () {
+		                alert('검색 중 오류가 발생했습니다.');
+		            }
+		        });
+		    }
+
+		    // 키 입력 및 셀렉트박스 변경 시 바로 검색
+		    $('#searchKeyword').on('keyup', searchRecipes);
+		    
+			//	-------------------------------------------------------------
+		    const selectedIdxList = window.opener.selectedIdxListFromParent || [];
+// 		    const maxSelectable = window.opener.maxSelectableItems || 5;
+
+// 		    let selectedCount = selectedIdxList.length; // 초기 개수
+
+		    // 초기화: 이미 선택된 레시피은 선택됨 표시
+		    $('#recipeList tr').each(function () {
+		        const idx = parseInt($(this).find('.idx').val());
+		        if (selectedIdxList.includes(idx)) {
+		            $(this).find('.select-btn')
+		                .removeClass('btn-success')
+		                .addClass('btn-secondary selected')
+		                .text('선택됨');
+		        }
+		    });
+
+		 	// 선택/취소 버튼 토글
+		    $(document).on('click', '.select-btn', function () {
+		        const $btn = $(this);
+		        const $row = $btn.closest('tr');
+		        const idx = parseInt($row.find('.idx').val());
+
+		        const recipeInfo = {
+	        	    idx: idx,
+	        	    name: $row.find('.name').text().trim(),
+	        	    productIdx: $row.find('.product-idx').val().trim(),
+	        	    productName: $row.find('.product-name').text().trim(),
+	        	    version: $row.find('.version').text().trim(),
+	        	    batchSize: $row.find('.batch-size').text().trim(),
+	        	    status: $row.find('.status').val().trim(),
+	        	    validFrom: $row.find('.valid-from').val().trim(),
+	        	    validTo: $row.find('.valid-to').val().trim()
+	        	};
+
+		     	// 레시피 단일선택 모드
+		        if (typeof isSingleSelect !== 'undefined' && isSingleSelect) {	// true
+		        	if (window.opener && typeof window.opener.setRecipeInfo === 'function') {
+		                window.opener.setRecipeInfo(recipeInfo); // 부모창으로 전달
+		            }
+		        	
+		        	window.close(); // 선택하자마자 창 닫기
+		            return;
+		        }
+		        
+		     	// ----------------------------
+		        // 레시피 다중선택 모드
+		        if ($btn.hasClass('selected')) {
+		            // 선택 취소
+		            $btn
+		                .removeClass('selected btn-secondary')
+		                .addClass('btn-success')
+		                .text('선택');
+
+// 		            selectedCount--;
+
+					// 레시피 삭제
+		            if (window.opener && typeof window.opener.removeRecipeInfo === 'function') {
+		                window.opener.removeRecipeInfo(idx);
+		            }
+			        
+		        } else {
+// 		            if (selectedCount >= maxSelectable) {
+// 		                alert(`최대 ${maxSelectable}개까지만 선택할 수 있습니다.`);
+// 		                return;
+// 		            }
+
+		            // 선택
+		            $btn
+		                .addClass('selected btn-secondary')
+		                .removeClass('btn-success')
+		                .text('선택됨');
+
+// 		            selectedCount++;
+	
+					// 레시피 정보 추가
+		            if (window.opener && typeof window.opener.appendRecipeInfo === 'function') {
+		                window.opener.appendRecipeInfo(recipeInfo);
+		            }
+		        }
+		    });
+
+		    
+		});
+	</script>
+</th:block>
+	
+</body>
+</html>

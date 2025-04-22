@@ -47,4 +47,15 @@ public interface CommonMapper {
 	 */
 	String getApprovalNoFromMySQL();
 	
+	/**
+	 * MySQL에서 seq 가져오기 >> work_order_document_number
+	 * <br> 시퀀스로 이용할 테이블 생성
+	 * <br> 시퀀스를 생성 할 프로시저 생성
+	 * <br> 생성 한 시퀀스의 다음 값을 가져오는 함수 생성
+	 * <br> 초기값 셋팅
+	 * <br> 함수 호출 사용! SELECT nextval('work_order_document_number')
+	 * @return approval_no
+	 */
+	String getWorkOrderDocNoFromMySQL();
+	
 }
