@@ -117,9 +117,6 @@
 									<td th:text="${item.regId}"></td>
 									<td th:text="${item.regDate}"></td>
 								</tr>
-								<tr th:if="${#lists.isEmpty(recipeProcessDTOList)}" class="clickable-row menu2depth_items">
-									<td colspan="7"><span>조회 된 데이터가 없습니다.</span></td>
-								</tr>
 							</tbody>
 						</table>
 					</div>
@@ -135,6 +132,9 @@
 						searching : false,
 						paging : false,
 						info : false,
+						language: {
+							emptyTable: "조회 된 데이터가 없습니다."
+						},
 						order: [0, "asc"],
 						responsive: true
 					}); // end of $('#dataTables').DataTable({
