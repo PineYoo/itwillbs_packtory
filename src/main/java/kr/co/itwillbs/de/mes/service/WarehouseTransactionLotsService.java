@@ -26,7 +26,7 @@ public class WarehouseTransactionLotsService {
 		log.info("트랜잭션 LOT 등록 요청: {}", warehouseTransactionLotsDTO);
 		warehouseTransactionLotsMapper.insertWarehouseTransactionLots(warehouseTransactionLotsDTO);
 		log.info("트랜잭션 LOT 등록 완료 - idx: {}", warehouseTransactionLotsDTO.getIdx());
-		return "redirect:/mes/locationinfo";
+		return "redirect:/mes/warehousetransactionlots";
 	}
 
 	// 트랜잭션 LOT 총 개수 (검색 조건 포함)

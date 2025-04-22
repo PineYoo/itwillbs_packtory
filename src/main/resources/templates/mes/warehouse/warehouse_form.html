@@ -31,14 +31,13 @@
 				<!-- 본문 컨테이너 -->
 				<div class="card shadow mb-4">
 					<div class="card-body">
-						<form th:action="@{/mes/warehouse/new}" th:object="${warehouseDTO}" method="post" class="form row g-3" id="registerForm">
+						<form th:action="@{/mes/warehouse/new}" method="post" th:object="${warehouseDTO}" class="form row g-3" id="registerForm">
 
 							<!-- 상품 선택 -->
 							<div class="col-md-6">
-								<label for="productIdx" class="form-class">상품</label> 
-								<select name="productIdx" id="productIdx" class="form-select">
+								<label for="productIdx" class="form-label">상품</label> <select th:field="*{productIdx}" class="form-select">
 									<option value="">상품을 선택하세요</option>
-									<option th:each="product : ${productList}" th:value="${product.idx}" th:text="${product.name}"></option>
+									<option th:each="pro : ${productList}" th:value="${pro.idx}" th:text="${pro.name}"></option>
 								</select>
 							</div>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) - 공장 장소 정보 목록</title>
+<title>팩토리(PackTory) - 트랜잭션 LOT 목록</title>
 
 <style>
 .left-form {
@@ -22,7 +22,7 @@
 		<div class="container-fluid">
 			<!-- Page Heading -->
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">공장 장소 정보 목록</h1>
+				<h1 class="h3 mb-4 text-gray-800">트랜잭션 LOT 목록</h1>
 			</div>
 
 			<!-- 검색바 컨테이너 -->
@@ -32,9 +32,8 @@
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
-								<form th:action="@{/mes/locationinfo}" method="get" th:object="${searchDTO}" id="searchForm">
-									<input type="hidden" th:field="*{pageDTO.page}"> 
-									<input type="hidden" th:field="*{pageDTO.size}">
+								<form th:action="@{/mes/warehousetransactionlots}" method="get" th:object="${searchDTO}" id="searchForm">
+									<input type="hidden" th:field="*{pageDTO.page}"> <input type="hidden" th:field="*{pageDTO.size}">
 
 									<div class="container-fluid px-5 mt-3">
 										<div class="row">
@@ -42,22 +41,31 @@
 											<!-- 왼쪽 컬럼 -->
 											<div class="col-md-6 left-form">
 
-												<!-- 공장 이름 -->
+												<!-- LOT 인덱스 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('name','공장명',false)}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('lotIdx','LOT 인덱스',false)}"></div>
 												</div>
-												
-												<!-- 주소 정보 -->
+
+												<!-- 트랜잭션 인덱스 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('address','주소',false)}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('transactionIdx','트랜잭션 인덱스',false)}"></div>
 												</div>
-												
 											</div>
 											<!-- 왼쪽 컬럼 끝 -->
 
 											<!-- 오른쪽 컬럼 -->
 											<div class="col-md-6">
-												
+
+												<!-- 최소 개수 -->
+												<div class="form-group row mb-3">
+													<div th:replace="~{common/fragments/de_search_form :: inputText('minQuantity','최소 개수',false)}"></div>
+												</div>
+
+												<!-- 최대 개수 -->
+												<div class="form-group row mb-3">
+													<div th:replace="~{common/fragments/de_search_form :: inputText('maxQuantity','최대 개수',false)}"></div>
+												</div>
+
 												<!-- 삭제 유무 -->
 												<div class="form-group row mb-3">
 													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제유무',false)}"></div>
@@ -65,10 +73,11 @@
 											</div>
 											<!-- 오른쪽 컬럼 끝 -->
 
+
 											<!-- 검색바 버튼 -->
 											<div class="row justify-content-end">
 												<div class="col-12 col-sm-auto mb-2">
-													<button class="btn btn-success btn-block" id="btnRegister" type="button">공장 장소 정보 등록</button>
+													<button class="btn btn-success btn-block" id="btnRegister" type="button">트랜잭션 LOT 등록</button>
 												</div>
 												<div class="col-12 col-sm-auto mb-2">
 													<button type="button" class="btn btn-warning btn-block" onclick="formReset('searchForm');">초기화</button>
@@ -97,22 +106,20 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
-									<th>타입</th>
-									<th>공장명</th>
-									<th>우편번호</th>
-									<th>주소1</th>
-									<th>주소2</th>
+									<th>Lot_IDX</th>
+									<th>트랜잭션_IDX</th>
+									<th>개수</th>
+									<th>단위</th>
 									<th>메모</th>
 									<th>삭제유무</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item : ${locationList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
-									<td th:text="${item.type}"></td>
-									<td th:text="${item.name}"></td>
-									<td th:text="${item.postcode}"></td>
-									<td th:text="${item.address1}"></td>
-									<td th:text="${item.address2}"></td>
+								<tr th:each="item : ${transactionLotsList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
+									<td th:text="${item.lotIdx}"></td>
+									<td th:text="${item.transactionIdx}"></td>
+									<td th:text="${item.quantity}"></td>
+									<td th:text="${item.unit}"></td>
 									<td th:text="${item.memo}"></td>
 									<td th:text="${item.isDeleted}"></td>
 								</tr>
@@ -141,7 +148,7 @@
                 // 등록 페이지 이동
                 $("#btnRegister").on("click", function() {
                     console.log("btnRegister click!!!");
-                    location.href = "/mes/locationinfo/new"; // 공장 장소 정보 등록 페이지로 이동
+                    location.href = "/mes/warehousetransactionlots/new"; // 트랜잭션 LOT 등록 페이지로 이동
                 });
 
                 // 상세 페이지 이동
@@ -152,7 +159,7 @@
                     if(!documentNumber) {
                         return; // 페이지 이동 막기
                     }
-                    location.href = `/mes/locationinfo/${documentNumber}`;
+                    location.href = `/mes/warehousetransactionlots/${documentNumber}`;
                 });
             });
         </script>

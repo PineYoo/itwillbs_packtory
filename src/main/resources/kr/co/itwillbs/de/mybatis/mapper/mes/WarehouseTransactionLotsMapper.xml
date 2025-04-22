@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="kr.co.itwillbs.de.mes.mapper.WarehouseTransactionLotsMapper">
+<mapper namespace="kr.co.itwillbs.de.mes.mapper.WarehouseTransactionLotsMapper">
 
 	<!-- 트랜잭션 LOT 등록 -->
-	<insert id="insertWarehouseTransactionLots" useGeneratedKeys="true"
-		keyProperty="idx"
+	<insert id="insertWarehouseTransactionLots"
+		useGeneratedKeys="true" keyProperty="idx"
 		parameterType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionLotsDTO">
 		INSERT INTO t_warehouse_transaction_lots (
 		<trim suffixOverrides=",">
 			<if test='lotIdx != null and !("".equals(lotIdx.trim()))'>
 				lot_idx,
 			</if>
-			<if test='transactionIdx != null and !("".equals(transactionIdx.trim()))'>
+			<if
+				test='transactionIdx != null and !("".equals(transactionIdx.trim()))'>
 				transaction_idx,
 			</if>
 			<if test='quantity != null and !("".equals(quantity.trim()))'>
@@ -36,7 +37,8 @@
 			<if test='lotIdx != null and !("".equals(lotIdx.trim()))'>
 				#{lotIdx},
 			</if>
-			<if test='transactionIdx != null and !("".equals(transactionIdx.trim()))'>
+			<if
+				test='transactionIdx != null and !("".equals(transactionIdx.trim()))'>
 				#{transactionIdx},
 			</if>
 			<if test='quantity != null and !("".equals(quantity.trim()))'>
@@ -67,7 +69,8 @@
 			<if test="lotIdx != null and !(''.equals(lotIdx.trim()))">
 				AND w.lot_idx LIKE CONCAT('%', #{lotIdx}, '%')
 			</if>
-			<if test="transactionIdx != null and !(''.equals(transactionIdx.trim()))">
+			<if
+				test="transactionIdx != null and !(''.equals(transactionIdx.trim()))">
 				AND w.transaction_idx LIKE CONCAT('%', #{transactionIdx}, '%')
 			</if>
 			<if test="isDeleted != null and !(''.equals(isDeleted.trim()))">
@@ -86,13 +89,14 @@
 	<select id="searchWarehouseTransactionLots"
 		parameterType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionLotsSearchDTO"
 		resultType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionLotsDTO">
-		SELECT COUNT(*)
+		SELECT w.*
 		FROM t_warehouse_transaction_lots w
 		<where>
 			<if test="lotIdx != null and !(''.equals(lotIdx.trim()))">
 				AND w.lot_idx LIKE CONCAT('%', #{lotIdx}, '%')
 			</if>
-			<if test="transactionIdx != null and !(''.equals(transactionIdx.trim()))">
+			<if
+				test="transactionIdx != null and !(''.equals(transactionIdx.trim()))">
 				AND w.transaction_idx LIKE CONCAT('%', #{transactionIdx}, '%')
 			</if>
 			<if test="isDeleted != null and !(''.equals(isDeleted.trim()))">
@@ -110,7 +114,8 @@
 	</select>
 
 	<!-- 트랜잭션 LOT 상세 조회 -->
-	<select id="getWarehouseTransactionLotsByIdx" parameterType="Long"
+	<select id="getWarehouseTransactionLotsByIdx"
+		parameterType="Long"
 		resultType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionLotsDTO">
 		SELECT *
 		FROM t_warehouse_transaction_lots
@@ -123,7 +128,8 @@
 		UPDATE t_warehouse_transaction_lots
 		<set>
 			<if test='lotIdx != null and !("".equals(lotIdx.trim()))'>lot_idx = #{lotIdx},</if>
-			<if test='transactionIdx != null and !("".equals(transactionIdx.trim()))'>transaction_idx = #{transactionIdx},</if>
+			<if
+				test='transactionIdx != null and !("".equals(transactionIdx.trim()))'>transaction_idx = #{transactionIdx},</if>
 			<if test='quantity != null'>quantity = #{quantity},</if>
 			<if test='unit != null and !("".equals(unit.trim()))'>unit = #{unit},</if>
 			<if test='memo != null and !("".equals(memo.trim()))'>memo = #{memo},</if>
