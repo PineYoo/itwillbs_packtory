@@ -70,5 +70,26 @@
 		</select>
 		<div th:id="|${fieldName}Error|" class="text-danger"></div>
 	</th:block>
+	
+	<th:block th:fragment="inputSingleDatePicker(fieldName,labelText, isRequired, isReadonly, isDisabled)">
+		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
+			<div class="d-flex align-items-center">
+				<div class="input-group">
+					<input type="text"
+							class="form-control"
+							autocomplete="off"
+							th:field="*{__${fieldName}__}"
+							th:attr="data-required=${isRequired},
+									 data-name=${labelText},
+									 readonly=${isReadonly ? 'readonly' : null},
+									 disabled=${isDisabled ? 'disabled' : null}">
+					<span class="input-group-text calendar-icon"
+							data-target="${fieldName}">
+						<i class="fa fa-calendar"></i>
+					</span>
+				</div>
+				<div th:id="|${fieldName}Error|" class="text-danger"></div>
+			</div>
+	</th:block>
 </body>
 </html>
