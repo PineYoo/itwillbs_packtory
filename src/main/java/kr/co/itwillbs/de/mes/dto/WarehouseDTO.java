@@ -1,6 +1,5 @@
 package kr.co.itwillbs.de.mes.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;

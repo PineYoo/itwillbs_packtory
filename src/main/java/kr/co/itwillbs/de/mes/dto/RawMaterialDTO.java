@@ -1,6 +1,5 @@
 package kr.co.itwillbs.de.mes.dto;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
@@ -40,9 +39,8 @@ public class RawMaterialDTO {
     private String unit;			// 단위
 
 	@PositiveOrZero(message = "가격은 0원 이상만 입력 가능합니다.")
-    private BigDecimal price;		// 가격
+    private Integer price;		// 가격
 
-	@NotBlank(message = "평균사용기한은 필수 입력 값입니다.")
     private String expirationDate;	// 평균사용기한
 
     private String isDeleted;		// 삭제 여부
