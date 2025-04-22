@@ -292,15 +292,11 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="item, status : ${approvalDTOList}"
-										th:data-id="${item.approvalNo}">
-										<td
-											th:text="${item.approvalNo != null ? item.approvalNo : '-'}"></td>
+									<tr th:each="item, status : ${approvalDTOList}" th:data-id="${item.docNo}">
+										<td th:text="${item.docNo != null ? item.docNo : '-'}"></td>
 										<td th:text="${item.title != '' ? item.title : '-'}"></td>
-										<td
-											th:text="${item.progressName != null ? item.progressName : '-'}"></td>
-										<td
-											th:text="${item.approvalTypeName != null ? item.approvalTypeName : '-'}"></td>
+										<td th:text="${item.progressName != null ? item.progressName : '-'}"></td>
+										<td th:text="${item.approvalTypeName != null ? item.approvalTypeName : '-'}"></td>
 										<td th:text="${item.name != null ? item.name : '-'}"></td>
 										<td th:text="${item.draftDate != null ? item.draftDate : '-'}"></td>
 										<td th:text="${item.dueDate != null ? item.dueDate : '-'}"></td>
@@ -364,6 +360,7 @@
 // 			    initializeDateRangePicker('dueStartDate', 'dueEndDate');
 				
 			    //	------------------------------------------------------------------
+			    // 필터처리 
 			    document.querySelectorAll(".filter-tab").forEach(tab => {
 			        tab.addEventListener("click", function () {
 			            document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
@@ -391,8 +388,8 @@
 			            	    
 			            	    data.forEach(item => {
 			            	        const row = `
-			            	            <tr data-id="${item.approvalNo}">
-			            	                <td>${item.approvalNo || '-'}</td>
+			            	            <tr data-id="${item.docNo}">
+			            	                <td>${item.docNo || '-'}</td>
 			            	                <td>${item.title || '-'}</td>
 			            	                <td>${item.progressName || '-'}</td>
 			            	                <td>${item.approvalTypeName || '-'}</td>

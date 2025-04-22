@@ -29,4 +29,7 @@ public class RecipeSearchDTO {
 	// 페이징용 DTO composition
 	private PageDTO pageDTO = new PageDTO();
 	
+	private String searchKeyword; // 키워드
+
+	
 }
