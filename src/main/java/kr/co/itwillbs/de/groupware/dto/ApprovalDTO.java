@@ -36,6 +36,7 @@ public class ApprovalDTO {
     
     // 결재유형에 따라 들어갈 컬럼
     private String recipeMasterIdx;		// 레시피마스터_idx
+    private String recipeMasterName;	// 레시피마스터_name
     private String eventStartDate;		// 휴가시작일
     private String eventEndDate;		// 휴가종료일
     
@@ -79,7 +80,7 @@ public class ApprovalDTO {
 	private String approver3Signature;
 	
 	// 레시피마스터(레시피 결재 시 필요한 DTO)
-	private RecipeMasterDTO recipeMaster;
+//	private RecipeMasterDTO recipeMaster;
 	
 	// 왜있지 일단두자
 	private String name;				// employee 이름

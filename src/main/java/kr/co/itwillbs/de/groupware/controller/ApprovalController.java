@@ -254,6 +254,13 @@ public class ApprovalController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("idx 넘어오는거 확인" + docNo);
 		
+		// ------------------------------
+		// 세션 아이디(사번) 불러오는 코드
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+		String sessionId = userDetails.getUsername();
+		// ------------------------------
+		
 		ApprovalDTO approvalDTO = approvalService.getApprovalByDocNo(docNo);
 		//	결재번호를 기준으로 문서 정보 가져오기
 		model.addAttribute("approvalDTO", approvalDTO);
@@ -261,6 +268,16 @@ public class ApprovalController {
 //		model.addAttribute("fileList", fileService.getFilesByTypeAndMajorIdx(FILE_COMMON_TYPE, docNo));
 		//	기안서, 품위서 등 결재유형 가져오기
 		model.addAttribute("approvalTypeList" ,commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
+		
+		// 기안자냐 결재자냐에 따라 보여지는게 달라야 함 !
+	    boolean isDrafter = sessionId.equals(approvalDTO.getDrafterId());
+	    boolean isApprover = sessionId.equals(approvalDTO.getApprover1()) ||
+	                         sessionId.equals(approvalDTO.getApprover2()) ||
+	                         sessionId.equals(approvalDTO.getApprover3());
+
+	    model.addAttribute("isDrafter", isDrafter);
+	    model.addAttribute("isApprover", isApprover);
+
 		
 		return "groupware/approval/approval_detail";
 	}
