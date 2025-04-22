@@ -132,16 +132,4 @@
 		WHERE idx = #{idx}
 	</update>
 
-
-	<!-- 공장 장소 정보 삭제 (Soft Delete) -->
-	<update id="deleteLocationInfo" parameterType="Long">
-		UPDATE t_location_info
-		<set>
-			<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
-		</set>
-		WHERE idx = #{idx}
-	</update>
-
 </mapper>

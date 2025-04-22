@@ -1,83 +1,108 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) - 상품 등록</title>
-<style>
-.form-label {
-	font-weight: bold;
+<title>팩토리(PackTory) - 트랜잭션 LOT 등록</title>
+<style type="text/css">
+.form {
+	max-width: 800px;
+	margin: 0 auto;
 }
 
-.card-header {
-	background-color: #f8f9fc;
-	font-weight: bold;
+input, select {
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 2px;
 }
 
-.card-body {
-	padding: 2rem;
+.essential {
+	background-color: white;
+}
+
+.filled {
+	background-color: white;
+}
+
+/* ----------------- */
+.addressInfo {
+	display: flex;
+}
+
+@media ( max-width : 768px) {
+	.addressInfo {
+		display: block;
+	}
 }
 </style>
 </head>
 <body id="page-top">
 
-	<!-- 페이지 내용 -->
 	<div layout:fragment="contents">
+		<!-- 페이지 내용 -->
 		<div class="container mt-5">
 			<!-- 카드 형식 -->
 			<div class="container-fluid">
 				<div class="d-sm-flex align-items-center justify-content-between mb-4">
-					<h1 class="h3 mb-4 text-gray-800">상품 등록</h1>
+					<h1 class="h3 mb-4 text-gray-800">트랜잭션 LOT 등록</h1>
 				</div>
 
 				<!-- 본문 컨테이너 -->
 				<div class="card shadow mb-4">
 					<div class="card-body">
-						<form th:action="@{/mes/product/new}" th:object="${productDTO}" method="post" class="form row g-3" id="registerForm">
+						<div class="table-responsive">
+							<form th:action="@{/mes/warehousetransactionlots/new}" method="post" th:object="${warehouseTransactionLotsDTO}" class="form row g-3" id="registerForm">
 
-							<!-- 상품 타입 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type', '타입', true, ${codeItems},false,false)}"></div>
-							</div>
+								<!-- 롯 인덱스 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('lotIdx', 'LOT IDX', true,false,false)}"></div>
+								</div>
 
-							<!-- 상품 이름 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name', '상품 이름', true,false,false)}"></div>
-							</div>
+								<!-- 트랜잭션 인덱스 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('transactionIdx', '트랜잭션 IDX', true,false,false)}"></div>
+								</div>
 
-							<!-- 개수 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '개수', true,false,false)}"></div>
-							</div>
+								<!-- 개수 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '개수', true,false,false)}"></div>
+								</div>
 
-							<!-- 단위 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
-							</div>
+								<!-- 단위 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
+								</div>
 
-							<!-- 가격 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('price', '가격', true,false,false)}"></div>
-							</div>
-							
-							<hr>
-							
-							<!-- 버튼들 -->
-							<div class="col-md-12 row align-items-center justify-content-center">
-								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
-								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
-							</div>
-						</form>
+								<!-- 메모 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true,false,false)}"></div>
+								</div>
+
+								<!-- 삭제 유무 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+								</div>
+
+								<hr>
+
+								<!-- 버튼들 -->
+								<div class="col-md-12 row align-items-center justify-content-center">
+									<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+									<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
+			<!-- ---------- 본문 컨테이너 끝 ---------- -->
 		</div>
 
 		<script type="text/javascript">
 			$(function() {
 				$('#btnList').on("click", function() {
-					location.href="/mes/product";
+					location.href="/mes/warehousetransactionlots";
 				});
 				
-				// 상품 등록
+				// 트랜잭션 LOT 등록
 				$('#btnSubmitForm').on("click", function() {
 					console.group('click! #btnSubmitForm!');
 					// error 내용 삭제
@@ -101,7 +126,7 @@
 					// 데이터 확인
 					console.log(_jsonObj);
 					// JSON 데이터를 서버로 전송
-					fetch("/mes/product/new", {
+					fetch("/mes/warehousetransactionlots/new", {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json"
@@ -113,7 +138,7 @@
 						console.log("서버 응답:", data);
 						if(data.status === "success") {
 							alert(data.message);
-							location.href="/mes/product"; // 현재 페이지 새로 고침
+							location.href="/mes/warehousetransactionlots"; // 현재 페이지 새로 고침
 						} else if(data.status === "validFail") {
 							console.log("hello validFail!1");
 							//alert(data.message);
@@ -131,7 +156,7 @@
 					
 					console.groupEnd();
 				}); // end of $('#btnSubmitForm').on("click", function() {
-				
+				    
 			}); // end of $(function() {
 		</script>
 	</div>

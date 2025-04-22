@@ -141,7 +141,7 @@
 	</update>
 
 	<!-- 상품 삭제 (Soft Delete) -->
-	<update id="deleteProduct" parameterType="Long">
+	<update id="deleteProduct" parameterType="map">
 		UPDATE t_product
 		SET
 		is_deleted = 'Y',

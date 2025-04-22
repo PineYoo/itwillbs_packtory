@@ -38,12 +38,12 @@
 									<div>
 										<button type="button" id="searchClientBtn" class="btn btn-primary mt-2" onclick="openClientSearch()">거래처 조회</button>
 									</div>
-									<!-- 거래처 이름 표시 (readonly, 그냥 보기용) -->
+									<!-- 거래처 이름 -->
 									<div class="col-sm-12 col-md-6 mb-3">
 										<label for="companyName" class="form-label">거래처명</label> <input type="text" id="companyName" class="form-control" readonly>
 									</div>
 
-									<!-- 실제 저장될 clientIdx (form에 담기는 값) -->
+									<!-- 실제 저장될 clientIdx -->
 									<div class="col-sm-12 col-md-6 mb-3">
 										<label for="clientIdx" class="form-label">거래처 IDX</label> <input type="text" id="clientIdx" th:field="*{clientIdx}" class="form-control" readonly>
 									</div>

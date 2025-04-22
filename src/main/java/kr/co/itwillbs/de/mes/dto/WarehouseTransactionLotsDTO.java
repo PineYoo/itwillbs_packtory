@@ -14,31 +14,18 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @RequiredSessionIds(fields = { "regId", "modId" })
-public class WarehouseTransactionDTO {
+public class WarehouseTransactionLotsDTO {
 
 	private Long idx; // 테이블 인덱스
 	
-	@NotBlank(message = "타입은 필수 입력 값입니다.")
-	private String transType; // 타입
+	@NotBlank(message = "롯은 필수 입력 값입니다.")
+	private String lotIdx; // 롯 인덱스
 	
-	@NotBlank(message = "코드는 필수 입력 값입니다.")
-	private String code; // 코드
-	
-	@NotBlank(message = "상품정보는 필수 입력 값입니다.")
-	private String productIdx; // 상품_idx
-	private String productName; // 상품이름
-	
-	@NotBlank(message = "자재정보는 필수 입력 값입니다.")
-	private String materialIdx; // 자재_idx
-	private String materialName; // 자재이름
+	@NotBlank(message = "트랜잭션은 필수 입력 값입니다.")
+	private String transactionIdx; // 트랜잭션 인덱스
 	
 	private Integer quantity; // 개수
 	private String unit; // 단위
-	private String status; // 상태
-	
-	private String manufacturingDate; // 제조일자
-	private String sourceLocation; // 출발지
-	private String destinationLocation; // 도착지
 	
 	private String memo; // 메모
 	private String isDeleted; // 삭제유무

@@ -20,49 +20,42 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.mes.dto.QcLogDTO;
-import kr.co.itwillbs.de.mes.dto.QcLogSearchDTO;
-import kr.co.itwillbs.de.mes.dto.QcStandardDTO;
-import kr.co.itwillbs.de.mes.service.QcLogService;
-import kr.co.itwillbs.de.mes.service.QcStandardService;
+import kr.co.itwillbs.de.mes.dto.WarehouseTransactionLotsDTO;
+import kr.co.itwillbs.de.mes.dto.WarehouseTransactionLotsSearchDTO;
+import kr.co.itwillbs.de.mes.service.WarehouseTransactionLotsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/mes/qclog")
-public class QcLogController {
+@RequestMapping("/mes/warehousetransactionlots")
+public class WarehouseTransactionLotsController {
 
-	private final QcLogService qcLogService;
-	private final QcStandardService qcStandardService;
-	private final String QC_PATH = "/mes/qclog";
+	private final WarehouseTransactionLotsService warehouseTransactionLotsService;
+	private final String QC_PATH = "/mes/warehousetransactionlots";
 
-	// 품질로그 등록 폼 페이지
+	// 트랜잭션 LOT 등록 폼 페이지
 	@GetMapping("/new")
-	public String qcLogRegisterForm(Model model) {
+	public String warehouseTransactionLotsRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		// 품질기준 목록 조회
-		List<QcStandardDTO> qcStandaradList = qcStandardService.getQcStandardList();
-		model.addAttribute("qcStandaradList", qcStandaradList);
+		model.addAttribute("warehouseTransactionLotsDTO", new WarehouseTransactionLotsDTO());
 
-		model.addAttribute("qcLogDTO", new QcLogDTO());
-
-		return QC_PATH + "/qclog_form";
+		return QC_PATH + "/warehousetransactionlots_form";
 	}
 
-	// 품질로그 등록 폼 페이지 AJAX용
+	// 트랜잭션 LOT 등록 폼 페이지 AJAX용
 	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> qcLogRegister(@RequestBody @Valid QcLogDTO qcLogDTO) {
+	private ResponseEntity<Map<String, Object>> warehouseTransactionLotsRegister(@RequestBody @Valid WarehouseTransactionLotsDTO warehouseTransactionLotsDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("requestDTO : {}", StringUtil.objToString(qcLogDTO));
+		log.info("requestDTO : {}", StringUtil.objToString(warehouseTransactionLotsDTO));
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			qcLogService.insertQcLog(qcLogDTO);
+			warehouseTransactionLotsService.insertWarehouseTransactionLots(warehouseTransactionLotsDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -74,52 +67,44 @@ public class QcLogController {
 		return ResponseEntity.ok(response);
 	}
 
-	// 품질로그 목록 조회 (검색)
+	// 트랜잭션 LOT 목록 조회 (검색)
 	@GetMapping("")
-	public String getQcLogList(@ModelAttribute QcLogSearchDTO searchDTO, Model model) {
+	public String getWarehouseTransactionLotsList(@ModelAttribute WarehouseTransactionLotsSearchDTO searchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		// 페이징
-		searchDTO.getPageDTO().setTotalCount(qcLogService.searchQcLogCount(searchDTO));
+		searchDTO.getPageDTO().setTotalCount(warehouseTransactionLotsService.searchWarehouseTransactionLotsCount(searchDTO));
 
-		// 품질 목록 조회
-		List<QcLogDTO> qcLogList = qcLogService.searchQcLog(searchDTO);
-		model.addAttribute("qcLogList", qcLogList);
-		
-		// 품질기준 목록 조회
-		List<QcStandardDTO> qcStandaradList = qcStandardService.getQcStandardList();
-		model.addAttribute("qcStandaradList", qcStandaradList);
+		// 트랜잭션 LOT 목록 조회
+		List<WarehouseTransactionLotsDTO> transactionLotsList = warehouseTransactionLotsService.searchWarehouseTransactionLots(searchDTO);
+		model.addAttribute("transactionLotsList", transactionLotsList);
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
-		return QC_PATH + "/qclog_list";
+		return QC_PATH + "/warehousetransactionlots_list";
 	}
 
-	// 품질로그 상세 조회
+	// 트랜잭션 LOT 상세 조회
 	@GetMapping("/{idx}")
-	public String getQcLog(@PathVariable("idx") Long idx, Model model) {
+	public String getWarehouseTransactionLots(@PathVariable("idx") Long idx, Model model) {
 		log.info("{}---start, request param {}", Thread.currentThread().getStackTrace()[1].getMethodName(), idx);
 
-		// 품질로그 상세정보 조회
-		QcLogDTO qcLogDTO = qcLogService.getQcLogByIdx(idx);
-		model.addAttribute("qcLogDTO", qcLogDTO);
+		// 트랜잭션 LOT 상세정보 조회
+		WarehouseTransactionLotsDTO transactionLotDTO = warehouseTransactionLotsService.getWarehouseTransactionLotsByIdx(idx);
+		model.addAttribute("transactionLotDTO", transactionLotDTO);
 
-		// 품질기준 목록 조회
-		List<QcStandardDTO> qcStandaradList = qcStandardService.getQcStandardList();
-		model.addAttribute("qcStandaradList", qcStandaradList);
-
-		return QC_PATH + "/qclog_detail";
+		return QC_PATH + "/warehousetransactionlots_detail";
 	}
 
-	// 품질로그 수정
-	@PutMapping("/updateQcLog")
-	public ResponseEntity<Map<String, Object>> updateQcLog(@RequestBody QcLogDTO qcLogDTO) {
+	// 트랜잭션 LOT 수정
+	@PutMapping("/updateWarehouseTransactionLots")
+	public ResponseEntity<Map<String, Object>> updateWarehouseTransactionLots(@RequestBody WarehouseTransactionLotsDTO warehouseTransactionLotsDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			qcLogService.updateQcLog(qcLogDTO);
+			warehouseTransactionLotsService.updateWarehouseTransactionLots(warehouseTransactionLotsDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -132,15 +117,15 @@ public class QcLogController {
 		return ResponseEntity.ok(response);
 	}
 
-	// 품질로그 삭제 (Soft Delete)
+	// 트랜잭션 LOT 삭제 (Soft Delete)
 	@DeleteMapping("/{idx}")
 	@ResponseBody
-	public String deleteQcLog(@PathVariable("idx") Long idx) {
+	public String deleteWarehouseTransactionLots(@PathVariable("idx") Long idx) {
 		try {
-			qcLogService.deleteQcLog(idx);
+			warehouseTransactionLotsService.deleteWarehouseTransactionLots(idx);
 			return "success";
 		} catch (Exception e) {
-			log.error("품질로그 삭제 실패: {}", e.getMessage());
+			log.error("트랜잭션LOT 삭제 실패: {}", e.getMessage());
 			return "error";
 		}
 	}

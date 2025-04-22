@@ -10,20 +10,11 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class WarehouseTransactionSearchDTO {
+public class WarehouseTransactionLotsSearchDTO {
 
-	private String transType; // 타입
-	private String code; // 코드
-
-	private String productName; // 상품 이름
-	private String productIdx; // 상품 인덱스
-
-	private String materialName; // 자재 이름
-	private String materialIdx; // 자재 인덱스
-
-	private String startManufacturingDate; // 제조일자 시작
-	private String endManufacturingDate; // 제조일자 종료
-
+	private String lotIdx; // 롯 인덱스
+	private String transactionIdx; // 트랜잭션 인덱스
+	
 	private Integer minQuantity; // 최소 총개수
 	private Integer maxQuantity; // 최대 총개수
 	

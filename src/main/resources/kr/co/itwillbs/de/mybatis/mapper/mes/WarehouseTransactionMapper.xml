@@ -252,7 +252,7 @@
 	        <if test='unit != null and !("".equals(unit.trim()))'>unit = #{unit},</if>
 	        <if test='quantity != null'>quantity = #{quantity},</if>
 	        <if test='status != null and !("".equals(status.trim()))'>status = #{status},</if>
-	        <if test='manufacturingDate != null'>manufacturingDate = #{manufacturingDate},</if>
+	        <if test='manufacturingDate != null'>manufacturing_date = #{manufacturingDate},</if>
 	        <if test='sourceLocation != null and !("".equals(destinationLocation.trim()))'>source_location = #{destinationLocation},</if>
 	        <if test='destinationLocation != null and !("".equals(destinationLocation.trim()))'>destination_location = #{destinationLocation},</if>
 	        <if test='memo != null and !("".equals(memo.trim()))'>memo = #{memo},</if>
@@ -263,15 +263,11 @@
 		WHERE idx = #{idx}
 	</update>
 
-
 	<!-- 창고 정보 삭제 (Soft Delete) -->
-	<update id="deleteWarehouseTransaction" parameterType="Long">
+	<update id="deleteWarehouseTransaction" parameterType="map">
 		UPDATE t_warehouse_transaction
-		<set>
-			<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
-		</set>
+		is_deleted = 'Y',
+		mod_date = NOW()
 		WHERE idx = #{idx}
 	</update>
 
