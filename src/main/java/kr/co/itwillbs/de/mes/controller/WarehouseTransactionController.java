@@ -56,7 +56,7 @@ public class WarehouseTransactionController {
 
 		model.addAttribute("warehouseTransactionDTO", new WarehouseTransactionDTO());
 
-		return QC_PATH + "/warehouseTransaction_form";
+		return QC_PATH + "/warehousetransaction_form";
 	}
 
 	// 창고 정보 등록 폼 페이지 AJAX용

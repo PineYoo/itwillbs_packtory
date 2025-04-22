@@ -245,20 +245,20 @@
 		parameterType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO">
 		UPDATE t_warehouse_transaction
 		 <set>
-	        <if test='trans_type != null and !("".equals(trans_type.trim()))'>trans_type = #{trans_type},</if>
+	        <if test='transType != null and !("".equals(transType.trim()))'>trans_type = #{transType},</if>
 	        <if test='code != null and !("".equals(code.trim()))'>code = #{code},</if>
-	        <if test='product_idx != null and !("".equals(product_idx.trim()))'>product_idx = #{product_idx},</if>
-	        <if test='material_idx != null and !("".equals(material_idx.trim()))'>material_idx = #{material_idx},</if>
+	        <if test='productIdx != null and !("".equals(productIdx.trim()))'>product_idx = #{productIdx},</if>
+	        <if test='materialIdx != null and !("".equals(materialIdx.trim()))'>material_idx = #{materialIdx},</if>
 	        <if test='unit != null and !("".equals(unit.trim()))'>unit = #{unit},</if>
 	        <if test='quantity != null'>quantity = #{quantity},</if>
 	        <if test='status != null and !("".equals(status.trim()))'>status = #{status},</if>
-	        <if test='manufacturing_date != null'>manufacturing_date = #{manufacturing_date},</if>
-	        <if test='source_location != null and !("".equals(source_location.trim()))'>source_location = #{source_location},</if>
-	        <if test='destination_location != null and !("".equals(destination_location.trim()))'>destination_location = #{destination_location},</if>
+	        <if test='manufacturingDate != null'>manufacturingDate = #{manufacturingDate},</if>
+	        <if test='sourceLocation != null and !("".equals(destinationLocation.trim()))'>source_location = #{destinationLocation},</if>
+	        <if test='destinationLocation != null and !("".equals(destinationLocation.trim()))'>destination_location = #{destinationLocation},</if>
 	        <if test='memo != null and !("".equals(memo.trim()))'>memo = #{memo},</if>
-	        <if test='is_deleted != null and !("".equals(is_deleted.trim()))'>is_deleted = #{is_deleted},</if>
-	        <if test='mod_id != null and !("".equals(mod_id.trim()))'>mod_id = #{mod_id},</if>
-	        <if test='mod_id != null and !("".equals(mod_id.trim()))'>mod_date = now(),</if>
+	        <if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+	        <if test='modId != null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+	        <if test='modDate != null and !("".equals(modDate.trim()))'>mod_date = now(),</if>
 	    </set>
 		WHERE idx = #{idx}
 	</update>
