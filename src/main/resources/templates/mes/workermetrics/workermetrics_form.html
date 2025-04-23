@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 보유 자격증 정보 등록</title>
+<style type="text/css">
+.form {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+input, select {
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 2px;
+}
+
+.essential {
+	background-color: white;
+}
+
+.filled {
+	background-color: white;
+}
+
+/* ----------------- */
+.addressInfo {
+	display: flex;
+}
+
+@media ( max-width : 768px) {
+	.addressInfo {
+		display: block;
+	}
+}
+</style>
+<!-- 다음 우편번호 API -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body id="page-top">
+
+	<div layout:fragment="contents">
+		<!-- 페이지 내용 -->
+		<div class="container mt-5">
+			<!-- 카드 형식 -->
+			<div class="container-fluid">
+				<div class="d-sm-flex align-items-center justify-content-between mb-4">
+					<h1 class="h3 mb-4 text-gray-800">보유 자격증 정보 등록</h1>
+				</div>
+
+				<!-- 본문 컨테이너 -->
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<div class="table-responsive">
+							<form th:action="@{/mes/workermetrics/new}" method="post" th:object="${workerMetricsDTO}" class="form row g-3" id="registerForm">
+
+								<div class="data-container">
+									<div class="row">
+										<div>
+											<button type="button" id="searchEmployeeBtn" class="btn btn-primary mt-2" onclick="openEmployeeSearch()">사원 조회</button>
+										</div>
+										<div class="col-sm-12 col-md-6 mb-3">
+											<label for="employeeId" class="form-label">사원 번호</label> <input type="text" id="employeeId" th:field="*{employeeId}" class="form-control" placeholder="사원 번호" readonly>
+										</div>
+									</div>
+								</div>
+
+								<!-- 생산 감독관 -->
+								<div class="col-md-6">
+									<label for="isSupervisor">생산 감독관</label> <select class="form-select" th:field="*{isSupervisor}" required>
+										<option value="">선택</option>
+										<option value="Y">Y</option>
+										<option value="N">N</option>
+									</select>
+								</div>
+
+								<!-- 라인 관리자 -->
+								<div class="col-md-6">
+									<label for="isLinesManager">라인 관리자</label> <select class="form-select" th:field="*{isLinesManager}" required>
+										<option value="">선택</option>
+										<option value="Y">Y</option>
+										<option value="N">N</option>
+									</select>
+								</div>
+
+								<!-- 지게차 자격 -->
+								<div class="col-md-6">
+									<label for="isForkliftOperator">지게차 자격</label> <select class="form-select" th:field="*{isForkliftOperator}" required>
+										<option value="">선택</option>
+										<option value="Y">Y</option>
+										<option value="N">N</option>
+									</select>
+								</div>
+
+								<!-- 운전면허 자격 -->
+								<div class="col-md-6">
+									<label for="isDriver">운전면허 자격</label> <select class="form-select" th:field="*{isDriver}" required>
+										<option value="">선택</option>
+										<option value="Y">Y</option>
+										<option value="N">N</option>
+									</select>
+								</div>
+
+								<!-- 메모 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('memo', '메모', true,false,false)}"></div>
+								</div>
+
+								<!-- 삭제 유무 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+								</div>
+
+								<hr>
+
+								<!-- 버튼들 -->
+								<div class="col-md-12 row align-items-center justify-content-center">
+									<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+									<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- 본문 컨테이너 끝 -->
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			// 담당자 검색 함수(새 창 띄우기)
+			function openEmployeeSearch() {
+			    window.open('/employee/search-popup', 'employeeSearch', 'width=800,height=600,location=no,scrollbars=yes');
+			    window.isSingleSelect = true;
+			}
+				
+			// 팝업창에서 가져온 담당자 정보 넣는 함수
+			function setEmployeeInfo(data) {
+			    $("#employeeId").val(data.id);
+			    console.log($("#employeeId").val()); 
+			}
+		
+			$(function() {
+				$('#btnList').on("click", function() {
+					location.href="/mes/workermetrics";
+			});
+				
+			// 보유 자격증 정보 등록
+			$('#btnSubmitForm').on("click", function() {
+				console.group('click! #btnSubmitForm!');
+				console.log($("#employeeId").val()); 
+				// error 내용 삭제
+				$("div[id$='Error']").text("")
+				// 만세 폼이다!
+				const _serializedData = $('#registerForm').serialize();
+				// 문자열을 '&' 기준z으로 분리하여 배열로 변환
+				const _pairs = _serializedData.split('&');
+				// 빈 객체를 생성하여 데이터를 담을 준비
+				const _jsonObj = {};
+				// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
+				_pairs.forEach(pair => {
+					const [key, value] = pair.split('=');
+					_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
+				});
+				// 데이터 확인
+				console.log(_jsonObj);
+				// JSON 데이터를 서버로 전송
+				fetch("/mes/workermetrics/new", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify(_jsonObj)
+				})
+				.then(response => response.json())
+				.then(data => {
+					console.log("서버 응답:", data);
+					if(data.status === "success") {
+						alert(data.message);
+						location.href="/mes/workermetrics"; // 현재 페이지 새로 고침
+					} else if(data.status === "validFail") {
+						console.log("hello validFail!1");
+						//alert(data.message);
+						let _errors = data.errors;
+						console.log(_errors);
+						for (let field in _errors) {
+							$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
+						} // end of for (let field in errors) {
+					}
+				})
+				.catch(error => {
+					console.error("서버 응답 오류:", error);
+					alert("요청 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해 주시기 바랍니다.");
+				});
+				
+				console.groupEnd();
+			}); // end of $('#btnSubmitForm').on("click", function() {
+				    
+		}); // end of $(function() {
+		</script>
+	</div>
+</body>
+</html>
