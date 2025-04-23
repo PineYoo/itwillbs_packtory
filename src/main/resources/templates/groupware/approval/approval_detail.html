@@ -42,9 +42,13 @@
 				<div class="card-body">
 					<div class="table-responsive">
 		<!-- 				<form th:action="@{/groupware/approval/{docNo}(docNo=${approvalDTO.docNo})}" id="approvalForm" role="form" method="post" enctype="multipart/form-data"  th:object="${approvalDTO}" class="form row g-3"> -->
-						<form th:action="@{/groupware/approval/{docNo}(docNo=${approvalDTO.docNo})}" id="approvalForm" role="form" method="post" th:object="${approvalDTO}" class="form row g-3">
+						<form th:action="@{/groupware/approval/{docNo}(docNo=${approvalDTO.docNo})}" id="approvalForm2" role="form" method="post" th:object="${approvalDTO}" class="form row g-3">
 							<input type="hidden" name="_method" value="put">
 							<!-- hidden -->
+							<div th:if="${isApprover}">	<!-- 결재자인 경우: 결재만 가능 -->
+					            <input type="hidden" id="approverIndex" name="approverIndex" th:value="${approverIndex}">	<!-- 몇번째 결재자인지 -->
+							</div>
+				            <input type="hidden" id="docNo" th:field=*{docNo}><!-- 문서번호 -->
 				            <input type="hidden" id="progressStatus" name="progressStatus" value="1"><!-- 결재요청(1) -->
 				            <input type="hidden" id="approver1" th:field=*{approver1}>
 				            <input type="hidden" id="approver1Name" th:field=*{approver1Name}>
@@ -105,14 +109,14 @@
 									<div class="d-flex align-items-center">
 										<div class="input-group">
 											<input type="text" class="form-control" autocomplete="off" th:field="*{draftDate}" id="draftDate" th:attr="readonly=${isApprover} ? 'readonly' : null">
-											<span class="input-group-text calendar-icon" data-target="draftDate">
+											<span class="input-group-text calendar-icon" data-target="#draftDate">
 												<i class="fa fa-calendar"></i>
 											</span>
 										</div>
 										<span class="mx-2">⁓</span>
 										<div class="input-group">
 											<input type="text" class="form-control" autocomplete="off" th:field="*{dueDate}" id="dueDate" th:attr="readonly=${isApprover} ? 'readonly' : null">
-											<span class="input-group-text calendar-icon" data-target="dueDate">
+											<span class="input-group-text calendar-icon" data-target="#dueDate">
 												<i class="fa fa-calendar"></i>
 											</span>
 										</div>
@@ -167,7 +171,7 @@
 										<div class="input-group">
 											<input type="text" class="form-control" autocomplete="off" th:field="*{eventStartDate}" id="eventStartDate"
 												   th:attr="value=${eventStartDate != null ? eventStartDate : ''}">
-											<span class="input-group-text calendar-icon" data-target="eventStartDate">
+											<span class="input-group-text calendar-icon" data-target="#eventStartDate">
 												<i class="fa fa-calendar"></i>
 											</span>
 										</div>
@@ -175,7 +179,7 @@
 										<div class="input-group">
 											<input type="text" class="form-control" autocomplete="off" th:field="*{eventEndDate}" id="eventEndDate"
 												   th:attr="value=${eventEndDate != null ? eventEndDate : ''}">
-											<span class="input-group-text calendar-icon" data-target="eventEndDate">
+											<span class="input-group-text calendar-icon" data-target="#eventEndDate">
 												<i class="fa fa-calendar"></i>
 											</span>
 										</div>
@@ -190,8 +194,8 @@
 								<button type="button" id="cancelBtn" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3" >돌아가기</button>
 					        </div>
 					        <div class="col-md-12 row align-items-center justify-content-center mt-3" th:if="${isApprover}">
-								<button type="button" id="approvalBtn" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">승인(아직기능 없음)</button>
-								<button type="button" id="returnBtn" class="btn btn-warning btn-lg d-block col-3 ml-2 mb-3" >반려(아직기능 없음)</button>
+								<button type="button" id="approveBtn" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3" data-status="3">승인</button>
+								<button type="button" id="rejectBtn" class="btn btn-warning btn-lg d-block col-3 ml-2 mb-3" data-status="4">반려</button>
 								<button type="button" id="cancelBtn" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3" >돌아가기</button>
 					        </div>
 						</form>

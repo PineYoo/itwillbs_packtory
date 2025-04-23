@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.co.itwillbs.de.common.mapper.CommonMapper">
+<mapper namespace="kr.co.itwillbs.de.common.mapper.StatisticsMapper">
 
 	<!-- href: https://mybatis.org/mybatis-3/ko/dynamic-sql.html -->
 	<sql id="templates" >
@@ -39,24 +39,50 @@
 		 -->
 	</sql>
 	
-	<select id="getSeqEmpIdfromH2" resultType="string">
-		SELECT NEXT VALUE FOR seq_emp_id
+	<sql id="t_approval_columns_forSelect">
+		  a.idx					-- 테이블_인덱스
+		, a.approval_type		-- 문서타입
+		, a.progress_status		-- 진행상태
+		, a.doc_no				-- 서류코드
+		, a.title				-- 제목
+		, a.content				-- 내용
+		, a.recipe_master_idx	-- 레시피마스터_idx
+		, a.event_start_date	-- 휴가시작일
+		, a.event_end_date		-- 휴가종료일
+		, a.drafter_id			-- 기안자
+		, a.draft_date			-- 기안일자
+		, a.due_date			-- 마감일자
+		, a.reg_date			-- 작성일자
+		, a.mod_id				-- 최종 작성자
+		, a.mod_date			-- 최종 작성일자
+	</sql>
+	
+	<!-- 오늘 결재 완료 된 기안서 조회 -->
+	<select id="getSelectApprovedToday" resultType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
+	    SELECT 
+			<include refid="t_approval_columns_forSelect"></include>
+	      FROM t_approval a
+	     WHERE a.progress_status = '3'    -- 결재 완료(3)
+  	   	   AND DATE(a.mod_date) = CURDATE(); -- 오늘 날짜로 승인된 데이터
 	</select>
 	
-	<select id="getSeqEmpIdfromMySQL" resultType="string">
-		SELECT nextVal('seq_emp_id')
-	</select>
+	<update id="updateApprovedRecipe">
+		UPDATE t_recipe_master
+		   SET approval_status = '1'	-- 결재완료(1)
+		 WHERE idx = #{recipeMasterIdx}
+	</update>
 	
-	<select id="getSeqOrderNumberfromMySQL" resultType="string">
-		SELECT nextVal('seq_order_number')
-	</select>
-	
-	<select id="getWorkOrderDocNoFromMySQL" resultType="string">
-		SELECT nextVal('work_order_document_number')
-	</select>
-
-	<select id="getDocNoFromMySQL" resultType="string">
-		SELECT nextVal('doc_no')
-	</select>
+	<insert id="insertApprovedVacation">
+		INSERT INTO t_commute (employee_id, reg_date, work_status_code)
+	    SELECT #{employeeId}, #{date}, '6'
+	    FROM DUAL				-- DUAL: 더미테이블
+	    WHERE NOT EXISTS (		-- 해당 날짜, 사번에 휴가들어가 있으면 insert 하지 않음
+	        SELECT 1 
+	        FROM t_commute 
+	        WHERE employee_id = #{employeeId} 
+	          AND DATE(reg_date) = #{date}
+	          AND work_status_code = '6'
+	    )
+	</insert>
 	
 </mapper>

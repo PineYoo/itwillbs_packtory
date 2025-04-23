@@ -67,5 +67,8 @@ public interface ApprovalMapper {
 											  @Param("memberId") String memberId);
 
 	int getApprovalCountBySearchDTO(ApprovalSearchDTO approvalSearchDTO);
-
+	
+	// 진행상태 변경
+	void updateProgressStatus(ApprovalDTO approvalDTO);
+	
 }

@@ -75,21 +75,21 @@
 	</sql>
 	
 	<sql id="t_approval_join_columns_forSelect">
-		  e.name					--	이름
-		, e.ssn						--	주민등록번호
-		, e.department_code			--	부서코드
-		, e.department_name			--	부서이름
-		, e.sub_department_code		--	팀코드
-		, e.sub_department_name		--	팀이름
-		, e.position_code			--	직급코드
-		, e.position_name			--	직급이름
-		, e.is_manager				--	결재권한유무
-		, e.hire_date				--	입사일
-		, e.resignation_date		--	퇴사일
-		, e.phone_number			--	전화번호
-		, e.email					--	이메일
-		, e.file_idxs				--	파일인덱스
-		, e.employee_status_code	--	직원상태코드
+		  e.name					-- 이름
+		, e.ssn						-- 주민등록번호
+		, e.department_code			-- 부서코드
+		, e.department_name			-- 부서이름
+		, e.sub_department_code		-- 팀코드
+		, e.sub_department_name		-- 팀이름
+		, e.position_code			-- 직급코드
+		, e.position_name			-- 직급이름
+		, e.is_manager				-- 결재권한유무
+		, e.hire_date				-- 입사일
+		, e.resignation_date		-- 퇴사일
+		, e.phone_number			-- 전화번호
+		, e.email					-- 이메일
+		, e.file_idxs				-- 파일인덱스
+		, e.employee_status_code	-- 직원상태코드
 		
 		, a.idx						-- 테이블_인덱스
 		, a.approval_type			-- 문서타입
@@ -201,35 +201,35 @@
 		<where>
 			1 = 1
 			<if test="drafterId != null and drafterId != ''">	<!-- 기안자 / 결재자 -->
-		   AND (a.drafter_id = #{drafterId}
-		    OR  ai.approver1 = #{drafterId}
-		    OR (ai.approver2 = #{drafterId} AND a.progress_status != 1 AND ai.approver1_status = 'Y')
-		    OR (ai.approver3 = #{drafterId} AND a.progress_status != 1 AND ai.approver2_status = 'Y')
-		     )
+			   AND (a.drafter_id = #{drafterId}	<!-- 기안자 -->
+			    OR  ai.approver1 = #{drafterId}	<!-- 결재자1(진행상태:1) -->
+			    OR (ai.approver2 = #{drafterId} AND a.progress_status != 1 AND ai.approver1_status = '3') <!-- 결재자2(결재자1이 승인 했을 경우) -->
+			    OR (ai.approver3 = #{drafterId} AND a.progress_status != 1 AND ai.approver2_status = '3') <!-- 결재자3(결재자2이 승인 했을 경우) -->
+			     )
 			</if>
 			<if test="drafterName != null and drafterName.trim() != ''">
-		   AND e.name LIKE CONCAT('%', #{drafterName}, '%')
+			   AND e.name LIKE CONCAT('%', #{drafterName}, '%')
 			</if>
 			<if test="title != null and title.trim() != ''">
-		   AND a.title LIKE CONCAT('%', #{title}, '%')
+			   AND a.title LIKE CONCAT('%', #{title}, '%')
 			</if>
 			<if test="progressStatus != null and progressStatus.trim() != ''">
-		   AND ci1.minor_code = #{progressStatus}
+			   AND ci1.minor_code = #{progressStatus}
 			</if>
 			<if test="approvalType != null and approvalType.trim() != ''">
-		   AND ci2.minor_code = #{approvalType}
+			   AND ci2.minor_code = #{approvalType}
 			</if>
 			<if test="requestStartDate != null and requestStartDate != ''">
-		   AND DATE(a.draft_date) &gt;= #{requestStartDate}
+			   AND DATE(a.draft_date) &gt;= #{requestStartDate}
 			</if>
 			<if test="requestEndDate != null and requestEndDate != ''">
-		   AND DATE(a.draft_date) &lt;= #{requestEndDate}
+			   AND DATE(a.draft_date) &lt;= #{requestEndDate}
 			</if>
 			<if test="dueStartDate != null and dueStartDate != ''">
-		   AND DATE(a.due_date) &gt;= #{dueStartDate}
+			   AND DATE(a.due_date) &gt;= #{dueStartDate}
 			</if>
 			<if test="dueEndDate != null and dueEndDate != ''">
-		   AND DATE(a.due_date) &lt;= #{dueEndDate}
+			   AND DATE(a.due_date) &lt;= #{dueEndDate}
 			</if>
 		</where>
 		 ORDER
@@ -264,35 +264,35 @@
 		<where>
 			1 = 1
 			<if test="drafterId != null and drafterId != ''">	<!-- 기안자 / 결재자 -->
-		   AND (a.drafter_id = #{drafterId}
-		    OR  ai.approver1 = #{drafterId}
-		    OR (ai.approver2 = #{drafterId} AND a.progress_status != 1 AND ai.approver1_status = 'Y')
-		    OR (ai.approver3 = #{drafterId} AND a.progress_status != 1 AND ai.approver2_status = 'Y')
-		     )
+			   AND (a.drafter_id = #{drafterId}
+			    OR  ai.approver1 = #{drafterId}
+			    OR (ai.approver2 = #{drafterId} AND a.progress_status != 1 AND ai.approver1_status = 'Y')
+			    OR (ai.approver3 = #{drafterId} AND a.progress_status != 1 AND ai.approver2_status = 'Y')
+			     )
 			</if>
 			<if test="drafterName != null and drafterName.trim() != ''">
-		   AND e.name LIKE CONCAT('%', #{drafterName}, '%')
+			   AND e.name LIKE CONCAT('%', #{drafterName}, '%')
 			</if>
 			<if test="title != null and title.trim() != ''">
-		   AND a.title LIKE CONCAT('%', #{title}, '%')
+			   AND a.title LIKE CONCAT('%', #{title}, '%')
 			</if>
 			<if test="progressStatus != null and progressStatus.trim() != ''">
-		   AND ci1.minor_code = #{progressStatus}
+			   AND ci1.minor_code = #{progressStatus}
 			</if>
 			<if test="approvalType != null and approvalType.trim() != ''">
-		   AND ci2.minor_code = #{approvalType}
+			   AND ci2.minor_code = #{approvalType}
 			</if>
 			<if test="requestStartDate != null and requestStartDate != ''">
-		   AND DATE(a.draft_date) &gt;= #{requestStartDate}
+			   AND DATE(a.draft_date) &gt;= #{requestStartDate}
 			</if>
 			<if test="requestEndDate != null and requestEndDate != ''">
-		   AND DATE(a.draft_date) &lt;= #{requestEndDate}
+			   AND DATE(a.draft_date) &lt;= #{requestEndDate}
 			</if>
 			<if test="dueStartDate != null and dueStartDate != ''">
-		   AND DATE(a.due_date) &gt;= #{dueStartDate}
+			   AND DATE(a.due_date) &gt;= #{dueStartDate}
 			</if>
 			<if test="dueEndDate != null and dueEndDate != ''">
-		   AND DATE(a.due_date) &lt;= #{dueEndDate}
+			   AND DATE(a.due_date) &lt;= #{dueEndDate}
 			</if>
 		</where>
 	</select>
@@ -309,8 +309,8 @@
 			 , #{title}				-- title
 			 , #{content}			-- content
 			 , #{recipeMasterIdx}	-- recipe_master_idx
-			 , #{eventStartDate}	-- event_start_date
-			 , #{eventEndDate}		-- event_end_date
+             , IFNULL(NULLIF(#{eventStartDate}, ''), NULL)  -- event_start_date
+             , IFNULL(NULLIF(#{eventEndDate}, ''), NULL)    -- event_end_date
 			 , #{regId}				-- drafter_id
 			 , #{draftDate}			-- draft_date
 			 , #{dueDate}			-- due_date
@@ -338,40 +338,40 @@
 	<insert id="insertApprovalItems" parameterType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
 		INSERT
 		  INTO t_approval_items
-		VALUES (null				-- idx(auto_increment)
-			 , #{docNo}				-- doc_no
-			 , #{approver1}			-- approver1
-			 , #{approver2}			-- approver2
-			 , #{approver3}			-- approver3
-			 , null					-- approver1_status
-			 , null					-- approver2_status
-			 , null					-- approver3_status
-			 , null					-- approver1_date
-			 , null					-- approver2_date
-			 , null					-- approver3_date
-			 , null					-- approver1_signature
-			 , null					-- approver2_signature
-			 , null					-- approver3_signature
-			 , #{regId}				-- reg_id
-			 , now()				-- reg_date
-			 , null					-- mod_id(최초 등록시는 reg_id 만 넣고 update 시 mod_id 입력)
-			 , null					-- mod_date
+		VALUES (null					-- idx(auto_increment)
+			 , #{docNo}					-- doc_no
+			 , #{approver1}				-- approver1
+			 , #{approver2}				-- approver2
+			 , #{approver3}				-- approver3
+			 , #{approver1Status}		-- approver1_status
+			 , #{approver2Status}		-- approver2_status
+			 , #{approver3Status}		-- approver3_status
+			 , #{approver1Date}			-- approver1_date
+			 , #{approver2Date}			-- approver2_date
+			 , #{approver3Date}			-- approver3_date
+			 , #{approver1Signature}	-- approver1_signature
+			 , #{approver2Signature}	-- approver2_signature
+			 , #{approver3Signature}	-- approver3_signature
+			 , #{regId}					-- reg_id
+			 , now()					-- reg_date
+			 , null						-- mod_id(최초 등록시는 reg_id 만 넣고 update 시 mod_id 입력)
+			 , null						-- mod_date
 			 )
 			 
-		-- 데이터가 있으면 업데이트, 없으면 삽입 (doc_no -> UNIQUE 처리)
+		-- 데이터가 있으면 업데이트, 없으면 삽입 (doc_no -> UNIQUE 처리) / 기존값 null 일때만 덮어써라 !!
 	    ON DUPLICATE KEY UPDATE
-		      approver1           = VALUES(approver1)
-		    , approver2           = VALUES(approver2)
-		    , approver3           = VALUES(approver3)
-		    , approver1_status    = VALUES(approver1_status)
-		    , approver2_status    = VALUES(approver2_status)
-		    , approver3_status    = VALUES(approver3_status)
-		    , approver1_date      = VALUES(approver1_date)
-		    , approver2_date      = VALUES(approver2_date)
-		    , approver3_date      = VALUES(approver3_date)
-		    , approver1_signature = VALUES(approver1_signature)
-		    , approver2_signature = VALUES(approver2_signature)
-		    , approver3_signature = VALUES(approver3_signature)
+		      approver1           = IF(approver1 IS NULL, VALUES(approver1), approver1)
+		    , approver2           = IF(approver2 IS NULL, VALUES(approver2), approver2)
+		    , approver3           = IF(approver3 IS NULL, VALUES(approver3), approver3)
+		    , approver1_status    = IF(approver1_status IS NULL, VALUES(approver1_status), approver1_status)
+		    , approver2_status    = IF(approver2_status IS NULL, VALUES(approver2_status), approver2_status)
+		    , approver3_status    = IF(approver3_status IS NULL, VALUES(approver3_status), approver3_status)
+		    , approver1_date      = IF(approver1_date IS NULL, VALUES(approver1_date), approver1_date)
+		    , approver2_date      = IF(approver2_date IS NULL, VALUES(approver2_date), approver2_date)
+		    , approver3_date      = IF(approver3_date IS NULL, VALUES(approver3_date), approver3_date)
+		    , approver1_signature = IF(approver1_signature IS NULL, VALUES(approver1_signature), approver1_signature)
+		    , approver2_signature = IF(approver2_signature IS NULL, VALUES(approver2_signature), approver2_signature)
+		    , approver3_signature = IF(approver3_signature IS NULL, VALUES(approver3_signature), approver3_signature)
 		    , mod_id              = #{modId}
 		    , mod_date            = now()
 	</insert>
@@ -380,7 +380,7 @@
 		<include refid="withEmpBase"></include>
 		SELECT 
 		<include refid="t_approval_join_columns_forSelect"></include>
-			 , rm.name AS recipeMasterName	-- 수정페이지에서 보여주려고
+			 , CONCAT(rm.name, '(ver.', rm.version, ')') AS recipeMasterName	-- 수정페이지에서 보여주려고
 			 , emp1.name AS approver1Name
 			 , emp2.name AS approver2Name
 			 , emp3.name AS approver3Name
@@ -413,6 +413,15 @@
 		 WHERE a.doc_no = #{docNo}
 	</select>
 	
+	<update id="updateProgressStatus">
+		UPDATE t_approval
+			<set>
+			      progress_status	= #{progressStatus}
+			    , mod_id         	= #{modId}
+			    , mod_date       	= now()
+			</set>
+		 WHERE doc_no = #{docNo}
+	</update>
 	
 	<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	<update id="modifyApproval" parameterType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">

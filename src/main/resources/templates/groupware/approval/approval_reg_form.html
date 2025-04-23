@@ -93,16 +93,6 @@
 							</div>
 
 							<div class="col-md-12">
-					   			<label for="draftDate">datetimepicker 테스트 !!</label>
-								<div class="input-group">
-									<input type="text" class="form-control" autocomplete="off" id="datetimeInput">
-									<span class="input-group-text calendar-icon" data-target="#datetimeInput">
-										<i class="fa fa-calendar"></i>
-									</span>
-								</div>
-							</div>
-							
-							<div class="col-md-12">
 					   			<label for="draftDate">결재기간</label>
 								<div style="width: 100%;">
 									<div class="d-flex align-items-center">
@@ -157,7 +147,7 @@
 						        	<button class="btn btn-primary" id="searchProductBtn" type="button" onclick="openRecipeSearch()">검색 <i class="fa-solid fa-magnifying-glass"></i></button>
 								</div>
 					            <input type="hidden" id="recipeMasterIdx" th:field="*{recipeMasterIdx}">
-					            <input type="text" id="recipeName" name="recipeMaster.recipeName" class="form-control" placeholder="결재할 레시피를 선택해주세요." onclick="openRecipeSearch()" readonly>
+					            <input type="text" id="recipeName" name="recipeMasterName" class="form-control" placeholder="결재할 레시피를 선택해주세요." onclick="openRecipeSearch()" readonly>
 							</div>
 							<!-- ---------------- 레시피 결재 영역 끝 ---------------- -->
 							
