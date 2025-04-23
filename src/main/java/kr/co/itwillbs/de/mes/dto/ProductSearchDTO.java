@@ -19,6 +19,8 @@ public class ProductSearchDTO {
 	
 	private Integer minPrice; 	// 최소 가격
 	private Integer maxPrice; 	// 최대 가격
+	
+	private String searchKeyword;
 
 	private PageDTO pageDTO = new PageDTO();
 	

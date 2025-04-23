@@ -13,6 +13,10 @@ import lombok.ToString;
 @RequiredSessionIds(fields = {"regId", "modId"})
 public class LotsDTO {
 	
+	/* TODO @NotBlank @Pattern ...
+	 * 추가 해야함
+	 */
+	
 	private String idx;
 	//	계층 참조 idx
 	private String parentsIdx;
