@@ -140,11 +140,11 @@
 				, ed.employee_status_code
 			FROM t_employee AS e
 			
-			-- 직원 상세정보
+ 			<!-- 직원 상세정보 -->
 			LEFT JOIN t_employee_detail AS ed
 				ON e.id = ed.id
 
-			-- 부서, 하위부서 정보
+ 			<!-- 부서, 하위부서 정보 -->
 			LEFT JOIN ( 
 				SELECT
 					  di.idx
@@ -164,7 +164,7 @@
 				ON e.department_code = di.department_code
 				AND e.sub_department_code = di.child_code
 
-			-- 직급 정보
+ 			<!-- 직급 정보 -->
 			LEFT JOIN t_position_info AS pi     
 				ON e.position_code = pi.position_code
 			)
@@ -181,20 +181,17 @@
 			 , ci2.minor_name AS approvalTypeName
 		  FROM empBase e
 		  
-		  -- 전자결재
+ 		  <!-- 전자결재 -->
 		  JOIN t_approval a
 		    ON e.id = a.drafter_id
-		    
-		  -- 전자결재(items)
+ 		  <!-- 전자결재(items) -->
 	      LEFT JOIN t_approval_items ai
    			ON ai.doc_no = a.doc_no
-   		
-   		  -- 전자결재 진행상태(공통코드)
+    	  <!-- 전자결재 진행상태(공통코드) -->
 		  JOIN t_commoncode_item ci1
 		    ON a.progress_status = ci1.minor_code
 		   AND ci1.major_code = 'PROGRESS_STATUS'
-		  
-		  -- 전자결재 타입(공통코드)
+ 		  <!-- 전자결재 타입(공통코드) -->
 		  JOIN t_commoncode_item ci2
 		    ON a.approval_type = ci2.minor_code
 		   AND ci2.major_code = 'APPROVAL_TYPE'
@@ -232,8 +229,7 @@
 			   AND DATE(a.due_date) &lt;= #{dueEndDate}
 			</if>
 		</where>
-		 ORDER
-		    BY a.draft_date DESC
+		 ORDER BY a.draft_date DESC
 		 LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
@@ -244,20 +240,17 @@
 		SELECT COUNT(*)
 		  FROM empBase e
 		  
-		  -- 전자결재
+ 		  <!-- 전자결재 -->
 		  JOIN t_approval a
 		    ON e.id = a.drafter_id
-		    
-		  -- 전자결재(items)
+ 		  <!-- 전자결재(items) -->
 	      LEFT JOIN t_approval_items ai
    			ON ai.doc_no = a.doc_no
-   		
-   		  -- 전자결재 진행상태(공통코드)
+    	  <!-- 전자결재 진행상태(공통코드) -->
 		  JOIN t_commoncode_item ci1
 		    ON a.progress_status = ci1.minor_code
 		   AND ci1.major_code = 'PROGRESS_STATUS'
-		  
-		  -- 전자결재 타입(공통코드)
+ 		  <!-- 전자결재 타입(공통코드) -->
 		  JOIN t_commoncode_item ci2
 		    ON a.approval_type = ci2.minor_code
 		   AND ci2.major_code = 'APPROVAL_TYPE'
@@ -266,8 +259,8 @@
 			<if test="drafterId != null and drafterId != ''">	<!-- 기안자 / 결재자 -->
 			   AND (a.drafter_id = #{drafterId}
 			    OR  ai.approver1 = #{drafterId}
-			    OR (ai.approver2 = #{drafterId} AND a.progress_status != 1 AND ai.approver1_status = 'Y')
-			    OR (ai.approver3 = #{drafterId} AND a.progress_status != 1 AND ai.approver2_status = 'Y')
+			    OR (ai.approver2 = #{drafterId} AND a.progress_status != 1 AND ai.approver1_status = '3')
+			    OR (ai.approver3 = #{drafterId} AND a.progress_status != 1 AND ai.approver2_status = '3')
 			     )
 			</if>
 			<if test="drafterName != null and drafterName.trim() != ''">
@@ -298,10 +291,9 @@
 	</select>
 	
 	<!-- ==================================================================== -->
-	<!-- 기안서 저장 -->
+	<!-- 기안서 저장(update도 여기서 되므로 update 구문 생략됨) -->
 	<insert id="insertApproval" parameterType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
-		INSERT
-		  INTO t_approval
+		INSERT INTO t_approval
 		VALUES (null				-- idx(auto_increment)
 			 , #{approvalType}		-- approval_type
 			 , #{progressStatus}	-- progress_status
@@ -320,8 +312,7 @@
 			 , null					-- mod_id(최초 등록시는 reg_id 만 넣고 update 시 mod_id 입력)
 			 , null					-- mod_date
 			 )
-			 
-		-- 데이터가 있으면 업데이트, 없으면 삽입 (doc_no -> UNIQUE 처리)
+ 		<!-- 데이터가 있으면 업데이트, 없으면 삽입 (doc_no -> UNIQUE 처리) -->
 		ON DUPLICATE KEY UPDATE
 		      approval_type   = VALUES(approval_type)
 		    , progress_status   = VALUES(progress_status)
@@ -335,6 +326,8 @@
 		    , mod_id            = #{modId}
 		    , mod_date          = now()
 	</insert>
+
+	<!-- 기안서_items 저장(update도 여기서 되므로 update 구문 생략됨) -->
 	<insert id="insertApprovalItems" parameterType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
 		INSERT
 		  INTO t_approval_items
@@ -357,8 +350,8 @@
 			 , null						-- mod_id(최초 등록시는 reg_id 만 넣고 update 시 mod_id 입력)
 			 , null						-- mod_date
 			 )
-			 
-		-- 데이터가 있으면 업데이트, 없으면 삽입 (doc_no -> UNIQUE 처리) / 기존값 null 일때만 덮어써라 !!
+ 		<!-- 데이터가 있으면 업데이트, 없으면 삽입 (doc_no -> UNIQUE 처리) / 기존값 null 일때만 덮어써라 !! -->
+		<!-- 처음에 기안자 id 넣을 때 나머지 정보들 null 이더라도 #{}으로 넣어야 ON DUPLICATE KEY UPATE 가능 -->
 	    ON DUPLICATE KEY UPDATE
 		      approver1           = IF(approver1 IS NULL, VALUES(approver1), approver1)
 		    , approver2           = IF(approver2 IS NULL, VALUES(approver2), approver2)
@@ -376,6 +369,7 @@
 		    , mod_date            = now()
 	</insert>
 	
+	<!-- 문서번호에 따른 정보 조회(detail 페이지) - 6개의 JOIN...... -->
 	<select id="getApprovalByDocNo" resultType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
 		<include refid="withEmpBase"></include>
 		SELECT 
@@ -386,44 +380,94 @@
 			 , emp3.name AS approver3Name
 		  FROM empBase AS e
 
-		  -- 전자결재
+ 		  <!-- 전자결재 -->
 		  JOIN t_approval a
 		    ON e.id = a.drafter_id
-		    
-		  -- 전자결재(items)
+ 		  <!-- 전자결재(items) -->
 	      LEFT JOIN t_approval_items ai
    			ON ai.doc_no = a.doc_no
-	
-		  -- 결재자1 사원정보
+ 		  <!-- 결재자1 사원정보 -->
 		  LEFT JOIN t_employee emp1
 		    ON ai.approver1 = emp1.id
-
-		  -- 결재자2 사원정보
+ 		  <!-- 결재자2 사원정보 -->
 		  LEFT JOIN t_employee emp2
 		    ON ai.approver2 = emp2.id
-
-		  -- 결재자3 사원정보
+ 		  <!-- 결재자3 사원정보 -->
 		  LEFT JOIN t_employee emp3
 		    ON ai.approver3 = emp3.id
-		 
-		 -- 레시피 결재 시 레시피마스터 정보
-		 LEFT JOIN t_recipe_master rm
-		   ON a.recipe_master_idx = rm.idx
+ 		 <!-- 레시피 결재 시 레시피마스터 정보 -->
+		  LEFT JOIN t_recipe_master rm
+		    ON a.recipe_master_idx = rm.idx
 		 
 		 WHERE a.doc_no = #{docNo}
 	</select>
 	
-	<update id="updateProgressStatus">
-		UPDATE t_approval
-			<set>
-			      progress_status	= #{progressStatus}
-			    , mod_id         	= #{modId}
-			    , mod_date       	= now()
-			</set>
-		 WHERE doc_no = #{docNo}
-	</update>
+	<!-- 진행상태에 따른 필터링 -->
+	<select id="getApprovalListByFilter" resultType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
+		<include refid="withEmpBase"></include>
+		SELECT 
+		<include refid="t_approval_join_columns_forSelect"></include>
+			 , ci1.minor_name AS progressName
+			 , ci2.minor_name AS approvalTypeName
+		  FROM empBase e
+		  
+ 		  <!-- 전자결재 -->
+		  JOIN t_approval a
+		    ON e.id = a.drafter_id
+ 		  <!-- 전자결재(items) -->
+	      LEFT JOIN t_approval_items ai
+   			ON ai.doc_no = a.doc_no
+    	  <!-- 전자결재 진행상태(공통코드) -->
+		  JOIN t_commoncode_item ci1
+		    ON a.progress_status = ci1.minor_code
+		   AND ci1.major_code = 'PROGRESS_STATUS'
+ 		  <!-- 전자결재 타입(공통코드) -->
+		  JOIN t_commoncode_item ci2
+		    ON a.approval_type = ci2.minor_code
+		   AND ci2.major_code = 'APPROVAL_TYPE'
+		<where>
+			1 = 1
+			<choose>
+				<!-- 내가 기안자인가(기안한 문서) -->
+				<when test="filter == 'drafted'">
+					AND a.drafter_id = #{memberId}			
+				</when>
+				<!-- 내가 결재자인가(결재대기) -->
+				<!-- 나는 미결(null) 인 상태인데 내 앞에 결재자는 승인 된 상태이어야 함 -->
+				<when test="filter == 'waiting'">
+					AND (
+							(ai.approver1 = #{memberId} AND ai.approver1_status IS NULL AND a.progress_status = '1') 	 <!-- 결재자1일 경우, 진행상태:결재요청(1) -->
+					      OR
+					    	(ai.approver2 = #{memberId} AND ai.approver2_status IS NULL AND ai.approver1_status = '3')	 <!-- 결재자2일 경우, 1진행상태:결재완료(3) -->
+				 	      OR
+				 	      	(ai.approver3 = #{memberId} AND ai.approver3_status IS NULL AND (							 <!-- 결재자3일 경우, -->
+								(ai.approver2 IS NOT NULL AND ai.approver2_status = '3') <!-- 결재자2가 있으면, 2진행상태:결재완료(3) -->
+								OR 
+								(ai.approver2 IS NULL AND ai.approver1_status = '3')	 <!-- 결재자2가 없으면, 1진행상태:결재완료(3) -->
+							))
+					    )
+				</when>
+				<!-- 내가 결재자인가(결재완료) -->
+				<when test="filter == 'complete'">
+					AND (
+						  	(ai.approver1 = #{memberId} AND ai.approver1_status IN ('3', '4'))	<!-- 결재자1일 경우, 내가 승인/반려 했는가 -->
+					      OR
+					      	(ai.approver2 = #{memberId} AND ai.approver2_status IN ('3', '4'))	<!-- 결재자2일 경우, 내가 승인/반려 했는가 -->
+					 	  OR
+					 	  	(ai.approver3 = #{memberId} AND ai.approver3_status IN ('3', '4'))	<!-- 결재자3일 경우, 내가 승인/반려 했는가 -->
+					  )
+					AND a.progress_status != '1'
+				</when>
+				<otherwise>
+					 AND 1 = 1
+				</otherwise>
+			</choose>
+		</where>
+		 ORDER
+		    BY draft_date DESC <!-- 기안일 기준 최신순 -->
+	</select>
 	
-	<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!-- ||||||||||||||||||||||||||||||||||| 미사용 |||||||||||||||||||||||||||||||||||| -->
 	<update id="modifyApproval" parameterType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
 		UPDATE t_approval
 			<set>
@@ -495,47 +539,4 @@
 			</if>
 		</where>
 	</select>
-	
-	<select id="getApprovalListByFilter" resultType="kr.co.itwillbs.de.groupware.dto.ApprovalDTO">
-		<include refid="withEmpBase"></include>
-		SELECT 
-		<include refid="t_approval_join_columns_forSelect"></include>
-			 , ci1.minor_name AS progressName
-			 , ci2.minor_name AS approvalTypeName
-		  FROM empBase e
-		  JOIN t_approval a
-		    ON e.id = a.drafter_id
-		  JOIN t_approval_items ai
-		    ON ai.doc_no = a.doc_no
-		  JOIN t_commoncode_item ci1
-		    ON a.progress_status = ci1.minor_code
-		   AND ci1.major_code = 'PROGRESS_STATUS'
-		  JOIN t_commoncode_item ci2
-		    ON a.approval_type = ci2.minor_code
-		   AND ci2.major_code = 'APPROVAL_TYPE'
-		<where>
-			<choose>
-				<when test="filter.equals('drafted')">
-				AND a.drafter_id = #{memberId}
-				</when>
-				<when test="filter.equals('waiting')">
-				AND (
-					(ai.approver1 = #{memberId} AND a.progress_status = 1)
-					OR (ai.approver1_status = 'Y' AND ai.approver2 = #{memberId})
-				 	OR (ai.approver2_status = 'Y' AND ai.approver3 = #{memberId})
-				  )
-				</when>
-				<when test="filter.equals('completed')">
-				AND (ai.approver1 = #{memberId}
-				 	OR ai.approver2 = #{memberId}
-				 	OR ai.approver3 = #{memberId}
-				  )
-				AND a.progress_status = 3
-				</when>
-			</choose>
-		</where>
-		 ORDER
-		    BY draft_date DESC
-	</select>
-	
 </mapper>
