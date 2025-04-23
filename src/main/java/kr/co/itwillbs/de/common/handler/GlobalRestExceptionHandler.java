@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import kr.co.itwillbs.de.common.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,7 +31,7 @@ public class GlobalRestExceptionHandler {
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		BindingResult bindingResult = ex.getBindingResult();
 	
@@ -43,7 +44,7 @@ public class GlobalRestExceptionHandler {
 		response.put("status", "validFail");
 		response.put("errors", errorMap);
 		
-		log.info("response is {}", response);
+		LogUtil.logDetail(log, "response is {}", response);
 		/*
 		 * badRequest = 400 error ajax 응답할때 전부 200으로 보내서 status 값으로 if 분기 처리하는게 편한데. 너무 SI 식 사고방식인가?
 		 * 의미론적으로는 실패는 badRequest가 맞다. 400으로 주고, 

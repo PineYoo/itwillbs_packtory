@@ -39,103 +39,6 @@
 		 -->
 	</sql>
 	
-	<sql id="OldwithEmpBase">
-		WITH empBase AS (
-			SELECT
-				emp.id,
-				emp.name,
-				emp.ssn,
-				emp.department_code,
-				tdi.department_name,
-				emp.sub_department_code,
-				tdi.child_name AS sub_department_name,
-				emp.position_code,
-				tpi.position_code AS position_name,
-				tpi.is_manager,
-				emp.hire_date,
-				emp.resignation_date,
-				emp_de.phone_number,
-				emp_de.email,
-				emp_de.file_idxs,
-				emp_de.employee_status_code
-			FROM t_employee AS emp
-			LEFT JOIN t_employee_detail AS emp_de
-				ON emp.id = emp_de.id
-			LEFT JOIN (
-				SELECT
-					tdi.idx,
-					tdi.department_code,
-					cci.minor_name AS department_name,
-					tdi.parent_code,
-					tdi.child_code,
-					tdi.child_name,
-					tdi.rank_number,
-					tdi.is_deleted,
-					tdi.location_idx
-				FROM t_department_info AS tdi
-				LEFT JOIN t_commoncode_item AS cci
-					ON cci.major_code = 'DEPARTMENT_CODE'
-				AND tdi.department_code = cci.minor_code
-				) AS tdi
-				ON emp.department_code = tdi.department_code
-				AND emp.sub_department_code = tdi.child_code
-			LEFT JOIN t_position_info AS tpi
-				ON emp.position_code = tpi.idx
-			)
-	</sql>
-	
-	<sql id="withEmpBase">
-		WITH empBase AS (
-			SELECT
-				te.idx,
-				te.id,
-				te.name,
-				te.ssn,
-				te.department_code,
-				tdi.department_name,
-				te.sub_department_code,
-				tdi.child_name AS sub_department_name,
-				te.position_code,
-				tpi.position_name,
-				tpi.is_manager,
-				te.hire_date,
-				te.work_experience,
-				te.is_deleted,
-				ted.phone_number,
-				ted.email,
-				ted.file_idxs,
-				ted.employee_status_code
-			FROM t_employee AS te
-			LEFT JOIN t_employee_detail AS ted
-				ON te.id = ted.id
-			LEFT JOIN (
-					SELECT
-						tdi.department_code,
-						cci.minor_name AS department_name,
-						tdi.parent_code,
-						tdi.child_code,
-						tdi.child_name,
-						tdi.rank_number,
-						tdi.is_deleted,
-						tdi.location_idx
-					FROM t_department_info AS tdi
-					LEFT JOIN t_commoncode_item AS cci
-						ON cci.major_code = 'DEPARTMENT_CODE'
-						AND tdi.department_code = cci.minor_code
-					WHERE tdi.is_deleted = 'N'
-					) AS tdi ON te.department_code = tdi.department_code
-							AND te.sub_department_code = tdi.child_code
-			LEFT JOIN (
-					SELECT 
-						position_code,
-						position_name,
-						is_manager
-					FROM t_position_info
-					WHERE is_deleted = 'N'
-					) AS tpi ON te.position_code = tpi.position_code
-			)
-	</sql>
-	
 	<sql id="t_member_columns_forSelectFROM">
 		SELECT
 			emp.id,
@@ -183,7 +86,7 @@
 	</sql>
 	
 	<select id="getBeforeMembers" resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
-		<include refid="withEmpBase" />
+		<include refid="PublicSql.withEmpInfo" />
 		SELECT
 			emp.*,
 			tm.password,
@@ -209,7 +112,7 @@
 	<!-- 페이징용 카운트쿼리 -->
 	<select id="getBeforeMembersCountByEmployeeSearch" parameterType="kr.co.itwillbs.de.admin.dto.EmployeeSearchDTO"
 									resultType="int">
-		<include refid="withEmpBase" />
+		<include refid="PublicSql.withEmpInfo" />
 		SELECT
 			count(*)
 		FROM empBase AS emp
@@ -248,7 +151,7 @@
 	
 	<select id="getBeforeMembersByEmployeeSearch" parameterType="kr.co.itwillbs.de.admin.dto.EmployeeSearchDTO"
 									resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
-		<include refid="withEmpBase" />
+		<include refid="PublicSql.withEmpInfo" />
 		SELECT
 			emp.*,
 			tm.password,
@@ -316,9 +219,9 @@
 			on emp.id = tmb.member_id
 		WHERE tmb.status IS NULL
 			AND emp.id IN (
-			<foreach item="item" index="index" collection="list" separator=",">
-			#{item.id}
-			</foreach>
+						<foreach item="item" index="index" collection="list" separator=",">
+						#{item.id}
+						</foreach>
 						)
 	</select>
 	
@@ -340,7 +243,7 @@
 	</insert>
 	
 	<select id="getMembers" resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
-		<include refid="withEmpBase" />
+		<include refid="PublicSql.withEmpInfo" />
 		SELECT
 			emp.*,
 			tm.password,
@@ -366,7 +269,7 @@
 	<!-- 페이징용 카운트쿼리 -->
 	<select id="getMembersCountBySearchDTO" parameterType="kr.co.itwillbs.de.admin.dto.MemberSearchDTO"
 										resultType="int">
-		<include refid="withEmpBase" />
+		<include refid="PublicSql.withEmpInfo" />
 		SELECT
 			count(*)
 		FROM empBase AS emp
@@ -390,7 +293,7 @@
 	
 	<select id="getMembersBySearchDTO" parameterType="kr.co.itwillbs.de.admin.dto.MemberSearchDTO"
 										resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
-		<include refid="withEmpBase" />
+		<include refid="PublicSql.withEmpInfo" />
 		SELECT
 			emp.*,
 			tm.password,

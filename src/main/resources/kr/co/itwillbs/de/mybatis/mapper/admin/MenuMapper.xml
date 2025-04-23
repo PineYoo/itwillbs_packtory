@@ -185,4 +185,40 @@
 		</foreach>
 		
 	</insert>
+	
+	<select id="getAllmenus" resultType="kr.co.itwillbs.de.admin.dto.MenuDTO">
+		WITH RECURSIVE all_menu AS (
+			SELECT
+				idx,
+				menu_name,
+				rank_number,
+				url,
+				description,
+				is_deleted,
+				1 AS level,
+				CAST(menu_name AS CHAR) AS path,
+				CAST(rank_number AS CHAR) AS tree_code
+			FROM t_menu
+			WHERE parents_idx IS NULL
+	
+			UNION ALL
+	
+			SELECT
+				t.idx,
+				t.menu_name,
+				t.rank_number,
+				t.url,
+				t.description,
+				t.is_deleted,
+				a.level + 1,
+				CONCAT(a.path, ' > ', t.menu_name) AS path,
+				CONCAT(a.tree_code, '.', t.rank_number) AS tree_code
+			FROM t_menu t
+			INNER JOIN all_menu a ON a.idx = t.parents_idx
+			)
+		SELECT *
+		FROM all_menu
+		WHERE is_deleted = 'N'
+		ORDER BY tree_code
+	</select>
 </mapper>

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,6 +49,7 @@ public class CodeController {
 	 * @param model
 	 * @return
 	 */
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping(value="/new")
 	public String codeRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -62,8 +64,7 @@ public class CodeController {
 	 * @param logDTO
 	 * @return
 	 */
-//	public String registerCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO,
-//			 					BindingResult bindingResult, Model model) {
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping(value={"","/"}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE) // 이녀석 만고 필요 없...던데? 
 	public String registerCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());

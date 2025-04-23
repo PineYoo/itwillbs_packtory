@@ -104,6 +104,11 @@ public class CustomUserDetails implements UserDetails {
 		return loginVO.getMemberId();
 	}
 	
+	public String getGroupId() {
+		log.info("getGroupId---start");
+		return loginVO.getDepartmentCode();
+	}
+	
 	public String getName() {
 		return loginVO.getName();
 	}

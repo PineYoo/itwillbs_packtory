@@ -163,6 +163,37 @@
 <!-- 		</li> -->
 		<!-- Divider -->
 		<hr class="sidebar-divider d-none d-md-block">
+		<ul>
+			<li th:each="menu : ${menus}" th:if="${menu.level == '1'}">
+				<div>
+					<span class="parent-menu" th:text="|▶ ${menu.menuName}|" onclick="toggleSubMenu(this)" th:alt="${menu.description}"></span>
+					<ul style="display: none;">
+						<li th:each="child : ${menus}" th:if="${child.level == '2'} and ${#strings.startsWith(child.treeCode, menu.treeCode + '.')}">
+							<a th:href="@{${child.url}}" th:text="${child.menuName}" th:alt="${child.path}">자식 메뉴</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+		</ul>
+		<script>
+			function toggleSubMenu(span) {
+				const ul = span.nextElementSibling;
+				if (ul.style.display === "none") {
+					ul.style.display = "block";
+					span.innerText = "▼ " + span.innerText.replace(/^▶|▼/g, '').trim();
+				} else {
+					ul.style.display = "none";
+					span.innerText = "▶ " + span.innerText.replace(/^▶|▼/g, '').trim();
+				}
+			}
+		</script>
+		<!--/* 		<ul>
+			<li th:each="menu : ${menus}">
+				<a th:href="@{${menu.url}}" th:alt="${menu.description}">[[${menu.menuName}]]</a>
+			</li>
+		</ul> */-->
+
+		<hr class="sidebar-divider d-none d-md-block">
 		
 		<!-- Sidebar Toggler (Sidebar) -->
 		<div class="text-center d-none d-md-inline">

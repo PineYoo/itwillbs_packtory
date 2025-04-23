@@ -41,4 +41,8 @@ public class MenuDTO {
 	private String modId;
 	private LocalDateTime modDate;
 	
+	// 계층형 쿼리에서 사용되는 column level, path, treeCode
+	private String level;
+	private String path;
+	private String treeCode;
 }

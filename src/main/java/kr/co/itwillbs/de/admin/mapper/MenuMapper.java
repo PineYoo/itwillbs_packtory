@@ -67,5 +67,11 @@ public interface MenuMapper {
 	 */
 	int registerChildMenu(List<MenuDTO> menuList);
 
+	/**
+	 * 전체 메뉴 가져오기
+	 * @return
+	 */
+	List<MenuDTO> getAllmenus();
+
 
 }

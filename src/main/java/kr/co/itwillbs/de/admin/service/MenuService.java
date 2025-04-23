@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +22,7 @@ import kr.co.itwillbs.de.admin.dto.MenuSearchDTO;
 import kr.co.itwillbs.de.admin.dto.RequestMappingDTO;
 import kr.co.itwillbs.de.admin.mapper.MenuMapper;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -40,9 +43,10 @@ public class MenuService {
 	 * @param menuDTO
 	 * @return
 	 */
+	@CacheEvict(value = "menus", allEntries = true)
 	@LogExecution
 	public int registerMenu(MenuDTO menuDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		return menuMapper.registerMenu(menuDTO);
 	}
@@ -53,7 +57,7 @@ public class MenuService {
 	 * @return
 	 */
 	public int getMenuCount(MenuSearchDTO menuSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		return menuMapper.getMenuCount(menuSearchDTO);
 	}
@@ -64,7 +68,7 @@ public class MenuService {
 	 * @return
 	 */
 	public List<MenuDTO> getMenuList(MenuSearchDTO menuSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		return menuMapper.getMenuList(menuSearchDTO);
 	}
@@ -77,7 +81,7 @@ public class MenuService {
 	 * @throws Exception 
 	 */
 	public MenuDTO getMenuTypeByIdx(MenuSearchDTO menuSearchDTO) throws Exception {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		List<MenuDTO> menuDTOlist = getMenuList(menuSearchDTO);
 		log.info("menuDTOlist size{}, {}", menuDTOlist.size(), menuDTOlist);
 		
@@ -100,16 +104,7 @@ public class MenuService {
 	 * @return
 	 */
 	public List<MenuDTO> getMenuItemListByParentsIdx(MenuSearchDTO menuSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		// 컨트롤러에서 넘겨준 idx와 menuType 파라미터 확인
-		log.info("menuSearchDTO is {}", menuSearchDTO);
-		
-		// 가져온 menuDTOList에서 menuType을 searchDTO 에 넣는다
-		/*
-		 * menuSearchDTO.setMenuType(menuDTOlist.get(0).getMenuType());
-		 * menuSearchDTO.setIsDeleted(IsDeleted.N);
-		 */
+		LogUtil.logStart(log);
 		
 		return menuMapper.getMenuItemListByParentsIdx(menuSearchDTO);
 	}
@@ -119,9 +114,10 @@ public class MenuService {
 	 * @param menuDTO
 	 * @return
 	 */
+	@CacheEvict(value = "menus", allEntries = true)
 	@LogExecution
 	public int modifyMenuIsDeleted(MenuDTO menuDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		return menuMapper.modifyMenuIsDeleted(menuDTO);
 	}
@@ -131,9 +127,10 @@ public class MenuService {
 	 * @param menuDTO
 	 * @throws Exception 
 	 */
+	@CacheEvict(value = "menus", allEntries = true)
 	@LogExecution
 	public void modifyMenu(MenuDTO menuDTO) throws Exception {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		int affectedRow = menuMapper.modifyMenu(menuDTO);
 		if(affectedRow < 1) {
@@ -146,10 +143,11 @@ public class MenuService {
 	 * @param menuList
 	 * @throws Exception
 	 */
+	@CacheEvict(value = "menus", allEntries = true)
 	@LogExecution
 	@Transactional
 	public void registerChildMenu(List<MenuDTO> menuList) throws Exception {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		//등록 전에 삭제부터 하고
 		menuMapper.removeChildMenu((MenuDTO)menuList.get(0));
@@ -160,6 +158,11 @@ public class MenuService {
 		if(affectedRow < 1 || menuList.size() != affectedRow) {
 			throw new Exception("데이터 등록에 실패 했습니다.");
 		}
+	}
+
+	@Cacheable(value = "menus")
+	public List<MenuDTO> getAllMenus() {
+		return menuMapper.getAllmenus();
 	}
 	
 	/**
@@ -225,4 +228,5 @@ public class MenuService {
 				.thenComparing(RequestMappingDTO::getMethodName));
 		return mappingList;
 	}
+
 }

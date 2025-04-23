@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ public class AdminMainController {
 		this.cacheManager = cacheManager;
 	}
 	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/caches")
 	@ResponseBody
 	public Map<String, Object> getCacheInfo() {

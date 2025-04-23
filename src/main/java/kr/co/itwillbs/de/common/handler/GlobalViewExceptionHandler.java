@@ -1,15 +1,25 @@
 package kr.co.itwillbs.de.common.handler;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kr.co.itwillbs.de.admin.dto.MenuDTO;
+import kr.co.itwillbs.de.admin.service.MenuService;
+import kr.co.itwillbs.de.common.constant.PermissionType;
+import kr.co.itwillbs.de.common.security.PermissionChecker;
+import kr.co.itwillbs.de.common.service.CustomUserDetails;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -32,9 +42,35 @@ public class GlobalViewExceptionHandler {
 	 * </pre>
 	 */
 
+	private final MenuService menuService;
+	private final PermissionChecker permissionChecker;
+	
+	public GlobalViewExceptionHandler(MenuService menuService, PermissionChecker permissionChecker) {
+		this.menuService = menuService;
+		this.permissionChecker = permissionChecker;
+	}
+	
+	@ModelAttribute
+	public void addMenus(Model model, @AuthenticationPrincipal CustomUserDetails user) {
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "CustomUserDetails: {}", user);
+		
+		List<MenuDTO> allMenus = menuService.getAllMenus();
+
+		List<MenuDTO> visibleMenus = allMenus.stream()
+				.filter(menu -> {
+					if(user == null) {
+						return false;
+					}
+					return permissionChecker.hasPermission(user, Long.parseLong(menu.getIdx()), PermissionType.READ);
+				})
+				.collect(Collectors.toList());
+
+		model.addAttribute("menus", visibleMenus);
+	}
+	
 	/**
-	 * @Valid 에 걸려서 post 전송한 곳에서 이전 페이지 .../new 또는 /register_form 메서드의 return view 를
-	 *        리턴해야한다.
+	 * @Valid 에 걸려서 post 전송한 곳에서 이전 페이지 .../new 또는 /register_form 메서드의 return view 를리턴해야한다.
 	 * @param ex
 	 * @param model
 	 * @return returnView 입력 폼? 어라? 수정도? 해야되네?
@@ -42,7 +78,7 @@ public class GlobalViewExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public String handleValidationException(MethodArgumentNotValidException ex, Model model,
 			HttpServletRequest request) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 
 		BindingResult bindingResult = ex.getBindingResult();
 

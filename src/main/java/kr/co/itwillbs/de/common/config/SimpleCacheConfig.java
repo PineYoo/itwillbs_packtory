@@ -1,13 +1,8 @@
 package kr.co.itwillbs.de.common.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.concurrent.ConcurrentMapCache;
-import org.springframework.cache.support.SimpleCacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,6 +34,15 @@ public class SimpleCacheConfig {
 	 */
 	@Bean
 	public CacheManager cacheManager() {
+		return new ConcurrentMapCacheManager(
+				"majorCodes",
+				"codeItems",
+				"menus"
+				
+				);
+	}
+/* 25.04.23 이전 버전
+	public CacheManager cacheManager() {
 		SimpleCacheManager cacheManager = new SimpleCacheManager();
 
 		List<Cache> caches = new ArrayList<>();
@@ -48,7 +52,7 @@ public class SimpleCacheConfig {
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}
-	
+*/	
 //	@Override
 //	public void run(String... args) throws Exception {
 //		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.admin.mapper.MenuPermissionMapper">
+
+	<!-- href: https://mybatis.org/mybatis-3/ko/dynamic-sql.html -->
+	<sql id="templates" >
+		<![CDATA[]]><!-- Character DATA(CDATA) 는 <![CDATA[문자열]]> 파싱되지 않고 그대로 출력을 위함, 쿼리에서 이스케이프 문자를 사용하지 않기 위해 썼음 -->
+		<!-- 예시) 컬럼명 &gt;(&lt;) #{필드명} -> 컬럼명<![CDATA[>(<)]]> #{필드명} -->
+		<if test="blabla != null"></if><!-- mybatis가 동적쿼리가 되는 시작 점. -->
+		
+		<choose><!-- mybatis switch 문 -->
+			<when test="bla != null">
+			</when>
+			<when test="bla != null and blabla != null">
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		
+		<where></where><!-- where 엘리먼트는 태그에 의해 컨텐츠가 리턴되면 단순히 “WHERE”만을 추가한다. 게다가 컨텐츠가 “AND”나 “OR”로 시작한다면 그 “AND”나 “OR”를 지워버린다. -->
+		<trim prefix="WHERE" prefixOverrides="AND |OR "></trim><!-- 위의<where>의 <trim>버전 -->
+		
+		<set></set><!--  set 엘리먼트는 동적으로 SET 키워드를 붙히고 필요없는 콤마를 제거한다. -->
+		<trim prefix="SET" suffixOverrides=","></trim><!-- 위의<set>의 <trim>버전 -->
+		
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")" nullable="true">
+			#{item}
+		</foreach>
+		
+		<foreach item="item" index="index" collection="list">
+			(#{item.index}, #{item.id}, #{item.name}, #{item.isDeleted})
+		</foreach>
+		<!-- like 문 사용 시
+		[MySQL||H2]column LIKE CONCAT('%',#{keyword},'%')
+		[Oracle]column LIKE '%'||#{keyword}||'%'
+		[MSSQL]column LIKE '%'+#{keyword}+'%'
+		 -->
+		<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
+		is_deleted
+		</if>
+		<if test='regId !=null and !("".equals(regId.trim()))'>
+		reg_id,
+		reg_date,
+		</if>
+		<if test='modId !=null and !("".equals(modId.trim()))'>
+		mod_id,
+		mod_date,
+		</if>
+		<set>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+		</set>
+	</sql>
+	
+<!-- 	menu_name,
+		owner_member_name,
+		group_name, -->
+	<sql id="t_menu_permission_columns_forSelect">
+		<trim suffixOverrides=",">
+		idx,
+		menu_idx,
+		owner_member_id,
+		group_id,
+		permission_code,
+		description,
+		is_deleted,
+		reg_id,
+		reg_date,
+		mod_id,
+		mod_date,
+		</trim>
+	</sql>
+	
+	<insert id="registerMenuPermission" useGeneratedKeys="true" keyProperty="idx" 
+										parameterType="kr.co.itwillbs.de.admin.dto.MenuPermissionDTO">
+		insert into t_menu_permission (
+			<trim suffixOverrides=",">
+			menu_idx,
+			<if test='ownerMemberId !=null and !("".equals(ownerMemberId.trim()))'>
+			owner_member_id,
+			</if>
+			<if test='groupId !=null and !("".equals(groupId.trim()))'>
+			group_id,
+			</if>
+			<if test='permissionCode !=null and !("".equals(permissionCode.trim()))'>
+			permission_code,
+			</if>
+			<if test='description !=null and !("".equals(description.trim()))'>
+			description,
+			</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
+			is_deleted
+			</if>
+			<if test='regId !=null and !("".equals(regId.trim()))'>
+			reg_id,
+			reg_date,
+			</if>
+			</trim>
+		) values (
+			<trim suffixOverrides=",">
+			#{menuIdx},
+			<if test='ownerMemberId !=null and !("".equals(ownerMemberId.trim()))'>
+			#{ownerMemberId},
+			</if>
+			<if test='groupId !=null and !("".equals(groupId.trim()))'>
+			#{groupId},
+			</if>
+			<if test='permissionCode !=null and !("".equals(permissionCode.trim()))'>
+			#{permissionCode},
+			</if>
+			<if test='description !=null and !("".equals(description.trim()))'>
+			#{description},
+			</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
+			#{isDeleted},
+			</if>
+			<if test='regId !=null and !("".equals(regId.trim()))'>
+			#{regId},
+			now(),
+			</if>
+			</trim>
+		)
+	</insert>
+	
+	<select id="getMenuPermissionCountBySearchDTO" parameterType="kr.co.itwillbs.de.admin.dto.MenuPermissionSearchDTO"
+										resultType="int">
+		SELECT 
+			count(*)
+		FROM t_menu_permission
+		<where>
+			<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
+			<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name LIKE CONCAT('%',#{menuName},'%') </if>
+			<if test='ownerMemberName != null and !("".equals(ownerMemberName.trim()))'>AND owner_member_name LIKE CONCAT('%',#{ownerMemberName},'%') </if>
+			<if test='groupName != null and !("".equals(groupName.trim()))'>AND group_name = #{groupName} </if>
+			<if test='permissionCode != null and !("".equals(permissionCode.trim()))'>AND permission_code = #{permissionCode} </if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
+		</where>
+	</select>
+	
+	<select id="getMenuPermissionsBySearchDTO" parameterType="kr.co.itwillbs.de.admin.dto.MenuPermissionSearchDTO"
+								resultType="kr.co.itwillbs.de.admin.dto.MenuPermissionDTO">
+		<include refid="PublicSql.OrderAscPagingTop" />
+			SELECT 
+				ROW_NUMBER() OVER (ORDER BY reg_date DESC) AS rownum,
+				<include refid="t_menu_permission_columns_forSelect" />
+			FROM t_menu_permission
+			<where>
+				<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
+				<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name LIKE CONCAT('%',#{menuName},'%') </if>
+				<if test='ownerMemberName != null and !("".equals(ownerMemberName.trim()))'>AND owner_member_name LIKE CONCAT('%',#{ownerMemberName},'%') </if>
+				<if test='groupName != null and !("".equals(groupName.trim()))'>AND group_name = #{groupName} </if>
+				<if test='permissionCode != null and !("".equals(permissionCode.trim()))'>AND permission_code = #{permissionCode} </if>
+				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
+			</where>
+		<include refid="PublicSql.OrderAscPagingBottom" />
+	</select>
+	
+	<select id="getMenuPermissionsByIdx" parameterType="string"
+											resultType="kr.co.itwillbs.de.admin.dto.MenuPermissionDTO">
+		SELECT 
+			<include refid="t_menu_permission_columns_forSelect" />
+		FROM t_menu_permission
+		WHERE idx = #{idx}
+	</select>
+	
+	<update id="modifyMenuPermissionIsDeleted" parameterType="kr.co.itwillbs.de.admin.dto.MenuPermissionDTO">
+		UPDATE t_menu_permission
+			<set>
+				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+			</set> 
+		WHERE idx = #{idx}
+	</update>
+	
+	<update id="modifyMenuPermission" parameterType="kr.co.itwillbs.de.admin.dto.MenuPermissionDTO">
+		UPDATE t_menu_permission
+			<set>
+				<if test='menuIdx != null and !("".equals(menuIdx.trim()))'>menu_idx = #{menuIdx},</if>
+				<if test='ownerMemberId !=null and !("".equals(ownerMemberId.trim()))'>owner_member_id = #{ownerMemberId},</if>
+				<if test='groupId !=null and !("".equals(groupId.trim()))'>group_id = #{groupId},</if>
+				<if test='permissionCode !=null and !("".equals(permissionCode.trim()))'>permission_code = #{permissionCode},</if>
+				<if test='description !=null and !("".equals(description.trim()))'>description = #{description},</if>
+				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+			</set> 
+		WHERE idx = #{idx}
+	</update>
+	
+	<!-- 뭔가 대량 인서트나 업데이트가 있을것 같은데...? -->
+	<delete id="removeMinorMenuPermission" parameterType="kr.co.itwillbs.de.admin.dto.MenuPermissionDTO">
+		DELETE from t_menu_permission 
+		WHERE parents_idx = #{parentsIdx}
+	</delete>
+	
+	<insert id="registerMinorMenuPermission" parameterType="kr.co.itwillbs.de.admin.dto.MenuPermissionDTO">
+		INSERT INTO t_menu_permission (
+			<trim suffixOverrides=",">
+			menu_idx,
+			<if test='ownerMemberId !=null and !("".equals(ownerMemberId.trim()))'>
+			owner_member_id,
+			</if>
+			<if test='groupId !=null and !("".equals(groupId.trim()))'>
+			group_id,
+			</if>
+			<if test='permissionCode !=null and !("".equals(permissionCode.trim()))'>
+			permission_code,
+			</if>
+			<if test='description !=null and !("".equals(description.trim()))'>
+			description,
+			</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
+			is_deleted
+			</if>
+			<if test='regId !=null and !("".equals(regId.trim()))'>
+			reg_id,
+			reg_date,
+			</if>
+			</trim>
+		) VALUES 
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.menuIdx}, #{item.ownerMemberId}, #{item.groupId}, #{item.permissionCode}, #{item.description}, #{item.isDeleted}, #{item.description}, #{item.regId}, now())
+		</foreach>
+		
+	</insert>
+</mapper>
