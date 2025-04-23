@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.util.StringUtil;
+import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerScheduleSearchDTO;
+import kr.co.itwillbs.de.mes.service.LocationInfoService;
 import kr.co.itwillbs.de.mes.service.WorkerScheduleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,12 +34,17 @@ import lombok.extern.slf4j.Slf4j;
 public class WorkerSchedulesController {
 
 	private final WorkerScheduleService workerScheduleService;
+	private final LocationInfoService locationInfoService;
 	private final String PATH = "/mes/workerschedule";
 
 	// 보유 자격증 정보 등록 폼 페이지
 	@GetMapping("/new")
 	public String workerScheduleRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+
+		// 공장 장소 정보 가져와서 WorkerScheduleDTO에 담기
+		List<LocationInfoDTO> locationList = locationInfoService.getLocationInfoList();
+		model.addAttribute("locationList", locationList);
 
 		model.addAttribute("workerScheduleDTO", new WorkerScheduleDTO());
 
@@ -79,6 +86,10 @@ public class WorkerSchedulesController {
 		List<WorkerScheduleDTO> workerScheduleList = workerScheduleService.searchWorkerSchedule(searchDTO);
 		model.addAttribute("workerScheduleList", workerScheduleList);
 
+		// 공장 장소 정보 가져와서 WorkerScheduleDTO에 담기
+		List<LocationInfoDTO> locationList = locationInfoService.getLocationInfoList();
+		model.addAttribute("locationList", locationList);
+
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
 		return PATH + "/workerschedule_list";
@@ -93,6 +104,10 @@ public class WorkerSchedulesController {
 		WorkerScheduleDTO workerScheduleDTO = workerScheduleService.getWorkerScheduleByIdx(idx);
 		model.addAttribute("workerScheduleDTO", workerScheduleDTO);
 
+		// 공장 장소 정보 가져와서 WorkerScheduleDTO에 담기
+		List<LocationInfoDTO> locationList = locationInfoService.getLocationInfoList();
+		model.addAttribute("locationList", locationList);
+		
 		return PATH + "/workerschedule_detail";
 	}
 

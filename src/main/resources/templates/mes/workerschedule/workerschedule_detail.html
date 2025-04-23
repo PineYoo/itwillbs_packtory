@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) - 보유 자격증 정보 상세</title>
+<title>팩토리(PackTory) - 근무 일정 상세</title>
 
 <style type="text/css">
 .form {
@@ -42,18 +42,19 @@ input, select {
 		<div class="container-fluid">
 			<!-- Page Heading -->
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">보유 자격증 정보 상세</h1>
+				<h1 class="h3 mb-4 text-gray-800">근무 일정 상세</h1>
 			</div>
 
 			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<form th:action="@{/mes/workermetrics/updateWorkerMetrics}" method="post" th:object="${workerMetricsDTO}" class="form row g-3" id="registerForm">
+						<form th:action="@{/mes/workerschedule/updateworkerschedule}" method="post" th:object="${workerScheduleDTO}" class="form row g-3" id="registerForm">
 							<!-- hidden -->
 							<input type="hidden" th:field="*{idx}" id="idx" />
 							<!-- hidden -->
 
+							<!-- 사원 번호 -->
 							<div class="data-container">
 								<div class="row">
 									<div>
@@ -65,40 +66,36 @@ input, select {
 								</div>
 							</div>
 
-							<!-- 생산 감독관 -->
+							<!-- 근무 타입 -->
 							<div class="col-md-6">
-								<label for="isSupervisor">생산 감독관</label> <select class="form-select" th:field="*{isSupervisor}" required>
+								<label for="shiftType">근무 타입</label> <select class="form-select" th:field="*{shiftType}" required>
 									<option value="">선택</option>
-									<option value="Y">Y</option>
-									<option value="N">N</option>
+									<option value="1">주간</option>
+									<option value="2">야간</option>
+									<option value="3">A조</option>
+									<option value="4">B조</option>
+									<option value="5">C조</option>
 								</select>
 							</div>
 
-							<!-- 라인 관리자 -->
+							<!-- 장소 정보 -->
 							<div class="col-md-6">
-								<label for="isLinesManager">라인 관리자</label> <select class="form-select" th:field="*{isLinesManager}" required>
-									<option value="">선택</option>
-									<option value="Y">Y</option>
-									<option value="N">N</option>
+								<label for="locationIdx" class="form-label">장소</label> <select th:field="*{locationIdx}" class="form-select">
+									<option value="">장소를 선택하세요</option>
+									<option th:each="location : ${locationList}" th:value="${location.idx}" th:text="${location.name}"></option>
 								</select>
 							</div>
 
-							<!-- 지게차 자격 -->
+							<!-- 시작일자 -->
 							<div class="col-md-6">
-								<label for="isForkliftOperator">지게차 자격</label> <select class="form-select" th:field="*{isForkliftOperator}" required>
-									<option value="">선택</option>
-									<option value="Y">Y</option>
-									<option value="N">N</option>
-								</select>
+								<label for="startDate" class="form-label">시작일자</label> <input type="text" id="startDate" th:field="*{startDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
+								<div th:id="|startDateError|" class="text-danger"></div>
 							</div>
 
-							<!-- 운전면허 자격 -->
+							<!-- 종료일자 -->
 							<div class="col-md-6">
-								<label for="isDriver">운전면허 자격</label> <select class="form-select" th:field="*{isDriver}" required>
-									<option value="">선택</option>
-									<option value="Y">Y</option>
-									<option value="N">N</option>
-								</select>
+								<label for="endDate" class="form-label">종료일자</label> <input type="text" id="endDate" th:field="*{endDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
+								<div th:id="|endDateError|" class="text-danger"></div>
 							</div>
 
 							<!-- 메모 -->
@@ -115,22 +112,22 @@ input, select {
 
 							<!-- 작성자 -->
 							<div class="col-md-6">
-								<label>작성자</label> <input th:value="${workerMetricsDTO.regId}" class="form-control" readonly>
+								<label>작성자</label> <input th:value="${workerScheduleDTO.regId}" class="form-control" readonly>
 							</div>
 
 							<!-- 작성일자 -->
 							<div class="col-md-6">
-								<label>작성일자</label> <input th:value="${workerMetricsDTO.regDate}" class="form-control" readonly>
+								<label>작성일자</label> <input th:value="${workerScheduleDTO.regDate}" class="form-control" readonly>
 							</div>
 
 							<!-- 최종작성자 -->
 							<div class="col-md-6">
-								<label>최종 작성자</label> <input th:value="${workerMetricsDTO.modId}" class="form-control" readonly>
+								<label>최종 작성자</label> <input th:value="${workerScheduleDTO.modId}" class="form-control" readonly>
 							</div>
 
 							<!-- 최종작성일자 -->
 							<div class="col-md-6">
-								<label>최종 작성일자</label> <input th:value="${workerMetricsDTO.modDate}" class="form-control" readonly>
+								<label>최종 작성일자</label> <input th:value="${workerScheduleDTO.modDate}" class="form-control" readonly>
 							</div>
 
 							<hr>
@@ -156,13 +153,61 @@ input, select {
 			// 팝업창에서 가져온 담당자 정보 넣는 함수
 			function setEmployeeInfo(data) {
 			    $("#employeeId").val(data.id);
-			    console.log($("#employeeId").val()); 
 			}
+			
+			// ===== 캘린더 ===============================================
+			// 제조일자 선택 (datepicker)
+		    $('#startDate').daterangepicker({
+		        singleDatePicker: true, // 단일 날짜 선택 모드
+		        showDropdowns: true, // 년월 수동 선택 가능
+		        autoApply: true, // 확인/취소 버튼 없이 즉시 반영
+		        autoUpdateInput: false, // 초기 입력 필드 비우기
+		        locale: {
+		            format: 'YYYY-MM-DD', // 날짜 형식
+		            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+		            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		            applyLabel: "확인",
+		            cancelLabel: "취소"
+		        },
+		        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
+		        minDate: moment(), // 오늘 이후 선택 가능
+		        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
+		        // ---------------------------------------------------------------
+		    }).on('apply.daterangepicker', function(ev, picker) {
+		        $(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
+		        $(this).addClass("filled");
+		    });
+			
+			// 사용기한 선택 (datepicker)
+		    $('#endDate').daterangepicker({
+		        singleDatePicker: true, // 단일 날짜 선택 모드
+		        showDropdowns: true, // 년월 수동 선택 가능
+		        autoApply: true, // 확인/취소 버튼 없이 즉시 반영
+		        autoUpdateInput: false, // 초기 입력 필드 비우기
+		        locale: {
+		            format: 'YYYY-MM-DD', // 날짜 형식
+		            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+		            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		            applyLabel: "확인",
+		            cancelLabel: "취소"
+		        },
+		        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
+		        minDate: function() {
+		            const manuDate = $('#startDate').val();
+		            return manuDate ? moment(manuDate, 'YYYY-MM-DD') : moment();
+		        }(),
+		        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
+		        // ---------------------------------------------------------------
+		    }).on('apply.daterangepicker', function(ev, picker) {
+		        $(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
+		        $(this).addClass("filled");
+		    });
+			// ===== 캘린더 ===============================================
 		
-	    $(function () {
+	    	$(function () {
 	        // 목록 버튼 클릭 시
 	        $('#btnList').on("click", function () {
-	            location.href = "/mes/workermetrics";  // 보유 자격증 정보 목록 페이지로 이동
+	            location.href = "/mes/workerschedule";  // 근무 일정 목록 페이지로 이동
 	        });
 	        
 	        // 수정 폼 제출 시
@@ -182,7 +227,7 @@ input, select {
 	            // idx를 실제 페이지 URL에서 받아오기
 	            const idx = $('#idx').val();  // 수정된 부분: id를 #idx로 수정
 	
-	            fetch(`/mes/workermetrics/updateWorkerMetrics`, {
+	            fetch(`/mes/workerschedule/updateWorkerSchedule`, {
 	                method: "PUT",
 	                headers: {
 	                    "Content-Type": "application/json"

@@ -125,7 +125,7 @@
 	
 	<!-- 공장 장소 정보 들고가기 -->
 	<select id="selectLocationInfoList" resultType="kr.co.itwillbs.de.mes.dto.LocationInfoDTO">
-		SELECT *
+		SELECT idx, name
 		FROM t_location_info
 		WHERE is_deleted = 'N'
 	</select>

@@ -18,11 +18,11 @@ public class WorkerScheduleDTO {
 
 	private Long idx; // 테이블 인덱스
 	
-	@NotBlank(message = "근무타입은 필수 입력 값입니다.")
-	private String shiftType; // 근무타입
-	
 	@NotBlank(message = "사원번호는 필수 입력 값입니다.")
 	private String employeeId; // 사원번호
+	
+	@NotBlank(message = "근무타입은 필수 입력 값입니다.")
+	private String shiftType; // 근무타입
 	
 	@NotBlank(message = "장소정보는 필수 입력 값입니다.")
 	private String locationIdx; // 장소 인덱스
@@ -38,4 +38,15 @@ public class WorkerScheduleDTO {
 	private LocalDate regDate; // 작성일자시간
 	private String modId; // 최종 작성자
 	private LocalDate modDate; // 최종작성일자
+	
+	public String getShiftTypeName() {
+        return switch (shiftType) {
+            case "1" -> "주간";
+            case "2" -> "야간";
+            case "3" -> "A조";
+            case "4" -> "B조";
+            case "5" -> "C조";
+		default -> "미지정";
+		};
+	}
 }

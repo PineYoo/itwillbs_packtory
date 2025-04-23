@@ -60,4 +60,9 @@ public class LocationInfoService {
 			log.info("공장 장소 정보 수정 완료 - qcIdx: {}", locationInfoDTO.getIdx());
 		}
 	}
+	
+	// 공장 장소 목록 가져가기 (외부용)
+	public List<LocationInfoDTO> getLocationInfoList(){
+		return locationInfoMapper.selectLocationInfoList();
+	}
 }

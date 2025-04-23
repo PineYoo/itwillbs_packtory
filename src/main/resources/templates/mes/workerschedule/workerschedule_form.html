@@ -87,13 +87,13 @@ input, select {
 
 								<!-- 시작일자 -->
 								<div class="col-md-6">
-									<label for="startDate" class="form-label">제조일자</label> <input type="text" id="startDate" th:field="*{startDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
+									<label for="startDate" class="form-label">시작일자</label> <input type="text" id="startDate" th:field="*{startDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
 									<div th:id="|startDateError|" class="text-danger"></div>
 								</div>
 
 								<!-- 종료일자 -->
 								<div class="col-md-6">
-									<label for="endDate" class="form-label">사용기한</label> <input type="text" id="endDate" th:field="*{endDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
+									<label for="endDate" class="form-label">종료일자</label> <input type="text" id="endDate" th:field="*{endDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
 									<div th:id="|endDateError|" class="text-danger"></div>
 								</div>
 
@@ -178,7 +178,7 @@ input, select {
 		        },
 		        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
 		        minDate: function() {
-		            const manuDate = $('#manufacturingDate').val();
+		            const manuDate = $('#startDate').val();
 		            return manuDate ? moment(manuDate, 'YYYY-MM-DD') : moment();
 		        }(),
 		        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)

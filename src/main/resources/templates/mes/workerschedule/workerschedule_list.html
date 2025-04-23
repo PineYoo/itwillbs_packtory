@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) - 보유 자격증 정보 목록</title>
+<title>팩토리(PackTory) - 근무 일정 목록</title>
 
 <style>
 .left-form {
@@ -22,7 +22,7 @@
 		<div class="container-fluid">
 			<!-- Page Heading -->
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">보유 자격증 정보 목록</h1>
+				<h1 class="h3 mb-4 text-gray-800">근무 일정 목록</h1>
 			</div>
 
 			<!-- 검색바 컨테이너 -->
@@ -32,7 +32,7 @@
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
-								<form th:action="@{/mes/workermetrics}" method="get" th:object="${searchDTO}" id="searchForm">
+								<form th:action="@{/mes/workerschedule}" method="get" th:object="${searchDTO}" id="searchForm">
 									<input type="hidden" th:field="*{pageDTO.page}"> 
 									<input type="hidden" th:field="*{pageDTO.size}">
 
@@ -46,23 +46,38 @@
 												<div class="form-group row mb-3">
 													<div th:replace="~{common/fragments/de_search_form :: inputText('employeeId','사원 번호',false)}"></div>
 												</div>
-												
-												<!-- 장소 -->
-												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('locationName','메모',false)}"></div>
+
+												<!-- 시작일자 범위 -->
+												<div class="row mb-3">
+													<th:block th:replace="~{common/fragments/de_search_form::inputDatePicker('startDateFrom', 'startDateTo', '시작일자 범위', false)}" />
 												</div>
-												
-												<!-- w -->
-												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('locationName','메모',false)}"></div>
+
+												<!-- 종료일자 범위 -->
+												<div class="row mb-3">
+													<th:block th:replace="~{common/fragments/de_search_form::inputDatePicker('endDateFrom', 'endDateTo', '종료일자 범위', false)}" />
 												</div>
-												
 											</div>
 											<!-- 왼쪽 컬럼 끝 -->
 
 											<!-- 오른쪽 컬럼 -->
 											<div class="col-md-6">
-												
+
+												<!-- 타입 -->
+												<div class="form-group row mb-3">
+													<label for="locationIdx" class="col-sm-3 col-form-label">장소 정보</label>
+													<div class="col-sm-9">
+														<select class="form-select" name="locationIdx" id="locationIdx" th:field="*{locationIdx}">
+															<option value="">장소 선택</option>
+															<option th:each="location: ${locationList}" th:value="${location.idx}" th:text="${location.name}" th:selected="${searchDTO.locationIdx} == ${location.idx}"></option>
+														</select>
+													</div>
+												</div>
+
+												<!-- 메모 -->
+												<div class="form-group row mb-3">
+													<div th:replace="~{common/fragments/de_search_form :: inputText('memo','메모',false)}"></div>
+												</div>
+
 												<!-- 삭제 유무 -->
 												<div class="form-group row mb-3">
 													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제유무',false)}"></div>
@@ -73,7 +88,7 @@
 											<!-- 검색바 버튼 -->
 											<div class="row justify-content-end">
 												<div class="col-12 col-sm-auto mb-2">
-													<button class="btn btn-success btn-block" id="btnRegister" type="button">보유 자격증 정보 등록</button>
+													<button class="btn btn-success btn-block" id="btnRegister" type="button">근무 일정 등록</button>
 												</div>
 												<div class="col-12 col-sm-auto mb-2">
 													<button type="button" class="btn btn-warning btn-block" onclick="formReset('searchForm');">초기화</button>
@@ -102,22 +117,22 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
-									<th>사원번호</th>
-									<th>생산감독관</th>
-									<th>라인관리자</th>
-									<th>지게차자격증</th>
-									<th>운전면허증</th>
+									<th>사원 번호</th>
+									<th>근무 타입</th>
+									<th>장소 이름</th>
+									<th>시작일자</th>
+									<th>종료일자</th>
 									<th>메모</th>
 									<th>삭제유무</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item : ${workerMetricsList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
+								<tr th:each="item : ${workerScheduleList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
 									<td th:text="${item.employeeId}"></td>
-									<td th:text="${item.isSupervisor}"></td>
-									<td th:text="${item.isLinesManager}"></td>
-									<td th:text="${item.isForkliftOperator}"></td>
-									<td th:text="${item.isDriver}"></td>
+									<td th:text="${item.shiftTypeName}"></td>
+									<td th:text="${item.locationName}"></td>
+									<td th:text="${item.startDate}"></td>
+									<td th:text="${item.endDate}"></td>
 									<td th:text="${item.memo}"></td>
 									<td th:text="${item.isDeleted}"></td>
 								</tr>
@@ -146,7 +161,7 @@
                 // 등록 페이지 이동
                 $("#btnRegister").on("click", function() {
                     console.log("btnRegister click!!!");
-                    location.href = "/mes/workermetrics/new"; // 보유 자격증 정보 등록 페이지로 이동
+                    location.href = "/mes/workerschedule/new"; // 근무 일정 등록 페이지로 이동
                 });
 
                 // 상세 페이지 이동
@@ -157,8 +172,10 @@
                     if(!documentNumber) {
                         return; // 페이지 이동 막기
                     }
-                    location.href = `/mes/workermetrics/${documentNumber}`;
+                    location.href = `/mes/workerschedule/${documentNumber}`;
                 });
+                initDateRangePickerMaxToday('startDateFrom', 'startDateTo');
+                initDateRangePickerMaxToday('endDateFrom', 'endDateTo');
             });
         </script>
 	</div>

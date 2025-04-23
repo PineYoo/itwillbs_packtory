@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.co.itwillbs.de.mes.mapper.WorkerMetricsMapper">
+<mapper namespace="kr.co.itwillbs.de.mes.mapper.WorkerScheduleMapper">
 
 	<!-- 근무 일정 등록 -->
 	<insert id="insertWorkerSchedule" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO">
@@ -61,53 +61,53 @@
 	</insert>
 
 	<!-- 근무 일정 목록 조회 + 페이징 -->
-	<select id="searchWorkerScheduleCount" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="int">
+	<select id="searchWorkerScheduleCount" parameterType="kr.co.itwillbs.de.mes.dto.WorkerScheduleSearchDTO" resultType="int">
 		SELECT COUNT(*)
 		FROM t_worker_schedule ws
 		<where>
 			<if test="employeeId != null and !(''.equals(employeeId.trim()))">
-				AND wm.employee_id = #{employeeId}
+				AND ws.employee_id = #{employeeId}
 			</if>
 			<if test="locationIdx != null and !(''.equals(locationIdx.trim()))">
-				AND wm.location_idx = #{employeeId}
+				AND ws.location_idx = #{locationIdx}
 			</if>
 			<if test="memo != null and !(''.equals(memo.trim()))">
-				AND wm.memo LIKE CONCAT('%', #{memo}, '%')
+				AND ws.memo LIKE CONCAT('%', #{memo}, '%')
 			</if>
 			<if test="isDeleted != null and !(''.equals(isDeleted.trim()))">
-				AND wm.is_deleted = #{isDeleted}
+				AND ws.is_deleted = #{isDeleted}
 			</if>
 
 			<!-- 시작일자 범위 -->
 			<choose>
-				<when test="startDateFrom != null and startDateTo != null">
-					AND start_date BETWEEN #{startDateFrom} AND #{startDateTo}
+				<when test="startDateFrom != null and startDateFrom != '' and startDateTo != null and startDateTo != ''">
+					AND ws.start_date BETWEEN #{startDateFrom} AND #{startDateTo}
 				</when>
-				<when test="startDateFrom != null">
-					AND start_date &gt;= #{startDateFrom}
+				<when test="startDateFrom != null and startDateFrom != ''">
+					AND ws.start_date &gt;= #{startDateFrom}
 				</when>
-				<when test="startDateTo != null">
-					AND start_date &lt;= #{startDateTo}
+				<when test="startDateTo != null and startDateTo != ''">
+					AND ws.start_date &lt;= #{startDateTo}
 				</when>
 			</choose>
 
 			<!-- 종료일자 범위 -->
 			<choose>
-				<when test="endDateFrom != null and endDateTo != null">
-					AND end_date BETWEEN #{endDateFrom} AND #{endDateTo}
+				<when test="endDateFrom != null and endDateFrom != '' and endDateTo != null and endDateTo != ''">
+					AND ws.end_date BETWEEN #{endDateFrom} AND #{endDateTo}
 				</when>
-				<when test="endDateFrom != null">
-					AND end_date &gt;= #{endDateFrom}
+				<when test="endDateFrom != null and endDateFrom != ''">
+					AND ws.end_date &gt;= #{endDateFrom}
 				</when>
-				<when test="endDateTo != null">
-					AND end_date &lt;= #{endDateTo}
+				<when test="endDateTo != null and endDateTo != ''">
+					AND ws.end_date &lt;= #{endDateTo}
 				</when>
 			</choose>
 		</where>
 	</select>
 
 	<!-- 근무 일정 목록 조회 -->
-	<select id="searchWorkerSchedule" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO">
+	<select id="searchWorkerSchedule" parameterType="kr.co.itwillbs.de.mes.dto.WorkerScheduleSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO">
 		SELECT ws.*,
 		li.name AS location_name
 		FROM t_worker_schedule ws
@@ -115,41 +115,41 @@
 		ON ws.location_idx = CAST(li.idx AS CHAR)
 		<where>
 			<if test="employeeId != null and !(''.equals(employeeId.trim()))">
-				AND wm.employee_id = #{employeeId}
+				AND ws.employee_id = #{employeeId}
 			</if>
 			<if test="locationIdx != null and !(''.equals(locationIdx.trim()))">
-				AND wm.location_idx = #{employeeId}
+				AND ws.location_idx = #{locationIdx}
 			</if>
 			<if test="memo != null and !(''.equals(memo.trim()))">
-				AND wm.memo LIKE CONCAT('%', #{memo}, '%')
+				AND ws.memo LIKE CONCAT('%', #{memo}, '%')
 			</if>
 			<if test="isDeleted != null and !(''.equals(isDeleted.trim()))">
-				AND wm.is_deleted = #{isDeleted}
+				AND ws.is_deleted = #{isDeleted}
 			</if>
 
 			<!-- 시작일자 범위 -->
 			<choose>
-				<when test="startDateFrom != null and startDateTo != null">
-					AND start_date BETWEEN #{startDateFrom} AND #{startDateTo}
+				<when test="startDateFrom != null and startDateFrom != '' and startDateTo != null and startDateTo != ''">
+					AND ws.start_date BETWEEN #{startDateFrom} AND #{startDateTo}
 				</when>
-				<when test="startDateFrom != null">
-					AND start_date &gt;= #{startDateFrom}
+				<when test="startDateFrom != null and startDateFrom != ''">
+					AND ws.start_date &gt;= #{startDateFrom}
 				</when>
-				<when test="startDateTo != null">
-					AND start_date &lt;= #{startDateTo}
+				<when test="startDateTo != null and startDateTo != ''">
+					AND ws.start_date &lt;= #{startDateTo}
 				</when>
 			</choose>
 
 			<!-- 종료일자 범위 -->
 			<choose>
-				<when test="endDateFrom != null and endDateTo != null">
-					AND end_date BETWEEN #{endDateFrom} AND #{endDateTo}
+				<when test="endDateFrom != null and endDateFrom != '' and endDateTo != null and endDateTo != ''">
+					AND ws.end_date BETWEEN #{endDateFrom} AND #{startDateTo}
 				</when>
-				<when test="endDateFrom != null">
-					AND end_date &gt;= #{endDateFrom}
+				<when test="endDateFrom != null and endDateFrom != ''">
+					AND ws.end_date &gt;= #{endDateFrom}
 				</when>
-				<when test="endDateTo != null">
-					AND end_date &lt;= #{endDateTo}
+				<when test="endDateTo != null and endDateTo != ''">
+					AND ws.end_date &lt;= #{endDateTo}
 				</when>
 			</choose>
 		</where>
@@ -171,7 +171,7 @@
 		<set>
 			<if test='shiftType != null and !("".equals(shiftType.trim()))'>shift_type = #{shiftType},</if>
 			<if test='employeeId != null and !("".equals(employeeId.trim()))'>employee_id = #{employeeId},</if>
-			<if test='locationIdx != null and !("".equals(locationIdx.trim()))'>locationIdx = #{locationIdx},</if>
+			<if test='locationIdx != null and !("".equals(locationIdx.trim()))'>location_idx = #{locationIdx},</if>
 			<if test='startDate != null'>start_date = #{startDate},</if>
 			<if test='endDate != null'>end_date = #{endDate},</if>
 			<if test='memo != null and !("".equals(memo.trim()))'>memo = #{memo},</if>
