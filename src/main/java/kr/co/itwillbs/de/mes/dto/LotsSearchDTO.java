@@ -28,8 +28,6 @@ public class LotsSearchDTO {
 	private String memo;
 	private String isDeleted;
 	
-	
-	
 	private List<CodeItemDTO> typeList;
 	
 	// 페이징용 DTO composition

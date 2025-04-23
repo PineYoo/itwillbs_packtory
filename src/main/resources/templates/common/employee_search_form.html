@@ -358,6 +358,9 @@
 			        if (window.opener && typeof window.opener.setEmployeeInfo === 'function') {
 			            window.opener.setEmployeeInfo(employeeInfo); // 부모창으로 전달
 			        }
+			        if (window.opener && typeof window.opener.setEmployeeInfo2 === 'function') {
+			            window.opener.setEmployeeInfo2(employeeInfo); // 부모창으로 전달
+			        }
 			        window.close(); // 창 닫기
 			        return;
 			    }
