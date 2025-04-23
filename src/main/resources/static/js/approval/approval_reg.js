@@ -47,10 +47,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	// 휴가신청기간 적용
 	initDateRangePickerMinToday('eventStartDate', 'eventEndDate');
 	
-	initDateTimePickerMinNow('datetimeInput');
-	
-	
-	
 	// ---------------------------------------------------
 	// 기안서 등록(submit)
 	$('#btnSubmitForm').on("click", function() {
@@ -103,7 +99,53 @@ document.addEventListener("DOMContentLoaded", function(){
 		console.groupEnd();
 	}); // end of $('#btnSubmitForm').on("click", function() {
 						
-	
+	// --------------------------------------------------------------------
+	// 승인 버튼 클릭
+	$('#approveBtn').on('click', function() {
+	    // 승인 상태 값 가져오기 (3 = 승인)
+	    const approverStatus = $(this).data('status');
+	    handleApprovalOrRejection(approverStatus);
+	});
+
+	// 반려 버튼 클릭
+	$('#rejectBtn').on('click', function() {
+	    // 반려 상태 값 가져오기 (4 = 반려)
+	    const approverStatus = $(this).data('status');
+	    handleApprovalOrRejection(approverStatus);
+	});
+
+	// 승인/반려 처리 함수
+	function handleApprovalOrRejection(approverStatus) {
+	    const approverIndex = $('#approverIndex').val();  // 결재자 순서
+	    const docNo = $('#docNo').val();  // 문서 번호
+
+	    // API 호출
+	    $.ajax({
+	        url: '/groupware/approval/approveOrReject',
+	        method: 'POST',
+	        contentType: 'application/json',
+	        data: JSON.stringify({
+	              docNo: docNo
+				, approverIndex: approverIndex
+				, approverStatus: approverStatus
+//	            , action: (approverStatus === 3) ? 'approve' : 'reject'  // 승인/반려 구분
+//	            , approverId: $('#approverId').val()  // 결재자 ID (세션에서 가져옴)
+	        }),
+	        success: function(response) {
+	            if (response.status === 'success') {
+	                alert(response.message);
+	                location.href = "/groupware/approval/" + docNo;  // 문서 상세 페이지로 리다이렉트
+	            } else {
+	                alert('처리 중 오류가 발생했습니다.');
+	            }
+	        },
+	        error: function(error) {
+	            console.error("API 호출 오류:", error);
+	            alert("요청 처리 중 문제가 발생했습니다. 다시 시도해 주세요.");
+	        }
+	    });
+	}
+		
 	
 }); // DOMContentLoaded 끝
 

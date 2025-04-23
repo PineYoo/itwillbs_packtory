@@ -41,8 +41,8 @@ public class CommonService {
 	 * MySQL DB에서 시퀀스 가져오기 >> approval_no
 	 * @return String seq_*!
 	 */
-	public String getApprovalNoFromMySQL() {
-		return commonMapper.getApprovalNoFromMySQL();
+	public String getDocNoFromMySQL() {
+		return commonMapper.getDocNoFromMySQL();
 	}
 	
 	/**

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import kr.co.itwillbs.de.common.service.HealthCheckService;
 import kr.co.itwillbs.de.common.service.StatisticsService;
 import kr.co.itwillbs.de.common.service.TaskReportRegistryService;
+import kr.co.itwillbs.de.groupware.service.ApprovalService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,6 +21,9 @@ public class SchedulerRunner implements CommandLineRunner {
 	private final HealthCheckService healthCheckService;
 	private final StatisticsService statisticsService;
 	private final TaskReportRegistryService taskReportRegistryService;
+//	private final ApprovalService approvalService;
+
+	
 
 	public SchedulerRunner(ThreadPoolTaskScheduler scheduler, HealthCheckService healthCheckService,
 			StatisticsService statisticsService, TaskReportRegistryService taskReportRegistryService) {
@@ -35,7 +39,8 @@ public class SchedulerRunner implements CommandLineRunner {
 //		registerTaskForSec("every45SecHealthCheck", 45);
 //		registerTaskForMin("E-ApprovalMonitor", 1);
 //		// cron 형식 작업
-//		registerStatisticsJob();
+		registerStatisticsJob();
+		registerApprovalProcessingJob(); // 결재 처리 데몬 등록
 	}
 
 	@SuppressWarnings("unused")
@@ -95,6 +100,17 @@ public class SchedulerRunner implements CommandLineRunner {
 		// String cronExpression = "0 0 2 * * *"; // 매일 02:00:00에 실행
 		String cronExpression = "0 * * * * *"; // 매 분마다 시간 가져온 쿼리 수행!
 
+		scheduler.schedule(task, new CronTrigger(cronExpression));
+	}
+
+	/**
+	 * 결재 완료된 기안 데몬 작업
+	 */
+	private void registerApprovalProcessingJob() {
+		Runnable task = () -> statisticsService.processTodayApprovedDocs();
+
+		String cronExpression = "0 * * * * *"; // 매 분마다 시간 가져온 쿼리 수행!
+//		String cronExpression = "0 0/5 * * * *"; // 5분마다 실행
 		scheduler.schedule(task, new CronTrigger(cronExpression));
 	}
 }

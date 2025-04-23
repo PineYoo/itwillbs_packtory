@@ -6,18 +6,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.common.service.FileService;
 import kr.co.itwillbs.de.common.vo.FileVO;
 import kr.co.itwillbs.de.groupware.dto.ApprovalDTO;
 import kr.co.itwillbs.de.groupware.dto.ApprovalSearchDTO;
-import kr.co.itwillbs.de.groupware.dto.DraftDTO;
-import kr.co.itwillbs.de.groupware.dto.NoticeDTO;
 import kr.co.itwillbs.de.groupware.mapper.ApprovalMapper;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -48,7 +45,7 @@ public class ApprovalService {
 		//	------------------------------------------------------------
 		//	doc_no 서류코드 생성(A2025-01)
 		String year = new SimpleDateFormat("yyyy").format(new Date());
-		String docNo = "A" + year + "-" + commonService.getApprovalNoFromMySQL();
+		String docNo = "A" + year + "-" + commonService.getDocNoFromMySQL();
 		approvalDTO.setDocNo(docNo);	// 서류코드 set
 		
 		log.info("draftDTO : " + approvalDTO);
@@ -169,6 +166,17 @@ public class ApprovalService {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		return approvalMapper.getApprovalCountBySearchDTO(approvalSearchDTO);
+	}
+
+	public void updateProgressStatus(ApprovalDTO approvalDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+
+		// 진행상태 변경(2:진행중, 3:결재완료, 4:반려)
+		approvalMapper.updateProgressStatus(approvalDTO);
+		// INSERT 구문에 ON DUPLICATE KEY UPDATE 넣음으로써 따로 UPDATE구문 안써도 됨
+		// => 달라진거 알아서 비교하고 값 바꿔줌
+//		approvalMapper.insertApproval(approvalDTO);
+		approvalMapper.insertApprovalItems(approvalDTO);
 	}
 
 	

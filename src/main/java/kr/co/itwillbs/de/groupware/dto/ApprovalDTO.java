@@ -79,6 +79,11 @@ public class ApprovalDTO {
 	private String approver2Signature;
 	private String approver3Signature;
 	
+	// 승인/반려 시 필요한 데이터
+	private int approverIndex;	// 몇번째 결재자인지
+	private String approverStatus;	// 승인인지 반려인지
+	private String approverId;		// 결재자 id
+	
 	// 레시피마스터(레시피 결재 시 필요한 DTO)
 //	private RecipeMasterDTO recipeMaster;
 	

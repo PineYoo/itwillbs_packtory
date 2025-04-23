@@ -1,5 +1,6 @@
 package kr.co.itwillbs.de.groupware.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -194,21 +195,21 @@ public class ApprovalController {
 	 * @return JSON 응답
 	 */
 //	@PostMapping(value = "/regist", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	@PostMapping(value={"/regist"})
+	@PostMapping(value= {"/regist"}, consumes= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> approvalRegisterForJson(
 			@RequestBody @Valid ApprovalDTO approvalDTO,
 //	        @RequestParam("approvalFiles") List<MultipartFile> approvalFiles,
 	        BindingResult bindingResult) {
 	    log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-	    log.info("입력한 정보 : {}", approvalDTO);
+	    log.info("approvalDTO : {}", approvalDTO);
 
 		//리턴 객체 생성
 	    Map<String, Object> response = new HashMap<>();
 
 	    try {
 	        // 1. 기안서 등록
-	        String approvalNo = approvalService.registerApproval(approvalDTO);
+	        String docNo = approvalService.registerApproval(approvalDTO);
 
 	        // 2. 파일 처리 - 보류 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //	        List<FileVO> fileList = new ArrayList<>();
@@ -219,7 +220,7 @@ public class ApprovalController {
 //
 //	            try {
 //	                FileVO fileVO = fileUtil.setFile(file);
-//	                fileVO.setMajorIdx(approvalNo);
+//	                fileVO.setMajorIdx(docNo);
 //	                fileVO.setType("t_approval");
 //	                fileVO.setIsDeleted("N");
 //	                fileVO.setRankNumber(String.valueOf(rankNumber++));
@@ -232,7 +233,7 @@ public class ApprovalController {
 	        // 성공 응답
 	        response.put("status", "success");
 	        response.put("message", "등록이 완료되었습니다.");
-//	        response.put("approvalNo", approvalNo);
+	        response.put("docNo", docNo);
 
 	    } catch (Exception e) {
 	        log.error("전자결재 등록 실패", e);
@@ -270,18 +271,88 @@ public class ApprovalController {
 		model.addAttribute("approvalTypeList" ,commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_APPROVAL_TYPE));
 		
 		// 기안자냐 결재자냐에 따라 보여지는게 달라야 함 !
-	    boolean isDrafter = sessionId.equals(approvalDTO.getDrafterId());
+	    boolean isDrafter  = sessionId.equals(approvalDTO.getDrafterId());
 	    boolean isApprover = sessionId.equals(approvalDTO.getApprover1()) ||
 	                         sessionId.equals(approvalDTO.getApprover2()) ||
 	                         sessionId.equals(approvalDTO.getApprover3());
 
 	    model.addAttribute("isDrafter", isDrafter);
 	    model.addAttribute("isApprover", isApprover);
-
+	    
+	    // 결재자 순서 확인
+	    if (isApprover) {
+	        int approverIndex = 0; // 기본값: 0 (결재자가 아닐 경우)
+	        
+	        if (sessionId.equals(approvalDTO.getApprover1())) {
+	            approverIndex = 1;  // 첫 번째 결재자
+	        } else if (sessionId.equals(approvalDTO.getApprover2())) {
+	            approverIndex = 2;  // 두 번째 결재자
+	        } else if (sessionId.equals(approvalDTO.getApprover3())) {
+	            approverIndex = 3;  // 세 번째 결재자
+	        }
+	        
+	        model.addAttribute("approverIndex", approverIndex); // 결재자 순서 모델에 추가
+	    }
 		
 		return "groupware/approval/approval_detail";
 	}
 	
+	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	/**
+	 * 
+	 * @param approvalActionDTO
+	 * @return
+	 */
+	@PostMapping("/approveOrReject")
+	public ResponseEntity<Map<String, Object>> approveOrReject(@RequestBody ApprovalDTO approvalDTO) {
+	    log.info("approvalDTO: {}", approvalDTO);
+
+	    // approverIndex와 approverStatus 값 가져오기
+	    int approverIndex = approvalDTO.getApproverIndex();
+	    String approverStatus = approvalDTO.getApproverStatus();  // 3 -> 결재완료, 4 -> 반려
+//	    String approverId = approvalDTO.getApproverId(); // 결재자 ID (세션에서 가져온 approver 정보)
+
+	    // 결재자 상태 업데이트
+	    switch (approverIndex) {
+	        case 1:
+	        	approvalDTO.setApprover1Status(approverStatus);
+	        	approvalDTO.setApprover1Date(LocalDate.now().toString());  // 승인 날짜 기록
+//	        	approvalDTO.setApprover1Signature("서명 데이터");  // 서명 (추후에 서명 이미지 등으로 변경 가능)
+	            break;
+	        case 2:
+	        	approvalDTO.setApprover2Status(approverStatus);
+	        	approvalDTO.setApprover2Date(LocalDate.now().toString());  // 승인 날짜 기록
+//	        	approvalDTO.setApprover2Signature("서명 데이터");  // 서명
+	            break;
+	        case 3:
+	        	approvalDTO.setApprover3Status(approverStatus);
+	        	approvalDTO.setApprover3Date(LocalDate.now().toString());  // 승인 날짜 기록
+//	        	approvalDTO.setApprover3Signature("서명 데이터");  // 서명
+	            break;
+	    }
+
+	    // 진행 상태(progress_status) 변경
+	    if ("3".equals(approverStatus) && approverIndex != 3) {
+	    	approvalDTO.setProgressStatus("2");	// 진행중
+	    } else if ("3".equals(approverStatus) && approverIndex == 3) {	// 마지막 결재자
+    		approvalDTO.setProgressStatus("3");	// 결재완료
+	    } else if ("4".equals(approverStatus)) {
+	    	approvalDTO.setProgressStatus("4");	// 반려
+	    }
+	    log.info("approvalDTO22: {}", approvalDTO);
+	    approvalService.updateProgressStatus(approvalDTO);
+
+	    // 응답 데이터 준비
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("status", "success");
+	    response.put("message", "결재 처리가 완료되었습니다.");
+	    response.put("docNo", approvalDTO.getDocNo());
+
+	    return ResponseEntity.ok(response);
+	}	
+	
+	
+	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	/**
 	 * 전자결재(UPDATE)를 요청하는 "/groupware/approval/{approvalNo}" 주소 매핑(PUT)
 	 * @param approvalNo
@@ -297,7 +368,7 @@ public class ApprovalController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 //		log.info("requestData : param = {}, dto = {}, file[0] = {} ", docNo, approvalDTO, approvalFiles.get(0));
-		log.info("requestData : param = {}, dto = {}, file[0] = {} ", docNo, approvalDTO);
+		log.info("requestData : param = {}, dto = {} ", docNo, approvalDTO);
 		
 		try {
 			approvalService.modifyApproval(approvalDTO);
