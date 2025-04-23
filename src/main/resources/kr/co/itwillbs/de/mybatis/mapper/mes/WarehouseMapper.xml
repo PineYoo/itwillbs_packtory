@@ -146,12 +146,11 @@
 	<!-- 창고 목록 조회 -->
 	<select id="searchWarehouse" parameterType="kr.co.itwillbs.de.mes.dto.WarehouseSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.WarehouseDTO">
 
-		SELECT
-		w.*,
+		SELECT w.*,
 		p.name AS product_name
 		FROM t_warehouse w
-		LEFT JOIN t_product
-		p ON w.product_idx = CAST(p.idx AS CHAR)
+		LEFT JOIN t_product p 
+		ON w.product_idx = CAST(p.idx AS CHAR)
 		<where>
 			<if test="name != null and !(''.equals(name.trim()))">
 				AND w.name LIKE CONCAT('%', #{name}, '%')

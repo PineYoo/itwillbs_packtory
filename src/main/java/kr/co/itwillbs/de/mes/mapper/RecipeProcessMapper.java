@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 
 import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
 
 public interface RecipeProcessMapper {
 

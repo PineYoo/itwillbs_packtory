@@ -4,10 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeMaterialSearchDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
 
 public interface RecipeMaterialMapper {
 

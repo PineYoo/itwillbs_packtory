@@ -25,9 +25,6 @@ public interface QcStandardMapper {
 	// 품질 기준 정보 수정
 	public void updateQcStandard(QcStandardDTO qcStandardDTO);
 
-	// 품질 기준 삭제
-	public void deleteQcStandard(Long idx);
-	
 	// 품질 기준 목록 들고가기 (외부용)
 	public List<QcStandardDTO> selectQcStandardList();
 }

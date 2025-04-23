@@ -61,16 +61,7 @@ public class QcStandardService {
 		}
 	}
 
-	// 품질 삭제 (Soft delete)
-	@Transactional
-	public void deleteQcStandard(Long idx) {
-		log.info("품질 삭제 요청 - idx: {}", idx);
-		qcStandardMapper.deleteQcStandard(idx);
-	}
-
-	/*
-	 * ------------ 품질기준 로그에서 씀 ----------
-	 */
+	// 품질기준 목록 들고가기 (외부용)
 	public List<QcStandardDTO> getQcStandardList() {
 		return qcStandardMapper.selectQcStandardList();
 	}

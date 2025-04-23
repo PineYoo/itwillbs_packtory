@@ -104,7 +104,6 @@ input, select {
 							<div class="col-md-12 row align-items-center justify-content-center">
 								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
 								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
-								<button type="button" id="deleteBtn" class="btn btn-danger btn-lg d-block col-3 ml-2 mb-3">삭제</button>
 							</div>
 						</form>
 					</div>
@@ -158,30 +157,6 @@ input, select {
 	            .catch(error => {
 	                console.error("서버 오류:", error);
 	                alert("요청 처리 중 문제가 발생했습니다.");
-	            });
-	        });
-	        
-	     	// 삭제 버튼 클릭 시
-	        $('#deleteBtn').on("click", function () {
-	            if (!confirm("정말 삭제하시겠습니까?")) return;
-
-	            const idx = $('#idx').val();
-
-	            fetch(`/mes/qcstandard/${idx}`, {
-	                method: "DELETE"
-	            })
-	            .then(response => response.text())
-	            .then(data => {
-	                if (data === "success") {
-	                    alert("삭제되었습니다.");
-	                    location.href = "/mes/qcstandard"; // 목록으로 이동
-	                } else {
-	                    alert("삭제 실패: " + data);
-	                }
-	            })
-	            .catch(error => {
-	                console.error("삭제 요청 오류:", error);
-	                alert("삭제 요청 중 문제가 발생했습니다.");
 	            });
 	        });
 	    });

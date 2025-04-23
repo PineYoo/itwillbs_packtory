@@ -25,7 +25,7 @@ public interface LocationInfoMapper {
 	// 공장 장소 정보 정보 수정
 	public void updateLocationInfo(LocationInfoDTO locationInfoDTO);
 
-	// 공장 장소 정보 삭제
-	public void deleteLocationInfo(Long idx);
+	// 공장 장소 정보 들고 가기 (외부용)
+	public List<LocationInfoDTO> selectLocationInfoList();
 
 }

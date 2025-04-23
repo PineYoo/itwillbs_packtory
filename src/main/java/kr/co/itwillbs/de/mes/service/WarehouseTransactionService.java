@@ -42,7 +42,7 @@ public class WarehouseTransactionService {
 	}
 
 	// 창고 정보 상세 조회
-	public WarehouseTransactionDTO getWarehouseTransactionByIdx	(Long idx) {
+	public WarehouseTransactionDTO getWarehouseTransactionByIdx(Long idx) {
 		log.info("창고 정보 상세 조회 - idx: {}", idx);
 		return warehouseTransactionMapper.getWarehouseTransactionByIdx(idx);
 	}
@@ -60,12 +60,4 @@ public class WarehouseTransactionService {
 			log.info("창고 정보 수정 완료 - qcIdx: {}", warehouseTransactionDTO.getIdx());
 		}
 	}
-
-	// 창고 정보 삭제 (Soft delete)
-	@Transactional
-	public void deleteWarehouseTransaction(Long idx) {
-		log.info("창고 정보 삭제 요청 - idx: {}", idx);
-		warehouseTransactionMapper.deleteWarehouseTransaction(idx);
-	}
-
 }

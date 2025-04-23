@@ -36,13 +36,14 @@ public class WarehouseTransactionLotsService {
 	}
 
 	// 트랜잭션 LOT 목록 조회 (검색 + 페이징)
-	public List<WarehouseTransactionLotsDTO> searchWarehouseTransactionLots(WarehouseTransactionLotsSearchDTO searchDTO) {
+	public List<WarehouseTransactionLotsDTO> searchWarehouseTransactionLots(
+			WarehouseTransactionLotsSearchDTO searchDTO) {
 		log.info("트랜잭션 LOT 목록 조회 - 검색 조건: {}", searchDTO);
 		return warehouseTransactionLotsMapper.searchWarehouseTransactionLots(searchDTO);
 	}
 
 	// 트랜잭션 LOT 상세 조회
-	public WarehouseTransactionLotsDTO getWarehouseTransactionLotsByIdx	(Long idx) {
+	public WarehouseTransactionLotsDTO getWarehouseTransactionLotsByIdx(Long idx) {
 		log.info("트랜잭션 LOT 상세 조회 - idx: {}", idx);
 		return warehouseTransactionLotsMapper.getWarehouseTransactionLotsByIdx(idx);
 	}
@@ -60,12 +61,4 @@ public class WarehouseTransactionLotsService {
 			log.info("트랜잭션 LOT 수정 완료 - qcIdx: {}", warehouseTransactionLotsDTO.getIdx());
 		}
 	}
-
-	// 트랜잭션 LOT 삭제 (Soft delete)
-	@Transactional
-	public void deleteWarehouseTransactionLots(Long idx) {
-		log.info("트랜잭션 LOT 삭제 요청 - idx: {}", idx);
-		warehouseTransactionLotsMapper.deleteWarehouseTransactionLots(idx);
-	}
-
 }

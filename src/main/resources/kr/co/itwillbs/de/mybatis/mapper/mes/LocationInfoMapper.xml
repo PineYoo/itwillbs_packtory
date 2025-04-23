@@ -106,7 +106,7 @@
 		WHERE idx = #{idx}
 	</select>
 
-	<!-- 공장 장소 정보 정보 수정 -->
+	<!-- 공장 장소 정보 수정 -->
 	<update id="updateLocationInfo" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoDTO">
 		UPDATE t_location_info
 		<set>
@@ -122,5 +122,12 @@
 		</set>
 		WHERE idx = #{idx}
 	</update>
+	
+	<!-- 공장 장소 정보 들고가기 -->
+	<select id="selectLocationInfoList" resultType="kr.co.itwillbs.de.mes.dto.LocationInfoDTO">
+		SELECT *
+		FROM t_location_info
+		WHERE is_deleted = 'N'
+	</select>
 
 </mapper>

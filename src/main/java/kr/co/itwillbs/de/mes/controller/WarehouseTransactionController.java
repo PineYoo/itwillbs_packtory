@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -146,18 +145,5 @@ public class WarehouseTransactionController {
 
 		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
 		return ResponseEntity.ok(response);
-	}
-
-	// 창고 정보 삭제 (Soft Delete)
-	@DeleteMapping("/{idx}")
-	@ResponseBody
-	public String deleteWarehouseTransaction(@PathVariable("idx") Long idx) {
-		try {
-			warehouseTransactionService.deleteWarehouseTransaction(idx);
-			return "success";
-		} catch (Exception e) {
-			log.error("창고 정보 삭제 실패: {}", e.getMessage());
-			return "error";
-		}
 	}
 }

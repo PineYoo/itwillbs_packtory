@@ -107,6 +107,7 @@
 									<th>측정값</th>
 									<th>단위</th>
 									<th>메모</th>
+									<th>삭제유무</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -116,6 +117,7 @@
 									<td th:text="${item.value}"></td>
 									<td th:text="${item.unit}"></td>
 									<td th:text="${item.memo}"></td>
+									<td th:text="${item.isDeleted}"></td>
 								</tr>
 							</tbody>
 						</table>

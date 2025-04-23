@@ -26,7 +26,7 @@ public class WorkerMetricsService {
 		log.info("보유 자격증 정보 등록 요청: {}", workerMetricsDTO);
 		workerMetricsMapper.insertWorkerMetrics(workerMetricsDTO);
 		log.info("보유 자격증 정보 등록 완료 - idx: {}", workerMetricsDTO.getIdx());
-		return "redirect:/mes/WorkerMetrics";
+		return "redirect:/mes/workermetrics";
 	}
 
 	// 보유 자격증 정보 총 개수 (검색 조건 포함)
@@ -50,14 +50,14 @@ public class WorkerMetricsService {
 	// 보유 자격증 정보 수정
 	@LogExecution
 	@Transactional
-	public void updateWorkerMetrics(WorkerMetricsDTO WorkerMetricsDTO) {
-		log.info("보유 자격증 정보 수정 요청 - idx: {}", WorkerMetricsDTO.getIdx());
+	public void updateWorkerMetrics(WorkerMetricsDTO workerMetricsDTO) {
+		log.info("보유 자격증 정보 수정 요청 - idx: {}", workerMetricsDTO.getIdx());
 
 		// WorkerMetricsDTO 가 널인지 체크
-		if (WorkerMetricsDTO != null) {
+		if (workerMetricsDTO != null) {
 			// 보유 자격증 정보 정보를 업데이트하는 쿼리 호출
-			workerMetricsMapper.updateWorkerMetrics(WorkerMetricsDTO);
-			log.info("보유 자격증 정보 수정 완료 - qcIdx: {}", WorkerMetricsDTO.getIdx());
+			workerMetricsMapper.updateWorkerMetrics(workerMetricsDTO);
+			log.info("보유 자격증 정보 수정 완료 - qcIdx: {}", workerMetricsDTO.getIdx());
 		}
 	}
 }

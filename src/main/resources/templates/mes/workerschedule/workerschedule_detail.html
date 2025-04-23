@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) - 트랜잭션 LOT 상세</title>
+<title>팩토리(PackTory) - 보유 자격증 정보 상세</title>
 
 <style type="text/css">
 .form {
@@ -42,37 +42,63 @@ input, select {
 		<div class="container-fluid">
 			<!-- Page Heading -->
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">트랜잭션 LOT 상세</h1>
+				<h1 class="h3 mb-4 text-gray-800">보유 자격증 정보 상세</h1>
 			</div>
 
 			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<form th:action="@{/mes/lwarehousetransactionlots/updateWarehouseTransactionLots}" method="post" th:object="${transactionLotDTO}" class="form row g-3" id="registerForm">
-							
+						<form th:action="@{/mes/workermetrics/updateWorkerMetrics}" method="post" th:object="${workerMetricsDTO}" class="form row g-3" id="registerForm">
 							<!-- hidden -->
 							<input type="hidden" th:field="*{idx}" id="idx" />
 							<!-- hidden -->
 
-							<!-- 롯 인덱스 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('lotIdx', 'LOT IDX', true,false,false)}"></div>
+							<div class="data-container">
+								<div class="row">
+									<div>
+										<button type="button" id="searchEmployeeBtn" class="btn btn-primary mt-2" onclick="openEmployeeSearch()">사원 조회</button>
+									</div>
+									<div class="col-sm-12 col-md-6 mb-3">
+										<label for="employeeId" class="form-label">사원 번호</label> <input type="text" id="employeeId" th:field="*{employeeId}" class="form-control" placeholder="사원 번호" readonly>
+									</div>
+								</div>
 							</div>
 
-							<!-- 트랜잭션 인덱스 -->
+							<!-- 생산 감독관 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('transactionIdx', '트랜잭션 IDX', true,false,false)}"></div>
+								<label for="isSupervisor">생산 감독관</label> <select class="form-select" th:field="*{isSupervisor}" required>
+									<option value="">선택</option>
+									<option value="Y">Y</option>
+									<option value="N">N</option>
+								</select>
 							</div>
 
-							<!-- 개수 -->
+							<!-- 라인 관리자 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '개수', true,false,false)}"></div>
+								<label for="isLinesManager">라인 관리자</label> <select class="form-select" th:field="*{isLinesManager}" required>
+									<option value="">선택</option>
+									<option value="Y">Y</option>
+									<option value="N">N</option>
+								</select>
 							</div>
 
-							<!-- 단위 -->
+							<!-- 지게차 자격 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
+								<label for="isForkliftOperator">지게차 자격</label> <select class="form-select" th:field="*{isForkliftOperator}" required>
+									<option value="">선택</option>
+									<option value="Y">Y</option>
+									<option value="N">N</option>
+								</select>
+							</div>
+
+							<!-- 운전면허 자격 -->
+							<div class="col-md-6">
+								<label for="isDriver">운전면허 자격</label> <select class="form-select" th:field="*{isDriver}" required>
+									<option value="">선택</option>
+									<option value="Y">Y</option>
+									<option value="N">N</option>
+								</select>
 							</div>
 
 							<!-- 메모 -->
@@ -89,22 +115,22 @@ input, select {
 
 							<!-- 작성자 -->
 							<div class="col-md-6">
-								<label>작성자</label> <input th:value="${transactionLotDTO.regId}" class="form-control" readonly>
+								<label>작성자</label> <input th:value="${workerMetricsDTO.regId}" class="form-control" readonly>
 							</div>
 
 							<!-- 작성일자 -->
 							<div class="col-md-6">
-								<label>작성일자</label> <input th:value="${transactionLotDTO.regDate}" class="form-control" readonly>
+								<label>작성일자</label> <input th:value="${workerMetricsDTO.regDate}" class="form-control" readonly>
 							</div>
 
 							<!-- 최종작성자 -->
 							<div class="col-md-6">
-								<label>최종 작성자</label> <input th:value="${transactionLotDTO.modId}" class="form-control" readonly>
+								<label>최종 작성자</label> <input th:value="${workerMetricsDTO.modId}" class="form-control" readonly>
 							</div>
 
 							<!-- 최종작성일자 -->
 							<div class="col-md-6">
-								<label>최종 작성일자</label> <input th:value="${transactionLotDTO.modDate}" class="form-control" readonly>
+								<label>최종 작성일자</label> <input th:value="${workerMetricsDTO.modDate}" class="form-control" readonly>
 							</div>
 
 							<hr>
@@ -121,10 +147,22 @@ input, select {
 		</div>
 
 		<script type="text/javascript">
+			// 담당자 검색 함수(새 창 띄우기)
+			function openEmployeeSearch() {
+			    window.open('/employee/search-popup', 'employeeSearch', 'width=800,height=600,location=no,scrollbars=yes');
+			    window.isSingleSelect = true;
+			}
+				
+			// 팝업창에서 가져온 담당자 정보 넣는 함수
+			function setEmployeeInfo(data) {
+			    $("#employeeId").val(data.id);
+			    console.log($("#employeeId").val()); 
+			}
+		
 	    $(function () {
 	        // 목록 버튼 클릭 시
 	        $('#btnList').on("click", function () {
-	            location.href = "/mes/warehousetransactionlots";  // 트랜잭션 LOT 목록 페이지로 이동
+	            location.href = "/mes/workermetrics";  // 보유 자격증 정보 목록 페이지로 이동
 	        });
 	        
 	        // 수정 폼 제출 시
@@ -144,7 +182,7 @@ input, select {
 	            // idx를 실제 페이지 URL에서 받아오기
 	            const idx = $('#idx').val();  // 수정된 부분: id를 #idx로 수정
 	
-	            fetch(`/mes/warehousetransactionlots/updateWarehouseTransactionLots`, {
+	            fetch(`/mes/workermetrics/updateWorkerMetrics`, {
 	                method: "PUT",
 	                headers: {
 	                    "Content-Type": "application/json"

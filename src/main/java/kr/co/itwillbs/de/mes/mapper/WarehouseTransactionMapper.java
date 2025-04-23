@@ -25,7 +25,4 @@ public interface WarehouseTransactionMapper {
 	// 창고 정보 정보 수정
 	public void updateWarehouseTransaction(WarehouseTransactionDTO warehouseTransactionDTO);
 
-	// 창고 정보 삭제
-	public void deleteWarehouseTransaction(Long idx);
-
 }

@@ -76,7 +76,6 @@
 		resultType="int">
 		SELECT count(*)
 		FROM t_qc_standard q
-
 		<where>
 			<if test='name !=null and !("".equals(name.trim()))'>
 				AND q.name LIKE CONCAT('%', #{name}, '%')
@@ -97,10 +96,8 @@
 	<select id="searchQcStandard"
 		parameterType="kr.co.itwillbs.de.mes.dto.QcStandardSearchDTO"
 		resultType="kr.co.itwillbs.de.mes.dto.QcStandardDTO">
-
 		SELECT q.*
 		FROM t_qc_standard q
-
 		<where>
 			<if test='name !=null and !("".equals(name.trim()))'>
 				AND q.name LIKE CONCAT('%', #{name}, '%')
@@ -147,15 +144,6 @@
 		WHERE idx = #{idx}
 	</update>
 
-
-	<!-- 품질기준 삭제 (Soft Delete) -->
-	<update id="deleteQcStandard" parameterType="map">
-		UPDATE t_qc_standard
-		is_deleted = 'Y',
-		mod_date = NOW()
-		WHERE idx = #{idx}
-	</update>
-	
 	<!-- 품질 기준 목록 들고가기 (외부용) -->
 	<select id="selectQcStandardList"
 		resultType="kr.co.itwillbs.de.mes.dto.QcStandardDTO">

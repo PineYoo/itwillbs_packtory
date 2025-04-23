@@ -25,7 +25,4 @@ public interface WarehouseTransactionLotsMapper {
 	// 트랜잭션 LOT 정보 수정
 	public void updateWarehouseTransactionLots(WarehouseTransactionLotsDTO warehouseTransactionLotsDTO);
 
-	// 트랜잭션 LOT 삭제
-	public void deleteWarehouseTransactionLots(Long idx);
-
 }

@@ -25,7 +25,4 @@ public interface QcLogMapper {
 	// 품질 로그 정보 수정
 	public void updateQcLog(QcLogDTO qcStandardDTO);
 
-	// 품질 로그 삭제
-	public void deleteQcLog(Long idx);
-	
 }

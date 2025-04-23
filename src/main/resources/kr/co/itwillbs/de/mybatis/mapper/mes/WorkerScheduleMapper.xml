@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.mes.mapper.WorkerMetricsMapper">
+
+	<!-- 근무 일정 등록 -->
+	<insert id="insertWorkerSchedule" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO">
+		INSERT INTO t_worker_schedule (
+		<trim suffixOverrides=",">
+			<if test='shiftType != null and !("".equals(shiftType.trim()))'>
+				shift_type,
+			</if>
+			<if test='employeeId != null and !("".equals(employeeId.trim()))'>
+				employee_id,
+			</if>
+			<if test='locationIdx != null and !("".equals(locationIdx.trim()))'>
+				location_idx,
+			</if>
+			<if test='startDate != null and !("".equals(startDate.trim()))'>
+				start_date,
+			</if>
+			<if test='endDate != null and !("".equals(endDate.trim()))'>
+				end_date,
+			</if>
+			<if test='memo != null and !("".equals(memo.trim()))'>
+				memo,
+			</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
+				is_deleted,
+			</if>
+			reg_id,
+			reg_date
+		</trim>
+		) VALUES (
+		<trim suffixOverrides=",">
+			<if test='shiftType != null and !("".equals(shiftType.trim()))'>
+				#{shiftType},
+			</if>
+			<if test='employeeId != null and !("".equals(employeeId.trim()))'>
+				#{employeeId},
+			</if>
+			<if test='locationIdx != null and !("".equals(locationIdx.trim()))'>
+				#{locationIdx},
+			</if>
+			<if test='startDate != null'>
+				#{startDate},
+			</if>
+			<if test='endDate != null'>
+				#{endDate},
+			</if>
+			<if test='memo != null and !("".equals(memo.trim()))'>
+				#{memo},
+			</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
+				#{isDeleted},
+			</if>
+			#{regId},
+			now()
+		</trim>
+		)
+	</insert>
+
+	<!-- 근무 일정 목록 조회 + 페이징 -->
+	<select id="searchWorkerScheduleCount" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="int">
+		SELECT COUNT(*)
+		FROM t_worker_schedule ws
+		<where>
+			<if test="employeeId != null and !(''.equals(employeeId.trim()))">
+				AND wm.employee_id = #{employeeId}
+			</if>
+			<if test="locationIdx != null and !(''.equals(locationIdx.trim()))">
+				AND wm.location_idx = #{employeeId}
+			</if>
+			<if test="memo != null and !(''.equals(memo.trim()))">
+				AND wm.memo LIKE CONCAT('%', #{memo}, '%')
+			</if>
+			<if test="isDeleted != null and !(''.equals(isDeleted.trim()))">
+				AND wm.is_deleted = #{isDeleted}
+			</if>
+
+			<!-- 시작일자 범위 -->
+			<choose>
+				<when test="startDateFrom != null and startDateTo != null">
+					AND start_date BETWEEN #{startDateFrom} AND #{startDateTo}
+				</when>
+				<when test="startDateFrom != null">
+					AND start_date &gt;= #{startDateFrom}
+				</when>
+				<when test="startDateTo != null">
+					AND start_date &lt;= #{startDateTo}
+				</when>
+			</choose>
+
+			<!-- 종료일자 범위 -->
+			<choose>
+				<when test="endDateFrom != null and endDateTo != null">
+					AND end_date BETWEEN #{endDateFrom} AND #{endDateTo}
+				</when>
+				<when test="endDateFrom != null">
+					AND end_date &gt;= #{endDateFrom}
+				</when>
+				<when test="endDateTo != null">
+					AND end_date &lt;= #{endDateTo}
+				</when>
+			</choose>
+		</where>
+	</select>
+
+	<!-- 근무 일정 목록 조회 -->
+	<select id="searchWorkerSchedule" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO">
+		SELECT ws.*,
+		li.name AS location_name
+		FROM t_worker_schedule ws
+		LEFT JOIN t_location_info li
+		ON ws.location_idx = CAST(li.idx AS CHAR)
+		<where>
+			<if test="employeeId != null and !(''.equals(employeeId.trim()))">
+				AND wm.employee_id = #{employeeId}
+			</if>
+			<if test="locationIdx != null and !(''.equals(locationIdx.trim()))">
+				AND wm.location_idx = #{employeeId}
+			</if>
+			<if test="memo != null and !(''.equals(memo.trim()))">
+				AND wm.memo LIKE CONCAT('%', #{memo}, '%')
+			</if>
+			<if test="isDeleted != null and !(''.equals(isDeleted.trim()))">
+				AND wm.is_deleted = #{isDeleted}
+			</if>
+
+			<!-- 시작일자 범위 -->
+			<choose>
+				<when test="startDateFrom != null and startDateTo != null">
+					AND start_date BETWEEN #{startDateFrom} AND #{startDateTo}
+				</when>
+				<when test="startDateFrom != null">
+					AND start_date &gt;= #{startDateFrom}
+				</when>
+				<when test="startDateTo != null">
+					AND start_date &lt;= #{startDateTo}
+				</when>
+			</choose>
+
+			<!-- 종료일자 범위 -->
+			<choose>
+				<when test="endDateFrom != null and endDateTo != null">
+					AND end_date BETWEEN #{endDateFrom} AND #{endDateTo}
+				</when>
+				<when test="endDateFrom != null">
+					AND end_date &gt;= #{endDateFrom}
+				</when>
+				<when test="endDateTo != null">
+					AND end_date &lt;= #{endDateTo}
+				</when>
+			</choose>
+		</where>
+
+		ORDER BY ws.idx ASC
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+
+	<!-- 근무 일정 상세 조회 -->
+	<select id="getWorkerScheduleByIdx" parameterType="Long" resultType="kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO">
+		SELECT *
+		FROM t_worker_schedule
+		WHERE idx = #{idx}
+	</select>
+
+	<!-- 근무 일정 정보 수정 -->
+	<update id="updateWorkerSchedule" parameterType="kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO">
+		UPDATE t_worker_schedule
+		<set>
+			<if test='shiftType != null and !("".equals(shiftType.trim()))'>shift_type = #{shiftType},</if>
+			<if test='employeeId != null and !("".equals(employeeId.trim()))'>employee_id = #{employeeId},</if>
+			<if test='locationIdx != null and !("".equals(locationIdx.trim()))'>locationIdx = #{locationIdx},</if>
+			<if test='startDate != null'>start_date = #{startDate},</if>
+			<if test='endDate != null'>end_date = #{endDate},</if>
+			<if test='memo != null and !("".equals(memo.trim()))'>memo = #{memo},</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+			<if test='modId != null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+		</set>
+		WHERE idx = #{idx}
+	</update>
+
+</mapper>

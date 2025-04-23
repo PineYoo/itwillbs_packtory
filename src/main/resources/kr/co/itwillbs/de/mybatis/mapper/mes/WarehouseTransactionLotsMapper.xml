@@ -135,17 +135,8 @@
 			<if test='memo != null and !("".equals(memo.trim()))'>memo = #{memo},</if>
 			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
 			<if test='modId != null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-			<if test='modDate != null and !("".equals(modDate.trim()))'>mod_date = now(),</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 		</set>
-		WHERE idx = #{idx}
-	</update>
-
-
-	<!-- 트랜잭션 LOT 삭제 (Soft Delete) -->
-	<update id="deleteWarehouseTransactionLots" parameterType="map">
-		UPDATE t_warehouse_transaction_lots
-		is_deleted = 'Y',
-		mod_date = NOW()
 		WHERE idx = #{idx}
 	</update>
 

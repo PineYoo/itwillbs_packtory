@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 
 import kr.co.itwillbs.de.mes.dto.BomDTO;
 import kr.co.itwillbs.de.mes.dto.BomSearchDTO;
-import kr.co.itwillbs.de.orders.dto.ClientDTO;
 
 public interface BomMapper {
 

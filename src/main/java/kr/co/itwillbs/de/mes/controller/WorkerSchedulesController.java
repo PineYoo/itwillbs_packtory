@@ -19,42 +19,43 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.mes.dto.QcStandardDTO;
-import kr.co.itwillbs.de.mes.dto.QcStandardSearchDTO;
-import kr.co.itwillbs.de.mes.service.QcStandardService;
+import kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO;
+import kr.co.itwillbs.de.mes.dto.WorkerScheduleSearchDTO;
+import kr.co.itwillbs.de.mes.service.WorkerScheduleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/mes/qcstandard")
-public class QcStandardController {
+@RequestMapping("/mes/workerschedule")
+public class WorkerSchedulesController {
 
-	private final QcStandardService qcStandardService;
-	private final String QC_PATH = "/mes/qcstandard";
+	private final WorkerScheduleService workerScheduleService;
+	private final String PATH = "/mes/workerschedule";
 
-	// 품질 등록 폼 페이지
+	// 보유 자격증 정보 등록 폼 페이지
 	@GetMapping("/new")
-	public String qcStandardRegisterForm(Model model) {
+	public String workerScheduleRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		model.addAttribute("qcStandardDTO", new QcStandardDTO());
+		model.addAttribute("workerScheduleDTO", new WorkerScheduleDTO());
 
-		return QC_PATH + "/qcstandard_form";
+		return PATH + "/workerschedule_form";
 	}
 
-	// 품질 등록 폼 페이지 AJAX용
+	// 보유 자격증 정보 등록 폼 페이지 AJAX용
 	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> qcstandardRegister(@RequestBody @Valid QcStandardDTO qcStandardDTO) {
+	private ResponseEntity<Map<String, Object>> workerScheduleRegister(
+			@RequestBody @Valid WorkerScheduleDTO workerScheduleDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("requestDTO : {}", StringUtil.objToString(qcStandardDTO));
+		log.info("requestDTO : {}", StringUtil.objToString(workerScheduleDTO));
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			qcStandardService.insertQcStandard(qcStandardDTO);
+			workerScheduleService.insertWorkerSchedule(workerScheduleDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -66,44 +67,44 @@ public class QcStandardController {
 		return ResponseEntity.ok(response);
 	}
 
-	// 품질 목록 조회 (검색)
+	// 보유 자격증 정보 목록 조회 (검색)
 	@GetMapping("")
-	public String getQcStandardList(@ModelAttribute QcStandardSearchDTO searchDTO, Model model) {
+	public String getWorkerScheduleList(@ModelAttribute WorkerScheduleSearchDTO searchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		// 페이징
-		searchDTO.getPageDTO().setTotalCount(qcStandardService.searchQcStandardCount(searchDTO));
+		searchDTO.getPageDTO().setTotalCount(workerScheduleService.searchWorkerScheduleCount(searchDTO));
 
-		// 품질 목록 조회
-		List<QcStandardDTO> qcStandardList = qcStandardService.searchQcStandard(searchDTO);
-		model.addAttribute("qcStandardList", qcStandardList);
+		// 보유 자격증 정보 목록 조회
+		List<WorkerScheduleDTO> workerScheduleList = workerScheduleService.searchWorkerSchedule(searchDTO);
+		model.addAttribute("workerScheduleList", workerScheduleList);
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
-		return QC_PATH + "/qcstandard_list";
+		return PATH + "/workerschedule_list";
 	}
 
-	// 품질 상세 조회
+	// 보유 자격증 정보 상세 조회
 	@GetMapping("/{idx}")
-	public String getQcStandard(@PathVariable("idx") Long idx, Model model) {
+	public String getWorkerSchedule(@PathVariable("idx") Long idx, Model model) {
 		log.info("{}---start, request param {}", Thread.currentThread().getStackTrace()[1].getMethodName(), idx);
 
-		// 품질 상세정보 조회
-		QcStandardDTO qcStandardDTO = qcStandardService.getQcStandardByIdx(idx);
-		model.addAttribute("qcStandardDTO", qcStandardDTO);
+		// 보유 자격증 정보 상세정보 조회
+		WorkerScheduleDTO workerScheduleDTO = workerScheduleService.getWorkerScheduleByIdx(idx);
+		model.addAttribute("workerScheduleDTO", workerScheduleDTO);
 
-		return QC_PATH + "/qcstandard_detail";
+		return PATH + "/workerschedule_detail";
 	}
 
-	// 품질 수정
-	@PutMapping("/updateQcStandard")
-	public ResponseEntity<Map<String, Object>> updateQcStandard(@RequestBody QcStandardDTO qcStandardDTO) {
+	// 보유 자격증 정보 수정
+	@PutMapping("/updateWorkerSchedule")
+	public ResponseEntity<Map<String, Object>> updateWorkerSchedule(@RequestBody WorkerScheduleDTO workerScheduleDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			qcStandardService.updateQcStandard(qcStandardDTO);
+			workerScheduleService.updateWorkerSchedule(workerScheduleDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {

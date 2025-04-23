@@ -61,11 +61,4 @@ public class QcLogService {
 		}
 	}
 
-	// 품질로그 삭제 (Soft delete)
-	@Transactional
-	public void deleteQcLog(Long idx) {
-		log.info("품질로그 삭제 요청 - idx: {}", idx);
-		qcLogMapper.deleteQcLog(idx);
-	}
-
 }
