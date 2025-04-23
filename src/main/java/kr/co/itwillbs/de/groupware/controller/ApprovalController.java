@@ -501,7 +501,7 @@ public class ApprovalController {
 			
 		case "drafted":
 		case "waiting":
-		case "completed":
+		case "complete":
 			approvalDTOList = approvalService.getApprovalListByFilter(filter, memberId);
 		}
 		log.info("approvalDTOList : {} " + approvalDTOList.toString());
