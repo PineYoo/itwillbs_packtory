@@ -16,6 +16,8 @@ import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.human.dto.EmployeeCodeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
+import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
+import kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
@@ -172,5 +174,36 @@ public class SearchController {
 		return searchService.getRecipeList(recipeSearchDTO);
 	}
 	
+	
+	
+	
+	// ==================================================================================
+	// 라인 조회 팝업창 이동
+	@GetMapping(value = { "/location/search-popup", "/location/search-popup/" })
+	public String getRecipeList(Model model, @ModelAttribute LocationInfoSearchDTO locationInfoSearchDTO) {
+		LogUtil.logStart(log);
+		// 라인 리스트 조회 요청(SELECT)
+		List<LocationInfoDTO> locationInfoList = searchService.getLocationInfoList(locationInfoSearchDTO);
+		model.addAttribute("locationInfoList", locationInfoList);
+		
+//		//페이징용 totalCount
+		locationInfoSearchDTO.getPageDTO().setTotalCount(searchService.getLocationInfoCountForPaging(locationInfoSearchDTO));
+		model.addAttribute("locationInfoSearchDTO", locationInfoSearchDTO);
+		
+		return "/common/location_search_form";
+	}
+	
+	// 검색조건에 따른 라인 목록
+	@PostMapping("/location/search-popup")
+	@ResponseBody
+	public List<LocationInfoDTO> searchRecipeList(Model model, @ModelAttribute LocationInfoSearchDTO locationInfoSearchDTO) {
+		LogUtil.logStart(log);
+		
+		//페이징용 totalCount
+		locationInfoSearchDTO.getPageDTO().setTotalCount(searchService.getLocationInfoCountForPaging(locationInfoSearchDTO));
+		model.addAttribute("locationInfoSearchDTO", locationInfoSearchDTO);
+		
+		return searchService.getLocationInfoList(locationInfoSearchDTO);
+	}
 
 }

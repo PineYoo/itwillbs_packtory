@@ -9,6 +9,8 @@ import kr.co.itwillbs.de.common.mapper.SearchMapper;
 import kr.co.itwillbs.de.human.dto.EmployeeCodeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
+import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
+import kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
@@ -133,5 +135,25 @@ public class SearchService {
 	public int getRecipeCountForPaging(RecipeSearchDTO recipeSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		return searchMapper.getRecipeCountForPaging(recipeSearchDTO);
+	}
+	// ======================================================================================
+	/**
+	 *  라인 정보 리스트 조회
+	 * @param recipeSearchDTO
+	 * @return List<LocationInfoDTO>
+	 */
+	public List<LocationInfoDTO> getLocationInfoList(LocationInfoSearchDTO locationInfoSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getLocationInfoList(locationInfoSearchDTO);
+	}
+	
+	/**
+	 * 검색조건에 따른 라인 count 가져오기 페이징용
+	 * @param locationInfoSearchDTO
+	 * @return
+	 */
+	public int getLocationInfoCountForPaging(LocationInfoSearchDTO locationInfoSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getLocationInfoCountForPaging(locationInfoSearchDTO);
 	}
 }

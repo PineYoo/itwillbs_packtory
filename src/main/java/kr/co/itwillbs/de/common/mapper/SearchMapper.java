@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import kr.co.itwillbs.de.human.dto.EmployeeCodeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
+import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
+import kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
@@ -86,6 +88,19 @@ public interface SearchMapper {
 	 * 페이징용 카운트
 	 */
 	int getRecipeCountForPaging(RecipeSearchDTO recipeSearchDTO);
+	
+	// ====================================================================
+	/**
+	 * 검색조건에 따른 라인 리스트 조회
+	 * @param locationInfoSearchDTO
+	 * @return List<LocationInfoDTO>
+	 */
+	List<LocationInfoDTO> getLocationInfoList(LocationInfoSearchDTO locationInfoSearchDTO);
+	
+	/**
+	 * 페이징용 카운트
+	 */
+	int getLocationInfoCountForPaging(LocationInfoSearchDTO locationInfoSearchDTO);
 
 
 }

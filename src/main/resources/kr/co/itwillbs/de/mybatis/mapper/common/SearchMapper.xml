@@ -314,6 +314,45 @@
 	    </where>
 		 ORDER BY rm.reg_date desc						-- 최근 등록 순
 	</select>
+	<!-- ===================================================================== -->
+	<!-- 라인 리스트 컬럼 -->
+	<sql id="location_list_columns_forSelect">
+		  idx
+		, type
+		, name
+		, postcode
+		, address1
+		, address2
+		, memo
+		, is_deleted
+		, reg_id
+		, reg_date
+		, mod_id
+		, mod_date
+	</sql>
 	
+	<select id="getLocationInfoList" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO"
+								resultType="kr.co.itwillbs.de.mes.dto.LocationInfoDTO">
+		SELECT
+		<include refid="location_list_columns_forSelect"></include>
+		  FROM t_location_info
+		<where>
+			<if test="searchKeyword != null and searchKeyword != ''">
+			AND (name LIKE CONCAT('%', #{searchKeyword} ,'%'))
+			</if>
+		</where>
+	</select>
+	
+	<select id="getLocationInfoCountForPaging" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO"
+								resultType="int">
+		SELECT COUNT(*)
+		  FROM t_location_info
+		<where>
+			   is_deleted = 'N'
+			<if test="searchKeyword != null and searchKeyword != ''">
+			AND (name LIKE CONCAT('%', #{searchKeyword} ,'%'))
+			</if>
+		</where>
+	</select>
 	
 </mapper>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- 		layout:decorate="~{common/layouts/de_layout}"> -->
+<head>
+<title>팩토리(PackTory) - 상품 검색</title>
+<!-- 부트스트랩 icons 가져오기 -->
+<th:block layout:fragment="headContents">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+<!-- CSS -->
+<th:block layout:fragment="css">
+	<!-- Custom fonts for this template-->
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	
+	<!-- dataTables -->
+	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<!-- 	<link href="/css/datatables/datatables.min.css" rel="stylesheet"> -->
+	<link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" rel="stylesheet">
+	
+	<!-- datepicker -->
+	<link href="/css/datepicker/daterangepicker.css" rel="stylesheet">
+	
+	<!-- fontawesome -->	
+	<link href="/css/fontawesome-free/all.min.css" rel="stylesheet" type="text/css">
+	
+	<!-- Custom styles for this template-->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+	
+	<!-- 부트스트랩 icons 가져오기 -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+	<link href="/css/sb-admin-2.min.css" rel="stylesheet" type="text/css">
+<!-- 	<link href="/css/sb-admin-2.css" rel="stylesheet" type="text/css"> -->
+	
+	<!-- 파비콘 -->
+	<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+	<!-- 개별 CSS-->
+	<link href="/css/approval/approval_reg_form.css" rel="stylesheet">
+</th:block>
+
+</head>
+
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+		
+			<!-- Page Heading -->
+			<h3 class="reg-title">상품 검색</h3>
+			
+			<!-- 본문 컨테이너 -->
+			<div class="card-body">
+				<!-- 검색폼 -->
+				<form id="searchForm" th:object="${locationInfoSearchDTO}">
+				    <input type="hidden" th:field="*{pageDTO.page}">
+					<input type="hidden" th:field="*{pageDTO.size}">
+		            
+		            <div class="row g-2 mb-2">
+					    <div class="col-md-12 col-sm-6 mb-2">
+					        <input type="text" id="searchKeyword" class="form-control" placeholder="상품명 / 단위 검색">
+					    </div>
+					</div>
+		        </form>
+
+			    <div class="text-end">
+			        <button class="btn btn-danger mb-2" onclick="window.close()">선택완료</button>
+			    </div>
+
+				<div class="table-responsive">
+				     <table class="table table-striped table-hover text-center">
+				        <thead>
+				            <tr>
+				                <th class="text-nowrap">타입</th>
+				                <th class="text-nowrap">공장명</th>
+				                <th class="text-nowrap">주소</th>
+				                <th class="text-nowrap">상세주소</th>
+				                <th class="text-nowrap">메모</th>
+				                <th class="text-nowrap">선택</th>
+				            </tr>
+				        </thead>
+				        <tbody id="locationInfoList">
+				        	<tr th:each="item , status : ${locationInfoList}" th:data-id="${item.idx}">
+								<td class="type" th:text="${item.type}"></td>
+								<td class="name" th:text="${item.name}"></td>
+								<td class="address1" th:text="${item.address1 != null ? item.address1 : '-'}"></td>
+								<td class="address2" th:text="${item.address2 != null ? item.address2 : '-'}"></td>
+								<td class="memo" th:text="${item.memo != null ? item.memo : '-'}"></td>
+				        		<td>
+				        			<!-- hidden ! -->
+									<input type="hidden" class="idx" th:value="${item.idx}" />
+				        			<!-- hidden ! -->
+									<button class="btn btn-success select-btn">선택</button>
+				        		</td>
+				        	</tr>
+				        </tbody>
+				    </table>
+				</div>
+				<div th:replace="~{common/fragments/de_pagination :: pagination(${locationInfoSearchDTO})}"></div>
+			</div>
+		</div>
+		<!-- /.container-fluid -->
+	</th:block>
+	
+<!-- JS -->
+<th:block layout:fragment="script">
+	<!-- Bootstrap core JavaScript-->
+	<script src="/js/jquery-3.7.1.js"></script>
+	<script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
+	
+		<!-- Custom scripts for all pages-->
+	<script src="/js/sb-admin-2.min.js"></script>
+	
+	<!-- Core plugin JavaScript-->
+	<script src="/js/jquery-easing/jquery.easing.min.js"></script>
+
+	<!-- dataTables -->
+	<script src="/js/datatables/jquery.dataTables.min.js"></script>
+	<script src="/js/datatables/dataTables.bootstrap4.min.js"></script>
+	<script src="/js/datatables/dataTables.buttons.min.js"></script>
+	<script src="/js/datatables/buttons.html5.min.js"></script>
+	<script src="/js/datatables/jszip.min.js"></script>
+	<script src="/js/datatables/buttons.print.min.js"></script>
+	
+	<!-- fontawesome -->	
+	<script src="/css/fontawesome/all.min.js"></script>
+	
+	<script type="text/javascript">
+		const isSingleSelect = window.opener.isSingleSelect ?? false;
+		
+		$(document).ready(function() {
+			
+		    // 검색조건에 따른 상품 조회 함수
+			function searchProducts() {
+				var searchKeyword = $('#searchKeyword').val();
+
+			    // 페이지 관련 값도 가져오기
+			    var page = $('input[name="pageDTO.page"]').val();
+			    var size = $('input[name="pageDTO.size"]').val();
+			    
+		        $.ajax({
+		            url: '/location/search-popup',
+		            type: 'POST',
+		            data: {
+		            	searchKeyword : searchKeyword,
+		            	'pageDTO.page': page,
+		                'pageDTO.size': size
+		            },
+		            success: function (data) {
+		                const $tbody = $('#locationInfoList');
+		                $tbody.empty();
+
+		                if (data.length === 0) {
+		                    $tbody.append('<tr><td colspan="6">조회 된 데이터가 없습니다.</td></tr>');
+		                    return;
+		                }
+
+		                $.each(data, function (i, item) {
+		                	// item.regDate가 배열 형태일 경우
+		                    var regDate = item.regDate;
+		                    if (Array.isArray(regDate) && regDate.length >= 5) {
+		                        // 월은 0부터 시작하므로 -1 해주기
+		                        var date = new Date(regDate[0], regDate[1] - 1, regDate[2], regDate[3], regDate[4]);
+		                        regDate = date.toISOString().split('T')[0]; // "yyyy-MM-dd" 형식으로 변환
+		                    } else {
+		                        regDate = '-'; // regDate가 유효하지 않다면 '-'로 처리
+		                    }
+		                	
+		                	const row = `
+			                		<tr data-id="${item.idx}">
+										<td class="type">${item.type || '-'}</td>
+										<td class="name">${item.name || '-'}</td>
+										<td class="address1">${item.address1 || '-'}</td>
+										<td class="address2">${item.address2 || '-'}</td>
+				                        <td class="memo">${item.memo}</td>
+						        		<td>
+											<input type="hidden" class="idx" value="${item.idx || ''}" />
+											<button class="btn btn-success select-btn">선택</button>
+						        		</td>
+						        	</tr>
+			                `;
+		                    $tbody.append(row);
+		                });
+		            },
+		            error: function () {
+		                alert('검색 중 오류가 발생했습니다.');
+		            }
+		        });
+		    }
+
+		    // 키 입력 및 셀렉트박스 변경 시 바로 검색
+		    $('#searchKeyword').on('keyup', searchProducts);
+		    
+			//	-------------------------------------------------------------
+		    const selectedIdxList = window.opener.selectedIdxListFromParent || [];
+// 		    const maxSelectable = window.opener.maxSelectableItems || 5;
+
+// 		    let selectedCount = selectedIdxList.length; // 초기 개수
+
+		    // 초기화: 이미 선택된 상품은 선택됨 표시
+		    $('#locationInfoList tr').each(function () {
+		        const idx = parseInt($(this).find('.idx').val());
+		        if (selectedIdxList.includes(idx)) {
+		            $(this).find('.select-btn')
+		                .removeClass('btn-success')
+		                .addClass('btn-secondary selected')
+		                .text('선택됨');
+		        }
+		    });
+
+		 	// 선택/취소 버튼 토글
+		    $(document).on('click', '.select-btn', function () {
+		        const $btn = $(this);
+		        const $row = $btn.closest('tr');
+		        const idx = parseInt($row.find('.idx').val());
+
+		        const locationInfo = {
+		            idx: idx,
+		            type: $row.find('.type').text().trim(),
+		            name: $row.find('.name').text().trim(),
+		            address1: $row.find('.address1').text().trim(),
+		            address1: $row.find('.address2').text().trim(),
+		            type: $row.find('.type').val()
+		        };
+
+		     	// 25.04.21 추가(상품 단일선택 모드)
+		        if (typeof isSingleSelect !== 'undefined' && isSingleSelect) {	// true
+		        	if (window.opener && typeof window.opener.setProductInfo === 'function') {
+		                window.opener.setProductInfo(productInfo); // 부모창으로 전달
+		            }
+		        	
+		        	window.close(); // 선택하자마자 창 닫기
+		            return;
+		        }
+		        
+		     	// ----------------------------
+		        // 상품 다중선택 모드
+		        if ($btn.hasClass('selected')) {
+		            // 선택 취소
+		            $btn
+		                .removeClass('selected btn-secondary')
+		                .addClass('btn-success')
+		                .text('선택');
+
+// 		            selectedCount--;
+
+					// 상품 삭제
+		            if (window.opener && typeof window.opener.removeLocationInfo === 'function') {
+		                window.opener.removeLocationInfo(idx);
+		            }
+			        
+				    // 상품의 총합 계산
+		            if (window.opener && typeof window.opener.updateTotalSelectedPrice === 'function') {
+		                window.opener.updateTotalSelectedPrice();
+		            }
+
+		        } else {
+// 		            if (selectedCount >= maxSelectable) {
+// 		                alert(`최대 ${maxSelectable}개까지만 선택할 수 있습니다.`);
+// 		                return;
+// 		            }
+
+		            // 선택
+		            $btn
+		                .addClass('selected btn-secondary')
+		                .removeClass('btn-success')
+		                .text('선택됨');
+
+// 		            selectedCount++;
+	
+					// 상품 정보 추가
+		            if (window.opener && typeof window.opener.appendLocationInfo === 'function') {
+		                window.opener.appendLocationInfo(locationInfo);
+		            }
+		        }
+		    });
+
+		    
+		});
+	</script>
+</th:block>
+	
+</body>
+</html>
