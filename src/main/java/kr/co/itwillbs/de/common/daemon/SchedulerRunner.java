@@ -39,8 +39,8 @@ public class SchedulerRunner implements CommandLineRunner {
 //		registerTaskForSec("every45SecHealthCheck", 45);
 //		registerTaskForMin("E-ApprovalMonitor", 1);
 //		// cron 형식 작업
-		registerStatisticsJob();
-		registerApprovalProcessingJob(); // 결재 처리 데몬 등록
+//		registerStatisticsJob();
+//		registerApprovalProcessingJob(); // 결재 처리 데몬 등록
 	}
 
 	@SuppressWarnings("unused")
