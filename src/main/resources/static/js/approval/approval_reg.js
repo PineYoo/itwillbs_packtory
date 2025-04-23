@@ -47,6 +47,10 @@ document.addEventListener("DOMContentLoaded", function(){
 	// 휴가신청기간 적용
 	initDateRangePickerMinToday('eventStartDate', 'eventEndDate');
 	
+	initDateTimePickerMinNow('datetimeInput');
+	
+	
+	
 	// ---------------------------------------------------
 	// 기안서 등록(submit)
 	$('#btnSubmitForm').on("click", function() {
@@ -81,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			if(data.status === "success") {
 				alert(data.message);
 				//location.reload(); // 현재 페이지 새로 고침
-				location.href="/groupware/approval";
+				location.href="/groupware/approval/" + data.docNo;
 			} else if(data.status === "validFail") {
 				console.log("hello validFail!");
 				let _errors = data.errors;

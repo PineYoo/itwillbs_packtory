@@ -193,6 +193,120 @@
 		        $startInput.trigger('click');
 		    });
 		}
+		
+		// -----------------------------------------------------------------
+		// 단일 날짜+시간 선택 함수 (datetimepicker) - 미래만 선택 가능
+		function initDateTimePickerMinNow(inputId) {
+		    var $input = $('#' + inputId);
+		    var $icon = $('[data-target="#' + inputId + '"]');
+		
+		    $input.daterangepicker({
+		        singleDatePicker: true,
+		        timePicker: true,
+		        timePicker24Hour: true,
+		        timePickerSeconds: true,
+		        showDropdowns: true,
+		        autoUpdateInput: false,
+		        minDate: moment(), // 오늘 이후만 선택 가능
+		        locale: {
+		            format: 'YYYY-MM-DD HH:mm:ss',
+		            applyLabel: "확인",
+		            cancelLabel: "취소",
+		            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+		            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		            customRangeLabel: '직접 선택'
+		        }
+		    }, function(start) {
+		        $input.val(start.format('YYYY-MM-DD HH:mm:ss'));
+		    }).on('show.daterangepicker', function (ev, picker) {
+		        picker.container.addClass('packtoryCustomPicker');
+		    });
+		
+		    // 아이콘 클릭 시 캘린더 열리게
+		    $icon.on('click', function () {
+		        $input.trigger('click');
+		    });
+		}
+		
+		// -----------------------------------------------------------------
+		// 단일 날짜+시간 선택 함수 (datetimepicker) - 선택제한 없음
+		function initDateTimePicker(inputId) {
+		    var $input = $('#' + inputId);
+		    var $icon = $('[data-target="#' + inputId + '"]');
+		
+		    $input.daterangepicker({
+		        singleDatePicker: true,
+		        timePicker: true,
+		        timePicker24Hour: true,
+		        timePickerSeconds: true,
+		        showDropdowns: true,
+		        autoUpdateInput: false,
+		        startDate: moment(),   // 기본값을 현재로 설정
+		        locale: {
+		            format: 'YYYY-MM-DD HH:mm:ss',
+		            applyLabel: "확인",
+		            cancelLabel: "취소",
+		            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+		            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		            customRangeLabel: '직접 선택'
+		        }
+		    }, function(start) {
+		        $input.val(start.format('YYYY-MM-DD HH:mm:ss'));
+		    }).on('show.daterangepicker', function (ev, picker) {
+		        picker.container.addClass('packtoryCustomPicker');
+		    });
+		
+		    // 아이콘 클릭 시 캘린더 열리게
+		    $icon.on('click', function () {
+		        $input.trigger('click');
+		    });
+		}
+		
+		// -----------------------------------------------------------------
+		// 기간별 날짜+시간 선택 함수 (datetimepicker) - 미래만 선택 가능
+		function initDateRangePickerWithTime(startInputId, endInputId) {
+		    var $startInput = $('#' + startInputId);
+		    var $endInput = $('#' + endInputId);
+		    var $iconStart = $('[data-target="#' + startInputId + '"]');
+		    var $iconEnd = $('[data-target="#' + endInputId + '"]');
+
+		    $startInput.daterangepicker({
+		        locale: {
+		            separator: " ~ ",
+		            format: 'YYYY-MM-DD HH:mm:ss',
+		            applyLabel: "확인",
+		            cancelLabel: "취소",
+		            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+		            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		            customRangeLabel: '기간 지정'
+		        },
+		        autoUpdateInput: false,
+		        timePicker: true,
+		        timePicker24Hour: true,
+		        timePickerSeconds: true,
+		        showDropdowns: true,
+		        autoApply: false,
+		        minDate: moment(),
+		        ranges: {
+		            '오늘': [moment(), moment().endOf('day')],
+		            '일주일': [moment(), moment().add(7, 'days')],
+		            '한달': [moment(), moment().add(1, 'months')]
+		        }
+		    }, function(start, end) {
+		        $startInput.val(start.format('YYYY-MM-DD HH:mm:ss'));
+		        $endInput.val(end.format('YYYY-MM-DD HH:mm:ss'));
+		    }).on('show.daterangepicker', function (ev, picker) {
+		        picker.container.addClass('packtoryCustomPicker');
+		    });
+
+		    $iconStart.add($iconEnd).add($endInput).on('click', function() {
+		        $startInput.trigger('click');
+		    });
+		}
+		
+		
+		
+		// -----------------------------------------------------------------
 		// hidden 을 제외한 input select 값 초기화하기
 			function formReset(target) {
 				document.querySelector('#'+target).querySelectorAll('input, select').forEach(function(item) {
