@@ -33,8 +33,8 @@
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
 								<form th:action="@{/mes/warehouse}" method="get" th:object="${searchDTO}" id="searchForm">
-									<input type="hidden" name="pageDTO.page" th:value="${searchDTO.pageDTO.page}"> 
-									<input type="hidden" name="pageDTO.size" th:value="${searchDTO.pageDTO.size}">
+									<input type="hidden" th:field="*{pageDTO.page}"> 
+									<input type="hidden" th:field="*{pageDTO.size}">
 
 									<div class="container-fluid px-5 mt-3">
 										<div class="row">
@@ -134,18 +134,20 @@
 									<th>총수량</th>
 									<th>사용수량</th>
 									<th>단위</th>
+									<th>삭제유무</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="warehouse : ${warehouseList}" th:data-id="${warehouse.idx}" th:data-idx="${warehouse.idx}">
-									<td th:text="${warehouse.productName}"></td>
-									<td th:text="${warehouse.lotIdx}"></td>
-									<td th:text="${warehouse.type}"></td>
-									<td th:text="${warehouse.name}"></td>
-									<td th:text="${warehouse.directionCode}"></td>
-									<td th:text="${warehouse.quantity}"></td>
-									<td th:text="${warehouse.usedQuantity}"></td>
-									<td th:text="${warehouse.unit}"></td>
+								<tr th:each="item : ${warehouseList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
+									<td th:text="${item.productName}"></td>
+									<td th:text="${item.lotIdx}"></td>
+									<td th:text="${item.type}"></td>
+									<td th:text="${item.name}"></td>
+									<td th:text="${item.directionCode}"></td>
+									<td th:text="${item.quantity}"></td>
+									<td th:text="${item.usedQuantity}"></td>
+									<td th:text="${item.unit}"></td>
+									<td th:text="${item.isDeleted}"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -165,8 +167,9 @@
                     searching : false,
                     paging : false,
                     info : false,
-                    ordering : false
-                });
+                    order : [ 0, "desc" ],
+                    responsive : true
+                }); // end of $('#dataTables').DataTable({
 
                 // 등록 페이지 이동
                 $("#btnRegister").on("click", function() {

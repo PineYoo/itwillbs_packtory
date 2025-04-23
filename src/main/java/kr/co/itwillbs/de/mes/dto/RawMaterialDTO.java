@@ -39,7 +39,7 @@ public class RawMaterialDTO {
     private String unit;			// 단위
 
 	@PositiveOrZero(message = "가격은 0원 이상만 입력 가능합니다.")
-    private Integer price;		// 가격
+    private Integer price;			// 가격
 
     private String expirationDate;	// 평균사용기한
 

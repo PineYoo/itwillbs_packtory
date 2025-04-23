@@ -25,9 +25,6 @@ public interface RawMaterialMapper {
 	// 원자재 정보 수정
 	public void updateRawMaterial(RawMaterialDTO rawmaterialDTO);
 
-	// 원자재 삭제
-	public void deleteRawMaterial(Long idx);
-	
 	// 원자재 정보 들고 가기 (외부용)
 	public List<RawMaterialDTO> selectRawMaterialList();
 

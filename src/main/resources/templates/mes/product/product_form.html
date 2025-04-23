@@ -31,7 +31,7 @@
 				<!-- 본문 컨테이너 -->
 				<div class="card shadow mb-4">
 					<div class="card-body">
-						<form th:action="@{/mes/product/new}" th:object="${productDTO}" method="post" class="form row g-3" id="registerForm">
+						<form th:action="@{/mes/product/new}" method="post" th:object="${productDTO}" class="form row g-3" id="registerForm">
 
 							<!-- 상품 타입 -->
 							<div class="col-md-6">
@@ -58,8 +58,13 @@
 								<div th:replace="~{common/fragments/de_form :: inputNumber('price', '가격', true,false,false)}"></div>
 							</div>
 							
+							<!-- 삭제 유무 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+							</div>
+
 							<hr>
-							
+
 							<!-- 버튼들 -->
 							<div class="col-md-12 row align-items-center justify-content-center">
 								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>

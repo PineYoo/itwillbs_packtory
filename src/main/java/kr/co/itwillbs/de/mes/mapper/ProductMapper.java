@@ -25,9 +25,6 @@ public interface ProductMapper {
 	// 상품 정보 수정
 	public void updateProduct(ProductDTO productDTO);
 
-	// 상품 삭제
-	public void deleteProduct(Long idx);
-	
 	// 상품 정보 들고 가기 (외부용)
 	public List<ProductDTO> selectProductList();
 

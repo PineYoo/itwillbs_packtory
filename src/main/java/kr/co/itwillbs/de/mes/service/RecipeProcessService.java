@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
 import kr.co.itwillbs.de.mes.mapper.RecipeProcessMapper;
 import lombok.extern.slf4j.Slf4j;
 

@@ -86,7 +86,13 @@ input, select {
 
 							<!-- 평균 사용 기한 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('expirationDate', '평균 사용 기한', true,false,false)}"></div>
+								<label for="expirationDate" class="form-label">평균 사용 기한</label> <input type="text" id="expirationDate" th:field="*{expirationDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
+								<div th:id="|expirationDateError|" class="text-danger"></div>
+							</div>
+
+							<!-- 삭제 유무 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
 							</div>
 
 							<hr>
@@ -116,7 +122,6 @@ input, select {
 							<div class="col-md-12 row align-items-center justify-content-center">
 								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
 								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
-								<button type="button" id="deleteBtn" class="btn btn-danger btn-lg d-block col-3 ml-2 mb-3">삭제</button>
 							</div>
 						</form>
 					</div>
@@ -137,6 +142,30 @@ input, select {
 			$("#companyName").val(data.companyName);
 			$("#clientIdx").val(data.idx);
 		}
+		// ===== 캘린더 ===============================================
+			// 제조일자 선택 (datepicker)
+		    $('#expirationDate').daterangepicker({
+		        singleDatePicker: true, // 단일 날짜 선택 모드
+		        showDropdowns: true, // 년월 수동 선택 가능
+		        autoApply: true, // 확인/취소 버튼 없이 즉시 반영
+		        autoUpdateInput: false, // 초기 입력 필드 비우기
+		        locale: {
+		            format: 'YYYY-MM-DD', // 날짜 형식
+		            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+		            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		            applyLabel: "확인",
+		            cancelLabel: "취소"
+		        },
+		        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
+		        minDate: moment().add(1, 'month'), 
+		        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
+		        // ---------------------------------------------------------------
+		    }).on('apply.daterangepicker', function(ev, picker) {
+		        $(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
+		        $(this).addClass("filled");
+		    });
+		 // ===== 캘린더 ===============================================
+		
 	    $(function () {
 	        // 목록 버튼 클릭 시
 	        $('#btnList').on("click", function () {
@@ -165,7 +194,7 @@ input, select {
 	            // idx를 실제 페이지 URL에서 받아오기
 	            const idx = $('#idx').val();  // 수정된 부분: id를 #idx로 수정
 	
-	            fetch(`/mes/rawmaterial/${idx}`, {
+	            fetch(`/mes/rawmaterial/updateRawMaterial`, {
 	                method: "PUT",
 	                headers: {
 	                    "Content-Type": "application/json"
@@ -187,30 +216,6 @@ input, select {
 	            .catch(error => {
 	                console.error("서버 오류:", error);
 	                alert("요청 처리 중 문제가 발생했습니다.");
-	            });
-	        });
-	        
-	     	// 삭제 버튼 클릭 시
-	        $('#deleteBtn').on("click", function () {
-	            if (!confirm("정말 삭제하시겠습니까?")) return;
-
-	            const idx = $('#idx').val();
-
-	            fetch(`/mes/rawmaterial/${idx}`, {
-	                method: "DELETE"
-	            })
-	            .then(response => response.text())
-	            .then(data => {
-	                if (data === "success") {
-	                    alert("삭제되었습니다.");
-	                    location.href = "/mes/rawmaterial"; // 목록으로 이동
-	                } else {
-	                    alert("삭제 실패: " + data);
-	                }
-	            })
-	            .catch(error => {
-	                console.error("삭제 요청 오류:", error);
-	                alert("삭제 요청 중 문제가 발생했습니다.");
 	            });
 	        });
 	    });

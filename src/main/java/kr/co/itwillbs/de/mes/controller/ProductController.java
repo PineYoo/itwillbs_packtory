@@ -4,14 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,13 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
-import kr.co.itwillbs.de.common.service.CustomUserDetails;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.mes.service.ProductService;
@@ -42,24 +35,20 @@ public class ProductController {
 
 	private final ProductService productService;
 	private final CommonCodeUtil commonCodeUtil;
+	private final String PATH = "/mes/product";
 
 	// 상품 등록 폼 페이지
 	@GetMapping("/new")
 	public String productRegisterForm(Model model) {
-		// 로그인 유저 정보 세팅
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
-			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-			LoginVO loginVO = userDetails.getLoginVO();
-			model.addAttribute("userDetails", userDetails);
-			model.addAttribute("loginVO", loginVO);
-		}
-
-		// 새 DTO + 공통 코드
+		
+		// 상품 타입 조회
+		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("PRODUCT_TYPE");
+		model.addAttribute("codeItems", codeItems);
+		
 		model.addAttribute("productDTO", new ProductDTO());
-		model.addAttribute("codeItems", commonCodeUtil.getCodeItems("PRODUCT_TYPE"));
+		
 
-		return "mes/product/product_form";
+		return PATH + "/product_form";
 	}
 
 	// 상품 등록 폼 페이지 AJAX용
@@ -102,7 +91,7 @@ public class ProductController {
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
-		return "mes/product/product_list";
+		return PATH + "/product_list";
 	}
 
 	// 상품 상세 조회
@@ -118,41 +107,27 @@ public class ProductController {
 		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("PRODUCT_TYPE");
 		model.addAttribute("codeItems", codeItems);
 
-		return "mes/product/product_detail";
+		return PATH + "/product_detail";
 	}
 
 	// 상품 수정
-	@PutMapping("/{idx}")
-	public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable("idx") Long idx, @RequestBody ProductDTO productDTO) {
+	@PutMapping("/updateProduct")
+	public ResponseEntity<Map<String, Object>> updateProduct(@RequestBody ProductDTO productDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+
+		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-	        productService.updateProduct(productDTO);
-	        response.put("status", "success");
-	        response.put("message", "상품 수정이 완료되었습니다.");
-	        return ResponseEntity.ok(response);
-	    } catch (EntityNotFoundException e) {
-	        log.error("상품 수정 실패: {}", e.getMessage());
-	        response.put("status", "error");
-	        response.put("message", "상품을 찾을 수 없습니다.");
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-	    } catch (Exception e) {
-	        log.error("상품 수정 실패: {}", e.getMessage());
-	        response.put("status", "error");
-	        response.put("message", "상품 수정 중 오류가 발생했습니다.");
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-	    }
-	}
-
-	// 상품 삭제 (Soft Delete)
-	@DeleteMapping("/{idx}")
-	@ResponseBody
-	public String deleteProduct(@PathVariable("idx") Long idx) {
-		try {
-			productService.deleteProduct(idx);
-			return "success";
+			productService.updateProduct(productDTO);
+			response.put("status", "success");
+			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
-			log.error("상품 삭제 실패: {}", e.getMessage());
-			return "error";
+			e.printStackTrace();
+			response.put("status", "fail");
+			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
 		}
+
+		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
+		return ResponseEntity.ok(response);
 	}
 }

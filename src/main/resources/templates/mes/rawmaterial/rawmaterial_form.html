@@ -2,18 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
 <title>팩토리(PackTory) - 원자재 등록</title>
-<style>
-.form-label {
-	font-weight: bold;
+<style type="text/css">
+.form {
+	max-width: 800px;
+	margin: 0 auto;
 }
 
-.card-header {
-	background-color: #f8f9fc;
-	font-weight: bold;
+input, select {
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 2px;
 }
 
-.card-body {
-	padding: 2rem;
+.essential {
+	background-color: #fffbe6; /* 연한 노랑 */
+}
+
+.filled {
+	background-color: white;
+}
+
+/* ----------------- */
+.addressInfo {
+	display: flex;
+}
+
+@media ( max-width : 768px) {
+	.addressInfo {
+		display: block;
+	}
 }
 </style>
 </head>
@@ -31,69 +48,78 @@
 				<!-- 본문 컨테이너 -->
 				<div class="card shadow mb-4">
 					<div class="card-body">
-						<form th:action="@{/mes/rawmaterial/new}" th:object="${rawMaterialDTO}" method="post" class="form row g-3" id="registerForm">
+						<div class="table-responsive">
+							<form th:action="@{/mes/rawmaterial/new}" method="post" th:object="${rawMaterialDTO}" class="form row g-3" id="registerForm">
 
-							<div class="data-container">
-								<div class="row">
-									<div>
-										<button type="button" id="searchClientBtn" class="btn btn-primary mt-2" onclick="openClientSearch()">거래처 조회</button>
-									</div>
-									<!-- 거래처 이름 -->
-									<div class="col-sm-12 col-md-6 mb-3">
-										<label for="companyName" class="form-label">거래처명</label> <input type="text" id="companyName" class="form-control" readonly>
-									</div>
+								<div class="data-container">
+									<div class="row">
+										<div>
+											<button type="button" id="searchClientBtn" class="btn btn-primary mt-2" onclick="openClientSearch()">거래처 조회</button>
+										</div>
+										<!-- 거래처 이름 -->
+										<div class="col-sm-12 col-md-6 mb-3">
+											<label for="companyName" class="form-label">거래처명</label> <input type="text" id="companyName" class="form-control" readonly>
+										</div>
 
-									<!-- 실제 저장될 clientIdx -->
-									<div class="col-sm-12 col-md-6 mb-3">
-										<label for="clientIdx" class="form-label">거래처 IDX</label> <input type="text" id="clientIdx" th:field="*{clientIdx}" class="form-control" readonly>
+										<!-- 실제 저장될 clientIdx -->
+										<div class="col-sm-12 col-md-6 mb-3">
+											<label for="clientIdx" class="form-label">거래처 IDX</label> <input type="text" id="clientIdx" th:field="*{clientIdx}" class="form-control" readonly>
+										</div>
 									</div>
 								</div>
-							</div>
 
-							<!-- BOM 선택 -->
-							<div class="col-md-6">
-								<label for="bomIdx" class="form-label">BOM</label> <select th:field="*{bomIdx}" class="form-select">
-									<option value="">BOM을 선택하세요</option>
-									<option th:each="bom : ${bomList}" th:value="${bom.idx}" th:text="${bom.name}"></option>
-								</select>
-							</div>
+								<!-- BOM 선택 -->
+								<div class="col-md-6">
+									<label for="bomIdx" class="form-label">BOM</label> <select th:field="*{bomIdx}" class="form-select">
+										<option value="">BOM을 선택하세요</option>
+										<option th:each="bom : ${bomList}" th:value="${bom.idx}" th:text="${bom.name}"></option>
+									</select>
+								</div>
 
-							<!-- 원자재 타입 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
-							</div>
+								<!-- 원자재 타입 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
+								</div>
 
-							<!-- 원자재 이름 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name', '원자재 이름', true,false,false)}"></div>
-							</div>
+								<!-- 원자재 이름 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('name', '원자재 이름', true,false,false)}"></div>
+								</div>
 
-							<!-- 값 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '값', true,false,false)}"></div>
-							</div>
+								<!-- 개수 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '개수', true,false,false)}"></div>
+								</div>
 
-							<!-- 원자재 단위 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit', '원자재 단위', true,false,false)}"></div>
-							</div>
+								<!-- 원자재 단위 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputText('unit', '원자재 단위', true,false,false)}"></div>
+								</div>
 
-							<!-- 원자재 가격 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('price', '원자재 가격', true,false,false)}"></div>
-							</div>
+								<!-- 원자재 가격 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: inputNumber('price', '원자재 가격', true,false,false)}"></div>
+								</div>
 
-							<!-- 평균 사용 기한 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('expirationDate', '평균 사용 기한', true,false,false)}"></div>
-							</div>
-							<hr>
-							<!-- 버튼들 -->
-							<div class="col-md-12 row align-items-center justify-content-center">
-								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
-								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
-							</div>
-						</form>
+								<!-- 평균 사용 기한 -->
+								<div class="col-md-6">
+									<label for="expirationDate" class="form-label">평균 사용 기한</label> <input type="text" id="expirationDate" th:field="*{expirationDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
+									<div th:id="|expirationDateError|" class="text-danger"></div>
+								</div>
+
+								<!-- 삭제 유무 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+								</div>
+
+								<hr>
+								<!-- 버튼들 -->
+								<div class="col-md-12 row align-items-center justify-content-center">
+									<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+									<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -116,7 +142,31 @@
 				$('#btnList').on("click", function() {
 					location.href="/mes/rawmaterial";
 				});
-			
+				
+		// ===== 캘린더 ===============================================
+			// 제조일자 선택 (datepicker)
+		    $('#expirationDate').daterangepicker({
+		        singleDatePicker: true, // 단일 날짜 선택 모드
+		        showDropdowns: true, // 년월 수동 선택 가능
+		        autoApply: true, // 확인/취소 버튼 없이 즉시 반영
+		        autoUpdateInput: false, // 초기 입력 필드 비우기
+		        locale: {
+		            format: 'YYYY-MM-DD', // 날짜 형식
+		            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+		            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		            applyLabel: "확인",
+		            cancelLabel: "취소"
+		        },
+		        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
+		        minDate: moment().add(1, 'month'), 
+		        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
+		        // ---------------------------------------------------------------
+		    }).on('apply.daterangepicker', function(ev, picker) {
+		        $(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
+		        $(this).addClass("filled");
+		    });
+		 // ===== 캘린더 ===============================================
+		     
 		//---------------------------------------------------
      	// 등록 버튼 클릭 시 이벤트
 		// 원자재 등록

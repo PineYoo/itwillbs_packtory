@@ -50,21 +50,17 @@ public class RawMaterialService {
 	@LogExecution
 	@Transactional
 	public void updateRawMaterial(RawMaterialDTO rawMaterialDTO) {
-		log.info("원자재 수정 요청 - idx: {}", rawMaterialDTO.getIdx());
-		rawMaterialMapper.updateRawMaterial(rawMaterialDTO);
-		log.info("원자재 수정 완료 - name: {}", rawMaterialDTO.getName());
-	}
+		log.info("창고 수정 요청 - idx: {}", rawMaterialDTO.getIdx());
 
-	// 원자재 삭제 (Soft delete)
-	@Transactional
-	public void deleteRawMaterial(Long idx) {
-		log.info("원자재 삭제 요청 - idx: {}", idx);
-		rawMaterialMapper.deleteRawMaterial(idx);
-	}
+        // 원자재가 null이 아닌지 체크
+        if (rawMaterialDTO != null) {
+            // 원자재 정보를 업데이트하는 쿼리 호출
+        	rawMaterialMapper.updateRawMaterial(rawMaterialDTO);
+            log.info("창고 수정 완료 - name: {}", rawMaterialDTO.getName());
+        } 
+    }
 
-	/*
-	 * 원자재 정보 담아 가기 (외부용)
-	 */
+	// 원자재 정보 담아 가기 (외부용)
 	public  List<RawMaterialDTO> getRawMaterialList() {
 		return rawMaterialMapper.selectRawMaterialList();
 	}

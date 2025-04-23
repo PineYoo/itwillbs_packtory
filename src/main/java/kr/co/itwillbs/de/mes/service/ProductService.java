@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
-import kr.co.itwillbs.de.mes.dto.BomDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
-import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
 import kr.co.itwillbs.de.mes.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,24 +58,12 @@ public class ProductService {
 			// 상품 정보를 업데이트하는 쿼리 호출
 			productMapper.updateProduct(productDTO);
 			log.info("상품 수정 완료 - name: {}", productDTO.getName());
-		} else {
-			log.warn("수정 요청된 상품 정보가 null입니다.");
-			throw new IllegalArgumentException("수정 요청된 상품 정보가 null입니다.");
 		}
 	}
 
-	// 상품 삭제 (Soft delete)
-	@Transactional
-	public void deleteProduct(Long idx) {
-		log.info("상품 삭제 요청 - idx: {}", idx);
-		productMapper.deleteProduct(idx);
-	}
-
-	/*
-	 * 필요하면 쓰세요 (외부용)
-	 */
-	// 상품 정보 담아 가기
+	// 상품 정보 담아 가기 (외부용)
 	public List<ProductDTO> getProductList() {
 		return productMapper.selectProductList();
 	}
+	
 }
