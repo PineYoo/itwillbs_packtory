@@ -313,7 +313,6 @@
 	        </if>
 	    </where>
 		 ORDER BY rm.reg_date desc						-- 최근 등록 순
-		 LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
 	
