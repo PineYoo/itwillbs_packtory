@@ -26,8 +26,10 @@ import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.commute.dto.CommuteDTO;
 import kr.co.itwillbs.de.commute.service.CommuteService;
+import kr.co.itwillbs.de.groupware.dto.ApprovalDTO;
 import kr.co.itwillbs.de.groupware.dto.NoticeDTO;
 import kr.co.itwillbs.de.groupware.dto.NoticeSearchDTO;
+import kr.co.itwillbs.de.groupware.service.ApprovalService;
 import kr.co.itwillbs.de.groupware.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +41,8 @@ public class MainController {
 	private CommuteService commuteService;
 	@Autowired
 	private NoticeService noticeService;
+	@Autowired
+	private ApprovalService approvalService;
 	@Autowired
 	private CommonCodeUtil commonCodeUtil;
 
@@ -116,6 +120,7 @@ public class MainController {
 			model.addAttribute("userDetails", userDetails);
 			model.addAttribute("loginVO", loginVO);
 		}
+		// =================================================================================
 		// [ 공지사항 ]
 		List<NoticeDTO> noticeList = noticeService.getNoticeList(noticeSearchDTO);
 		model.addAttribute("noticeList", noticeList);
@@ -149,6 +154,12 @@ public class MainController {
 		model.addAttribute("checkInTime", checkInRecord != null ? checkInRecord.getRegDate().toLocalTime().format(formatter) : null);	// 오늘 출근기록 있을 경우 출근시간
 		model.addAttribute("checkOutTime", checkOutRecord != null ? checkOutRecord.getRegDate().toLocalTime().format(formatter) : null);	// 오늘 퇴근기록 있을 경우 퇴근시간
 		model.addAttribute("lastCommuteRecord", lastCommuteRecord);	// 오늘 출퇴근 마지막 기록
+
+		// =================================================================================
+		// [ 전자결재 ]
+		List<ApprovalDTO> approvalList = approvalService.getApprovalListByFilter("waiting", id);
+		log.info("approvalList : " + approvalList);
+		model.addAttribute("approvalList", approvalList);
 		
 		return "/main/main";
 	}

@@ -436,8 +436,8 @@
 				<!-- 나는 미결(null) 인 상태인데 내 앞에 결재자는 승인 된 상태이어야 함 -->
 				<when test="filter == 'waiting'">
 					AND (
-							(a.drafter_id = #{memberId} AND a.progress_status = '2')									 <!-- 기안자인 경우, 진행상태:진행중(2) -->
-						  OR
+<!-- 							(a.drafter_id = #{memberId} AND a.progress_status = '2')									 기안자인 경우, 진행상태:진행중(2) -->
+<!-- 						  OR -->
 							(ai.approver1 = #{memberId} AND ai.approver1_status IS NULL AND a.progress_status = '1') 	 <!-- 결재자1일 경우, 진행상태:결재요청(1) -->
 					      OR
 					    	(ai.approver2 = #{memberId} AND ai.approver2_status IS NULL AND ai.approver1_status = '3')	 <!-- 결재자2일 경우, 1진행상태:결재완료(3) -->
