@@ -61,7 +61,7 @@ input, select {
 
 								<!-- 측정결과 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('qcResult', '측정결과', true,false,false)}"></div>
+									<div th:replace="~{common/fragments/de_form :: selectCodeItems('qcResult', '측정결과', true, ${qcResult},false,false)}"></div>
 								</div>
 
 								<!-- 측정값 -->
@@ -71,7 +71,7 @@ input, select {
 
 								<!-- 단위 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
+									<div th:replace="~{common/fragments/de_form :: selectCodeItems('unit', '단위', true, ${itemUnit},false,false)}"></div>
 								</div>
 
 								<!-- 메모 -->

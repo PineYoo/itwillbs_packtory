@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) - 창고 정보 목록</title>
+<title>팩토리(PackTory) - 창고정보 목록</title>
 
 <style>
 .left-form {
@@ -33,8 +33,7 @@
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
 								<form th:action="@{/mes/warehousetransaction}" method="get" th:object="${searchDTO}" id="searchForm">
-									<input type="hidden" th:field="*{pageDTO.page}"> 
-									<input type="hidden" th:field="*{pageDTO.size}">
+									<input type="hidden" th:field="*{pageDTO.page}"> <input type="hidden" th:field="*{pageDTO.size}">
 
 									<div class="container-fluid px-5 mt-3">
 										<div class="row">
@@ -46,38 +45,25 @@
 												<div class="form-group row mb-3">
 													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('transType', '타입', false, ${transType})}"></div>
 												</div>
-												
-												<!-- 코드 -->
-												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('code','코드',false)}"></div>
-												</div>
-												
+
 												<!-- 상품_IDX -->
 												<div class="form-group row mb-3">
 													<label for="productIdx" class="col-sm-3 col-form-label">상품정보</label>
 													<div class="col-sm-9">
 														<select class="form-select" name="productIdx" id="productIdx" th:field="*{productIdx}">
 															<option value="">상품선택</option>
-															<option th:each="pro : ${productList}" 
-																	th:value="${pro.idx}" 
-																	th:text="${pro.name}"
-																	th:selected="${pro.idx} == ${searchDTO.productIdx}">
-															</option>
+															<option th:each="pro : ${productList}" th:value="${pro.idx}" th:text="${pro.name}" th:selected="${pro.idx} == ${searchDTO.productIdx}"></option>
 														</select>
 													</div>
 												</div>
-												
+
 												<!-- 자재_IDX -->
 												<div class="form-group row mb-3">
 													<label for="materialIdx" class="col-sm-3 col-form-label">자재정보</label>
 													<div class="col-sm-9">
 														<select class="form-select" name="materialIdx" id="materialIdx" th:field="*{materialIdx}">
 															<option value="">자재선택</option>
-															<option th:each="raw : ${rawMaterialList}" 
-																	th:value="${raw.idx}" 
-																	th:text="${raw.name}"
-																	th:selected="${raw.idx} == ${searchDTO.materialIdx}">
-															</option>
+															<option th:each="raw : ${rawMaterialList}" th:value="${raw.idx}" th:text="${raw.name}" th:selected="${raw.idx} == ${searchDTO.materialIdx}"></option>
 														</select>
 													</div>
 												</div>
@@ -86,12 +72,12 @@
 
 											<!-- 오른쪽 컬럼 -->
 											<div class="col-md-6">
-											
+
 												<!-- 제조일자 범위 -->
 												<div class="row mb-3">
 													<th:block th:replace="~{common/fragments/de_search_form::inputDatePicker('startManufacturingDate', 'endManufacturingDate', '제조일자', false)}" />
 												</div>
-												
+
 												<!-- 최소 총개수 -->
 												<div class="form-group row mb-3">
 													<div th:replace="~{common/fragments/de_search_form :: inputText('minQuantity','최소 총개수',false)}"></div>
@@ -101,7 +87,7 @@
 												<div class="form-group row mb-3">
 													<div th:replace="~{common/fragments/de_search_form :: inputText('maxQuantity','최대 총개수',false)}"></div>
 												</div>
-												
+
 												<!-- 삭제 유무 -->
 												<div class="form-group row mb-3">
 													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제유무',false)}"></div>
@@ -142,7 +128,6 @@
 							<thead class="table-light">
 								<tr>
 									<th>타입</th>
-									<th>코드</th>
 									<th>상품명</th>
 									<th>자재명</th>
 									<th>개수</th>
@@ -156,7 +141,6 @@
 							<tbody>
 								<tr th:each="item : ${warehouseTransactionList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
 									<td th:text="${item.transTypeName}"></td>
-									<td th:text="${item.code}"></td>
 									<td th:text="${item.productName}"></td>
 									<td th:text="${item.materialName}"></td>
 									<td th:text="${item.quantity}"></td>

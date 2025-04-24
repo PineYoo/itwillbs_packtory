@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerScheduleSearchDTO;
 import kr.co.itwillbs.de.mes.service.LocationInfoService;
@@ -35,6 +35,7 @@ public class WorkerSchedulesController {
 
 	private final WorkerScheduleService workerScheduleService;
 	private final LocationInfoService locationInfoService;
+	private final CommonCodeUtil commonCodeUtil;
 	private final String PATH = "/mes/workerschedule";
 
 	// 보유 자격증 정보 등록 폼 페이지
@@ -42,9 +43,9 @@ public class WorkerSchedulesController {
 	public String workerScheduleRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		// 공장 장소 정보 가져와서 WorkerScheduleDTO에 담기
-		List<LocationInfoDTO> locationList = locationInfoService.getLocationInfoList();
-		model.addAttribute("locationList", locationList);
+		// 공통코드 + 장소
+		model.addAttribute("shiftType", commonCodeUtil.getCodeItems("SHIFT_TYPE"));
+		model.addAttribute("locationList", locationInfoService.getLocationInfoList());
 
 		model.addAttribute("workerScheduleDTO", new WorkerScheduleDTO());
 
@@ -86,9 +87,7 @@ public class WorkerSchedulesController {
 		List<WorkerScheduleDTO> workerScheduleList = workerScheduleService.searchWorkerSchedule(searchDTO);
 		model.addAttribute("workerScheduleList", workerScheduleList);
 
-		// 공장 장소 정보 가져와서 WorkerScheduleDTO에 담기
-		List<LocationInfoDTO> locationList = locationInfoService.getLocationInfoList();
-		model.addAttribute("locationList", locationList);
+		model.addAttribute("locationList", locationInfoService.getLocationInfoList());
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
@@ -104,10 +103,10 @@ public class WorkerSchedulesController {
 		WorkerScheduleDTO workerScheduleDTO = workerScheduleService.getWorkerScheduleByIdx(idx);
 		model.addAttribute("workerScheduleDTO", workerScheduleDTO);
 
-		// 공장 장소 정보 가져와서 WorkerScheduleDTO에 담기
-		List<LocationInfoDTO> locationList = locationInfoService.getLocationInfoList();
-		model.addAttribute("locationList", locationList);
-		
+		// 공통코드 + 장소
+		model.addAttribute("shiftType", commonCodeUtil.getCodeItems("SHIFT_TYPE"));
+		model.addAttribute("locationList", locationInfoService.getLocationInfoList());
+
 		return PATH + "/workerschedule_detail";
 	}
 

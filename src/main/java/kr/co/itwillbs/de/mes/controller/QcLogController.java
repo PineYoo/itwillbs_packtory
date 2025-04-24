@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.mes.dto.QcLogDTO;
 import kr.co.itwillbs.de.mes.dto.QcLogSearchDTO;
-import kr.co.itwillbs.de.mes.dto.QcStandardDTO;
 import kr.co.itwillbs.de.mes.service.QcLogService;
 import kr.co.itwillbs.de.mes.service.QcStandardService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +35,7 @@ public class QcLogController {
 
 	private final QcLogService qcLogService;
 	private final QcStandardService qcStandardService;
+	private final CommonCodeUtil commonCodeUtil;
 	private final String QC_PATH = "/mes/qclog";
 
 	// 품질로그 등록 폼 페이지
@@ -42,9 +43,10 @@ public class QcLogController {
 	public String qcLogRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		// 품질기준 목록 조회
-		List<QcStandardDTO> qcStandaradList = qcStandardService.getQcStandardList();
-		model.addAttribute("qcStandaradList", qcStandaradList);
+		// 공통코드 + 품질 기준
+		model.addAttribute("qcResult", commonCodeUtil.getCodeItems("QC_RESULT"));
+		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
+		model.addAttribute("qcStandaradList", qcStandardService.getQcStandardList());
 
 		model.addAttribute("qcLogDTO", new QcLogDTO());
 
@@ -81,13 +83,13 @@ public class QcLogController {
 		// 페이징
 		searchDTO.getPageDTO().setTotalCount(qcLogService.searchQcLogCount(searchDTO));
 
-		// 품질 목록 조회
+		// 품질로그 목록 조회
 		List<QcLogDTO> qcLogList = qcLogService.searchQcLog(searchDTO);
 		model.addAttribute("qcLogList", qcLogList);
-		
-		// 품질기준 목록 조회
-		List<QcStandardDTO> qcStandaradList = qcStandardService.getQcStandardList();
-		model.addAttribute("qcStandaradList", qcStandaradList);
+
+		// 공통코드 + 품질 기준
+		model.addAttribute("qcStandaradList", qcStandardService.getQcStandardList());
+		model.addAttribute("qcResult", commonCodeUtil.getCodeItems("QC_RESULT"));
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
@@ -103,9 +105,10 @@ public class QcLogController {
 		QcLogDTO qcLogDTO = qcLogService.getQcLogByIdx(idx);
 		model.addAttribute("qcLogDTO", qcLogDTO);
 
-		// 품질기준 목록 조회
-		List<QcStandardDTO> qcStandaradList = qcStandardService.getQcStandardList();
-		model.addAttribute("qcStandaradList", qcStandaradList);
+		// 공통코드 + 품질 기준
+		model.addAttribute("qcResult", commonCodeUtil.getCodeItems("QC_RESULT"));
+		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
+		model.addAttribute("qcStandaradList", qcStandardService.getQcStandardList());
 
 		return QC_PATH + "/qclog_detail";
 	}

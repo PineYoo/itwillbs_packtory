@@ -16,10 +16,6 @@ public class RawMaterialSearchDTO {
     private String name;			// 이름
     
     private Long clientIdx;			// 거래처 idx
-    private String clientName;		// 거래처명 (뷰 표시용)
-    
-    private Long bomIdx;            // BOM idx
-    private String bomName;         // BOM명 (뷰 표시용)
     
     private Integer minQuantity;    // 최소 수량
     private Integer maxQuantity;    // 최대 수량

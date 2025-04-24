@@ -13,12 +13,7 @@ import lombok.ToString;
 public class WarehouseTransactionSearchDTO {
 
 	private String transType; // 타입
-	private String code; // 코드
-
-	private String productName; // 상품 이름
 	private String productIdx; // 상품 인덱스
-
-	private String materialName; // 자재 이름
 	private String materialIdx; // 자재 인덱스
 
 	private String startManufacturingDate; // 제조일자 시작
@@ -27,7 +22,7 @@ public class WarehouseTransactionSearchDTO {
 	private Integer minQuantity; // 최소 총개수
 	private Integer maxQuantity; // 최대 총개수
 	
-	private String isDeleted; // 삭제 유무
+	private String isDeleted; // 삭제 여부
 
 	private PageDTO pageDTO = new PageDTO(); // 페이징 정보
 }

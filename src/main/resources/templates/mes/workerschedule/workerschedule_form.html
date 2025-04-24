@@ -67,14 +67,7 @@ input, select {
 
 								<!-- 근무 타입 -->
 								<div class="col-md-6">
-									<label for="shiftType">근무 타입</label> <select class="form-select" th:field="*{shiftType}" required>
-										<option value="">선택</option>
-										<option value="1">주간</option>
-										<option value="2">야간</option>
-										<option value="3">A조</option>
-										<option value="4">B조</option>
-										<option value="5">C조</option>
-									</select>
+									<div th:replace="~{common/fragments/de_form :: selectCodeItems('shiftType', '근무 타입', true, ${shiftType},false,false)}"></div>
 								</div>
 
 								<!-- 장소 정보 -->

@@ -47,14 +47,18 @@
 													<div class="col-sm-9">
 														<select class="form-select" name="qcIdx" id="qcIdx" th:field="*{qcIdx}">
 															<option value="">품질기준 선택</option>
-															<option th:each="qc : ${qcStandaradList}" th:value="${qc.idx}" th:text="${qc.name}" th:selected="${qc.idx} == ${searchDTO.qcIdx}"></option>
+															<option th:each="qc : ${qcStandaradList}" 
+																	th:value="${qc.idx}" 
+																	th:text="${qc.name}" 
+																	th:selected="${qc.idx} == ${searchDTO.qcIdx}">
+															</option>
 														</select>
 													</div>
 												</div>
 
-												<!-- 품질 검사 결과 -->
+												<!-- 측정결과 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('qcResult','품질검사 결과',false)}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('qcResult', '측정결과', false, ${qcResult})}"></div>
 												</div>
 											</div>
 											<!-- 왼쪽 컬럼 끝 -->
@@ -66,7 +70,6 @@
 												<div class="form-group row mb-3">
 													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제유무',false)}"></div>
 												</div>
-
 											</div>
 											<!-- 오른쪽 컬럼 끝 -->
 
@@ -102,7 +105,7 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
-									<th>품질기준 명</th>
+									<th>품질기준</th>
 									<th>측정결과</th>
 									<th>측정값</th>
 									<th>단위</th>
@@ -113,9 +116,9 @@
 							<tbody>
 								<tr th:each="item : ${qcLogList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
 									<td th:text="${item.qcStandardName}"></td>
-									<td th:text="${item.qcResult}"></td>
+									<td th:text="${item.ResultName}"></td>
 									<td th:text="${item.value}"></td>
-									<td th:text="${item.unit}"></td>
+									<td th:text="${item.unitName}"></td>
 									<td th:text="${item.memo}"></td>
 									<td th:text="${item.isDeleted}"></td>
 								</tr>

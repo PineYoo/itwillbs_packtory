@@ -115,21 +115,26 @@
 			</if>
 
 			<choose>
-				<when test="startManufacturingDate != null and startManufacturingDate != null">
-					and w.manufacturing_date BETWEEN
-					STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '')
+							and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
+					AND w.manufacturing_date BETWEEN
+					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
+					'%Y-%m-%d%H%i%S')
 					AND
 					STR_TO_DATE(CONCAT(#{endManufacturingDate},
-					'235959'),'%Y-%m-%d%H%i%S')
+					'235959'), '%Y-%m-%d%H%i%S')
 				</when>
-				<when test="startManufacturingDate != null and endManufacturingDate == null">
-					and w.manufacturing_date <![CDATA[>=]]>
-					STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '')
+							and (endManufacturingDate == null or endManufacturingDate.trim() == '')">
+					AND w.manufacturing_date <![CDATA[>=]]>
+					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
+					'%Y-%m-%d%H%i%S')
 				</when>
-				<when test="startManufacturingDate == null and endManufacturingDate != null">
-					and w.manufacturing_date <![CDATA[<=]]>
-					STR_TO_DATE(CONCAT(#{endManufacturingDate},
-					'235959'),'%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate == null or startManufacturingDate.trim() == '')
+							and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
+					AND w.manufacturing_date <![CDATA[<=]]>
+					STR_TO_DATE(CONCAT(#{endManufacturingDate}, '235959'),
+					'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 
@@ -149,7 +154,7 @@
 		SELECT w.*,
 		p.name AS product_name
 		FROM t_warehouse w
-		LEFT JOIN t_product p 
+		LEFT JOIN t_product p
 		ON w.product_idx = CAST(p.idx AS CHAR)
 		<where>
 			<if test="name != null and !(''.equals(name.trim()))">
@@ -165,21 +170,26 @@
 			</if>
 
 			<choose>
-				<when test="startManufacturingDate != null and endManufacturingDate != null">
-					and w.manufacturing_date BETWEEN
-					STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '')
+							and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
+					AND w.manufacturing_date BETWEEN
+					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
+					'%Y-%m-%d%H%i%S')
 					AND
 					STR_TO_DATE(CONCAT(#{endManufacturingDate},
-					'235959'),'%Y-%m-%d%H%i%S')
+					'235959'), '%Y-%m-%d%H%i%S')
 				</when>
-				<when test="startManufacturingDate != null and endManufacturingDate == null">
-					and w.manufacturing_date <![CDATA[>=]]>
-					STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '')
+							and (endManufacturingDate == null or endManufacturingDate.trim() == '')">
+					AND w.manufacturing_date <![CDATA[>=]]>
+					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
+					'%Y-%m-%d%H%i%S')
 				</when>
-				<when test="startManufacturingDate == null and endManufacturingDate != null">
-					and w.manufacturing_date <![CDATA[<=]]>
-					STR_TO_DATE(CONCAT(#{endManufacturingDate},
-					'235959'),'%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate == null or startManufacturingDate.trim() == '')
+							and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
+					AND w.manufacturing_date <![CDATA[<=]]>
+					STR_TO_DATE(CONCAT(#{endManufacturingDate}, '235959'),
+					'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 
