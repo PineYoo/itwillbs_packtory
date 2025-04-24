@@ -4,15 +4,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO;
-import kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersMasterDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersSearchDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMaterialSearchDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
 
 public interface WorkOrdersMapper {
 

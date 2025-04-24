@@ -202,13 +202,13 @@
 											</thead>
 											<tbody>
 												<!-- workOrdersFormDTO.locationInfoItems 안에 ${linesManagerName}(관리자이름) 없음 -->
-												<tr th:each="item, status : ${workOrdersFormDTO.locationInfoItems}" th:data-id="${item.idx}">
+												<tr th:each="item, status : ${workOrdersFormDTO.workOrdersItemList}" th:data-id="${item.idx}">
 													<input type="hidden" th:name="${item.idx}" th:value="${item.idx}">
 													<td class="product-name" th:text="${item.name}"></td>
 													<td><input type="text" th:value="${linesManagerName}"></td>
 													<td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
 												</tr>
-												<tr th:if="${#lists.isEmpty(workOrdersFormDTO.locationInfoItems)}" class="clickable-row menu2depth_items">
+												<tr th:if="${#lists.isEmpty(workOrdersFormDTO.workOrdersItemList)}" class="clickable-row menu2depth_items">
 													<td colspan="6"><span>라인을 담아주세요.</span></td>
 												</tr>
 											</tbody>
@@ -373,13 +373,13 @@
 					    });
 
 					    // 상품 정보를 _jsonObj에 추가
-					    _jsonObj.locationInfoItems = lineItems;
+					    _jsonObj.workOrdersItemList = lineItems;
 					    
 					    
 						// 데이터 확인
 						console.log(_jsonObj);
 						// JSON 데이터를 서버로 전송
-						fetch("/mes/orders", {
+						fetch("/mes/workorders", {
 							method: "POST",
 							headers: {
 								"Content-Type": "application/json"
@@ -391,7 +391,7 @@
 							console.log("서버 응답:", data);
 							if(data.status === "success") {
 								alert(data.message);
-								location.href="/mes/orders";
+								location.href="/mes/workorders";
 							} else if(data.status === "validFail") {
 								console.log("hello validFail!");
 								//alert(data.message);

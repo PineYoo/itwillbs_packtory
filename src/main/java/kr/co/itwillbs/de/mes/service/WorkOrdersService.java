@@ -3,11 +3,10 @@ package kr.co.itwillbs.de.mes.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.itwillbs.de.common.service.CommonService;
-import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersMasterDTO;
@@ -33,15 +32,21 @@ public class WorkOrdersService {
 	 * @param workOrdersFormDTO
 	 * @throws Exception
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public void registerWorkOrders(WorkOrdersFormDTO workOrdersFormDTO) throws Exception {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		//	넘어온 작업지시서 문서번호 세팅
-		workOrdersFormDTO.setDocumentNumber(commonService.getWorkOrderDocNoFromMySQL());
-		
-		//	t_work_orders_master 값 등록
-		workOrdersMapper.registerWorkOrdersMaster(workOrdersFormDTO);
-		//	t_work_orders_items 값 등록
-		workOrdersMapper.registerWorkOrdersItems(workOrdersFormDTO);
+		LogUtil.logStart(log);
+		try {
+			//	넘어온 작업지시서 문서번호 세팅
+			workOrdersFormDTO.setDocumentNumber(commonService.getWorkOrderDocNoFromMySQL());
+			
+			//	t_work_orders_master 값 등록
+			workOrdersMapper.registerWorkOrdersMaster(workOrdersFormDTO);
+			//	t_work_orders_items 값 등록
+			workOrdersMapper.registerWorkOrdersItems(workOrdersFormDTO);
+		} catch (Exception e) {
+			LogUtil.error(log, "DB 작업 도중 에러 발생 {}", e.getMessage());
+			throw e;
+		}
 	}
 	//	==============================================================
 	

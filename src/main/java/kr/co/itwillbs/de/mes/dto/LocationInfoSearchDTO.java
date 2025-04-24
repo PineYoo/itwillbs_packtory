@@ -15,6 +15,7 @@ public class LocationInfoSearchDTO {
 	private String name; // 공장 이름
 	private String address; // 주소
 	private String isDeleted; // 삭제 유무
+	private String searchKeyword;
 	
 	private PageDTO pageDTO = new PageDTO(); // 페이징 정보
 }

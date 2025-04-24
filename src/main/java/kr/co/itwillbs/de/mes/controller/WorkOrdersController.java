@@ -21,24 +21,15 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
-import kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO;
-import kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO;
-import kr.co.itwillbs.de.mes.dto.WorkOrdersMasterDTO;
-import kr.co.itwillbs.de.mes.dto.WorkOrdersSearchDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMaterialSearchDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
-import kr.co.itwillbs.de.mes.service.RecipeMasterService;
-import kr.co.itwillbs.de.mes.service.RecipeMaterailService;
-import kr.co.itwillbs.de.mes.service.RecipeProcessService;
+import kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO;
+import kr.co.itwillbs.de.mes.dto.WorkOrdersSearchDTO;
 import kr.co.itwillbs.de.mes.service.WorkOrdersService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/mes/orders")
+@RequestMapping("/mes/workorders")
 public class WorkOrdersController {
 	
 	private final WorkOrdersService workOrdersService;
@@ -65,30 +56,6 @@ public class WorkOrdersController {
 		model.addAttribute("workOrdersFormDTO", new WorkOrdersFormDTO());
 		
 		return VIEW_PATH+"/work_orders_register_form";
-	}
-	
-	/**
-	 * MES > 작업지시 등록 POST(form)
-	 * <br> @Valid 공통에 문제가 있어서 Post를 전부 Ajax로 대체함
-	 * @param workOrdersFormDTO
-	 * @param model
-	 * @return String
-	 */
-	// 파일을 받을 경우 MediaType.MULTIPART_FORM_DATA_VALUE
-	@PostMapping(value= {"", "/"}, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.TEXT_HTML_VALUE})
-	private String registerWorkOrders(@ModelAttribute @Valid WorkOrdersFormDTO workOrdersFormDTO, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("requestDTO : {}", StringUtil.objToString(workOrdersFormDTO));
-
-		try {
-			workOrdersService.registerWorkOrders(workOrdersFormDTO);
-		} catch(RuntimeException e) {
-			log.error(e.getMessage());
-		}catch (Exception e) {
-			log.error(e.getMessage());
-		}
-		
-		return "redirect:"+VIEW_PATH;
 	}
 	
 	/**

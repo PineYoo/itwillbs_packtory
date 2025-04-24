@@ -174,7 +174,7 @@
 			 , reg_date				-- 작성일자
 			 )
 		VALUES
-		<foreach collection="locationInfoItems" item="item" separator=",">
+		<foreach collection="workOrdersItemList" item="item" separator=",">
 			 (
 			   #{documentNumber}	-- 문서번호
 			 , #{item.idx}          -- 공장번호
