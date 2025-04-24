@@ -44,7 +44,7 @@
 
 												<!-- 이름 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('name','이름',false)}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('name','상품 명',false)}"></div>
 												</div>
 
 												<!-- 최소 가격 -->
@@ -60,16 +60,10 @@
 
 											<!-- 오른쪽 컬럼 -->
 											<div class="col-md-6">
-
-												<!-- 타입 -->
+											
+												<!-- 상품 타입 -->
 												<div class="form-group row mb-3">
-													<label for="name" class="col-sm-3 col-form-label">타입</label>
-													<div class="col-sm-9">
-														<select class="form-select" name="type" id="type" th:field="*{type}">
-															<option value="">상품 타입 선택</option>
-															<option th:each="code : ${codeItems}" th:value="${code.minorCode}" th:text="${code.minorName}" th:selected="${searchDTO.type} == ${code.minorCode}"></option>
-														</select>
-													</div>
+													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('type', '상품 타입', false, ${codeItems})}"></div>
 												</div>
 
 												<!-- 최소 개수 -->
@@ -128,7 +122,7 @@
 									<td th:text="${item.typeName}"></td>
 									<td th:text="${item.name}"></td>
 									<td th:text="${item.quantity}"></td>
-									<td th:text="${item.unit}"></td>
+									<td th:text="${item.unitName}"></td>
 									<td th:text="${item.price}"></td>
 									<td th:text="${item.isDeleted}"></td>
 								</tr>

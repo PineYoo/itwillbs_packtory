@@ -18,13 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.mes.dto.BomDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
 import kr.co.itwillbs.de.mes.service.BomService;
 import kr.co.itwillbs.de.mes.service.RawMaterialService;
-import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RawMaterialController {
 
 	private final RawMaterialService rawMaterialService;
+	private final CommonCodeUtil commonCodeUtil;
 	private final ClientService clientService;
 	private final BomService bomService;
 	private final String PATH = "/mes/rawmaterial";
@@ -45,9 +45,10 @@ public class RawMaterialController {
 	public String rawMaterialRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		// BOM 목록 조회
-		List<BomDTO> bomList = bomService.getBomList();
-		model.addAttribute("bomList", bomList);
+		// 공통코드 + BOM
+		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
+		model.addAttribute("materialType", commonCodeUtil.getCodeItems("MATERIAL_TYPE"));
+		model.addAttribute("bomList", bomService.getBomList());
 
 		model.addAttribute("rawMaterialDTO", new RawMaterialDTO());
 
@@ -96,13 +97,10 @@ public class RawMaterialController {
 		List<RawMaterialDTO> rawMaterialList = rawMaterialService.getRawMaterialList(searchDTO);
 		model.addAttribute("rawMaterialList", rawMaterialList);
 
-		// 거래처 목록 조회
-		List<ClientDTO> clientList = clientService.getClientList();
-		model.addAttribute("clientList", clientList);
-
-		// BOM 목록 조회
-		List<BomDTO> bomList = bomService.getBomList();
-		model.addAttribute("bomList", bomList);
+		// 공통코드 + 거래처 + BOM
+		model.addAttribute("materialType", commonCodeUtil.getCodeItems("MATERIAL_TYPE"));
+		model.addAttribute("clientList", clientService.getClientList());
+		model.addAttribute("bomList", bomService.getBomList());
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
@@ -118,9 +116,10 @@ public class RawMaterialController {
 		RawMaterialDTO rawMaterialDTO = rawMaterialService.getRawMaterial(idx);
 		model.addAttribute("rawMaterialDTO", rawMaterialDTO);
 
-		// BOM 목록 조회
-		List<BomDTO> bomList = bomService.getBomList();
-		model.addAttribute("bomList", bomList);
+		// 공통코드 + BOM
+		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
+		model.addAttribute("materialType", commonCodeUtil.getCodeItems("MATERIAL_TYPE"));
+		model.addAttribute("bomList", bomService.getBomList());
 
 		return PATH + "/rawmaterial_detail";
 	}

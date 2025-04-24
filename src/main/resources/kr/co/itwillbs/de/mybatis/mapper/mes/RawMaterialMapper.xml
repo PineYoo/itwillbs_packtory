@@ -79,18 +79,18 @@
 		SELECT COUNT(*)
 		FROM t_raw_material
 		<where>
-			<if test="type != null and !(''.equals(type.trim()))">
+			<if test="type != null">
 				AND type = #{type}
 			</if>
 			<if test="name != null and !(''.equals(name.trim()))">
 				AND name LIKE CONCAT('%', #{name}, '%')
 			</if>
 
-			<if test="clientIdx != null and !(''.equals(clientIdx.trim()))">
+			<if test="clientIdx != null">
 				AND client_idx = #{clientIdx}
 			</if>
 
-			<if test="bomIdx != null and !(''.equals(bomIdx.trim()))">
+			<if test="bomIdx != null">
 				AND bom_idx = #{bomIdx}
 			</if>
 
@@ -118,42 +118,43 @@
 		SELECT
 		r.*,
 		c.company_name AS clientCompanyName,
-		b.name AS bomName
-		FROM
-		t_raw_material r
+		b.name AS bomName,
+		cc.minor_name AS type_name
+		FROM t_raw_material r
 		LEFT JOIN t_client c ON r.client_idx = c.idx
-		LEFT JOIN
-		t_bom b ON r.bom_idx = b.idx
+		LEFT JOIN t_bom b ON r.bom_idx = b.idx
+		LEFT JOIN t_commoncode_item cc ON r.type = cc.minor_code
+		AND cc.major_code = "MATERIAL_TYPE"
 		<where>
 			<if test="type != null and !(''.equals(type.trim()))">
-				AND type = #{type}
+				AND r.type = #{type}
 			</if>
 			<if test="name != null and !(''.equals(name.trim()))">
-				AND name LIKE CONCAT('%', #{name}, '%')
+				AND r.name LIKE CONCAT('%', #{name}, '%')
 			</if>
 
-			<if test="clientIdx != null and !(''.equals(clientIdx.trim()))">
+			<if test="clientIdx != null">
 				AND client_idx = #{clientIdx}
 			</if>
 
-			<if test="bomIdx != null and !(''.equals(bomIdx.trim()))">
+			<if test="bomIdx != null">
 				AND bom_idx = #{bomIdx}
 			</if>
 
 			<if test="minQuantity != null">
-				AND quantity &gt;= #{minQuantity}
+				AND r.quantity &gt;= #{minQuantity}
 			</if>
 
 			<if test="maxQuantity != null">
-				AND quantity &lt;= #{maxQuantity}
+				AND r.quantity &lt;= #{maxQuantity}
 			</if>
 
 			<if test="minPrice != null">
-				AND price &gt;= #{minPrice}
+				AND r.price &gt;= #{minPrice}
 			</if>
 
 			<if test="maxPrice != null">
-				AND price &lt;= #{maxPrice}
+				AND r.price &lt;= #{maxPrice}
 			</if>
 		</where>
 

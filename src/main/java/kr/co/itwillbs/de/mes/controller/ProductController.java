@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
-import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
@@ -40,25 +39,25 @@ public class ProductController {
 	// 상품 등록 폼 페이지
 	@GetMapping("/new")
 	public String productRegisterForm(Model model) {
-		
-		// 상품 타입 조회
-		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("PRODUCT_TYPE");
-		model.addAttribute("codeItems", codeItems);
-		
+
+		// 공통 코드 가져오기
+		model.addAttribute("codeItems", commonCodeUtil.getCodeItems("PRODUCT_TYPE"));
+		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
+
+		// DTO에 저장
 		model.addAttribute("productDTO", new ProductDTO());
-		
 
 		return PATH + "/product_form";
 	}
 
 	// 상품 등록 폼 페이지 AJAX용
-	@PostMapping(value= {"/new", "/"}, consumes= {MediaType.APPLICATION_JSON_VALUE})
+	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	private ResponseEntity<Map<String, Object>> productRegister(@RequestBody @Valid ProductDTO productDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(productDTO));
-		
-		//리턴 객체 생성
+
+		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
 			productService.registerProduct(productDTO);
@@ -69,7 +68,7 @@ public class ProductController {
 			response.put("status", "fail");
 			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
 		}
-		
+
 		return ResponseEntity.ok(response);
 	}
 
@@ -85,9 +84,9 @@ public class ProductController {
 		List<ProductDTO> productList = productService.getProductList(searchDTO);
 		model.addAttribute("productList", productList);
 
-		// 상품 타입 조회
-		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("PRODUCT_TYPE");
-		model.addAttribute("codeItems", codeItems);
+		// 공통 코드 가져오기
+		model.addAttribute("codeItems", commonCodeUtil.getCodeItems("PRODUCT_TYPE"));
+		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
@@ -103,9 +102,9 @@ public class ProductController {
 		ProductDTO productDTO = productService.getProductByIdx(idx);
 		model.addAttribute("productDTO", productDTO);
 
-		// 상품 타입 조회
-		List<CodeItemDTO> codeItems = commonCodeUtil.getCodeItems("PRODUCT_TYPE");
-		model.addAttribute("codeItems", codeItems);
+		// 공통 코드 가져오기
+		model.addAttribute("codeItems", commonCodeUtil.getCodeItems("PRODUCT_TYPE"));
+		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
 
 		return PATH + "/product_detail";
 	}

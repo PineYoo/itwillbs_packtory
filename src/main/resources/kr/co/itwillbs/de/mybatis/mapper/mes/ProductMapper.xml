@@ -93,11 +93,8 @@
 		p.*,
 		c.minor_name AS type_name
 		FROM t_product p
-		LEFT JOIN
-		t_commoncode_item c
-		ON p.type = c.minor_code
-		AND c.major_code =
-		'PRODUCT_TYPE'
+		LEFT JOIN t_commoncode_item c ON p.type = c.minor_code
+		AND c.major_code = 'PRODUCT_TYPE'
 		<where>
 			<if test="type != null and type != ''">
 				AND type = #{type}

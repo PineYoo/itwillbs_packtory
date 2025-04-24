@@ -44,4 +44,16 @@ public class ProductDTO {
 
 	// 한글 처리
 	private String typeName;
+	
+	public String getUnitName() {
+        return switch (unit) {
+            case "1" -> "EA";
+            case "2" -> "g";
+            case "3" -> "kg";
+            case "4" -> "oz";
+            case "5" -> "mm";
+            case "6" -> "cm";
+		default -> "";
+		};
+	}
 }

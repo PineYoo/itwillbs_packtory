@@ -53,4 +53,17 @@ public class RawMaterialDTO {
 	// 한글 변환
     private String clientCompanyName; // 거래처명 (뷰 출력용)
     private String bomName;           // BOM명 (뷰 출력용)
+    private String typeName;           // BOM명 (뷰 출력용)
+    
+    public String getUnitName() {
+        return switch (unit) {
+            case "1" -> "EA";
+            case "2" -> "g";
+            case "3" -> "kg";
+            case "4" -> "oz";
+            case "5" -> "mm";
+            case "6" -> "cm";
+		default -> "";
+		};
+	}
 }
