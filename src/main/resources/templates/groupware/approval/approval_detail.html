@@ -32,7 +32,7 @@
 				<div th:if="${isDrafter}">	<!-- 기안자인 경우: 수정 폼 -->
 					<h1 class="h3 mb-2 text-gray-800">기안서 수정</h1>
 				</div>
-				<div th:if="${isApprover}">	<!-- 결재자인 경우: 결재만 가능 -->
+				<div th:unless="${isDrafter}">	<!-- 읽기전용 폼 -->
 					<h1 class="h3 mb-2 text-gray-800">기안서 결재</h1>
 				</div>
 			</div>
@@ -73,7 +73,7 @@
 					        
 					        <!-- 기안서 작성 영역 -->
 					        <div class="col-md-12">
-   								<div th:replace="~{common/fragments/de_form :: selectCodeItems('approvalType', '결재유형', true, ${approvalTypeList}, false, ${isApprover})}"></div>
+   								<div th:replace="~{common/fragments/de_form :: selectCodeItems('approvalType', '결재유형', true, ${approvalTypeList}, false, ${!isDrafter})}"></div>
 					        </div>
 					        
 <!-- 					        <div class="col-md-12"> -->
@@ -108,14 +108,14 @@
 								<div style="width: 100%;">
 									<div class="d-flex align-items-center">
 										<div class="input-group">
-											<input type="text" class="form-control" autocomplete="off" th:field="*{draftDate}" id="draftDate" th:attr="readonly=${isApprover} ? 'readonly' : null">
+											<input type="text" class="form-control" autocomplete="off" th:field="*{draftDate}" id="draftDate" th:attr="readonly=${!isDrafter} ? 'readonly' : null">
 											<span class="input-group-text calendar-icon" data-target="#draftDate">
 												<i class="fa fa-calendar"></i>
 											</span>
 										</div>
 										<span class="mx-2">⁓</span>
 										<div class="input-group">
-											<input type="text" class="form-control" autocomplete="off" th:field="*{dueDate}" id="dueDate" th:attr="readonly=${isApprover} ? 'readonly' : null">
+											<input type="text" class="form-control" autocomplete="off" th:field="*{dueDate}" id="dueDate" th:attr="readonly=${!isDrafter} ? 'readonly' : null">
 											<span class="input-group-text calendar-icon" data-target="#dueDate">
 												<i class="fa fa-calendar"></i>
 											</span>
@@ -126,10 +126,10 @@
 							</div>
 							
 					        <div class="col-md-12">
-								<div th:replace="~{common/fragments/de_form :: inputText('title', '제목', true, ${isApprover}, false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('title', '제목', true, ${!isDrafter}, false)}"></div>
 							</div>
 					        <div class="col-md-12">
-								<div th:replace="~{common/fragments/de_form :: textArea('content', '내용', '10', '40', true, ${isApprover}, false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: textArea('content', '내용', '10', '40', true, ${!isDrafter}, false)}"></div>
 <!-- 					            Editor 라이브러리 일단 나중에......... -->
 							</div>
 							
@@ -155,10 +155,15 @@
 							<div id="recipeApprovalSection" style="display: none;" class="col-md-12">
 				         	   <div class="d-flex justify-content-between align-items-center mb-2">
 									<label for="productName">결재할 레시피</label>
-						        	<button class="btn btn-primary" id="searchProductBtn" type="button" onclick="openRecipeSearch()">검색 <i class="fa-solid fa-magnifying-glass"></i></button>
+						        	<button class="btn btn-primary" id="searchProductBtn" type="button" 
+						        			onclick="openRecipeSearch()" th:if="${isDrafter}">검색
+						        		<i class="fa-solid fa-magnifying-glass"></i>
+						        	</button>
 								</div>
 					            <input type="hidden" id="recipeMasterIdx" th:field="*{recipeMasterIdx}">
-					            <input type="text" id="recipeName" th:field="*{recipeMasterName}" class="form-control" placeholder="결재할 레시피를 선택해주세요." onclick="openRecipeSearch()" readonly>
+								<input type="text" id="recipeName" class="form-control" 
+								       th:field="*{recipeMasterName}" placeholder="결재할 레시피를 선택해주세요." readonly
+								       th:attr="onclick=${isDrafter} ? 'openRecipeSearch()' : null">
 		
 							</div>
 							<!-- ---------------- 레시피 결재 영역 끝 ---------------- -->
@@ -188,14 +193,14 @@
 							</div>
 							<!-- ---------------- 휴가 결재 영역 끝 ------------------ -->
 														
-					        <div class="col-md-12 row align-items-center justify-content-center mt-3" th:if="${isDrafter}">
+					        <div class="col-md-12 row align-items-center justify-content-center mt-3">
 <!-- 								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정하기</button> -->
-								<button type="submit" id="submitBtn" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정하기</button>
-								<button type="button" id="cancelBtn" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3" >돌아가기</button>
-					        </div>
-					        <div class="col-md-12 row align-items-center justify-content-center mt-3" th:if="${isApprover}">
-								<button type="button" id="approveBtn" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3" data-status="3">승인</button>
-								<button type="button" id="rejectBtn" class="btn btn-warning btn-lg d-block col-3 ml-2 mb-3" data-status="4">반려</button>
+								<button type="button" id="approveBtn" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3" 
+										th:if="${isApprover}" data-status="3">승인</button>
+								<button type="button" id="rejectBtn" class="btn btn-warning btn-lg d-block col-3 ml-2 mb-3" 
+										th:if="${isApprover}" data-status="4">반려</button>
+								<button type="submit" id="submitBtn" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3"
+										th:if="${isDrafter}">수정하기</button>
 								<button type="button" id="cancelBtn" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3" >돌아가기</button>
 					        </div>
 						</form>
