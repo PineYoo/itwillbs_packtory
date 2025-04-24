@@ -162,6 +162,7 @@
 			)
 	</insert>
 	<!-- t_work_orders_items -->
+	<!-- 최초로 등록 시 생산라인값만 넣기 때문에 필요한 컬럼만 넣음 -->
 	<insert id="registerWorkOrdersItems" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO">
 		INSERT
 		  INTO t_work_orders_items

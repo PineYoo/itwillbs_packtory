@@ -21,12 +21,18 @@ public class WorkOrdersService {
 
 	private final WorkOrdersMapper workOrdersMapper;
 	private final CommonService commonService;
+	
 	public WorkOrdersService(WorkOrdersMapper workOrdersMapper, CommonService commonService) {
 		this.workOrdersMapper = workOrdersMapper;
 		this.commonService = commonService;
 	}
 	
 	//	==============================================================
+	/**
+	 * 작업지시 등록
+	 * @param workOrdersFormDTO
+	 * @throws Exception
+	 */
 	public void registerWorkOrders(WorkOrdersFormDTO workOrdersFormDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		//	넘어온 작업지시서 문서번호 세팅
@@ -39,29 +45,6 @@ public class WorkOrdersService {
 	}
 	//	==============================================================
 	
-	/**
-	 * 작업지시 master 등록
-	 * @param workOrdersMasterDTO
-	 * @throws Exception
-	 */
-	public void registerWorkOrdersMaster(WorkOrdersFormDTO workOrdersFormDTO) throws Exception {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		workOrdersMapper.registerWorkOrdersMaster(workOrdersFormDTO);
-	}
-	
-	
-	/**
-	 * 작업지시 items 등록
-	 * @param workOrdersItemsDTO
-	 * @throws Exception
-	 */
-	public void registerWorkOrdersItems(WorkOrdersFormDTO workOrdersFormDTO) throws Exception {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		workOrdersMapper.registerWorkOrdersItems(workOrdersFormDTO);
-	}
-
 	/**
 	 * 작업지시 리스트 페이지 페이징용 카운트
 	 * @param workOrdersSearchDTO
@@ -99,8 +82,9 @@ public class WorkOrdersService {
 	public void modifyWorkOrders(WorkOrdersFormDTO workOrdersFormDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
+		// t_work_orders_master 수정
 		workOrdersMapper.modifyWorkOrdersMaster(workOrdersFormDTO);
-		
+		// t_work_orders_items 수정
 		workOrdersMapper.modifyWorkOrdersItems(workOrdersFormDTO);
 	}
 	//	========================================================================

@@ -102,8 +102,7 @@ public class WorkOrdersController {
 	private ResponseEntity<Map<String, Object>> registerWorkOrdersForJson(@RequestBody @Valid WorkOrdersFormDTO workOrdersFormDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(workOrdersFormDTO));
-		System.out.println("!@#!@#");
-		System.out.println(workOrdersFormDTO);
+		
 		//리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
@@ -177,8 +176,6 @@ public class WorkOrdersController {
 			return "redirect:"+VIEW_PATH;
 		}
 		WorkOrdersFormDTO dto = workOrdersService.getWorkOrdersByIdx(idx);
-		System.out.println("!@#!@#");
-		System.out.println(dto);
 		model.addAttribute("workOrdersFormDTO", workOrdersService.getWorkOrdersByIdx(idx));
 		
 		return VIEW_PATH+"/work_orders_detail";
