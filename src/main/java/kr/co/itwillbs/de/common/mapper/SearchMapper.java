@@ -13,6 +13,8 @@ import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
+import kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO;
+import kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 
@@ -102,6 +104,23 @@ public interface SearchMapper {
 	 * 페이징용 카운트
 	 */
 	int getLocationInfoCountForPaging(LocationInfoSearchDTO locationInfoSearchDTO);
+
+	// ====================================================================
+	// 작업자 스킬목록을 조회한다
+	
+	/**
+	 * 페이징용 카운트
+	 * @param searchDTO
+	 * @return
+	 */
+	int getWorkerMetricCountForPaging(WorkerMetricsSearchDTO searchDTO);
+	
+	/**
+	 * 작업자 스킬 조회
+	 * @param searchDTO
+	 * @return
+	 */
+	List<WorkerMetricsDTO> getWorkerMetricList(WorkerMetricsSearchDTO searchDTO);
 
 
 }

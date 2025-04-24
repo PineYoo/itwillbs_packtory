@@ -135,7 +135,8 @@
 										<div th:replace="~{common/fragments/de_form :: inputText('supervisorName','작업관리자',true,false,false)}"></div>
 									</div>
 									<div class="col-sm-12 col-md-6 mb-3">
-										<div th:replace="~{common/fragments/de_form :: inputText('supervisorPhone','관리자 전화번호',true,false,false)}"></div>
+										<label class="mb-1" for="positionName">직급</label>
+												<input type="text" class="form-control" id="positionName" placeholder="작업 관리자를 조회하세요" readonly />
 									</div>
 									<!-- 상품 -->
 									<div class="mb-2">
@@ -236,7 +237,7 @@
 				// 담당자 검색 함수(새 창 띄우기)
 				function openEmployeeSearch(target) {
 					currentTarget = target;
-					window.open('/employee/search-popup', 'employeeSearch', 'width=800,height=600,location=no,scrollbars=yes');
+					window.open('/workermetric/search-popup', 'employeeSearch', 'width=800,height=600,location=no,scrollbars=yes');
 					window.isSingleSelect = true; // 단일선택 모드
 				}
 				
@@ -245,7 +246,7 @@
 					if (currentTarget === 'supervisor') {
 						$("#supervisorId").val(data.id);
 						$("#supervisorName").val(data.name);
-						$("#supervisorPhone").val(data.phoneNumber);
+						$("#positionName").val(data.positionName);
 					} else if (currentTarget === 'line') {
 						$("#linesManagerId").val(data.id);
 						$("#linesManagerName").val(data.name);

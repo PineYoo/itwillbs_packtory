@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.itwillbs.de.common.mapper.SearchMapper;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.human.dto.EmployeeCodeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
@@ -15,6 +16,8 @@ import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
+import kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO;
+import kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -157,4 +160,27 @@ public class SearchService {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		return searchMapper.getLocationInfoCountForPaging(locationInfoSearchDTO);
 	}
+
+	/**
+	 * 검색조건에 따른 라인 count 가져오기 페이징용
+	 * @param searchDTO
+	 * @return
+	 */
+	public int getWorkerMetricCountForPaging(WorkerMetricsSearchDTO searchDTO) {
+		LogUtil.logStart(log);
+		
+		return searchMapper.getWorkerMetricCountForPaging(searchDTO);
+	}
+	
+	/**
+	 * 작업자 스킬 리스트 조회
+	 * @param searchDTO
+	 * @return
+	 */
+	public List<WorkerMetricsDTO> getWorkerMetricList(WorkerMetricsSearchDTO searchDTO) {
+		LogUtil.logStart(log);
+		
+		return searchMapper.getWorkerMetricList(searchDTO);
+	}
+
 }

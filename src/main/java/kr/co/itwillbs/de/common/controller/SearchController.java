@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.itwillbs.de.common.service.SearchService;
 import kr.co.itwillbs.de.common.util.LogUtil;
+import kr.co.itwillbs.de.common.vo.PageDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeCodeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.human.dto.EmployeeSearchDTO;
@@ -21,8 +22,9 @@ import kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
+import kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO;
+import kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO;
 import kr.co.itwillbs.de.orders.dto.ClientDTO;
 import kr.co.itwillbs.de.orders.dto.ClientSearchDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +32,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 public class SearchController {
-	
+/**
+ * <pre>
+ * 제가 만든 코드들이 Model을 적어놨었군요! 죄송...ㄱ-)
+ * @ResponseBody는 return 에 있는 값만! Body에 담아서 응답하기에 @PostMapping 메서드는 Model이 필요가 없습니다!
+ * 스프링MVC에서 String 반환 값을 가진 메서드들만 viewResolver를 거치면서 Model 에 담긴 값들이 전달 됩니다.
+ * </pre>
+ */
 	@Autowired
 	private SearchService searchService;
 
@@ -203,5 +211,51 @@ public class SearchController {
 		
 		return searchService.getLocationInfoList(locationInfoSearchDTO);
 	}
-
+	
+	/**
+	 * 작업자 스킬 리스트 팝업
+	 * @param model
+	 * @param searchDTO
+	 * @return
+	 */
+	@GetMapping(value = {"/workermetric/search-popup", "/workermetric/search-popup/"})
+	public String getWorkerMetricList(Model model, @ModelAttribute WorkerMetricsSearchDTO searchDTO) {
+		LogUtil.logStart(log);
+		
+		List<WorkerMetricsDTO> infoList = getWorkerMetricListInternal(searchDTO);
+		
+		model.addAttribute("searchDTO", searchDTO);
+		model.addAttribute("infoList", infoList);
+		return "/common/worker_search_form";
+	}
+	
+	/**
+	 * 작업자 스킬 조건 검색 JSON응답
+	 * @param searchDTO
+	 * @return
+	 */
+	@PostMapping(value = {"/workermetric/search-popup", "/workermetric/search-popup/"})
+	@ResponseBody
+	public SearchResponse<WorkerMetricsDTO> getWorkerMetricListBySearchDTO(@ModelAttribute WorkerMetricsSearchDTO searchDTO) {
+		LogUtil.logStart(log);
+		
+		// 응답 객체로 변환하여 반환
+		List<WorkerMetricsDTO> infoList = getWorkerMetricListInternal(searchDTO);
+		
+		return new SearchResponse<>(infoList, searchDTO.getPageDTO());
+	}
+	
+	private List<WorkerMetricsDTO> getWorkerMetricListInternal(WorkerMetricsSearchDTO searchDTO) {
+		int totalCount = searchService.getWorkerMetricCountForPaging(searchDTO);
+		searchDTO.getPageDTO().setTotalCount(totalCount);
+		
+		return totalCount > 0 ? searchService.getWorkerMetricList(searchDTO) : List.of();
+	}
+	
+	// 공통 응답 레코드 정의
+	public record SearchResponse<T>(
+		List<T> list,
+		PageDTO pageInfo
+	) {}
+	
 }

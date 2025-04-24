@@ -355,4 +355,60 @@
 		</where>
 	</select>
 	
+	<!-- ===================================================================== -->
+	<!-- 작업자 스킬 리스트 컬럼 -->
+	<select id="getWorkerMetricCountForPaging" parameterType="kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO"
+												resultType="int">
+		<include refid="PublicSql.withWorkerInfo" />
+		SELECT COUNT(*)
+		  FROM workerBase
+		<where>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				AND (
+					id LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR name LIKE CONCAT('%', #{searchKeyword}, '%')
+				)
+			</if>
+			<if test="isSupervisor != null and isSupervisor.trim() != ''">
+			AND is_supervisor = #{isSupervisor}
+			</if>
+			<if test="isLinesManager != null and isLinesManager.trim() != ''">
+			AND is_lines_manager = #{isLinesManager}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getWorkerMetricList" parameterType="kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO"
+										resultType="kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO">
+		<include refid="PublicSql.withWorkerInfo" />
+		select
+			(total_count - row_asc + 1) AS rownum,
+			id AS employee_id,
+			name AS employee_name,
+			department_name,
+			sub_department_name,
+			position_name,
+			is_supervisor,
+			is_lines_manager,
+			is_forklift_operator,
+			is_driver
+		from numberedWorkers
+		<where>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				AND (
+					id LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR name LIKE CONCAT('%', #{searchKeyword}, '%')
+				)
+			</if>
+			<if test="isSupervisor != null and isSupervisor.trim() != ''">
+			AND is_supervisor = #{isSupervisor}
+			</if>
+			<if test="isLinesManager != null and isLinesManager.trim() != ''">
+			AND is_lines_manager = #{isLinesManager}
+			</if>
+		</where>
+		ORDER BY id
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+	
 </mapper>

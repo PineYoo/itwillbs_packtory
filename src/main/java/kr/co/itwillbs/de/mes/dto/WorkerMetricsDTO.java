@@ -16,6 +16,7 @@ import lombok.ToString;
 @RequiredSessionIds(fields = { "regId", "modId" })
 public class WorkerMetricsDTO {
 
+	private int rownum;
 	private Long idx; // 테이블 인덱스
 	
 	@NotBlank(message = "사원번호는 필수 입력 값입니다.")
@@ -33,4 +34,10 @@ public class WorkerMetricsDTO {
 	private LocalDate regDate; // 작성일자시간
 	private String modId; // 최종 작성자
 	private LocalDate modDate; // 최종작성일자
+	
+	//workermetric/search-popup에서 사용
+	private String employeeName;
+	private String departmentName;
+	private String subDepartmentName;
+	private String positionName;
 }
