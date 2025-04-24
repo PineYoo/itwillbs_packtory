@@ -340,6 +340,7 @@
 				// 담당자 검색 함수(새 창 띄우기)
 				function openEmployeeSearch() {
 					window.open('/employee/search-popup', 'employeeSearch', 'width=800,height=600,location=no,scrollbars=yes');
+					window.isSingleSelect = true;	// 단일선택
 				}
 				
 				// 팝업창에서 가져온 담당자 정보 넣는 함수
@@ -377,6 +378,7 @@
 					});
 				
 					window.open('/product/search-popup', 'productSearch', 'width=800,height=600,location=no,scrollbars=yes');
+					window.isSingleSelect = false;	// 다중선택
 				
 					// 자식창이 열릴 때 데이터 넘겨주기 위한 전역 변수
 					window.selectedIdxListFromParent = selectedIdxList;
