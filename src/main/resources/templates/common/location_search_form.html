@@ -223,7 +223,7 @@
 		            name: $row.find('.name').text().trim(),
 		            address1: $row.find('.address1').text().trim(),
 		            address1: $row.find('.address2').text().trim(),
-		            type: $row.find('.type').val()
+// 		            type: $row.find('.type').val()
 		        };
 
 		     	// 25.04.21 추가(상품 단일선택 모드)
@@ -258,11 +258,6 @@
 		            }
 
 		        } else {
-// 		            if (selectedCount >= maxSelectable) {
-// 		                alert(`최대 ${maxSelectable}개까지만 선택할 수 있습니다.`);
-// 		                return;
-// 		            }
-
 		            // 선택
 		            $btn
 		                .addClass('selected btn-secondary')

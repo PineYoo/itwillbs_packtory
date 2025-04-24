@@ -111,8 +111,8 @@
 							<thead class="table-light">
 								<tr>
 									<th>문서번호</th>
-									<th>상품번호</th>
-									<th>레시피번호</th>
+									<th>상품이름</th>
+									<th>레시피</th>
 									<th>목표수량</th>
 									<th>단위</th>
 									<th>작업시작일자</th>
@@ -125,13 +125,13 @@
 							<tbody>
 								<tr th:each="item, status : ${workOrdersMasterDTOList}" th:data-id="${item.idx}" class="clickable-row">
 									<td th:text="${item.documentNumber}"></td>
-									<td th:text="${item.productIdx}"></td>
-									<td th:text="${item.recipeMasterIdx}"></td>
+									<td th:text="${item.productName}"></td>
+									<td th:text="${item.recipeMasterName}"></td>
 									<td th:text="${item.targetQuantity}"></td>
 									<td th:text="${item.unit}"></td>
 									<td th:text="${item.workStartDate}"></td>
 									<td th:text="${item.workEndDate}"></td>
-									<td th:text="${item.supervisorId}"></td>
+									<td th:text="${item.supervisorName}"></td>
 									<td th:text="${item.priority}"></td>
 									<td th:text="${item.status}"></td>
 								</tr>

@@ -102,7 +102,8 @@ public class WorkOrdersController {
 	private ResponseEntity<Map<String, Object>> registerWorkOrdersForJson(@RequestBody @Valid WorkOrdersFormDTO workOrdersFormDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(workOrdersFormDTO));
-		
+		System.out.println("!@#!@#");
+		System.out.println(workOrdersFormDTO);
 		//리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
@@ -150,9 +151,9 @@ public class WorkOrdersController {
 
 		workOrdersSearchDTO.getPageDTO().setTotalCount(workOrdersService.getWorkOrdersCountBySearchDTO(workOrdersSearchDTO));
 //		setcodeItems(workOrdersSearchDTO);
-		model.addAttribute("recipeMasterSearchDTO", workOrdersSearchDTO);
+		model.addAttribute("workOrdersSearchDTO", workOrdersSearchDTO);
 		
-		model.addAttribute("recipeMasterDTOList", workOrdersService.getWorkOrdersBySearchDTO(workOrdersSearchDTO));
+		model.addAttribute("workOrdersMasterDTOList", workOrdersService.getWorkOrdersBySearchDTO(workOrdersSearchDTO));
 		
 		return VIEW_PATH+"/work_orders_list";
 	}
@@ -175,8 +176,10 @@ public class WorkOrdersController {
 			model.addAttribute("workOrdersSearchDTO", workOrdersSearchDTO);
 			return "redirect:"+VIEW_PATH;
 		}
-		
-		model.addAttribute("workOrdersMasterDTO", workOrdersService.getWorkOrdersByIdx(idx));
+		WorkOrdersFormDTO dto = workOrdersService.getWorkOrdersByIdx(idx);
+		System.out.println("!@#!@#");
+		System.out.println(dto);
+		model.addAttribute("workOrdersFormDTO", workOrdersService.getWorkOrdersByIdx(idx));
 		
 		return VIEW_PATH+"/work_orders_detail";
 	}

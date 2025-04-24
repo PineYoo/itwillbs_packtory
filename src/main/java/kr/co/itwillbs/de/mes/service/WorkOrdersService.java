@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import kr.co.itwillbs.de.common.service.CommonService;
+import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeMasterDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO;
@@ -18,15 +20,22 @@ import lombok.extern.slf4j.Slf4j;
 public class WorkOrdersService {
 
 	private final WorkOrdersMapper workOrdersMapper;
-	public WorkOrdersService(WorkOrdersMapper workOrdersMapper) {
+	private final CommonService commonService;
+	public WorkOrdersService(WorkOrdersMapper workOrdersMapper, CommonService commonService) {
 		this.workOrdersMapper = workOrdersMapper;
+		this.commonService = commonService;
 	}
 	
 	//	==============================================================
 	public void registerWorkOrders(WorkOrdersFormDTO workOrdersFormDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		//	넘어온 작업지시서 문서번호 세팅
+		workOrdersFormDTO.setDocumentNumber(commonService.getWorkOrderDocNoFromMySQL());
 		
-		workOrdersMapper.registerWorkOrders(workOrdersFormDTO);
+		//	t_work_orders_master 값 등록
+		workOrdersMapper.registerWorkOrdersMaster(workOrdersFormDTO);
+		//	t_work_orders_items 값 등록
+		workOrdersMapper.registerWorkOrdersItems(workOrdersFormDTO);
 	}
 	//	==============================================================
 	
@@ -35,10 +44,10 @@ public class WorkOrdersService {
 	 * @param workOrdersMasterDTO
 	 * @throws Exception
 	 */
-	public void registerWorkOrdersMaster(WorkOrdersMasterDTO workOrdersMasterDTO) throws Exception {
+	public void registerWorkOrdersMaster(WorkOrdersFormDTO workOrdersFormDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		workOrdersMapper.registerWorkOrdersMaster(workOrdersMasterDTO);
+		workOrdersMapper.registerWorkOrdersMaster(workOrdersFormDTO);
 	}
 	
 	
@@ -47,10 +56,10 @@ public class WorkOrdersService {
 	 * @param workOrdersItemsDTO
 	 * @throws Exception
 	 */
-	public void registerWorkOrdersItems(WorkOrdersItemsDTO workOrdersItemsDTO) throws Exception {
+	public void registerWorkOrdersItems(WorkOrdersFormDTO workOrdersFormDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		workOrdersMapper.registerWorkOrdersItems(workOrdersItemsDTO);
+		workOrdersMapper.registerWorkOrdersItems(workOrdersFormDTO);
 	}
 
 	/**
@@ -80,7 +89,7 @@ public class WorkOrdersService {
 	 * @param idx
 	 * @return WorkOrdersMasterDTO
 	 */
-	public WorkOrdersMasterDTO getWorkOrdersByIdx(String idx) {
+	public WorkOrdersFormDTO getWorkOrdersByIdx(String idx) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		return workOrdersMapper.getWorkOrdersByIdx(idx);
@@ -90,7 +99,9 @@ public class WorkOrdersService {
 	public void modifyWorkOrders(WorkOrdersFormDTO workOrdersFormDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		workOrdersMapper.modifyWorkOrders(workOrdersFormDTO);
+		workOrdersMapper.modifyWorkOrdersMaster(workOrdersFormDTO);
+		
+		workOrdersMapper.modifyWorkOrdersItems(workOrdersFormDTO);
 	}
 	//	========================================================================
 	
@@ -101,7 +112,7 @@ public class WorkOrdersService {
 	public void modifyWorkOrdersMaster(WorkOrdersMasterDTO workOrdersMasterDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		workOrdersMapper.modifyWorkOrdersMaster(workOrdersMasterDTO);
+//		workOrdersMapper.modifyWorkOrdersMaster(workOrdersMasterDTO);
 	}
 	
 	/**
@@ -111,7 +122,7 @@ public class WorkOrdersService {
 	public void modifyWorkOrdersItems(WorkOrdersItemsDTO workOrdersItemsDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		workOrdersMapper.modifyWorkOrdersItems(workOrdersItemsDTO);
+//		workOrdersMapper.modifyWorkOrdersItems(workOrdersItemsDTO);
 	}
 
 }
