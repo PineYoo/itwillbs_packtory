@@ -10,7 +10,7 @@ import lombok.Setter;
 public class MenuPermissionVO {
 	
 	private Long menuIdx; // t_menu.idx
-	private Long ownerUserId; // t_employee.id
+	private Long ownerMemberId; // t_employee.id
 	private Long groupId; // t_employee.department_code
 	private String permissionCode; // 퍼미션 비트 예: "750"
 	

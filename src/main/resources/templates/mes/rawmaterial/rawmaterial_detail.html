@@ -50,13 +50,6 @@ input, select {
 								<!-- 히든 IDX -->
 								<input type="hidden" id="clientIdx" th:field="*{clientIdx}" />
 
-								<!-- BOM -->
-								<div class="col-md-6 mb-3">
-									<label for="bomIdx" class="form-label">BOM</label> <select th:field="*{bomIdx}" class="form-select">
-										<option value="">BOM을 선택하세요</option>
-										<option th:each="bom : ${bomList}" th:value="${bom.idx}" th:text="${bom.name}"></option>
-									</select>
-								</div>
 							</div>
 
 							<!-- 타입 -->

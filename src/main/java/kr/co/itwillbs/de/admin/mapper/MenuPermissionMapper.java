@@ -88,5 +88,5 @@ public interface MenuPermissionMapper {
 			FROM t_menu_permission
 			WHERE menu_idx = #{menuIdx}
 			""")
-	MenuPermissionVO findByMenuIdx(@Param("menuIdx") Long menuIdx);
+	List<MenuPermissionVO> findAllByMenuIdx(@Param("menuIdx") Long menuIdx);
 }

@@ -37,8 +37,8 @@ public class SimpleCacheConfig {
 		return new ConcurrentMapCacheManager(
 				"majorCodes",
 				"codeItems",
-				"menus"
-				
+				"menus",
+				"menuByUri"
 				);
 	}
 /* 25.04.23 이전 버전

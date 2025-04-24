@@ -69,10 +69,6 @@ public class RawMaterialController {
 				rawMaterialDTO.setClientIdx(String.valueOf(Long.parseLong(rawMaterialDTO.getClientIdx())));
 			}
 
-			if (rawMaterialDTO.getBomIdx() != null) {
-				rawMaterialDTO.setBomIdx(String.valueOf(Long.parseLong(rawMaterialDTO.getBomIdx())));
-			}
-
 			rawMaterialService.registerRawMaterial(rawMaterialDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
@@ -100,7 +96,6 @@ public class RawMaterialController {
 		// 공통코드 + 거래처 + BOM
 		model.addAttribute("materialType", commonCodeUtil.getCodeItems("MATERIAL_TYPE"));
 		model.addAttribute("clientList", clientService.getClientList());
-		model.addAttribute("bomList", bomService.getBomList());
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 

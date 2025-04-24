@@ -10,6 +10,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,7 +44,7 @@ public class MenuService {
 	 * @param menuDTO
 	 * @return
 	 */
-	@CacheEvict(value = "menus", allEntries = true)
+	@CacheEvict(value = {"menus", "menuByUri"}, allEntries = true)
 	@LogExecution
 	public int registerMenu(MenuDTO menuDTO) {
 		LogUtil.logStart(log);
@@ -114,7 +115,10 @@ public class MenuService {
 	 * @param menuDTO
 	 * @return
 	 */
-	@CacheEvict(value = "menus", allEntries = true)
+	@Caching(evict = {
+		@CacheEvict(value = "menus", allEntries = true),
+		@CacheEvict(value = "menuByUri", allEntries = true)
+		})
 	@LogExecution
 	public int modifyMenuIsDeleted(MenuDTO menuDTO) {
 		LogUtil.logStart(log);
@@ -127,7 +131,7 @@ public class MenuService {
 	 * @param menuDTO
 	 * @throws Exception 
 	 */
-	@CacheEvict(value = "menus", allEntries = true)
+	@CacheEvict(value = {"menus", "menuByUri"}, allEntries = true)
 	@LogExecution
 	public void modifyMenu(MenuDTO menuDTO) throws Exception {
 		LogUtil.logStart(log);
@@ -143,7 +147,7 @@ public class MenuService {
 	 * @param menuList
 	 * @throws Exception
 	 */
-	@CacheEvict(value = "menus", allEntries = true)
+	@CacheEvict(value = {"menus", "menuByUri"}, allEntries = true)
 	@LogExecution
 	@Transactional
 	public void registerChildMenu(List<MenuDTO> menuList) throws Exception {
@@ -165,6 +169,11 @@ public class MenuService {
 		return menuMapper.getAllmenus();
 	}
 	
+	@Cacheable(value = "menuByUri", key = "#p0")
+	public MenuDTO findByUri(String uri) {
+		return menuMapper.findByUri(uri);
+	}
+
 	/**
 	 * <pre>
 	 * @Controller에 @RequestMapping 관련 어노테이션으로 구현된 컨트롤러 요소들을
@@ -228,5 +237,5 @@ public class MenuService {
 				.thenComparing(RequestMappingDTO::getMethodName));
 		return mappingList;
 	}
-
+	
 }

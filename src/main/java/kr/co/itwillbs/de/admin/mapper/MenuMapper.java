@@ -3,6 +3,8 @@ package kr.co.itwillbs.de.admin.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import kr.co.itwillbs.de.admin.dto.MenuDTO;
 import kr.co.itwillbs.de.admin.dto.MenuSearchDTO;
@@ -72,6 +74,17 @@ public interface MenuMapper {
 	 * @return
 	 */
 	List<MenuDTO> getAllmenus();
+
+	@Select("""
+			SELECT
+				idx,
+				menu_name,
+				parents_idx,
+				url
+			FROM t_menu
+			WHERE url = #{uri}
+			""")
+	MenuDTO findByUri(@Param("uri") String uri);
 
 
 }

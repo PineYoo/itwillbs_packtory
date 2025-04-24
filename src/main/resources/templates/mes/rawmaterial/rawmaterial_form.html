@@ -68,14 +68,6 @@ input, select {
 									</div>
 								</div>
 
-								<!-- BOM 선택 -->
-								<div class="col-md-6">
-									<label for="bomIdx" class="form-label">BOM</label> <select th:field="*{bomIdx}" class="form-select">
-										<option value="">BOM을 선택하세요</option>
-										<option th:each="bom : ${bomList}" th:value="${bom.idx}" th:text="${bom.name}"></option>
-									</select>
-								</div>
-
 								<!-- 타입 -->
 								<div class="col-md-6">
 									<div th:replace="~{common/fragments/de_form :: selectCodeItems('type', '타입', true, ${materialType},false,false)}"></div>

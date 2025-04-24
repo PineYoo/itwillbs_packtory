@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,6 +49,11 @@ public class GlobalViewExceptionHandler {
 		this.permissionChecker = permissionChecker;
 	}
 	
+	/**
+	 * 모든 컨트롤러에서 공통적으로 model에 담을 값을 셋
+	 * @param model
+	 * @param user
+	 */
 	@ModelAttribute
 	public void addMenus(Model model, @AuthenticationPrincipal CustomUserDetails user) {
 		LogUtil.logStart(log);
@@ -59,6 +63,7 @@ public class GlobalViewExceptionHandler {
 
 		List<MenuDTO> visibleMenus = allMenus.stream()
 				.filter(menu -> {
+					// 스프링 시큐리티가 적용 된 구간에만 메뉴 권한을 확인함! 따라서 user == null 은 커서가 더 내려가면 안된다.
 					if(user == null) {
 						return false;
 					}
@@ -69,13 +74,38 @@ public class GlobalViewExceptionHandler {
 		model.addAttribute("menus", visibleMenus);
 	}
 	
+	@ModelAttribute
+	public void addPermissionInfo(Model model, @AuthenticationPrincipal CustomUserDetails user,
+									HttpServletRequest request) {
+		LogUtil.logStart(log);
+		
+		if (user == null)
+			return;
+
+		String uri = request.getRequestURI();
+		MenuDTO currentMenu = menuService.findByUri(uri); // 또는 PathVariable/RequestMapping 기반
+
+		boolean canWrite = false;
+		boolean canExecute = false;
+
+		if (currentMenu != null) {
+			long menuIdx = Long.parseLong(currentMenu.getIdx());
+			canWrite = permissionChecker.hasPermission(user, menuIdx, PermissionType.WRITE);
+			canExecute = permissionChecker.hasPermission(user, menuIdx, PermissionType.EXECUTE);
+		}
+
+		model.addAttribute("hasWrite", canWrite);
+		model.addAttribute("hasExecute", canExecute);
+	}
+	
+	
 	/**
 	 * @Valid 에 걸려서 post 전송한 곳에서 이전 페이지 .../new 또는 /register_form 메서드의 return view 를리턴해야한다.
 	 * @param ex
 	 * @param model
 	 * @return returnView 입력 폼? 어라? 수정도? 해야되네?
 	 */
-	@ExceptionHandler(MethodArgumentNotValidException.class)
+//	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public String handleValidationException(MethodArgumentNotValidException ex, Model model,
 			HttpServletRequest request) {
 		LogUtil.logStart(log);
