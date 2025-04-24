@@ -27,5 +27,4 @@ public interface LocationInfoMapper {
 
 	// 공장 장소 정보 들고 가기 (외부용)
 	public List<LocationInfoDTO> selectLocationInfoList();
-
 }

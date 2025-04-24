@@ -56,7 +56,7 @@ input, select {
 
 							<!-- 타입 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('transType', '타입', true,false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('transType', '타입', true, ${transType},false,false)}"></div>
 							</div>
 
 							<!-- 코드 -->
@@ -87,7 +87,7 @@ input, select {
 
 							<!-- 단위 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('unit', '단위', true,false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('unit', '단위', true, ${itemUnit},false,false)}"></div>
 							</div>
 
 							<!-- 상태 -->
@@ -103,12 +103,18 @@ input, select {
 
 							<!-- 출발지 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('sourceLocation', '출발지', true,false,false)}"></div>
+								<label for="sourceLocation" class="form-label">출발지</label> <select th:field="*{sourceLocation}" class="form-select">
+									<option value="">선택하세요</option>
+									<option th:each="location : ${locationInfoList}" th:value="${location.idx}" th:text="${location.name}"></option>
+								</select>
 							</div>
 
 							<!-- 도착지 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('destinationLocation', '도착지', true,false,false)}"></div>
+								<label for="destinationLocation" class="form-label">도착지</label> <select th:field="*{destinationLocation}" class="form-select">
+									<option value="">선택하세요</option>
+									<option th:each="location : ${locationInfoList}" th:value="${location.idx}" th:text="${location.name}"></option>
+								</select>
 							</div>
 
 							<!-- 메모 -->

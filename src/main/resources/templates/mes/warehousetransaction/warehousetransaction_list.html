@@ -44,7 +44,7 @@
 
 												<!-- 타입 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('transType','타입',false)}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('transType', '타입', false, ${transType})}"></div>
 												</div>
 												
 												<!-- 코드 -->
@@ -106,8 +106,6 @@
 												<div class="form-group row mb-3">
 													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제유무',false)}"></div>
 												</div>
-												
-
 											</div>
 											<!-- 오른쪽 컬럼 끝 -->
 
@@ -157,15 +155,15 @@
 							</thead>
 							<tbody>
 								<tr th:each="item : ${warehouseTransactionList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
-									<td th:text="${item.transType}"></td>
+									<td th:text="${item.transTypeName}"></td>
 									<td th:text="${item.code}"></td>
 									<td th:text="${item.productName}"></td>
 									<td th:text="${item.materialName}"></td>
 									<td th:text="${item.quantity}"></td>
-									<td th:text="${item.unit}"></td>
+									<td th:text="${item.unitName}"></td>
 									<td th:text="${item.manufacturingDate}"></td>
-									<td th:text="${item.sourceLocation}"></td>
-									<td th:text="${item.destinationLocation}"></td>
+									<td th:text="${item.sourceLocationName}"></td>
+									<td th:text="${item.destinationLocationName}"></td>
 									<td th:text="${item.isDeleted}"></td>
 								</tr>
 							</tbody>

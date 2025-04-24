@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
-import kr.co.itwillbs.de.mes.dto.ProductDTO;
-import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO;
+import kr.co.itwillbs.de.mes.service.LocationInfoService;
 import kr.co.itwillbs.de.mes.service.ProductService;
 import kr.co.itwillbs.de.mes.service.RawMaterialService;
 import kr.co.itwillbs.de.mes.service.WarehouseTransactionService;
@@ -38,6 +38,8 @@ public class WarehouseTransactionController {
 	private final WarehouseTransactionService warehouseTransactionService;
 	private final ProductService productService;
 	private final RawMaterialService rawMaterialService;
+	private final LocationInfoService locationInfoService;
+	private final CommonCodeUtil commonCodeUtil;
 	private final String QC_PATH = "/mes/warehousetransaction";
 
 	// 창고 정보 등록 폼 페이지
@@ -45,13 +47,12 @@ public class WarehouseTransactionController {
 	public String warehouseTransactionRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		// 상품 목록 조회
-		List<ProductDTO> productList = productService.getProductList();
-		model.addAttribute("productList", productList);
-
-		// 원자재 목록 조회
-		List<RawMaterialDTO> rawMaterialList = rawMaterialService.getRawMaterialList();
-		model.addAttribute("rawMaterialList", rawMaterialList);
+		// 공통코드 + 상품 + 자재 + 장소
+		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
+		model.addAttribute("transType", commonCodeUtil.getCodeItems("TRANS_TYPE"));
+		model.addAttribute("productList", productService.getProductList());
+		model.addAttribute("rawMaterialList", rawMaterialService.getRawMaterialList());
+		model.addAttribute("locationInfoList", locationInfoService.getLocationInfoList());
 
 		model.addAttribute("warehouseTransactionDTO", new WarehouseTransactionDTO());
 
@@ -61,7 +62,8 @@ public class WarehouseTransactionController {
 	// 창고 정보 등록 폼 페이지 AJAX용
 	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> warehouseTransactionRegister(@RequestBody @Valid WarehouseTransactionDTO warehouseTransactionDTO) {
+	private ResponseEntity<Map<String, Object>> warehouseTransactionRegister(
+			@RequestBody @Valid WarehouseTransactionDTO warehouseTransactionDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(warehouseTransactionDTO));
 
@@ -89,16 +91,14 @@ public class WarehouseTransactionController {
 		searchDTO.getPageDTO().setTotalCount(warehouseTransactionService.searchWarehouseTransactionCount(searchDTO));
 
 		// 창고 정보 목록 조회
-		List<WarehouseTransactionDTO> warehouseTransactionList = warehouseTransactionService.searchWarehouseTransaction(searchDTO);
+		List<WarehouseTransactionDTO> warehouseTransactionList = warehouseTransactionService
+				.searchWarehouseTransaction(searchDTO);
 		model.addAttribute("warehouseTransactionList", warehouseTransactionList);
-
-		// 상품 목록 조회
-		List<ProductDTO> productList = productService.getProductList();
-		model.addAttribute("productList", productList);
-
-		// 원자재 목록 조회
-		List<RawMaterialDTO> rawMaterialList = rawMaterialService.getRawMaterialList();
-		model.addAttribute("rawMaterialList", rawMaterialList);
+		log.info("SearchDTO: " + searchDTO);
+		// 공통코드 + 상품 + 자재
+		model.addAttribute("transType", commonCodeUtil.getCodeItems("TRANS_TYPE"));
+		model.addAttribute("productList", productService.getProductList());
+		model.addAttribute("rawMaterialList", rawMaterialService.getRawMaterialList());
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
@@ -114,13 +114,12 @@ public class WarehouseTransactionController {
 		WarehouseTransactionDTO warehouseTransactionDTO = warehouseTransactionService.getWarehouseTransactionByIdx(idx);
 		model.addAttribute("warehouseTransactionDTO", warehouseTransactionDTO);
 
-		// 상품 목록 조회
-		List<ProductDTO> productList = productService.getProductList();
-		model.addAttribute("productList", productList);
-
-		// 원자재 목록 조회
-		List<RawMaterialDTO> rawMaterialList = rawMaterialService.getRawMaterialList();
-		model.addAttribute("rawMaterialList", rawMaterialList);
+		// 공통코드 + 상품 + 자재 + 장소
+		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
+		model.addAttribute("transType", commonCodeUtil.getCodeItems("TRANS_TYPE"));
+		model.addAttribute("productList", productService.getProductList());
+		model.addAttribute("rawMaterialList", rawMaterialService.getRawMaterialList());
+		model.addAttribute("locationInfoList", locationInfoService.getLocationInfoList());
 
 		return QC_PATH + "/warehousetransaction_detail";
 	}

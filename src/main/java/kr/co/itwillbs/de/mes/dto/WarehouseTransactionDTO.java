@@ -17,34 +17,49 @@ import lombok.ToString;
 public class WarehouseTransactionDTO {
 
 	private Long idx; // 테이블 인덱스
-	
+
 	@NotBlank(message = "타입은 필수 입력 값입니다.")
 	private String transType; // 타입
-	
+	private String transTypeName; // 타입이름
+
 	@NotBlank(message = "코드는 필수 입력 값입니다.")
 	private String code; // 코드
-	
+
 	@NotBlank(message = "상품정보는 필수 입력 값입니다.")
 	private String productIdx; // 상품_idx
 	private String productName; // 상품이름
-	
+
 	@NotBlank(message = "자재정보는 필수 입력 값입니다.")
 	private String materialIdx; // 자재_idx
 	private String materialName; // 자재이름
-	
+
 	private Integer quantity; // 개수
 	private String unit; // 단위
 	private String status; // 상태
-	
+
 	private String manufacturingDate; // 제조일자
-	private String sourceLocation; // 출발지
-	private String destinationLocation; // 도착지
-	
+	private String sourceLocation; // 출발지 idx값
+	private String sourceLocationName; // 출발지 이름
+	private String destinationLocation; // 도착지 idx값
+	private String destinationLocationName; // 도착지 이름
+
 	private String memo; // 메모
 	private String isDeleted; // 삭제유무
-	
+
 	private String regId; // 작성자
 	private LocalDate regDate; // 작성일자시간
 	private String modId; // 최종 작성자
 	private LocalDate modDate; // 최종작성일자
+
+	public String getUnitName() {
+		return switch (unit) {
+		case "1" -> "EA";
+		case "2" -> "g";
+		case "3" -> "kg";
+		case "4" -> "oz";
+		case "5" -> "mm";
+		case "6" -> "cm";
+		default -> "";
+		};
+	}
 }

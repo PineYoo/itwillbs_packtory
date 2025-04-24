@@ -165,7 +165,7 @@
 			</if>
 
 			<choose>
-				<when test="startManufacturingDate != null and startManufacturingDate != null">
+				<when test="startManufacturingDate != null and endManufacturingDate != null">
 					and w.manufacturing_date BETWEEN
 					STR_TO_DATE(CONCAT(#{startManufacturingDate},'000000'),'%Y-%m-%d%H%i%S')
 					AND
