@@ -80,8 +80,11 @@
 
 	<!-- 공장 장소 정보 목록 조회 -->
 	<select id="searchLocationInfo" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.LocationInfoDTO">
-		SELECT l.*
+		SELECT l.*,
+		c.minor_name AS type_name
 		FROM t_location_info l
+		LEFT JOIN t_commoncode_item c ON l.type = c.minor_code
+		AND c.major_code = "LOCATION_TYPE"
 		<where>
 			<if test="name != null and !(''.equals(name.trim()))">
 				AND l.name LIKE CONCAT('%', #{name}, '%')

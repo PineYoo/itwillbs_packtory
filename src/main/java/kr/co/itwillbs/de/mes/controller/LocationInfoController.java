@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
+import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
 import kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO;
@@ -32,12 +33,16 @@ import lombok.extern.slf4j.Slf4j;
 public class LocationInfoController {
 
 	private final LocationInfoService locationInfoService;
+	private final CommonCodeUtil commonCodeUtil;
 	private final String PATH = "/mes/locationinfo";
 
 	// 공장 장소 정보 등록 폼 페이지
 	@GetMapping("/new")
 	public String locationInfoRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+
+		// 공통코드
+		model.addAttribute("locations", commonCodeUtil.getCodeItems("LOCATION_TYPE"));
 
 		model.addAttribute("locationInfoDTO", new LocationInfoDTO());
 
@@ -47,7 +52,8 @@ public class LocationInfoController {
 	// 공장 장소 정보 등록 폼 페이지 AJAX용
 	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> locationInfoRegister(@RequestBody @Valid LocationInfoDTO locationInfoDTO) {
+	private ResponseEntity<Map<String, Object>> locationInfoRegister(
+			@RequestBody @Valid LocationInfoDTO locationInfoDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(locationInfoDTO));
 
@@ -91,6 +97,9 @@ public class LocationInfoController {
 		// 공장 장소 정보 상세정보 조회
 		LocationInfoDTO locationInfoDTO = locationInfoService.getLocationInfoByIdx(idx);
 		model.addAttribute("locationInfoDTO", locationInfoDTO);
+		
+		// 공통코드
+		model.addAttribute("locations", commonCodeUtil.getCodeItems("LOCATION_TYPE"));
 
 		return PATH + "/locationinfo_detail";
 	}

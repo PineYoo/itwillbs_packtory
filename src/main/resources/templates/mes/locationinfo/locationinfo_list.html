@@ -108,7 +108,7 @@
 							</thead>
 							<tbody>
 								<tr th:each="item : ${locationList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
-									<td th:text="${item.type}"></td>
+									<td th:text="${item.typeName}"></td>
 									<td th:text="${item.name}"></td>
 									<td th:text="${item.postcode}"></td>
 									<td th:text="${item.address1}"></td>

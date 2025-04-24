@@ -55,7 +55,7 @@ input, select {
 
 								<!-- 타입 -->
 								<div class="col-md-6">
-									<div th:replace="~{common/fragments/de_form :: inputText('type', '타입', true,false,false)}"></div>
+									<div th:replace="~{common/fragments/de_form :: selectCodeItems('type', '타입', true, ${locations},false,false)}"></div>
 								</div>
 
 								<!-- 공장명 -->
