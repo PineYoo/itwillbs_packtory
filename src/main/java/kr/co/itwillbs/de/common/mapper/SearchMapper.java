@@ -90,6 +90,7 @@ public interface SearchMapper {
 	int getRecipeCountForPaging(RecipeSearchDTO recipeSearchDTO);
 	
 	// ====================================================================
+	// 타입이 공통코드로 자재창고, 생산라인 등 정해지면 필터링 처리 예정
 	/**
 	 * 검색조건에 따른 라인 리스트 조회
 	 * @param locationInfoSearchDTO

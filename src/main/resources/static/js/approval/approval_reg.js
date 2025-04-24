@@ -145,7 +145,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	        }
 	    });
 	}
-		
 	
 }); // DOMContentLoaded 끝
 
@@ -155,10 +154,9 @@ function setApprover(index, id, name) {
 	
 	approverGroup.find(".approver-id").val(id);
 	approverGroup.find(".approver-input").val(name);
-	
 }
 
-// -------------------------------------------------------------
+// ------------------------------------------------------------------------------------
 // 결재할 레시피 검색 함수(새 창 띄우기) - 단일 선택
 function openRecipeSearch() {
 	window.open('/recipe/search-popup', 'recipeSearch', 'width=800,height=600,location=no,scrollbars=yes');
@@ -171,9 +169,8 @@ function setRecipeInfo(recipe) {
 	$("#recipeName").val(recipe.name + '(ver.' + recipe.version + ')');   // 사용자에게 보이는 이름
 }		
 
-
-
-// 결재라인 검색 함수(새 창 띄우기)
+// ------------------------------------------------------------------------------------
+// 결재라인 검색 함수(새 창 띄우기) - 다중 선택
 function openEmployeeSearch() {
 	window.open('/employee/search-popup', 'approvalEmployeeSearch', 'width=800,height=600,location=no,scrollbars=yes');
 	window.isSingleSelect = false;
@@ -221,6 +218,7 @@ function formatApproverInfo(emp) {
     return emp.name + '(' + emp.departmentName + ', ' + emp.positionName + ')';
 }
 
+// ------------------------------------------------------------------------------------
 // 결제유형 선택에 따른 이벤트 함수 - 레시피결재 / 휴가결재
 function toggleApprovalSection() {
     var selectedValue = $('#approvalType').val();

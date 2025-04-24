@@ -55,7 +55,7 @@ public class WorkOrdersFormDTO {
 	// 상태(1:준비 2:진행 3:완료 4:취소)
 	private String status;
 	
-	private String memo;
+	private String masterMemo;
 	private String isDeleted;
 	private String regId;
 	private String regDate;
@@ -67,16 +67,21 @@ public class WorkOrdersFormDTO {
 	private String itmesIdx;
 	// 생산라인(t_location_info.idx 참조)
 	private String productLinesIdx;
+	// 생산라인 이름
+	private String productLinesName;
+	
 	// 라인관리자(t_employee.id+t_position_info => is_manager='Y' 참조)
 	private String linesManagerId;
 	// 라인관리자 이름
 	private String linesManagerName;
 	// 라인관리자 번호
 	private String linesManagerPhone;
+	
 	// 실제시작일자
 	private String actualStartDate;
 	// 실제종료일자
 	private String actualEndDate;
+	
 	// 생산된수량
 	private String producedQuantity;
 	// items 테이블 단위

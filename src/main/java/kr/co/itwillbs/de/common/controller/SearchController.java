@@ -174,10 +174,8 @@ public class SearchController {
 		return searchService.getRecipeList(recipeSearchDTO);
 	}
 	
-	
-	
-	
 	// ==================================================================================
+	// 타입이 공통코드로 자재창고, 생산라인 등 정해지면 필터링 처리 예정
 	// 라인 조회 팝업창 이동
 	@GetMapping(value = { "/location/search-popup", "/location/search-popup/" })
 	public String getRecipeList(Model model, @ModelAttribute LocationInfoSearchDTO locationInfoSearchDTO) {

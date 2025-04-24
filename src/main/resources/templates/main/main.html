@@ -73,6 +73,15 @@
 		#outsideButtons .work-btn {
 			height: 38px;
 		}
+		
+		/* 전자결재 */
+		.truncate-title {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			width: 100%;
+			display: block;
+		}
 	</style>
 </head>
 <body id="page-top">
@@ -171,7 +180,7 @@
 			<!-- Content Row -->
 			<div class="row">
 				<!-- ---------- 일정 영역 ------------- -->
-				<div class="col-lg-9 mb-4">
+				<div class="col-lg-8 mb-4">
 					<!-- Project Card Example -->
 					<div class="card shadow mb-4">
 						<div class="card-header py-3">
@@ -187,8 +196,8 @@
 				</div>
 				<!-- ---------- 일정 영역 끝 ---------- -->
 				
-				<!-- ---------- 근태 영역 ------------- -->
-				<div class="col-lg-3 mb-4">
+				<div class="col-lg-4 mb-4">
+					<!-- ---------- 근태 영역 ------------- -->
 					<div class="card shadow mb-4">
 						<div class="card-header py-3">
 							<h6 class="m-0 font-weight-bold text-primary">근태</h6>
@@ -239,8 +248,49 @@
 							</div>
 						</div>
 					</div>
+					<!-- ---------- 근태 영역 끝 ---------- -->
+					<!-- ---------- 전자결재 영역 --------- -->
+					<div class="card shadow mb-4">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">전자결재</h6>
+						</div>
+						<div class="card-body">
+							<table class="table table-hover table-bordered" style="table-layout: fixed; width: 100%;">
+								<colgroup>
+									<col width="35%">
+									<col width="20%">
+									<col width="25%">
+									<col width="20%">
+								</colgroup>
+								<thead class="thead-light text-center">
+									<tr>
+										<th>제목</th>
+										<th>기안자</th>
+										<th>기안일</th>
+										<th>진행상태</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="item, status : ${approvalList}" class="clickable-row"
+										th:if="${status.index < 3}" th:data-id="${item.idx}"
+										th:onclick="|location.href='@{/groupware/approval/{docNo}(docNo=${item.docNo})}'|"
+										style="cursor: pointer;">
+										<td>
+											<div class="truncate-title" th:text="${item.title}" th:attr="title=${item.title}"></div>
+										</td>
+										<td th:text="${item.name}" class="text-center">기안자 이름</td>
+										<td th:text="${item.draftDate}" class="text-center">2024-01-25</td>
+										<td th:text="${item.progressName}" class="text-center">진행중</td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(approvalList)}">
+										<td colspan="4" class="text-center text-muted">결재할 문서가 없습니다.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- ---------- 전자결재 영역 끝 ------ -->
 				</div>
-				<!-- ---------- 근태 영역 끝 ---------- -->
 			</div> <!-- end of 2nd row -->
 
 			<hr>

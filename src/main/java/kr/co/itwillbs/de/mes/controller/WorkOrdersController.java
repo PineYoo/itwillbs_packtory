@@ -150,9 +150,9 @@ public class WorkOrdersController {
 
 		workOrdersSearchDTO.getPageDTO().setTotalCount(workOrdersService.getWorkOrdersCountBySearchDTO(workOrdersSearchDTO));
 //		setcodeItems(workOrdersSearchDTO);
-		model.addAttribute("recipeMasterSearchDTO", workOrdersSearchDTO);
+		model.addAttribute("workOrdersSearchDTO", workOrdersSearchDTO);
 		
-		model.addAttribute("recipeMasterDTOList", workOrdersService.getWorkOrdersBySearchDTO(workOrdersSearchDTO));
+		model.addAttribute("workOrdersMasterDTOList", workOrdersService.getWorkOrdersBySearchDTO(workOrdersSearchDTO));
 		
 		return VIEW_PATH+"/work_orders_list";
 	}
@@ -175,8 +175,8 @@ public class WorkOrdersController {
 			model.addAttribute("workOrdersSearchDTO", workOrdersSearchDTO);
 			return "redirect:"+VIEW_PATH;
 		}
-		
-		model.addAttribute("workOrdersMasterDTO", workOrdersService.getWorkOrdersByIdx(idx));
+		WorkOrdersFormDTO dto = workOrdersService.getWorkOrdersByIdx(idx);
+		model.addAttribute("workOrdersFormDTO", workOrdersService.getWorkOrdersByIdx(idx));
 		
 		return VIEW_PATH+"/work_orders_detail";
 	}

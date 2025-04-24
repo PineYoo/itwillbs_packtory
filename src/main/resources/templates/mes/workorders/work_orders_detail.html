@@ -123,6 +123,7 @@
 						<div class="table-responsive">
 							<form th:action="@{/mes/orders}" method="post" th:object="${workOrdersFormDTO}" class="form" id="registerForm">
 								<!--/* 히든 값 시작 거래코드, 거래 상태 확인 */-->
+								<input type="hidden" th:field="*{documentNumber}" alt="문서번호" />
 								<input type="hidden" th:field="*{supervisorId}" alt="작업관리자 사번" />
 								<input type="hidden" name="isDeleted" value="N" alt="삭제유무" />
 								<!--/* 히든 값 끝 거래코드, 거래 상태 확인 */-->
@@ -194,21 +195,25 @@
 										<table class="table table-bordered text-center" id="dataTables">
 											<thead class="table-light">
 												<tr>
-													<th>타입</th>
 													<th>공장명</th>
-													<th>공장번호</th>
+													<th>관리자</th>
 													<th>삭제</th>
 												</tr>
 											</thead>
 											<tbody>
 												<!-- workOrdersFormDTO.locationInfoItems 안에 ${linesManagerName}(관리자이름) 없음 -->
-												<tr th:each="item, status : ${workOrdersFormDTO.locationInfoItems}" th:data-id="${item.idx}">
-													<input type="hidden" th:name="${item.idx}" th:value="${item.idx}">
-													<td class="product-name" th:text="${item.name}"></td>
-													<td><input type="text" th:value="${linesManagerName}"></td>
+												<!-- tr을 반복시키는 object를 뭐로 설정하지 -->
+												<!-- List를 빼고 일단 하나만 출력 시켰는데 itemsIdx가 안나온다 -->
+												<!-- 자바스크립트로 넣는 tr이랑 여기 tr이랑 모양이 안맞다(위의 css 때문인걸로) -->
+												<tr th:each="item, status : ${workOrdersFormDTO}" th:data-id="${item.itmesIdx}">
+													<td class="product-number" th:text="${item.productLinesIdx}"></td>
+													<td>
+														<input type="text" class="form-control" th:value="${item.linesManagerId}">
+													</td>
+													<td><button type="button" class="btn btn-primary mt-2" onclick="openEmployeeSearch('line')">작업관리자 조회</button></td>
 													<td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
 												</tr>
-												<tr th:if="${#lists.isEmpty(workOrdersFormDTO.locationInfoItems)}" class="clickable-row menu2depth_items">
+												<tr th:if="${#lists.isEmpty(workOrdersFormDTO)}" class="clickable-row menu2depth_items">
 													<td colspan="6"><span>라인을 담아주세요.</span></td>
 												</tr>
 											</tbody>
@@ -218,7 +223,7 @@
 								
 								<!--/* 이 폼의 끝! 서브밋 버튼 */-->
 								<div class="col-md-12 row align-items-center justify-content-center">
-									<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+									<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
 									<button type="button" id="cancelBtn" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">취소</button>
 								</div>
 								<!--/* 이 폼의 끝! 서브밋 버튼 */-->
@@ -246,9 +251,10 @@
 						$("#supervisorId").val(data.id);
 						$("#supervisorName").val(data.name);
 						$("#supervisorPhone").val(data.phoneNumber);
-					} else if (currentTarget === 'line') {
-						$("#linesManagerId").val(data.id);
-						$("#linesManagerName").val(data.name);
+					} else if (currentTarget.startsWith('line')) {
+						let lineIdx = currentTarget.replace('line', ''); // ex) line1 -> 1
+						$(`#linesManagerId${lineIdx}`).val(data.id);
+						$(`#linesManagerName${lineIdx}`).val(data.name);
 					}
 					
 				}
@@ -288,20 +294,20 @@
 				// 팝업창에서 가져온 상품 정보 추가하는 함수
 				function appendLocationInfo(location) {
 				    const $tbody = $('#dataTables tbody');
-					console.log(location);
+					
 				    // 기존 안내 문구 제거
 				    $tbody.find('.menu2depth_items').remove();
 // 					debugger;
 				 	// 상품 행 생성
 				    const newRow = `
-				        <tr data-id="${location.idx}">
-				            <td class="location-type">${location.type}</td>
-				            <td class="location-name">${location.name}</td>
-				            <td class="location-number">${location.idx}</td>
-				            <td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
-				        </tr>
+				    	<tr data-id="${location.idx}">
+			            <td class="location-type">${location.type}</td>
+			            <td class="location-name">${location.name}</td>
+			            <td class="location-number">${location.idx}</td>
+			            <td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
+			        </tr>
 				    `;
-				    
+
 				    $tbody.append(newRow);
 				}
 				
@@ -340,7 +346,7 @@
 						location.href="/mes/orders";
 					});
 					//---------------------------------------------------
-					// 레시피 등록
+					// 작업지시 수정
 					$('#btnSubmitForm').on("click", function() {
 						console.group('click! #btnSubmitForm!');
 						// error 내용 삭제
@@ -358,29 +364,14 @@
 						});
 						// @Valid 숫자 타입을 숫자로 변환
 							// 수량은 숫자형으로 전환
-// 						if (_jsonObj['quantity']) {
-// 							_jsonObj['quantity'] = parseInt(_jsonObj['quantity']);
-// 						}
-						
-						const lineItems=[];
-						$('#dataTables tbody tr').each(function() {
-					        const item = {
-					        	// 물품코드 넣을 값이 없다 ?
-				                idx: $(this).find('.location-number').text(),  // 공장 번호
-				                // 나머지 값들을 추가할 수 있다면 여기에 추가
-				            };
-				        	lineItems.push(item);
-					    });
-
-					    // 상품 정보를 _jsonObj에 추가
-					    _jsonObj.locationInfoItems = lineItems;
-					    
-					    
+						if (_jsonObj['quantity']) {
+							_jsonObj['quantity'] = parseInt(_jsonObj['quantity']);
+						}
 						// 데이터 확인
 						console.log(_jsonObj);
 						// JSON 데이터를 서버로 전송
-						fetch("/mes/orders", {
-							method: "POST",
+						fetch("/mes/orders/modifyWorkOrders", {
+							method: "PUT",
 							headers: {
 								"Content-Type": "application/json"
 							},

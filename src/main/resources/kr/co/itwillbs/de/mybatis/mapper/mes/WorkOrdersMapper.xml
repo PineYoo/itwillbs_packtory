@@ -54,9 +54,29 @@
 		, DATE_FORMAT(mod_date, '%Y-%m-%d %H:%i:%s') AS mod_date
 	</sql>
 	
+	<sql id="t_orders_master_join_columns_forSelect">
+		  wo.idx
+		, wo.document_number
+		, wo.product_idx
+		, wo.recipe_master_idx
+		, wo.target_quantity
+		, wo.unit
+		, wo.work_start_date
+		, wo.work_end_date
+		, wo.supervisor_id
+		, wo.priority
+		, wo.status
+		, wo.memo
+		, wo.is_deleted
+		, wo.reg_id
+		, DATE_FORMAT(wo.reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date
+		, wo.mod_id
+		, DATE_FORMAT(wo.mod_date, '%Y-%m-%d %H:%i:%s') AS mod_date
+	</sql>
+	
 	<!-- ===========================(INSERT)================================================= -->
 	<!-- t_work_orders_master -->
-	<insert id="registerWorkOrdersMaster" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersMasterDTO">
+	<insert id="registerWorkOrdersMaster" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO">
 		INSERT INTO t_work_orders_master (
 			<trim suffixOverrides=",">
 			<if test='documentNumber !=null and !("".equals(documentNumber.trim()))'>
@@ -89,7 +109,7 @@
 			<if test='status !=null and !("".equals(status.trim()))'>
 			status,
 			</if>
-			<if test='memo !=null and !("".equals(memo.trim()))'>
+			<if test='masterMemo !=null and !("".equals(masterMemo.trim()))'>
 			memo,
 			</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
@@ -130,8 +150,8 @@
 			<if test='status !=null and !("".equals(status.trim()))'>
 			#{status},
 			</if>
-			<if test='memo !=null and !("".equals(memo.trim()))'>
-			#{memo},
+			<if test='masterMemo !=null and !("".equals(masterMemo.trim()))'>
+			#{masterMemo},
 			</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
 			#{isDeleted},
@@ -142,78 +162,27 @@
 			)
 	</insert>
 	<!-- t_work_orders_items -->
-	<insert id="registerWorkOrdersItems" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO">
-		INSERT INTO t_work_orders_items (
-			<trim suffixOverrides=",">
-			<if test='documentNumber !=null and !("".equals(documentNumber.trim()))'>
-			document_number,
-			</if>
-			<if test='productLinesIdx !=null and !("".equals(productLinesIdx.trim()))'>
-			product_lines_idx,
-			</if>
-			<if test='linesManagerId !=null and !("".equals(linesManagerId.trim()))'>
-			lines_manager_id,
-			</if>
-			<if test='actualStartDate !=null and !("".equals(actualStartDate.trim()))'>
-			actual_start_date,
-			</if>
-			<if test='actualEndDate !=null and !("".equals(actualEndDate.trim()))'>
-			actual_end_date,
-			</if>
-			<if test='producedQuantity !=null and !("".equals(producedQuantity.trim()))'>
-			produced_quantity,
-			</if>
-			<if test='unit !=null and !("".equals(unit.trim()))'>
-			unit,
-			</if>
-			<if test='status !=null and !("".equals(status.trim()))'>
-			status,
-			</if>
-			<if test='memo !=null and !("".equals(memo.trim()))'>
-			memo,
-			</if>
-			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
-			is_deleted,
-			</if>
-			reg_id,
-			reg_date,
-			</trim>
-		) VALUES (
-			<trim suffixOverrides=",">
-			<if test='documentNumber !=null and !("".equals(documentNumber.trim()))'>
-			#{documentNumber},
-			</if>
-			<if test='productLinesIdx !=null and !("".equals(productLinesIdx.trim()))'>
-			#{productLinesIdx},
-			</if>
-			<if test='linesManagerId !=null and !("".equals(linesManagerId.trim()))'>
-			#{linesManagerId},
-			</if>
-			<if test='actualStartDate !=null and !("".equals(actualStartDate.trim()))'>
-			#{actualStartDate},
-			</if>
-			<if test='actualEndDate !=null and !("".equals(actualEndDate.trim()))'>
-			#{actualEndDate},
-			</if>
-			<if test='producedQuantity !=null and !("".equals(producedQuantity.trim()))'>
-			#{producedQuantity},
-			</if>
-			<if test='unit !=null and !("".equals(unit.trim()))'>
-			#{unit},
-			</if>
-			<if test='status !=null and !("".equals(status.trim()))'>
-			#{status},
-			</if>
-			<if test='memo !=null and !("".equals(memo.trim()))'>
-			#{memo},
-			</if>
-			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
-			#{isDeleted},
-			</if>
-			#{regId},
-			now(),
-			</trim>
-			)
+	<!-- 최초로 등록 시 생산라인값만 넣기 때문에 필요한 컬럼만 넣음 -->
+	<insert id="registerWorkOrdersItems" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO">
+		INSERT
+		  INTO t_work_orders_items
+			 (
+			   document_number		-- 문서번호
+			 , product_lines_idx	-- 공장번호
+			 , is_deleted			-- 삭제유무
+			 , reg_id				-- 작성자
+			 , reg_date				-- 작성일자
+			 )
+		VALUES
+		<foreach collection="locationInfoItems" item="item" separator=",">
+			 (
+			   #{documentNumber}	-- 문서번호
+			 , #{item.idx}          -- 공장번호
+			 , 'N'                  -- 삭제유무
+			 , #{regId}             -- 작성자 
+			 , NOW()                -- 작성일자
+			 )
+		</foreach>
 	</insert>
 	
 	
@@ -243,16 +212,16 @@
 				<when test="(workStartDate != null and workStartDate.trim() != '')
 							and (workEndDate != null and workEndDate.trim() != '')">
 					AND work_start_date BETWEEN
-						STR_TO_DATE(CONCAT(#{workStartDate},'000000'),'%Y-%m-%d%H%i%S')
-					AND STR_TO_DATE(CONCAT(#{workEndDate},'235959'),'%Y-%m-%d%H%i%S')
+						STR_TO_DATE(CONCAT(#{workStartDate},' 000000'),'%Y-%m-%d%H%i%S')
+					AND STR_TO_DATE(CONCAT(#{workEndDate},' 235959'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(workStartDate != null and workStartDate.trim() != '')
 							and (workEndDate == null or workEndDate.trim() == '')">
-					AND manufacturing_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{workStartDate},'000000'),'%Y-%m-%d%H%i%S')
+					AND work_start_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{workStartDate},' 000000'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(workStartDate == null or workStartDate.trim() == '')
 							and (workEndDate != null and workEndDate.trim() != '')">
-					AND manufacturing_date <![CDATA[<=]]>STR_TO_DATE(CONCAT(#{workEndDate},'235959'),'%Y-%m-%d%H%i%S')
+					AND work_start_date <![CDATA[<=]]>STR_TO_DATE(CONCAT(#{workEndDate},' 235959'),'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
@@ -262,39 +231,49 @@
 	<select id="getWorkOrdersBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersSearchDTO"
 									resultType="kr.co.itwillbs.de.mes.dto.WorkOrdersMasterDTO">
 		SELECT 
-		<include refid="t_orders_master_columns_forSelect"></include>
-		  FROM t_work_orders_master
+		<include refid="t_orders_master_join_columns_forSelect"></include>
+			 , p.name AS productName
+			 , r.name AS recipeMasterName
+			 , e.name AS supervisorName
+		  FROM t_work_orders_master wo
+		  JOIN t_product p
+			ON wo.product_idx = p.idx
+		  JOIN t_recipe_master r
+			ON wo.recipe_master_idx = r.idx
+		  LEFT
+		  JOIN t_employee e
+			ON wo.supervisor_id = e.id
 		<where>
 			<if test='documentNumber !=null and !("".equals(documentNumber.trim()))'>
-				AND document_number LIKE CONCAT('%',#{documentNumber},'%')
+				AND wo.document_number LIKE CONCAT('%',#{documentNumber},'%')
 			</if>
 			<if test='memo !=null and !("".equals(memo.trim()))'>
-				AND memo LIKE CONCAT('%',#{memo},'%')
+				AND wo.memo LIKE CONCAT('%',#{memo},'%')
 			</if>
 			<if test='productName !=null and !("".equals(productName.trim()))'>
-				AND product_idx IN (SELECT idx
+				AND wo.product_idx IN (SELECT idx
 									  FROM t_product
 									 WHERE name LIKE CONCAT('%',#{productName},'%'))
 			</if>
 			<if test='supervisorName !=null and !("".equals(supervisorName.trim()))'>
-				AND supervisor_id IN (SELECT id
+				AND wo.supervisor_id IN (SELECT id
 										FROM t_employee
 									   WHERE name LIKE CONCAT('%',#{supervisorName},'%'))
 			</if>
 			<choose>
 				<when test="(workStartDate != null and workStartDate.trim() != '')
 							and (workEndDate != null and workEndDate.trim() != '')">
-					AND work_start_date BETWEEN
-						STR_TO_DATE(CONCAT(#{workStartDate},'000000'),'%Y-%m-%d%H%i%S')
-					AND STR_TO_DATE(CONCAT(#{workEndDate},'235959'),'%Y-%m-%d%H%i%S')
+					AND wo.work_start_date BETWEEN
+						STR_TO_DATE(CONCAT(#{workStartDate},' 000000'),'%Y-%m-%d%H%i%S')
+					AND STR_TO_DATE(CONCAT(#{workEndDate},' 235959'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(workStartDate != null and workStartDate.trim() != '')
 							and (workEndDate == null or workEndDate.trim() == '')">
-					AND manufacturing_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{workStartDate},'000000'),'%Y-%m-%d%H%i%S')
+					AND wo.work_start_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{workStartDate},' 000000'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(workStartDate == null or workStartDate.trim() == '')
 							and (workEndDate != null and workEndDate.trim() != '')">
-					AND manufacturing_date <![CDATA[<=]]>STR_TO_DATE(CONCAT(#{workEndDate},'235959'),'%Y-%m-%d%H%i%S')
+					AND wo.work_end_date <![CDATA[<=]]>STR_TO_DATE(CONCAT(#{workEndDate},' 235959'),'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
@@ -302,17 +281,49 @@
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
+	<!-- ====================================================================================== -->
+	<!-- 작업지시 상세 컬럼 -->
+	<sql id="t_orders_detail_columns_forSelect">
+		  m.idx
+		, m.document_number
+		, m.product_idx
+		, m.recipe_master_idx
+		, m.target_quantity
+		, m.unit
+		, m.work_start_date
+		, m.work_end_date
+		, m.supervisor_id
+		, m.priority
+		, m.status
+		, m.memo AS masterMemo
+		, m.is_deleted
+		, i.idx AS itmesIdx
+		, i.document_number
+		, i.product_lines_idx
+		, i.lines_manager_id
+		, i.actual_start_date
+		, i.actual_end_date
+		, i.produced_quantity
+		, i.unit
+		, i.status
+		, i.memo
+		, i.is_deleted
+	</sql>
+	
 	<select id="getWorkOrdersByIdx" parameterType="string"
-									resultType="kr.co.itwillbs.de.mes.dto.WorkOrdersMasterDTO">
+									resultType="kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO">
 		SELECT
-		<include refid="t_orders_master_columns_forSelect"></include> 
-		  FROM t_work_orders_master
-		 WHERE idx = #{idx}
+		<include refid="t_orders_detail_columns_forSelect"></include> 
+		  FROM t_work_orders_master m
+		  LEFT
+		  JOIN t_work_orders_items i
+		    ON m.document_number = i.document_number
+		 WHERE m.idx = #{idx}
 	</select>
 	
 	<!-- ===========================(UPDATE)================================================= -->
 	<!-- t_work_orders_master -->
-	<update id="modifyWorkOrdersMaster" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersMasterDTO">
+	<update id="modifyWorkOrdersMaster" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO">
 		UPDATE t_work_orders_master
 			<set>
 				<if test='documentNumber !=null and !("".equals(documentNumber.trim()))'>document_number = #{documentNumber},</if>
@@ -325,17 +336,17 @@
 				<if test='supervisorId !=null and !("".equals(supervisorId.trim()))'>supervisor_id = #{supervisorId},</if>
 				<if test='priority !=null and !("".equals(priority.trim()))'>priority = #{priority},</if>
 				<if test='status !=null and !("".equals(status.trim()))'>status = #{status},</if>
-				<if test='memo !=null and !("".equals(memo.trim()))'>memo = #{memo},</if>
+				<if test='masterMemo !=null and !("".equals(masterMemo.trim()))'>memo = #{masterMemo},</if>
 				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 			</set>
-		WHERE idx = #{idx}
+		WHERE document_number = #{documentNumber}
 	</update>
 	
 	<!-- t_work_orders_itmes -->
-	<update id="modifyWorkOrdersItems" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO">
-		UPDATE t_work_orders_itmes
+	<update id="modifyWorkOrdersItems" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO">
+		UPDATE t_work_orders_items
 			<set>
 				<if test='documentNumber !=null and !("".equals(documentNumber.trim()))'>document_number = #{documentNumber},</if>
 				<if test='productLinesIdx !=null and !("".equals(productLinesIdx.trim()))'>product_lines_idx = #{productLinesIdx},</if>
@@ -345,12 +356,12 @@
 				<if test='producedQuantity !=null and !("".equals(producedQuantity.trim()))'>produced_quantity = #{producedQuantity},</if>
 				<if test='unit !=null and !("".equals(unit.trim()))'>unit = #{unit},</if>
 				<if test='status !=null and !("".equals(status.trim()))'>status = #{status},</if>
-				<if test='memo !=null and !("".equals(memo.trim()))'>memo = #{memo},</if>
+				<if test='itemsMemo !=null and !("".equals(itemsMemo.trim()))'>memo = #{itemsMemo},</if>
 				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 			</set>
-		WHERE idx = #{idx}
+		WHERE document_number = #{documentNumber}
 	</update>
 	
 </mapper>

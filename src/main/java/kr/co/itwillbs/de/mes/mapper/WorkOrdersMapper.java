@@ -25,7 +25,7 @@ public interface WorkOrdersMapper {
 	 * @param workOrdersMasterDTO
 	 * @return insert key
 	 */
-	int registerWorkOrdersMaster(WorkOrdersMasterDTO workOrdersMasterDTO);
+	int registerWorkOrdersMaster(WorkOrdersFormDTO workOrdersFormDTO);
 	
 	
 	/**
@@ -33,7 +33,7 @@ public interface WorkOrdersMapper {
 	 * @param workOrdersItemsDTO
 	 * @return insert key
 	 */
-	int registerWorkOrdersItems(WorkOrdersItemsDTO workOrdersItemsDTO);
+	int registerWorkOrdersItems(WorkOrdersFormDTO workOrdersFormDTO);
 
 	/**
 	 * SELECT count(*) FROM t_work_orders_master WHERE workOrdersSearchDTO (페이징용)
@@ -54,7 +54,7 @@ public interface WorkOrdersMapper {
 	 * @param idx
 	 * @return RecipeMasterDTO
 	 */
-	WorkOrdersMasterDTO getWorkOrdersByIdx(@Param("idx")String idx);
+	WorkOrdersFormDTO getWorkOrdersByIdx(@Param("idx")String idx);
 	
 	//	============================================================
 	int modifyWorkOrders(WorkOrdersFormDTO workOrdersFormDTO);
@@ -65,14 +65,14 @@ public interface WorkOrdersMapper {
 	 * @param workOrdersMasterDTO
 	 * @return affectedRow
 	 */
-	int modifyWorkOrdersMaster(WorkOrdersMasterDTO workOrdersMasterDTO);
+	int modifyWorkOrdersMaster(WorkOrdersFormDTO workOrdersFormDTO);
 	
 	/**
 	 * UPDATE t_work_orders_itmes SET workOrdersItemsDTO
 	 * @param workOrdersItemsDTO
 	 * @return affectedRow
 	 */
-	int modifyWorkOrdersItems(WorkOrdersItemsDTO workOrdersItemsDTO);
+	int modifyWorkOrdersItems(WorkOrdersFormDTO workOrdersFormDTO);
 
 
 }
