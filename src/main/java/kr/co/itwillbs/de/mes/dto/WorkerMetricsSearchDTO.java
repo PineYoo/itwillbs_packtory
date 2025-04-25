@@ -12,9 +12,17 @@ import lombok.ToString;
 @NoArgsConstructor
 public class WorkerMetricsSearchDTO {
 
+	
+	private String searchKeyword;
+	
 	private String employeeId; // 사원번호
 	private String memo; // 메모
 	private String isDeleted; // 삭제유무
+	
+	private String isSupervisor;
+	private String isLinesManager;
+	private String isForkliftOperator;
+	private String isDriver;
 
 	private PageDTO pageDTO = new PageDTO(); // 페이징 정보
 }

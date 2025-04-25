@@ -19,9 +19,10 @@ public class BomDTO {
 	private String idx;
 	@NotBlank(message = "타입은 필수 입력 값입니다.")
 	private String type;
-	private String parentsIdx;
 	//@NotBlank(message = "상품은 필수 입력 값입니다.")
 	private String productIdx;
+	private String materialIdx;
+	private String parentsIdx;
 	private String code;
 	@NotBlank(message = "이름은 필수 입력 값입니다.")
 	private String name;
