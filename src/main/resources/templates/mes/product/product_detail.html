@@ -38,29 +38,39 @@ input, select {
 							<input type="hidden" th:field="*{idx}" id="idx" />
 							<!-- idx ID 추가 -->
 
-							<!-- 상품 타입 -->
+							<!-- 상품 이름 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type', '상품 타입', true,${codeItems},false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('name', '상품 이름', true,false,false)}"></div>
 							</div>
 
-							<!-- 상품명 -->
+							<!-- 코드 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name','상품명',true,false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('code', '코드', true,false,false)}"></div>
 							</div>
 
-							<!-- 값 -->
+							<!-- 스펙 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '값', true,false,false)}"></div>
-							</div>
-
-							<!-- 단위 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('unit', '단위', true, ${itemUnit},false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('spec', '스펙', true,false,false)}"></div>
 							</div>
 
 							<!-- 가격 -->
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('price','가격',true,false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('price', '가격', true,false,false)}"></div>
+							</div>
+
+							<!-- 유효기간 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('expiryDate', '유효기간', true,false,false)}"></div>
+							</div>
+
+							<!-- 보관방법 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('storageCondition', '보관방법', true,false,false)}"></div>
+							</div>
+
+							<!-- 상태 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('status', '상태', true, ${status},false,false)}"></div>
 							</div>
 
 							<!-- 삭제 유무 -->

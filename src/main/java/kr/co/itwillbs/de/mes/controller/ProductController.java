@@ -41,8 +41,7 @@ public class ProductController {
 	public String productRegisterForm(Model model) {
 
 		// 공통 코드 가져오기
-		model.addAttribute("codeItems", commonCodeUtil.getCodeItems("PRODUCT_TYPE"));
-		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
+		model.addAttribute("status", commonCodeUtil.getCodeItems("PRODUCT_STATUS"));
 
 		// DTO에 저장
 		model.addAttribute("productDTO", new ProductDTO());
@@ -84,10 +83,6 @@ public class ProductController {
 		List<ProductDTO> productList = productService.getProductList(searchDTO);
 		model.addAttribute("productList", productList);
 
-		// 공통 코드 가져오기
-		model.addAttribute("codeItems", commonCodeUtil.getCodeItems("PRODUCT_TYPE"));
-		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
-
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
 		return PATH + "/product_list";
@@ -103,8 +98,7 @@ public class ProductController {
 		model.addAttribute("productDTO", productDTO);
 
 		// 공통 코드 가져오기
-		model.addAttribute("codeItems", commonCodeUtil.getCodeItems("PRODUCT_TYPE"));
-		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
+		model.addAttribute("status", commonCodeUtil.getCodeItems("PRODUCT_STATUS"));
 
 		return PATH + "/product_detail";
 	}

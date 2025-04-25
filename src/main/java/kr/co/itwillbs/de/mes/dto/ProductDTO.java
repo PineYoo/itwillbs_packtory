@@ -22,38 +22,22 @@ import lombok.ToString;
 public class ProductDTO {
 	private Long idx; // 인덱스 (PK)
 
-	@NotBlank(message = "타입은 필수 입력 값입니다.")
-	private String type; // 타입
-
 	@NotBlank(message = "이름은 필수 입력 값입니다.")
-	private String name; // 이름
-
-	private Integer quantity; // 개수
-
-	private String unit; // 단위
+	private String name;
+	private String code; 
+	private String spec;
 
 	@PositiveOrZero(message = "가격은 0원 이상만 입력 가능합니다.")
-	private Integer price; // 가격
+	private Integer price; 
+	private String expiryDate;
+	private String storageCondition;
+	private String status;
+	private String statusName;
 
-	private String isDeleted; // 삭제여부
+	private String isDeleted; 
 
-	private String regId; // 최초등록자 ID
-	private LocalDateTime regDate; // 최초등록일
-	private String modId; // 최종수정자 ID
-	private LocalDateTime modDate; // 최종수정일
-
-	// 한글 처리
-	private String typeName;
-	
-	public String getUnitName() {
-        return switch (unit) {
-            case "1" -> "EA";
-            case "2" -> "g";
-            case "3" -> "kg";
-            case "4" -> "oz";
-            case "5" -> "mm";
-            case "6" -> "cm";
-		default -> "";
-		};
-	}
+	private String regId; 
+	private LocalDateTime regDate; 
+	private String modId;
+	private LocalDateTime modDate; 
 }
