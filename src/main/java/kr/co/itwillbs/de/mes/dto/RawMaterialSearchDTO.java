@@ -11,17 +11,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class RawMaterialSearchDTO {
-    
-    private String type;			// 타입
-    private String name;			// 이름
-    
-    private Long clientIdx;			// 거래처 idx
-    
-    private Integer minQuantity;    // 최소 수량
-    private Integer maxQuantity;    // 최대 수량
-    
-    private Integer minPrice;    // 최소 가격
-    private Integer maxPrice;    // 최대 가격
-    
-    private PageDTO pageDTO = new PageDTO();  // 페이징 정보
+
+	private String type; 
+	private String name; 
+	private String isDeleted; 
+
+	private PageDTO pageDTO = new PageDTO(); // 페이징 정보
 }

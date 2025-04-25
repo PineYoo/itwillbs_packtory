@@ -5,30 +5,15 @@
 
 <mapper namespace="kr.co.itwillbs.de.mes.mapper.RawMaterialMapper">
 
-	<!-- 원자재 등록 -->
-	<insert id="insertRawMaterial" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+	<!-- 마스터 자재 등록 -->
+	<insert id="insertMasterMaterial" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
 		INSERT INTO t_raw_material (
 		<trim suffixOverrides=",">
-			<if test='clientIdx != null and !("".equals(clientIdx.trim()))'>
-				client_idx,
-			</if>
 			<if test='type != null and !("".equals(type.trim()))'>
 				type,
 			</if>
 			<if test='name != null and !("".equals(name.trim()))'>
 				name,
-			</if>
-			<if test='quantity != null'>
-				quantity,
-			</if>
-			<if test='unit != null and !("".equals(unit.trim()))'>
-				unit,
-			</if>
-			<if test='price != null'>
-				price,
-			</if>
-			<if test='expirationDate != null'>
-				expiration_date,
 			</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
 				is_deleted,
@@ -38,26 +23,11 @@
 		</trim>
 		) VALUES (
 		<trim suffixOverrides=",">
-			<if test='clientIdx != null and !("".equals(clientIdx.trim()))'>
-				#{clientIdx},
-			</if>
 			<if test='type != null and !("".equals(type.trim()))'>
 				#{type},
 			</if>
 			<if test='name != null and !("".equals(name.trim()))'>
 				#{name},
-			</if>
-			<if test='quantity != null'>
-				#{quantity},
-			</if>
-			<if test='unit != null and !("".equals(unit.trim()))'>
-				#{unit},
-			</if>
-			<if test='price != null'>
-				#{price},
-			</if>
-			<if test='expirationDate != null'>
-				#{expirationDate},
 			</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
 				#{isDeleted},
@@ -68,14 +38,10 @@
 		)
 	</insert>
 
-	<!-- 목록 조회 + 페이징 -->
-	<select id="searchRawMaterialCount" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO" resultType="int">
-		SELECT 
-			count(*)
+	<!-- 마스터 자재 조회 + 페이징 -->
+	<select id="searchMasterMaterialCount" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO" resultType="int">
+		SELECT count(*)
 		FROM t_raw_material r
-		LEFT JOIN t_client c ON r.client_idx = c.idx
-		LEFT JOIN t_commoncode_item cc ON r.type = cc.minor_code
-		AND cc.major_code = "MATERIAL_TYPE"
 		<where>
 			<if test="type != null and !(''.equals(type.trim()))">
 				AND r.type = #{type}
@@ -83,39 +49,20 @@
 			<if test="name != null and !(''.equals(name.trim()))">
 				AND r.name LIKE CONCAT('%', #{name}, '%')
 			</if>
-
-			<if test="clientIdx != null">
-				AND client_idx = #{clientIdx}
+			<if test="isDeleted != null and !(''.equals(isDeleted.trim()))">
+				AND r.is_deleted LIKE CONCAT('%', #{isDeleted}, '%')
 			</if>
-
-			<if test="minQuantity != null">
-				AND r.quantity &gt;= #{minQuantity}
-			</if>
-
-			<if test="maxQuantity != null">
-				AND r.quantity &lt;= #{maxQuantity}
-			</if>
-
-			<if test="minPrice != null">
-				AND r.price &gt;= #{minPrice}
-			</if>
-
-			<if test="maxPrice != null">
-				AND r.price &lt;= #{maxPrice}
-			</if>
+			AND r.parents_idx IS NULL
 		</where>
 	</select>
 
-	<!-- 원자재 목록 조회 -->
-	<select id="searchRawMaterial" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
-		SELECT 
-			r.*,
-			c.company_name AS clientCompanyName,
-			cc.minor_name AS type_name
+	<!-- 마스터 자재 조회 -->
+	<select id="searchMasterMaterial" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+		SELECT
+		r.*,
+		c.minor_name AS type_name
 		FROM t_raw_material r
-		LEFT JOIN t_client c ON r.client_idx = c.idx
-		LEFT JOIN t_commoncode_item cc ON r.type = cc.minor_code
-		AND cc.major_code = "MATERIAL_TYPE"
+		LEFT JOIN t_commoncode_item c ON r.type = c.minor_code AND c.major_code = "MATERIAL_TYPE"
 		<where>
 			<if test="type != null and !(''.equals(type.trim()))">
 				AND r.type = #{type}
@@ -123,57 +70,106 @@
 			<if test="name != null and !(''.equals(name.trim()))">
 				AND r.name LIKE CONCAT('%', #{name}, '%')
 			</if>
-
-			<if test="clientIdx != null">
-				AND client_idx = #{clientIdx}
+			<if test="isDeleted != null and !(''.equals(isDeleted.trim()))">
+				AND r.is_deleted LIKE CONCAT('%', #{isDeleted}, '%')
 			</if>
-
-			<if test="minQuantity != null">
-				AND r.quantity &gt;= #{minQuantity}
-			</if>
-
-			<if test="maxQuantity != null">
-				AND r.quantity &lt;= #{maxQuantity}
-			</if>
-
-			<if test="minPrice != null">
-				AND r.price &gt;= #{minPrice}
-			</if>
-
-			<if test="maxPrice != null">
-				AND r.price &lt;= #{maxPrice}
-			</if>
+			AND r.parents_idx IS NULL
 		</where>
 
 		ORDER BY r.idx ASC
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 
-	<!-- 원자재 상세 조회 -->
-	<select id="getRawMaterialByIdx" parameterType="Long" resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+	<!-- 마스터 자재 상세 조회 -->
+	<select id="getMasterMaterialByIdx" parameterType="Long" resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
 		SELECT
-			r.*,
-			c.company_name AS clientcompanyname,
+		r.*,
+		c.minor_name AS type_name
 		FROM
 		t_raw_material r
-		LEFT JOIN t_client c 
-			ON r.client_idx = c.idx
+		LEFT JOIN t_commoncode_item c ON r.type = c.minor_code AND c.major_code = "MATERIAL_TYPE"
 		WHERE r.idx = #{idx}
 	</select>
 
-	<!-- 원자재 정보 수정 -->
-	<update id="updateRawMaterial" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+	<!-- 마스터 자재 정보 수정 -->
+	<update id="updateMasterMaterial" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
 		UPDATE t_raw_material
 		<set>
 			<if test='type != null and !("".equals(type.trim()))'>type = #{type},</if>
-			<if test='clientIdx != null and !("".equals(clientIdx.trim()))'>client_idx = #{clientIdx},</if>
 			<if test='name != null and !("".equals(name.trim()))'>name = #{name},</if>
-			<if test='quantity != null'>quantity = #{quantity},</if>
-			<if test='unit != null and !("".equals(unit.trim()))'>unit = #{unit},</if>
-			<if test='expirationDate != null and !("".equals(expirationDate.trim()))'>expiration_date = #{expirationDate},</if>
 			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
 			<if test='modId != null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
 			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+		</set>
+		WHERE idx = #{idx}
+	</update>
+
+	<!-- 부속 자재 조회 -->
+	<select id="getSubMaterialsByIdx" parameterType="Long" resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+		SELECT
+		r.*,
+		cp.company_name AS clientcompanyname,
+		cc.minor_name AS type_name
+		FROM
+		t_raw_material r
+		LEFT JOIN t_client cp ON r.client_idx = cp.idx
+		LEFT JOIN t_commoncode_item cc ON r.type = cc.minor_code AND cc.major_code = "MATERIAL_TYPE"
+		WHERE r.parents_idx = #{parentIdx} AND r.is_deleted = 'N'
+	</select>
+
+	<!-- 부속 자재 등록 -->
+	<insert id="insertSubMaterial" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+		INSERT INTO t_raw_material (
+		<trim suffixOverrides=",">
+			parents_idx,
+			<if test='clientIdx != null'>client_idx,</if>
+			<if test='type != null and !("".equals(type.trim()))'>type,</if>
+			<if test='name != null and !("".equals(name.trim()))'>name,</if>
+			<if test='unit != null and !("".equals(unit.trim()))'>unit,</if>
+			<if test='quantity != null'>quantity,</if>
+			<if test='price != null'>price,</if>
+			<if test='leadTime != null'>lead_time,</if>
+			<if test='expirationDate != null'>expiration_date,</if>
+			<if test='msdsLink != null and !("".equals(msdsLink.trim()))'>msds_link,</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted,</if>
+			reg_id,
+			reg_date,
+		</trim>
+		) VALUES (
+		<trim suffixOverrides=",">
+			#{parentsIdx},
+			<if test='clientIdx != null'>#{clientIdx},</if>
+			<if test='type != null and !("".equals(type.trim()))'>#{type},</if>
+			<if test='name != null and !("".equals(name.trim()))'>#{name},</if>
+			<if test='unit != null and !("".equals(unit.trim()))'>#{unit},</if>
+			<if test='quantity != null'>#{quantity},</if>
+			<if test='price != null'>#{price},</if>
+			<if test='leadTime != null'>#{leadTime},</if>
+			<if test='expirationDate != null'>#{expirationDate},</if>
+			<if test='msdsLink != null and !("".equals(msdsLink.trim()))'>#{msdsLink},</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>#{isDeleted},</if>
+			#{regId},
+			now(),
+		</trim>
+		)
+	</insert>
+
+	<!-- 부속 자재 정보 수정 -->
+	<update id="updateSubMaterial" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+		UPDATE t_raw_material
+		<set>
+			<if test='clientIdx != null'>client_idx = #{clientIdx},</if>
+			<if test='type != null and !("".equals(type.trim()))'>type = #{type},</if>
+			<if test='name != null and !("".equals(name.trim()))'>name = #{name},</if>
+			<if test='unit != null and !("".equals(unit.trim()))'>unit = #{unit},</if>
+			<if test='quantity != null'>quantity = #{quantity},</if>
+			<if test='price != null'>price = #{price},</if>
+			<if test='leadTime != null'>lead_time = #{leadTime},</if>
+			<if test='expirationDate != null'>expiration_date = #{expirationDate},</if>
+			<if test='msdsLink != null and !("".equals(msdsLink.trim()))'>msds_link = #{msdsLink},</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+			<if test='modId != null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+			<if test='modId != null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 		</set>
 		WHERE idx = #{idx}
 	</update>
