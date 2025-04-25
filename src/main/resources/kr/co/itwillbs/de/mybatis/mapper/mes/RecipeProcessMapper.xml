@@ -34,7 +34,7 @@
 		</foreach>
 	</select>
 	
-	<sql id="t_recipe_columns_forSelect">
+	<sql id="t_recipe_process_columns_forSelect">
 		  idx
 		, master_idx
 		, name
@@ -51,7 +51,7 @@
 	
 		<!-- useGeneratedKeys : true 일때, keyProperty : idx >> affectRow가 아닌 생성된 idx가 리턴타입에 셋 mysql은 확인됨 -->
 	<insert id="registerRecipeProcess" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
-		INSERT INTO t_recipe (
+		INSERT INTO t_recipe_process_code (
 			<trim suffixOverrides=",">
 			<if test='masterIdx !=null and !("".equals(masterIdx.trim()))'>
 			master_idx,
@@ -125,7 +125,7 @@
 	<select id="getRecipesProcessBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO"
 									resultType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
 		SELECT 
-			<include refid="t_recipe_columns_forSelect"></include> 
+			<include refid="t_recipe_process_columns_forSelect"></include> 
 		FROM t_recipe_process_code
 		<where>
 			<if test='masterIdx !=null and !("".equals(masterIdx.trim()))'>AND master_idx = #{masterIdx}</if>
@@ -142,7 +142,7 @@
 	<select id="getRecipeProcessByIdx" parameterType="string"
 									resultType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
 		SELECT 
-			<include refid="t_recipe_columns_forSelect"></include> 
+			<include refid="t_recipe_process_columns_forSelect"></include> 
 		FROM t_recipe_process_code
 		where idx = #{idx}
 	</select>
