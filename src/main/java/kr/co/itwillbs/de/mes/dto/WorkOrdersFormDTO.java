@@ -48,6 +48,7 @@ public class WorkOrdersFormDTO {
 	// 작업관리자(t_employee.id+t_worker_metrics.id => work_is_supervisor='Y' 참조)
 	@NotBlank(message = "작업관리자는 필수 입력 값입니다.")
 	private String supervisorId;
+	private String supervisorName;
 	
 	// 중요도(1 ~ 5) => 숫자가 높을수록 중요도 낮음
 	private String priority;
