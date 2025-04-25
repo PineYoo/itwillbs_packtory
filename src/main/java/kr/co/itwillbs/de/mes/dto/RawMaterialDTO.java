@@ -24,11 +24,8 @@ public class RawMaterialDTO {
 	private Long idx; // 테이블 인덱스
 	private String parentsIdx; // 부모 인덱스
 
-	@NotBlank(message = "거래처 정보는 필수 입력 값입니다.")
 	private String clientIdx; // 거래처_idx
 	private String clientCompanyName; // 거래처명
-
-	private String bomIdx; // BOM_idx
 
 	@NotBlank(message = "타입은 필수 입력 값입니다.")
 	private String type; // 타입

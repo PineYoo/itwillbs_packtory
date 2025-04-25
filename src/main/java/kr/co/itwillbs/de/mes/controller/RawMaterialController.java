@@ -40,36 +40,29 @@ public class RawMaterialController {
 	private final BomService bomService;
 	private final String PATH = "/mes/rawmaterial";
 
-	// 원자재 등록 폼 페이지
+	// 마스터 자재 등록 폼 페이지
 	@GetMapping("/new")
 	public String rawMaterialRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		// 공통코드 + BOM
-		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
 		model.addAttribute("materialType", commonCodeUtil.getCodeItems("MATERIAL_TYPE"));
-		model.addAttribute("bomList", bomService.getBomList());
-
 		model.addAttribute("rawMaterialDTO", new RawMaterialDTO());
 
 		return PATH + "/rawMaterial_form";
 	}
 
-	// 원자재 등록 페이지 AJAX용
+	// 마스터 자재 등록 페이지 AJAX용
 	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> rawMaterialRegister(@RequestBody @Valid RawMaterialDTO rawMaterialDTO) {
+	public ResponseEntity<Map<String, Object>> rawMaterialRegister(@RequestBody @Valid RawMaterialDTO rawMaterialDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(rawMaterialDTO));
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			if (rawMaterialDTO.getClientIdx() != null) {
-				rawMaterialDTO.setClientIdx(String.valueOf(Long.parseLong(rawMaterialDTO.getClientIdx())));
-			}
-
-			rawMaterialService.registerRawMaterial(rawMaterialDTO);
+			rawMaterialService.registerMasterMaterial(rawMaterialDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -81,53 +74,55 @@ public class RawMaterialController {
 		return ResponseEntity.ok(response);
 	}
 
-	// 원자재 목록 조회 (검색)
+	// 마스터 자재 목록 조회 (검색)
 	@GetMapping("")
 	public String getRawMaterialList(@ModelAttribute RawMaterialSearchDTO searchDTO, Model model) {
 		log.info("getRawMaterialList --- start");
 
 		// 페이징 정보 조회
-		searchDTO.getPageDTO().setTotalCount(rawMaterialService.searchRawMaterialCount(searchDTO));
+		searchDTO.getPageDTO().setTotalCount(rawMaterialService.searchMasterMaterialCount(searchDTO));
 
-		// 원자재 목록 조회
-		List<RawMaterialDTO> rawMaterialList = rawMaterialService.getRawMaterialList(searchDTO);
-		model.addAttribute("rawMaterialList", rawMaterialList);
-
-		// 공통코드 + 거래처 + BOM
+		// 마스터 자재 목록 조회
+		List<RawMaterialDTO> rawMaterialList = rawMaterialService.getMasterMaterialList(searchDTO);
 		model.addAttribute("materialType", commonCodeUtil.getCodeItems("MATERIAL_TYPE"));
-		model.addAttribute("clientList", clientService.getClientList());
+		model.addAttribute("rawMaterialList", rawMaterialList);
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
 
 		return PATH + "/rawmaterial_list";
 	}
 
-	// 원자재 상세 조회
+	// 마스터 자재 상세 조회
 	@GetMapping("/{idx}")
 	public String getRawMaterial(@PathVariable("idx") Long idx, Model model) {
-		log.info("getRawMaterial --- start");
+		log.info("getRawMaterial --- start | idx={}", idx);
 
-		// 원자재 상세정보 조회
-		RawMaterialDTO rawMaterialDTO = rawMaterialService.getRawMaterial(idx);
+		// 마스터 자재 상세정보 조회
+		RawMaterialDTO rawMaterialDTO = rawMaterialService.getMasterMaterial(idx);
 		model.addAttribute("rawMaterialDTO", rawMaterialDTO);
+		
+		// 부속 자재 목록 조회
+		List<RawMaterialDTO> subMaterialList = rawMaterialService.getSubMaterialsByIdx(idx);
+		model.addAttribute("subMaterialList", subMaterialList);
 
 		// 공통코드 + BOM
 		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
 		model.addAttribute("materialType", commonCodeUtil.getCodeItems("MATERIAL_TYPE"));
+		model.addAttribute("clientList",clientService.getClientList());
 		model.addAttribute("bomList", bomService.getBomList());
 
 		return PATH + "/rawmaterial_detail";
 	}
 
-	// 원자재 수정
-	@PutMapping("/updateRawMaterial")
+	// 마스터 자재 수정
+	@PutMapping("/master/update")
 	public ResponseEntity<Map<String, Object>> updateRawMaterial(@RequestBody RawMaterialDTO rawMaterialDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			rawMaterialService.updateRawMaterial(rawMaterialDTO);
+			rawMaterialService.updateMasterMaterial(rawMaterialDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
 		} catch (Exception e) {
@@ -138,5 +133,45 @@ public class RawMaterialController {
 
 		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
 		return ResponseEntity.ok(response);
+	}
+	
+	// 부속 자재 등록 (AJAX)
+	@PostMapping("/sub/new")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> insertSubMaterial(@RequestBody RawMaterialDTO rawMaterialDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		// 리턴 객체 생성
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        rawMaterialService.insertSubMaterial(rawMaterialDTO);
+	        response.put("status", "success");
+	        response.put("message", "등록되었습니다.");
+	    } catch (Exception e) {
+	        log.error("부속 자재 등록 실패", e);
+	        response.put("status", "fail");
+	        response.put("message", "등록에 실패했습니다.");
+	    }
+	    return ResponseEntity.ok(response);
+	}
+	
+	// 부속 자재 수정 (AJAX)
+	@PutMapping("/sub/update")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> updateSubMaterial(@RequestBody RawMaterialDTO rawMaterialDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		// 리턴 객체 생성
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        rawMaterialService.updateSubMaterial(rawMaterialDTO);
+	        response.put("status", "success");
+	        response.put("message", "수정되었습니다.");
+	    } catch (Exception e) {
+	        log.error("부속 자재 수정 실패", e);
+	        response.put("status", "fail");
+	        response.put("message", "수정에 실패했습니다.");
+	    }
+	    return ResponseEntity.ok(response);
 	}
 }
