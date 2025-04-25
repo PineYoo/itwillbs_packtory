@@ -93,7 +93,7 @@ public class WorkOrdersController {
 	 * @return String
 	 */
 	@GetMapping(value= {"", "/"})
-	public String getRecipesMaster(@ModelAttribute WorkOrdersSearchDTO workOrdersSearchDTO, Model model) {
+	public String getWorkOrders(@ModelAttribute WorkOrdersSearchDTO workOrdersSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		workOrdersSearchDTO.getPageDTO().setTotalCount(workOrdersService.getWorkOrdersCountBySearchDTO(workOrdersSearchDTO));
@@ -112,7 +112,7 @@ public class WorkOrdersController {
 	 * @return String
 	 */
 	@GetMapping(value= {"/search", "/search/"})
-	public String getRecipesMasterBySearchDTO(@ModelAttribute WorkOrdersSearchDTO workOrdersSearchDTO, Model model) {
+	public String getWorkOrdersBySearchDTO(@ModelAttribute WorkOrdersSearchDTO workOrdersSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		workOrdersSearchDTO.getPageDTO().setTotalCount(workOrdersService.getWorkOrdersCountBySearchDTO(workOrdersSearchDTO));
@@ -132,7 +132,7 @@ public class WorkOrdersController {
 	 * @return String
 	 */
 	@GetMapping("/{idx}")
-	public String getRecipeMaster(@PathVariable("idx") String idx,
+	public String getWorkOrder(@PathVariable("idx") String idx,
 							@ModelAttribute WorkOrdersSearchDTO workOrdersSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("request idx : {}, recipeSearchDTO : {}", idx, workOrdersSearchDTO);
@@ -142,7 +142,7 @@ public class WorkOrdersController {
 			model.addAttribute("workOrdersSearchDTO", workOrdersSearchDTO);
 			return "redirect:"+VIEW_PATH;
 		}
-		WorkOrdersFormDTO dto = workOrdersService.getWorkOrdersByIdx(idx);
+		
 		model.addAttribute("workOrdersFormDTO", workOrdersService.getWorkOrdersByIdx(idx));
 		
 		return VIEW_PATH+"/work_orders_detail";
@@ -155,7 +155,7 @@ public class WorkOrdersController {
 	 */
 	@PutMapping("/modifyWorkOrders")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> modifyRecipeMaster(@RequestBody @Valid WorkOrdersFormDTO workOrdersFormDTO) {
+	public ResponseEntity<Map<String, Object>> modifyWorkOrders(@RequestBody @Valid WorkOrdersFormDTO workOrdersFormDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestBody : {}", workOrdersFormDTO);

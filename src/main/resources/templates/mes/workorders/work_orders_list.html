@@ -3,7 +3,7 @@
 		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) - Lot 관리</title>
+<title>팩토리(PackTory) - 작업지시 관리</title>
 	
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 	<style type="text/css">
@@ -34,7 +34,7 @@
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
-								<form th:action="@{/mes/orders/search}" method="get" th:object="${workOrdersSearchDTO}" id="searchForm">
+								<form th:action="@{/mes/workorders/search}" method="get" th:object="${workOrdersSearchDTO}" id="searchForm">
 									<!-- 페이징 히든 변수 -->
 									<input type="hidden" th:field="*{pageDTO.page}">
 									<input type="hidden" th:field="*{pageDTO.size}">
@@ -169,7 +169,7 @@
 						const id = $(this).data("id");
 						console.log("click id is %s", id);
 						if(id != undefined && id != "") {
-							location.href=`/mes/orders/${id}`;
+							location.href=`/mes/workorders/${id}`;
 						}
 					}); // end of $('.clickable-row').on("click", function() { 
 					

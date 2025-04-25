@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO;
+import kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersMasterDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersSearchDTO;
 
@@ -50,6 +51,13 @@ public interface WorkOrdersMapper {
 	 */
 	WorkOrdersFormDTO getWorkOrdersByIdx(@Param("idx")String idx);
 	
+	/**
+	 * SELECT FROM t_work_orders_master WHERE idx = #{idx}
+	 * @param idx
+	 * @return RecipeMasterDTO
+	 */
+	List<WorkOrdersItemsDTO> getWorkOrdersItemsByIdx(@Param("idx")String idx);
+	
 	//	============================================================
 	int modifyWorkOrders(WorkOrdersFormDTO workOrdersFormDTO);
 	//	============================================================
@@ -60,6 +68,8 @@ public interface WorkOrdersMapper {
 	 * @return affectedRow
 	 */
 	int modifyWorkOrdersMaster(WorkOrdersFormDTO workOrdersFormDTO);
+	
+	int removeWorkOrdersItems(WorkOrdersFormDTO workOrdersFormDTO);
 	
 	/**
 	 * UPDATE t_work_orders_itmes SET workOrdersItemsDTO

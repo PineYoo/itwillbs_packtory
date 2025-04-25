@@ -49,6 +49,7 @@ public class WorkOrdersFormDTO {
 	@NotBlank(message = "작업관리자는 필수 입력 값입니다.")
 	private String supervisorId;
 	private String supervisorName;
+	private String positionName;
 	
 	// 중요도(1 ~ 5) => 숫자가 높을수록 중요도 낮음
 	private String priority;

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO;
@@ -32,6 +33,7 @@ public class WorkOrdersService {
 	 * @param workOrdersFormDTO
 	 * @throws Exception
 	 */
+	@LogExecution
 	@Transactional(rollbackFor = Exception.class)
 	public void registerWorkOrders(WorkOrdersFormDTO workOrdersFormDTO) throws Exception {
 		LogUtil.logStart(log);
@@ -80,17 +82,34 @@ public class WorkOrdersService {
 	public WorkOrdersFormDTO getWorkOrdersByIdx(String idx) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		return workOrdersMapper.getWorkOrdersByIdx(idx);
+		// Master
+		WorkOrdersFormDTO workOrdersFormDTO = workOrdersMapper.getWorkOrdersByIdx(idx);
+		// Items
+		workOrdersFormDTO.setWorkOrdersItemList(workOrdersMapper.getWorkOrdersItemsByIdx(idx));
+		
+		return workOrdersFormDTO;
 	}
 
 	//	========================================================================
-	public void modifyWorkOrders(WorkOrdersFormDTO workOrdersFormDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		// t_work_orders_master 수정
-		workOrdersMapper.modifyWorkOrdersMaster(workOrdersFormDTO);
-		// t_work_orders_items 수정
-		workOrdersMapper.modifyWorkOrdersItems(workOrdersFormDTO);
+	@LogExecution
+	@Transactional(rollbackFor = Exception.class)
+	public void modifyWorkOrders(WorkOrdersFormDTO workOrdersFormDTO) throws Exception {
+		LogUtil.logStart(log);
+		try {
+			// t_work_orders_master 수정
+			workOrdersMapper.modifyWorkOrdersMaster(workOrdersFormDTO);
+			
+			// t_work_orders_items 값 등록은 삭제 후 등록
+			workOrdersMapper.removeWorkOrdersItems(workOrdersFormDTO);
+			if(workOrdersFormDTO.getWorkOrdersItemList().size() > 0) {
+				workOrdersMapper.registerWorkOrdersItems(workOrdersFormDTO);
+			}
+			// t_work_orders_items 수정
+//			workOrdersMapper.modifyWorkOrdersItems(workOrdersFormDTO);
+		} catch (Exception e) {
+			LogUtil.error(log, "DB 작업 도중 에러 발생 {}", e.getMessage());
+			throw e;
+		}
 	}
 	//	========================================================================
 	

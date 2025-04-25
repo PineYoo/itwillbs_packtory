@@ -164,24 +164,20 @@
 	<!-- t_work_orders_items -->
 	<!-- 최초로 등록 시 생산라인값만 넣기 때문에 필요한 컬럼만 넣음 -->
 	<insert id="registerWorkOrdersItems" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO">
-		INSERT
-		  INTO t_work_orders_items
-			 (
-			   document_number		-- 문서번호
-			 , product_lines_idx	-- 공장번호
-			 , is_deleted			-- 삭제유무
-			 , reg_id				-- 작성자
-			 , reg_date				-- 작성일자
-			 )
+		INSERT INTO t_work_orders_items
+			(
+			<trim suffixOverrides=",">
+			document_number,
+			product_lines_idx,
+			lines_manager_id,
+			is_deleted,
+			reg_id,
+			reg_date,
+			</trim>
+			)
 		VALUES
 		<foreach collection="workOrdersItemList" item="item" separator=",">
-			 (
-			   #{documentNumber}	-- 문서번호
-			 , #{item.idx}          -- 공장번호
-			 , 'N'                  -- 삭제유무
-			 , #{regId}             -- 작성자 
-			 , NOW()                -- 작성일자
-			 )
+			( #{documentNumber}, #{item.productLinesIdx}, #{item.linesManagerId}, 'N', #{regId}, NOW() )
 		</foreach>
 	</insert>
 	
@@ -283,42 +279,79 @@
 	
 	<!-- ====================================================================================== -->
 	<!-- 작업지시 상세 컬럼 -->
-	<sql id="t_orders_detail_columns_forSelect">
-		  m.idx
-		, m.document_number
-		, m.product_idx
-		, m.recipe_master_idx
-		, m.target_quantity
-		, m.unit
-		, m.work_start_date
-		, m.work_end_date
-		, m.supervisor_id
-		, m.priority
-		, m.status
-		, m.memo AS masterMemo
-		, m.is_deleted
-		, i.idx AS itmesIdx
-		, i.document_number
-		, i.product_lines_idx
-		, i.lines_manager_id
-		, i.actual_start_date
-		, i.actual_end_date
-		, i.produced_quantity
-		, i.unit
-		, i.status
-		, i.memo
-		, i.is_deleted
-	</sql>
-	
 	<select id="getWorkOrdersByIdx" parameterType="string"
 									resultType="kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO">
 		SELECT
-		<include refid="t_orders_detail_columns_forSelect"></include> 
-		  FROM t_work_orders_master m
-		  LEFT
-		  JOIN t_work_orders_items i
-		    ON m.document_number = i.document_number
-		 WHERE m.idx = #{idx}
+			m.idx,
+			m.document_number,
+			m.product_idx,
+			tp.name as product_name,
+			m.recipe_master_idx,
+			m.target_quantity,
+			m.unit,
+			m.work_start_date,
+			m.work_end_date,
+			m.supervisor_id,
+			vmi.name as supervisor_name,
+			vmi.position_name,
+			m.priority,
+			m.status,
+			m.memo AS masterMemo,
+			m.is_deleted
+		FROM t_work_orders_master m
+		LEFT JOIN t_product AS tp ON m.product_idx = tp.idx
+		LEFT JOIN (
+				SELECT
+					id,
+					name,
+					department_code,
+					department_name,
+					sub_department_code,
+					sub_department_name,
+					position_code,
+					position_name,
+					phone_number
+				FROM v_emp_info 
+				) AS vmi ON m.supervisor_id = vmi.id
+		WHERE
+			m.idx = #{idx}
+	</select>
+	
+	<select id="getWorkOrdersItemsByIdx" parameterType="string"
+									resultType="kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO">
+		SELECT 
+			twoi.idx,
+			twoi.document_number,
+			twoi.product_lines_idx,
+			tli.name AS product_lines_name,
+			twoi.lines_manager_id,
+			vmi.name AS lines_manager_name,
+			twoi.actual_start_date,
+			twoi.actual_end_date,
+			twoi.produced_quantity,
+			twoi.unit,
+			twoi.status,
+			twoi.memo,
+			twoi.is_deleted
+		FROM t_work_orders_items twoi
+		LEFT JOIN t_work_orders_master twom
+			ON twoi.document_number = twom.document_number
+		LEFT JOIN t_location_info tli
+			ON twoi.product_lines_idx = tli.idx
+		LEFT JOIN (
+				SELECT
+					id,
+					name,
+					department_code,
+					department_name,
+					sub_department_code,
+					sub_department_name,
+					position_code,
+					position_name,
+					phone_number
+				FROM v_emp_info 
+				) AS vmi ON twoi.lines_manager_id = vmi.id
+		WHERE twom.idx = #{idx}
 	</select>
 	
 	<!-- ===========================(UPDATE)================================================= -->
@@ -341,10 +374,15 @@
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 			</set>
-		WHERE document_number = #{documentNumber}
+		WHERE idx = #{idx}
 	</update>
 	
-	<!-- t_work_orders_itmes -->
+	<delete id="removeWorkOrdersItems" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO">
+		DELETE FROM t_work_orders_items 
+		WHERE document_number = #{documentNumber}
+	</delete>
+	
+	<!-- t_work_orders_itmes ..전혀 성장하지 않았어 방세현...-->
 	<update id="modifyWorkOrdersItems" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO">
 		UPDATE t_work_orders_items
 			<set>

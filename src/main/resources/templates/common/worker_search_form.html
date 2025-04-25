@@ -84,7 +84,11 @@
 		            	</div>
 					</div>
 		        </form>
-
+		        
+			    <div class="text-end">
+			        <button class="btn btn-danger mb-2" onclick="window.close()">선택완료</button>
+			    </div>
+			    
 				<div class="table-responsive">
 				     <table class="table table-striped table-hover text-center">
 				        <thead>
@@ -99,7 +103,7 @@
 				                <th class="text-nowrap">선택</th>
 				            </tr>
 				        </thead>
-				        <tbody id="employeeList">
+				        <tbody id="workerList">
 				        	<tr th:each="item , status : ${infoList}" th:data-id="${item.employeeId}">
 								<td class="emp-id" th:text="${item.employeeId}"></td>
 							    <td class="emp-name" th:text="${item.employeeName}"></td>
@@ -151,7 +155,7 @@
 	
 	<script type="text/javascript">
 		const isSingleSelect = window.opener.isSingleSelect ?? false;	// 단일선택모드인가
-		let selectedEmployeeList = []; // 선택된 사원 정보 저장
+		let selectedWorkerList = []; // 선택된 사원 정보 저장
 
 		// 검색조건에 따른 사원 조회 함수
 		function submitSearchForm() {
@@ -175,7 +179,7 @@
 				},
 				success: function (data) {
 					console.log(data);
-					$('#employeeList').html(renderEmployeeRows(data.list));
+					$('#employeeList').html(renderWorkerRows(data.list));
 					$('#paginationArea').html(renderPagination(data.pageInfo));
 				},
 				error: function () {
@@ -184,7 +188,7 @@
 			});
 		}
 			
-		function renderEmployeeRows(list) {
+		function renderWorkerRows(list) {
 			console.log(list);
 			if (!list || list.length === 0) {
 				return '<tr><td colspan="8">조회 된 데이터가 없습니다.</td></tr>';
@@ -271,23 +275,25 @@
 			
 			//	-------------------------------------------------------------
 		    const selectedIdxList = window.opener.selectedIdxListFromParent || [];
+			console.log(selectedIdxList);
 		    const maxSelectable = window.opener.maxSelectableItems || 3;	// 기안자 최대 3명
 		    let selectedCount = selectedIdxList.length; // 초기 개수
-			
-		    
 		    
 			 // 초기화: 이미 선택된 사원은 선택됨 표시
-		    $('#employeeList tr').each(function () {
-		        const idx = parseInt($(this).find('.idx').val());
-		        if (selectedIdxList.includes(idx)) {
+		    $('#workerList tr').each(function (e,i) {
+// 		    	console.log(i.querySelector('.select-btn'));
+		        let _tr_id = Number(i.dataset.id);
+// 		        console.log(_tr_id);
+		        if (selectedIdxList.includes(_tr_id)) {
+// 		        	console.log("hello true! %s", _tr_id);
 		            $(this).find('.select-btn')
 		                .removeClass('btn-success')
 		                .addClass('btn-secondary selected')
 		                .text('선택됨');
-	            
+// 	            	console.log($(this));
                     // 초기 선택값도 리스트에 넣어줌
                     const $row = $(this);
-                    selectedEmployeeList.push({
+                    selectedWorkerList.push({
                         id: $row.find(".emp-id").text().trim(),
                         name: $row.find(".emp-name").text().trim(),
                         departmentName: $row.find(".dept-name").text().trim(),
@@ -305,13 +311,13 @@
 			$(document).on("click", ".select-btn", function() {
 			    const $btn = $(this);
 			    const $row = $btn.closest("tr");
-
+			    const id = parseInt($row.find('.emp-id').text());
 			    // '-'일 경우 빈 문자열로 변환하는 헬퍼 함수
 			    function cleanText(text) {
 			        return text.trim() === '-' ? '' : text.trim();
 			    }
 
-			    const employeeInfo = {
+			    const workerInfo = {
 			        id: cleanText($row.find(".emp-id").text()),
 			        name: cleanText($row.find(".emp-name").text()),
 			        departmentName: cleanText($row.find(".dept-name").text()),
@@ -326,12 +332,12 @@
 
 			    // 단일 선택 모드일 경우
 			    if (typeof isSingleSelect !== 'undefined' && isSingleSelect) {
-			        if (window.opener && typeof window.opener.setEmployeeInfo === 'function') {
-			            window.opener.setEmployeeInfo(employeeInfo); // 부모창으로 전달
+			        if (window.opener && typeof window.opener.setWorkerInfo === 'function') {
+			            window.opener.setWorkerInfo(workerInfo); // 부모창으로 전달
 			        }
-			        if (window.opener && typeof window.opener.setEmployeeInfo2 === 'function') {
-			            window.opener.setEmployeeInfo2(employeeInfo); // 부모창으로 전달
-			        }
+// 			        if (window.opener && typeof window.opener.setWorkerInfo2 === 'function') {
+// 			            window.opener.setWorkerInfo2(workerInfo); // 부모창으로 전달
+// 			        }
 			        window.close(); // 창 닫기
 			        return;
 			    }
@@ -346,9 +352,12 @@
 			            .text('선택');
 					
 			        selectedCount--;
+					// 상품 삭제
+		            if (window.opener && typeof window.opener.removeWorkerInfo === 'function') {
+		                console.log(id);
+		            	window.opener.removeWorkerInfo(id);
+		            }
 			        
-			        // 리스트에서 제거
-			        selectedEmployeeList = selectedEmployeeList.filter(emp => emp.id !== employeeInfo.id);
 			    } else {
 		            if (selectedCount >= maxSelectable) {
 		                alert(`최대 ${maxSelectable}명까지만 선택할 수 있습니다.`);
@@ -363,17 +372,15 @@
 					
 			        selectedCount++;
 					
-			    	// 리스트에 추가
-			        selectedEmployeeList.push(employeeInfo);
+				    if (window.opener && typeof window.opener.appendWorkerInfo === 'function') {
+				        window.opener.appendWorkerInfo(workerInfo);  // 부모창에 한 번에 전달
+				    }
 			    }
 			});
 			
 			// 선택완료 버튼 클릭 시 이벤트(부모창에 선택된 값 한번에 전달)
 			$('#completeSelection').on('click', function () {
-			    if (window.opener && typeof window.opener.setSelectedEmployees === 'function') {
-			        window.opener.setSelectedEmployees(selectedEmployeeList);  // 부모창에 한 번에 전달
-			    }
-			    window.close();
+				window.close();
 			});
 			
 		});

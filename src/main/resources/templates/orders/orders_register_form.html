@@ -397,11 +397,6 @@
 				    // 해당 상품 인덱스를 가진 행 찾고 삭제
 				    const $row = $tbody.find(`tr[data-id='${idx}']`);
 				    $row.remove();  // 해당 행을 삭제
-// 				    $tbody.find('tr').each(function () {
-// 				        if (parseInt($(this).data('id')) === parseInt(idx)) {
-// 				            $(this).remove();
-// 				        }
-// 				    });
 				    
 				    // 삭제 후 상품이 하나도 없으면 안내 문구 삽입
 				    if ($tbody.find('tr').not('.clickable-row').length === 0) {

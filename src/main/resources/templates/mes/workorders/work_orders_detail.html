@@ -3,7 +3,7 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) -</title>
+<title>팩토리(PackTory) - 작업지시 관리</title>
 
 <!-- layout:decorate="~{common/layouts/de_layout}" 빼면서 datepicker 적용 안되는 문제 -->
 <!-- <th:block th:insert="~{common/fragments/de_common::headContents}"></th:block> -->
@@ -61,10 +61,10 @@
 	/* colgroup 대신 이렇게 각 열에 너비 지정 */
 	#dataTables td:nth-child(1), #dataTables th:nth-child(1) {width: 10%;}
 	#dataTables td:nth-child(2), #dataTables th:nth-child(2) {width: 30%;}
-	#dataTables td:nth-child(3), #dataTables th:nth-child(3) {width: 15%;}
-	#dataTables td:nth-child(4), #dataTables th:nth-child(4) {width: 15%;}
-	#dataTables td:nth-child(5), #dataTables th:nth-child(5) {width: 20%;}
-	#dataTables td:nth-child(6), #dataTables th:nth-child(6) {width: 10%;}
+	#dataTables td:nth-child(3), #dataTables th:nth-child(3) {width: 30%;}
+	#dataTables td:nth-child(4), #dataTables th:nth-child(4) {width: 20%;}
+	#dataTables td:nth-child(5), #dataTables th:nth-child(5) {width: 10%;}
+	/* #dataTables td:nth-child(6), #dataTables th:nth-child(6) {width: 10%;} */
 	
 	
 	/* 수량 입력 필드 스타일링 */
@@ -121,22 +121,28 @@
 				<div class="card shadow mb-4">
 					<div class="card-body">
 						<div class="table-responsive">
-							<form th:action="@{/mes/orders}" method="post" th:object="${workOrdersFormDTO}" class="form" id="registerForm">
+							<form th:action="@{/mes/workorders}" method="post" th:object="${workOrdersFormDTO}" class="form" id="registerForm">
 								<!--/* 히든 값 시작 거래코드, 거래 상태 확인 */-->
-								<input type="hidden" th:field="*{documentNumber}" alt="문서번호" />
+								<input type="hidden" th:field="*{idx}" />
+								<input type="hidden" th:field="*{documentNumber}" />
 								<input type="hidden" th:field="*{supervisorId}" alt="작업관리자 사번" />
 								<input type="hidden" name="isDeleted" value="N" alt="삭제유무" />
 								<!--/* 히든 값 끝 거래코드, 거래 상태 확인 */-->
 								<div class="row">
 									<!-- 작업관리자 -->
 									<div class="mb-2">
-										<button type="button" class="btn btn-primary mt-2" onclick="openEmployeeSearch('supervisor')">작업관리자 조회</button>
+										<button type="button" class="btn btn-primary mt-2" onclick="openWorkerSearch('supervisor')">작업관리자 조회</button>
 									</div>
 									<div class="col-sm-12 col-md-6 mb-3">
-										<div th:replace="~{common/fragments/de_form :: inputText('supervisorName','작업관리자',true,false,false)}"></div>
+										<!-- <div th:replace="~{common/fragments/de_form :: inputText('supervisorName','작업관리자',true,false,false)}"></div> -->
+										<!-- 필수 입력 값은 supervisorId 이지만, 화면에는 supervisorName 이기에 직접 입력함 -->
+										<label class="mb-1" for="supervisorName">작업 관리자명</label>
+											<input type="text" class="form-control" th:field="*{supervisorName}" placeholder="작업 관리자를 조회하세요" readonly />
+										<div id="supervisorIdError" class="text-danger"></div>
 									</div>
 									<div class="col-sm-12 col-md-6 mb-3">
-										<div th:replace="~{common/fragments/de_form :: inputText('supervisorPhone','관리자 전화번호',true,false,false)}"></div>
+										<label class="mb-1" for="positionName">직급</label>
+												<input type="text" class="form-control" id="positionName" placeholder="작업 관리자를 조회하세요" readonly />
 									</div>
 									<!-- 상품 -->
 									<div class="mb-2">
@@ -195,26 +201,27 @@
 										<table class="table table-bordered text-center" id="dataTables">
 											<thead class="table-light">
 												<tr>
+													<th>공장번호</th>
 													<th>공장명</th>
-													<th>관리자</th>
+													<th>관리자명</th>
+													<th>조회</th>
 													<th>삭제</th>
 												</tr>
 											</thead>
 											<tbody>
 												<!-- workOrdersFormDTO.locationInfoItems 안에 ${linesManagerName}(관리자이름) 없음 -->
-												<!-- tr을 반복시키는 object를 뭐로 설정하지 -->
-												<!-- List를 빼고 일단 하나만 출력 시켰는데 itemsIdx가 안나온다 -->
-												<!-- 자바스크립트로 넣는 tr이랑 여기 tr이랑 모양이 안맞다(위의 css 때문인걸로) -->
-												<tr th:each="item, status : ${workOrdersFormDTO}" th:data-id="${item.itmesIdx}">
-													<td class="product-number" th:text="${item.productLinesIdx}"></td>
+												<tr th:each="item, status : ${workOrdersFormDTO.workOrdersItemList}" th:data-id="${item.idx}">
+													<td class="location-idx" th:text="${item.productLinesIdx}"></td>
+													<td class="location-name" th:text="${item.productLinesName}"></td>
 													<td>
-														<input type="text" class="form-control" th:value="${item.linesManagerId}">
+														<input type="hidden" class="lines-manager-id" th:name="${item.linesManagerId}" th:id="${item.linesManagerId}" th:value="${item.linesManagerId}">
+														<input type="text" class="lines-manager-name" th:name="${item.linesManagerName}" th:id="${item.linesManagerName}" th:value="${item.linesManagerName}" placeholder="조회를 이용해주세요" readonly>
 													</td>
-													<td><button type="button" class="btn btn-primary mt-2" onclick="openEmployeeSearch('line')">작업관리자 조회</button></td>
+													<td><button type="button" class="btn btn-primary mt-2" onclick="openWorkerSearch('line')">작업관리자 조회</button></td>
 													<td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
 												</tr>
-												<tr th:if="${#lists.isEmpty(workOrdersFormDTO)}" class="clickable-row menu2depth_items">
-													<td colspan="6"><span>라인을 담아주세요.</span></td>
+												<tr th:if="${#lists.isEmpty(workOrdersFormDTO.workOrdersItemList)}" class="clickable-row menu2depth_items">
+													<td colspan="5"><span>라인을 검색해 주세요</span></td>
 												</tr>
 											</tbody>
 										</table>
@@ -223,7 +230,7 @@
 								
 								<!--/* 이 폼의 끝! 서브밋 버튼 */-->
 								<div class="col-md-12 row align-items-center justify-content-center">
-									<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
+									<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
 									<button type="button" id="cancelBtn" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">취소</button>
 								</div>
 								<!--/* 이 폼의 끝! 서브밋 버튼 */-->
@@ -239,22 +246,84 @@
 				let currentTarget = null;
 				
 				// 담당자 검색 함수(새 창 띄우기)
-				function openEmployeeSearch(target) {
+				function openWorkerSearch(target) {
+					console.log("hello openWorkerSearch");
+					console.log(target);
 					currentTarget = target;
-					window.open('/employee/search-popup', 'employeeSearch', 'width=800,height=600,location=no,scrollbars=yes');
-					window.isSingleSelect = true; // 단일선택 모드
+					if(!target || target === "supervisor") {
+						window.isSingleSelect = true;
+					} else {
+						const selectedIdxList = [];
+						$('#dataTables tbody tr[data-id]').find(".lines-manager-id").each(function() {
+							if(!$(this).val()|| $(this).val() === ""){
+								console.log("값이 없어요"); 
+							} else {
+								const id = parseInt($(this).val());
+								if (!isNaN(id)) {
+									selectedIdxList.push(id);
+								}
+							}
+							
+						});
+						console.log(selectedIdxList);
+						window.selectedIdxListFromParent = selectedIdxList;
+						window.maxSelectableItems = $('#dataTables tbody tr').length; // 조회된 라인 개수만큼만 리미트!
+						window.isSingleSelect = false; // 단일선택 모드
+					}
+					window.open('/workermetric/search-popup', 'employeeSearch', 'width=800,height=600,location=no,scrollbars=yes');
 				}
 				
 				// 팝업창에서 가져온 담당자 정보 넣는 함수
-				function setEmployeeInfo(data) {
+				function setWorkerInfo(data) {
 					if (currentTarget === 'supervisor') {
 						$("#supervisorId").val(data.id);
 						$("#supervisorName").val(data.name);
-						$("#supervisorPhone").val(data.phoneNumber);
-					} else if (currentTarget.startsWith('line')) {
-						let lineIdx = currentTarget.replace('line', ''); // ex) line1 -> 1
-						$(`#linesManagerId${lineIdx}`).val(data.id);
-						$(`#linesManagerName${lineIdx}`).val(data.name);
+						$("#positionName").val(data.positionName);
+					} else if (currentTarget === 'line') {
+						$("#linesManagerId").val(data.id);
+						$("#linesManagerName").val(data.name);
+						console.log(data);
+					}
+					
+				}
+				
+				// 팝업창에서 가져온 관리자 추가하는 함수
+				function appendWorkerInfo(workerInfo) {
+					console.log("hello appendWorkerInfo");
+					console.log(workerInfo);
+					const $tbody = $('#dataTables tbody');
+					
+					// 라인 정보로 이미 tr이 그려져있고 그 안에 작업자 이름을 넣어야 한다. 순차적으로... 가자
+					let _idNodeList = $('#dataTables tbody tr[data-id]').find(".lines-manager-id");
+					for(let i=0; i < _idNodeList.length; i++) {
+						if(_idNodeList[i].value === "") {
+							_idNodeList[i].value = workerInfo.id;
+							break;
+						}
+					}
+					let _NameNodeList = $('#dataTables tbody tr[data-id]').find(".lines-manager-name");
+					for(let i=0; i < _NameNodeList.length; i++) {
+						if(_NameNodeList[i].value === "") {
+							_NameNodeList[i].value = workerInfo.name;
+							break;
+						}
+					}
+				}
+				
+				// 팝업창에서 받은 idx로 관리자를 삭제하는 함수
+				function removeWorkerInfo(id) {
+					console.log("hello removeWorkerInfo");
+					console.log(id);
+					
+					// 라인 정보로 이미 tr이 그려져있고 그 안의 작업자 id를 찾아 해당 row를 삭제 해야 한다.
+					let _idNodeList = $('#dataTables tbody tr[data-id]').find(".lines-manager-id");
+					let _NameNodeList = $('#dataTables tbody tr[data-id]').find(".lines-manager-name");
+					for(let i=0; i < _idNodeList.length; i++) {
+						if(Number(_idNodeList[i].value) === id) {
+							_idNodeList[i].value = "";
+							_NameNodeList[i].value = "";
+							break;
+						}
 					}
 					
 				}
@@ -286,41 +355,52 @@
 				}
 				// --------------------------------------------------------------------------------------------------------
 				
+				// 라인 조회 함수(새 창 띄우기)
 				function openLocationInfoSearch() {
+					const selectedIdxList = [];
+				
+					// 현재 테이블에 이미 추가된 상품의 idx 수집
+					$('#dataTables tbody tr[data-id]').each(function() {
+						const id = parseInt($(this).data('id'));
+						if (!isNaN(id)) {
+							selectedIdxList.push(id);
+						}
+					});
+				
 					window.open('/location/search-popup', 'locationSearch', 'width=800,height=600,location=no,scrollbars=yes');
-					window.isSingleSelect = false; // 라인 복수선택
+					window.isSingleSelect = false;	// 다중선택
+				
+					// 자식창이 열릴 때 데이터 넘겨주기 위한 전역 변수
+					window.selectedIdxListFromParent = selectedIdxList;
 				}
 				
 				// 팝업창에서 가져온 상품 정보 추가하는 함수
-				function appendLocationInfo(location) {
+				function appendLocationInfo(locationInfo) {
+					console.log(locationInfo);
 				    const $tbody = $('#dataTables tbody');
 					
 				    // 기존 안내 문구 제거
 				    $tbody.find('.menu2depth_items').remove();
-// 					debugger;
+				
 				 	// 상품 행 생성
 				    const newRow = `
-				    	<tr data-id="${location.idx}">
-			            <td class="location-type">${location.type}</td>
-			            <td class="location-name">${location.name}</td>
-			            <td class="location-number">${location.idx}</td>
-			            <td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
-			        </tr>
+				    	<tr data-id="${locationInfo.idx}">
+				    		<td class="location-idx">${locationInfo.idx}</td>
+				            <td class="location-name">${locationInfo.name}</td>
+				            <td>
+				            	<input type="hidden" class="lines-manager-id" id="linesManagerId" name="linesManagerId" />
+				            	<input type="text" class="lines-manager-name" id="linesManagerName" name="linesManagerName" value="" placeholder="조회를 이용해주세요" readonly /></td>
+				            <td><button type="button" class="btn btn-primary mt-2" onclick="openWorkerSearch('line')">작업관리자 조회</button></td>
+				            <td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
+				        </tr>
 				    `;
 
 				    $tbody.append(newRow);
 				}
 				
-				$(document).on('click', '.delete-row', function () {
-				    const $row = $(this).closest('tr');
-					const idx = parseInt($row.data('id'));  // 해당 상품의 idx 값 가져오기
-					removeProductInfo(idx);
-					
-					$(this).closest('tr').remove();
-				});
-				
 				// 상품 삭제하는 함수
-				function removeProductInfo(idx) {
+				function removeLocationInfo(idx) {
+					console.log(idx);
 				    const $tbody = $('#dataTables tbody');
 				    
 				    // 해당 상품 인덱스를 가진 행 찾고 삭제
@@ -331,46 +411,62 @@
 				    if ($tbody.find('tr').not('.clickable-row').length === 0) {
 				        const emptyRow = `
 				            <tr class="clickable-row menu2depth_items">
-				                <td colspan="6"><span>상품을 담아주세요.</span></td>
+				                <td colspan="5"><span>라인을 검색해 주세요</span></td>
 				            </tr>
 				        `;
 				        $tbody.append(emptyRow);
 				    }
 				}
 				
+				$(document).on('click', '.delete-row', function () {
+				    const $row = $(this).closest('tr');
+					const idx = parseInt($row.data('id'));  // 해당 상품의 idx 값 가져오기
+					removeLocationInfo(idx);
+					
+					$(this).closest('tr').remove();
+				});
+				
 				// --------------------------------------------------------------------------------------------------------
 				$(document).ready(function () {
 					// 취소버튼
 					$('#cancelBtn').on("click", function() {
 						console.log("cancelBtn click!!!");
-						location.href="/mes/orders";
+						location.href="/mes/workorders";
 					});
 					//---------------------------------------------------
-					// 작업지시 수정
+					// 레시피 등록
 					$('#btnSubmitForm').on("click", function() {
 						console.group('click! #btnSubmitForm!');
 						// error 내용 삭제
 						$("div[id$='Error']").text("")
-						// 만세 폼이다!
 						const _serializedData = $('#registerForm').serialize();
-						// 문자열을 '&' 기준z으로 분리하여 배열로 변환
 						const _pairs = _serializedData.split('&');
-						// 빈 객체를 생성하여 데이터를 담을 준비
 						const _jsonObj = {};
-						// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
 						_pairs.forEach(pair => {
 							const [key, value] = pair.split('=');
 							_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
 						});
-						// @Valid 숫자 타입을 숫자로 변환
-							// 수량은 숫자형으로 전환
-						if (_jsonObj['quantity']) {
-							_jsonObj['quantity'] = parseInt(_jsonObj['quantity']);
-						}
+						
+						const lineItems=[];
+						$('#dataTables tbody tr').each(function() {
+					        const item = {
+					        	// 물품코드 넣을 값이 없다 ?
+				                productLinesIdx: $(this).find('.location-idx').text(), // 공장 idx
+				                linesManagerId: $(this).find('.lines-manager-id').val() // 라인 관리자id
+				                // 나머지 값들을 추가할 수 있다면 여기에 추가
+				            };
+					        if($(this).find('.location-idx').text() != '' && $(this).find('.lines-manager-id').val() != '') {
+					        	lineItems.push(item);
+					        }
+					    });
+
+					    // 상품 정보를 _jsonObj에 추가
+					    _jsonObj.workOrdersItemList = lineItems;
+					    
 						// 데이터 확인
 						console.log(_jsonObj);
 						// JSON 데이터를 서버로 전송
-						fetch("/mes/orders/modifyWorkOrders", {
+						fetch("/mes/workorders/modifyWorkOrders", {
 							method: "PUT",
 							headers: {
 								"Content-Type": "application/json"
@@ -382,7 +478,7 @@
 							console.log("서버 응답:", data);
 							if(data.status === "success") {
 								alert(data.message);
-								location.href="/mes/orders";
+								location.reload();
 							} else if(data.status === "validFail") {
 								console.log("hello validFail!");
 								//alert(data.message);

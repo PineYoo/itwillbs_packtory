@@ -76,8 +76,8 @@
 				            <tr>
 				                <th class="text-nowrap">상품명</th>
 				                <th class="text-nowrap">단위</th>
-				                <th class="text-nowrap">개수</th>
-				                <th class="text-nowrap">가격</th>
+				                <!-- <th class="text-nowrap">개수</th> -->
+				                <!-- <th class="text-nowrap">가격</th> -->
 				                <th class="text-nowrap">등록일</th>
 				                <th class="text-nowrap">선택</th>
 				            </tr>
@@ -85,14 +85,14 @@
 				        <tbody id="productList">
 				        	<tr th:each="item , status : ${productList}" th:data-id="${item.idx}">
 								<td class="name" th:text="${item.name}"></td>
-								<td class="unit" th:text="${item.unit != null ? item.unit : '-'}"></td>
-								<td class="quantity" th:text="${item.quantity != null ? item.quantity : '-'}"></td>
+								<!-- <td class="unit" th:text="${item.unit != null ? item.unit : '-'}"></td> -->
+								<!-- <td class="quantity" th:text="${item.quantity != null ? item.quantity : '-'}"></td> -->
 								<td class="price" th:text="${item.price != null ? item.price : '-'}"></td>
 								<td class="reg-date" th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd')}"></td>
 				        		<td>
 				        			<!-- hidden ! -->
 									<input type="hidden" class="idx" th:value="${item.idx}" />
-									<input type="hidden" class="type" th:value="${item.type}" />
+									<!-- <input type="hidden" class="type" th:value="${item.type}" /> -->
 				        			<!-- hidden ! -->
 									<button class="btn btn-success select-btn">선택</button>
 				        		</td>
@@ -173,8 +173,8 @@
 		                	const row = `
 			                		<tr data-id="${item.idx}">
 										<td class="name">${item.name || '-'}</td>
-										<td class="unit">${item.unit || '-'}</td>
-										<td class="quantity">${item.quantity || '-'}</td>
+										/* <td class="unit">${item.unit || '-'}</td>
+										<td class="quantity">${item.quantity || '-'}</td> */
 										<td class="price">${item.price || '-'}</td>
 				                        <td class="reg-date">${regDate}</td>
 						        		<td>

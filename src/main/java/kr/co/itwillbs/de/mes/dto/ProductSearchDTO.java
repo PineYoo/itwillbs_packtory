@@ -17,6 +17,8 @@ public class ProductSearchDTO {
 	private Integer maxPrice; // 최대 가격
 	private String isDeleted; // 삭제 유무
 
+	private String searchKeyword;
+	
 	private PageDTO pageDTO = new PageDTO();
 
 }

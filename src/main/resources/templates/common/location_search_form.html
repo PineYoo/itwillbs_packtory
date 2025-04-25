@@ -228,8 +228,8 @@
 
 		     	// 25.04.21 추가(상품 단일선택 모드)
 		        if (typeof isSingleSelect !== 'undefined' && isSingleSelect) {	// true
-		        	if (window.opener && typeof window.opener.setProductInfo === 'function') {
-		                window.opener.setProductInfo(productInfo); // 부모창으로 전달
+		        	if (window.opener && typeof window.opener.setLocationInfo === 'function') {
+		                window.opener.setLocationInfo(locationInfo); // 부모창으로 전달
 		            }
 		        	
 		        	window.close(); // 선택하자마자 창 닫기
@@ -251,7 +251,7 @@
 		            if (window.opener && typeof window.opener.removeLocationInfo === 'function') {
 		                window.opener.removeLocationInfo(idx);
 		            }
-
+			        
 		        } else {
 		            // 선택
 		            $btn
