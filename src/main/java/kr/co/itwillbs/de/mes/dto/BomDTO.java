@@ -1,5 +1,7 @@
 package kr.co.itwillbs.de.mes.dto;
 
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -32,7 +34,7 @@ public class BomDTO {
 	@NotBlank(message = "단위는 필수 입력 값입니다.")
 	private String unit;
 	@PositiveOrZero(message = "수량은 0개 이상만 입력 가능합니다.")
-	private int quantity;
+	private BigDecimal quantity;
 	@Pattern(regexp = "^[YN]$", message = "사용 유무는 필수 입력 값입니다.")
 	private String isDeleted;
 	
