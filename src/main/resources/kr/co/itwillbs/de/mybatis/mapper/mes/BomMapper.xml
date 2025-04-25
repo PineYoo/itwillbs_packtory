@@ -38,6 +38,7 @@
 		idx,
 		type,
 		product_idx,
+		material_idx,
 		parents_idx,
 		code,
 		name,
@@ -59,6 +60,9 @@
 			type,
 			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
 			product_idx,
+			</if>
+			<if test='materialIdx !=null and !("".equals(materialIdx.trim()))'>
+			material_idx,
 			</if>
 			<if test='parentsIdx !=null and !("".equals(parentsIdx.trim()))'>
 			parents_idx,
@@ -96,6 +100,9 @@
 			#{type},
 			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
 			#{productIdx},
+			</if>
+			<if test='materialIdx !=null and !("".equals(materialIdx.trim()))'>
+			#{materialIdx},
 			</if>
 			<if test='parentsIdx !=null and !("".equals(parentsIdx.trim()))'>
 			#{parentsIdx},
@@ -178,6 +185,7 @@
 			<set>
 				<if test='type !=null and !("".equals(type.trim()))'>type = #{type},</if>
 				<if test='productIdx !=null and !("".equals(productIdx.trim()))'>product_idx = #{productIdx},</if>
+				<if test='materialIdx !=null and !("".equals(materialIdx.trim()))'>material_idx = #{materialIdx},</if>
 				<if test='parentsIdx !=null and !("".equals(parentsIdx.trim()))'>parents_idx = #{parentsIdx},</if>
 				<if test='code !=null and !("".equals(code.trim()))'>code = #{code},</if>
 				<if test='name !=null and !("".equals(name.trim()))'>name = #{name},</if>

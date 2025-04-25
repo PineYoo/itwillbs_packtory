@@ -49,8 +49,11 @@
 					<div class="table-responsive">
 						<form th:action="@{/mes/bom}" method="post" th:object="${bomDTO}" class="form row g-3" id="registerForm">
 							<input type="hidden" th:field="*{idx}" />
-							<div class="col-md-12">
+							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('productIdx','상품코드',true,false,false)}"></div>
+							</div>
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('materialIdx','자재코드',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type','BOM 타입',true,${typeList},false,false)}"></div>
