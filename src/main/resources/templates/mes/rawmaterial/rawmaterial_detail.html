@@ -31,188 +31,181 @@ input, select {
 				<h1 class="h3 mb-4 text-gray-800">원자재 상세</h1>
 			</div>
 
+			<!-- ---------- 본문 컨테이너 ---------- -->
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
 						<form th:action="@{/mes/rawmaterial}" method="post" th:object="${rawMaterialDTO}" class="form row g-3" id="registerForm">
-							<input type="hidden" th:field="*{idx}" id="idx" />
-							<!-- idx ID 추가 -->
+							<!-- ------------- hidden 추가 ------------- -->
+							<input type="hidden" th:field="*{idx}" id="idx" /> <input type="hidden" th:field="*{parentsIdx}" id="parentsIdx" />
+							<!-- ------------- hidden 추가 ------------- -->
 
-							<div class="row">
-								<!-- 거래처명 -->
-								<div class="col-md-6 mb-3">
-									<div class="d-flex justify-content-between align-items-center mb-1">
-										<label for="companyName" class="form-label mb-0">거래처명</label>
-										<button type="button" id="searchClientBtn" class="btn btn-primary btn-sm" onclick="openClientSearch()">거래처 조회</button>
+							<!-- 마스터 자재 정보 -->
+							<div class="row align-items-stretch mb-4">
+								<div class="card-header">마스터 자재 정보</div>
+								<div class="card-body row">
+									<!-- 왼쪽 컬럼 -->
+									<div class="col-md-6 left-form">
+										<!-- 타입 -->
+										<div class="col-md-6">
+											<div th:replace="~{common/fragments/de_form :: selectCodeItems('type', '타입', true, ${materialType},false,false)}"></div>
+										</div>
+
+										<!-- 이름 -->
+										<div class="col-md-6">
+											<div th:replace="~{common/fragments/de_form :: inputText('name', '자재 명', true,false,false)}"></div>
+										</div>
+
+										<!-- 삭제 유무 -->
+										<div class="col-md-6">
+											<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+										</div>
 									</div>
-									<input type="text" id="companyName" class="form-control" readonly th:value="${rawMaterialDTO.clientCompanyName}" />
+
+									<hr>
+
+									<div class="col-md-12 row align-items-center justify-content-center">
+										<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">마스터 자재 수정</button>
+										<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+									</div>
 								</div>
-								<!-- 히든 IDX -->
-								<input type="hidden" id="clientIdx" th:field="*{clientIdx}" />
-
 							</div>
-
-							<!-- 타입 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type', '타입', true, ${materialType},false,false)}"></div>
-							</div>
-
-							<!-- 이름 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('name', '자재 명', true,false,false)}"></div>
-							</div>
-
-							<!-- 개수 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity', '개수', true,false,false)}"></div>
-							</div>
-
-							<!-- 단위 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('unit', '단위', true, ${itemUnit},false,false)}"></div>
-							</div>
-
-							<!-- 원자재 가격 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('price', '원자재 가격', true,false,false)}"></div>
-							</div>
-
-							<!-- 평균 사용 기한 -->
-							<div class="col-md-6">
-								<label for="expirationDate" class="form-label">평균 사용 기한</label> <input type="text" id="expirationDate" th:field="*{expirationDate}" class="form-control" placeholder="날짜 선택" autocomplete="off" />
-								<div th:id="|expirationDateError|" class="text-danger"></div>
-							</div>
-
-							<!-- 삭제 유무 -->
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
-							</div>
-
-							<hr>
-
-							<!-- 작성자 -->
-							<div class="col-md-6">
-								<label>작성자</label> <input th:value="${rawMaterialDTO.regId}" class="form-control" readonly>
-							</div>
-
-							<!-- 작성일자 -->
-							<div class="col-md-6">
-								<label>작성일자</label> <input th:value="${rawMaterialDTO.regDate}" class="form-control" readonly>
-							</div>
-
-							<!-- 최종작성자 -->
-							<div class="col-md-6">
-								<label>최종 작성자</label> <input th:value="${rawMaterialDTO.modId}" class="form-control" readonly>
-							</div>
-
-							<!-- 최종작성일자 -->
-							<div class="col-md-6">
-								<label>최종 작성일자</label> <input th:value="${rawMaterialDTO.modDate}" class="form-control" readonly>
-							</div>
-
-							<hr>
-
-							<div class="col-md-12 row align-items-center justify-content-center">
-								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">수정</button>
-								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
-							</div>
+							<!-- 마스터 자재 정보 끝 -->
 						</form>
+
+						<!-- 부속 자재 정보 -->
+						<div class="card shadow mb-4">
+							<div class="card-header py-3" style="display: flex; justify-content: space-between; align-items: center;">
+								<h6 class="m-0 font-weight-bold text-primary" style="flex-grow: 1;">부속 자재 등록</h6>
+								<div>
+									<button type="button"  onclick="addSubMaterial()" id="addSubMaterial" class="btn btn-success">코드 추가</button>
+									<button type="button" id="childCodeSubmit" class="btn btn-primary">부속 자재 등록</button>
+								</div>
+							</div>
+							<div class="card-body">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>타입</th>
+											<th>부모</th>
+											<th>이름</th>
+											<th>거래처</th>
+											<th>단위</th>
+											<th>수량</th>
+											<th>가격</th>
+											<th>소요기간</th>
+											<th>평균사용기한</th>
+											<th>보관조건</th>
+											<th>MSDS링크</th>
+											<th>삭제유무</th>
+											<th>작성자</th>
+											<th>최종작성자</th>
+											<th>작성일자</th>
+											<th>최종작성일자</th>
+											<th>수정</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="sub : ${subMaterialList}">
+											<td th:text="${sub.type}"></td>
+											<td th:text="${sub.parentsIdx}"></td>
+											<td th:text="${sub.name}"></td>
+											<td th:text="${sub.clientCompanyName}"></td>
+											<td th:text="${sub.unit}"></td>
+											<td th:text="${sub.quantity}"></td>
+											<td th:text="${sub.price}"></td>
+											<td th:text="${sub.leadTime}"></td>
+											<td th:text="${sub.expirationDate}"></td>
+											<td th:text="${sub.storageCondition}"></td>
+											<td th:text="${sub.msdsLink}"></td>
+											<td th:text="${sub.isDeleted}"></td>
+											<td th:text="${sub.regId}"></td>
+											<td th:text="${sub.regDate}"></td>
+											<td th:text="${sub.modId}"></td>
+											<td th:text="${sub.modDate}"></td>
+											<td>
+												<button type="button" class="btn btn-sm btn-outline-primary" th:onclick="|editSubMaterial(${sub.idx})|">Edit</button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!--  부속 자재 정보 끝 -->
+
+						<!-- 하단: 부속 자재 추가 버튼 -->
+						<div class="text-center mb-4">
+							<button class="btn btn-success" onclick="addSubMaterial()">➕ 부속 자재 추가</button>
+						</div>
+
 					</div>
 				</div>
 			</div>
+			<!-- ---------- 본문 컨테이너 ---------- -->
 		</div>
-
-		<script type="text/javascript">
-		// --------------------------------------------------------------------------------------------------------
-		// 거래처 검색 함수(새 창 띄우기)
-		function openClientSearch() {
-		    window.open('/client/search-popup', 'clientSearch', 'width=800,height=600,location=no,scrollbars=yes');
-		}
-		
-		// 팝업창에서 가져온 거래처 정보 넣는 함수
-		function setClientInfo(data) {
-		    console.log("선택된 거래처:", data);
-			$("#companyName").val(data.companyName);
-			$("#clientIdx").val(data.idx);
-		}
-		// ===== 캘린더 ===============================================
-			// 제조일자 선택 (datepicker)
-		    $('#expirationDate').daterangepicker({
-		        singleDatePicker: true, // 단일 날짜 선택 모드
-		        showDropdowns: true, // 년월 수동 선택 가능
-		        autoApply: true, // 확인/취소 버튼 없이 즉시 반영
-		        autoUpdateInput: false, // 초기 입력 필드 비우기
-		        locale: {
-		            format: 'YYYY-MM-DD', // 날짜 형식
-		            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
-		            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-		            applyLabel: "확인",
-		            cancelLabel: "취소"
-		        },
-		        // 날짜 선택 가능 범위 여기 작성 ---------------------------------
-		        minDate: moment().add(1, 'month'), 
-		        maxDate: moment().add(1, 'year') // 1년 후까지 선택 가능 (선택사항)
-		        // ---------------------------------------------------------------
-		    }).on('apply.daterangepicker', function(ev, picker) {
-		        $(this).val(picker.startDate.format('YYYY-MM-DD')); // 값 설정
-		        $(this).addClass("filled");
-		    });
-		 // ===== 캘린더 ===============================================
-		
-	    $(function () {
-	        // 목록 버튼 클릭 시
-	        $('#btnList').on("click", function () {
-	            location.href = "/mes/rawmaterial";  // 원자재 목록 페이지로 이동
-	        });
-	
-	        // 수정 폼 제출 시
-	        $('#btnSubmitForm').on("click", function () {
-	            // 에러 메시지 초기화
-	            $("div[id$='Error']").text("");
-	            
-	            // 폼 데이터 직렬화
-	            const _serializedData = $('#registerForm').serialize();
-	            const _pairs = _serializedData.split('&');
-	            const _jsonObj = {};
-	            _pairs.forEach(pair => {
-	                const [key, value] = pair.split('=');
-	                _jsonObj[decodeURIComponent(key)] = decodeURIComponent(value);
-	            });
-	
-	            // 숫자 필드 처리
-	            if (_jsonObj['price']) {
-	                _jsonObj['price'] = parseInt(_jsonObj['price']);
-	            }
-	
-	            // idx를 실제 페이지 URL에서 받아오기
-	            const idx = $('#idx').val();  // 수정된 부분: id를 #idx로 수정
-	
-	            fetch(`/mes/rawmaterial/updateRawMaterial`, {
-	                method: "PUT",
-	                headers: {
-	                    "Content-Type": "application/json"
-	                },
-	                body: JSON.stringify(_jsonObj)  // JSON 형식으로 요청 본문 전달
-	            })
-	            .then(response => response.json())
-	            .then(data => {
-	                if (data.status === "success") {
-	                    alert(data.message);  // 성공 메시지
-	                    location.reload();  // 페이지 새로고침
-	                } else if (data.status === "validFail") {
-	                    const errors = data.errors;
-	                    for (let field in errors) {
-	                        $("#" + field + "Error").text(errors[field]);  // 유효성 검사 실패 시 에러 메시지 표시
-	                    }
-	                }
-	            })
-	            .catch(error => {
-	                console.error("서버 오류:", error);
-	                alert("요청 처리 중 문제가 발생했습니다.");
-	            });
-	        });
-	    });
-	</script>
 	</div>
+
+	<script type="text/javascript">
+	// --------------------------------------------------------------------------------------------------------
+	// 거래처 검색 함수(새 창 띄우기)
+	function openClientSearch() {
+	    window.open('/client/search-popup', 'clientSearch', 'width=800,height=600,location=no,scrollbars=yes');
+	}
+	
+	// 팝업창에서 가져온 거래처 정보 넣는 함수
+	function setClientInfo(data) {
+	    console.log("선택된 거래처:", data);
+		$("#companyName").val(data.companyName);
+		$("#clientIdx").val(data.idx);
+	}
+    $(function () {
+        // 목록 버튼 클릭 시
+        $('#btnList').on("click", function () {
+            location.href = "/mes/rawmaterial";  // 마스터 자재 목록 페이지로 이동
+        });
+
+        // 수정 폼 제출 시
+        $('#btnSubmitForm').on("click", function () {
+            // 에러 메시지 초기화
+            $("div[id$='Error']").text("");
+            
+            // 폼 데이터 직렬화
+            const _serializedData = $('#registerForm').serialize();
+            const _pairs = _serializedData.split('&');
+            const _jsonObj = {};
+            _pairs.forEach(pair => {
+                const [key, value] = pair.split('=');
+                _jsonObj[decodeURIComponent(key)] = decodeURIComponent(value);
+            });
+
+            // idx를 실제 페이지 URL에서 받아오기
+            const idx = $('#idx').val();  // 수정된 부분: id를 #idx로 수정
+
+            fetch(`/mes/rawmaterial/master/update`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(_jsonObj)  // JSON 형식으로 요청 본문 전달
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    alert(data.message);  // 성공 메시지
+                    location.reload();  // 페이지 새로고침
+                } else if (data.status === "validFail") {
+                    const errors = data.errors;
+                    for (let field in errors) {
+                        $("#" + field + "Error").text(errors[field]);  // 유효성 검사 실패 시 에러 메시지 표시
+                    }
+                }
+            })
+            .catch(error => {
+                console.error("서버 오류:", error);
+                alert("요청 처리 중 문제가 발생했습니다.");
+            });
+        });
+    });
+	</script>
 </body>
 </html>

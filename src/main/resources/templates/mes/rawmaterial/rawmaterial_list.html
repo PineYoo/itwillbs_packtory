@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) - 원자재 목록</title>
+<title>팩토리(PackTory) - 마스터 자재 목록</title>
 
 <style>
 .left-form {
@@ -22,7 +22,7 @@
 		<div class="container-fluid">
 			<!-- Page Heading -->
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">원자재 목록</h1>
+				<h1 class="h3 mb-4 text-gray-800">마스터 자재 목록</h1>
 			</div>
 
 			<!-- 검색바 컨테이너 -->
@@ -33,8 +33,7 @@
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
 								<form th:action="@{/mes/rawmaterial}" method="get" th:object="${searchDTO}" id="searchForm">
-									<input type="hidden" th:field="*{pageDTO.page}">
-									<input type="hidden" th:field="*{pageDTO.size}">
+									<input type="hidden" th:field="*{pageDTO.page}"> <input type="hidden" th:field="*{pageDTO.size}">
 
 									<div class="container-fluid px-5 mt-3">
 										<div class="row">
@@ -42,49 +41,22 @@
 											<!-- 왼쪽 컬럼 -->
 											<div class="col-md-6 left-form">
 
-												<!-- 자재 명 -->
+												<!-- 마스터 자재 명 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('name','자재 명',false)}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: inputText('name','마스터 자재 명',false)}"></div>
 												</div>
 
-												<!-- 자재 타입 -->
+												<!-- 마스터 자재 타입 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('type', '자재 타입', false, ${materialType})}"></div>
-												</div>
-
-												<!-- 거래처 -->
-												<div class="form-group row mb-3">
-													<label for="clientIdx" class="col-sm-3 col-form-label">거래처</label>
-													<div class="col-sm-9">
-														<select class="form-select" name="clientIdx" id="clientIdx" th:field="*{clientIdx}">
-															<option value="">거래처 선택</option>
-															<option th:each="client : ${clientList}" th:value="${client.idx}" th:text="${client.companyName}"></option>
-														</select>
-													</div>
+													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('type', '마스터 자재 타입', false, ${materialType})}"></div>
 												</div>
 											</div>
 
 											<!-- 오른쪽 컬럼 -->
 											<div class="col-md-6">
-
-												<!-- 최소 가격 -->
+												<!-- 삭제 유무 -->
 												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('minPrice','최소 가격',false)}"></div>
-												</div>
-
-												<!-- 최대 가격 -->
-												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('maxPrice','최대 가격',false)}"></div>
-												</div>
-
-												<!-- 최소 개수 -->
-												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('minQuantity','최소 개수',false)}"></div>
-												</div>
-
-												<!-- 최대 개수 -->
-												<div class="form-group row mb-3">
-													<div th:replace="~{common/fragments/de_search_form :: inputText('maxQuantity','최대 개수',false)}"></div>
+													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제유무',false)}"></div>
 												</div>
 											</div>
 										</div>
@@ -92,7 +64,7 @@
 										<!-- 검색바 버튼 -->
 										<div class="row justify-content-end">
 											<div class="col-12 col-sm-auto mb-2">
-												<button class="btn btn-success btn-block" id="btnRegister" type="button">원자재 등록</button>
+												<button class="btn btn-success btn-block" id="btnRegister" type="button">마스터 자재 등록</button>
 											</div>
 											<div class="col-12 col-sm-auto mb-2">
 												<button type="button" class="btn btn-warning btn-block" onclick="formReset('searchForm');">초기화</button>
@@ -120,25 +92,15 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
-									<th>거래처</th>
 									<th>타입</th>
 									<th>이름</th>
-									<th>개수</th>
-									<th>단위</th>
-									<th>가격</th>
-									<th>평균사용기한</th>
 									<th>삭제유무</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="item : ${rawMaterialList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
-									<td th:text="${item.clientCompanyName}"></td>
 									<td th:text="${item.typeName}"></td>
 									<td th:text="${item.name}"></td>
-									<td th:text="${item.quantity}"></td>
-									<td th:text="${item.unitName}"></td>
-									<td th:text="${item.price}"></td>
-									<td th:text="${item.expirationDate}"></td>
 									<td th:text="${item.isDeleted}"></td>
 								</tr>
 							</tbody>
@@ -166,7 +128,7 @@
                 // 등록 페이지 이동
                 $("#btnRegister").on("click", function() {
                     console.log("btnRegister click!!!");
-                    location.href = "/mes/rawmaterial/new"; // 원자재 등록 페이지로 이동
+                    location.href = "/mes/rawmaterial/new"; // 마스터 자재 등록 페이지로 이동
                 });
 
                 // 상세 페이지 이동
