@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.view.RedirectView;
 
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.service.CustomUserDetails;
@@ -65,10 +67,23 @@ public class MainController {
 	}
 
 	/**
+	 * 요즘도 이렇게 쓰나?
+	 * <br> 이건 학원 서버에 올릴때 위에 있는 mainView의 @GetMapping 을 가져와서 패키지를 만들 용도
+	 * <br> 301은 브라우져에게 "" 로 접속해서 리다이렉트 하는 주소("/login")가 임시 이동이 아니라 영구라는걸 알려준다. .. 이거 검색봇한테 주는 정보였나?
+	 * @return
+	 */
+	public RedirectView main() {
+		RedirectView redirectView = new RedirectView("/login");
+		redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY); // 영구적 이동
+		
+		return redirectView;
+	}
+	
+	/**
 	 * 검색로봇에게 사이트 및 웹페이지를 수집할 수 있도록 허용하거나 제한하는 국제 권고안
 	 * <br> robots.txt 에 대해서 (href: https://searchadvisor.naver.com/guide/seo-basic-robots )
 	 * <br> (href: https://jihyunhillcs.tistory.com/39#Spring_Boot_%EC%97%90%EC%84%9C_%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0 )
-	 * <br> TODO 25.03.23 이 방식은 SpringMVC에서 쓰던 방법인데 Boot용으로 설정이 편리하다면 바꿀 예정
+	 * <br> 25.03.23 이 방식은 SpringMVC에서 쓰던 방법인데 Boot용으로 설정이 편리하다면 바꿀 예정
 	 * 
 	 * @return
 	 */
@@ -79,6 +94,7 @@ public class MainController {
 				"Allow: /\n" + 
 				"Disallow: /files/*\n" + // 업로드한 파일 수집X
 				"Disallow: /admin/*\n"; // 어드민 수집X
+				// ERP나 MES인데.. 사실 전부 걸어야 하는거 아닌가?
 	}
 
 	@GetMapping("/test/draft")
@@ -209,5 +225,12 @@ public class MainController {
 			}
 		}
 		return null;
+	}
+	
+	@GetMapping("/main/sitemap")
+	public String getSiteMap() {
+		LogUtil.logStart(log);
+		
+		return "/main/sitemap";
 	}
 }

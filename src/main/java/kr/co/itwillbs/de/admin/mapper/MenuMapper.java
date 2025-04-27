@@ -70,7 +70,7 @@ public interface MenuMapper {
 	int registerChildMenu(List<MenuDTO> menuList);
 
 	/**
-	 * 전체 메뉴 가져오기
+	 * 전체 메뉴 가져오기 -> 이 쿼리를 뷰로 만든것이 v_sitemap
 	 * @return
 	 */
 	List<MenuDTO> getAllmenus();
@@ -85,6 +85,5 @@ public interface MenuMapper {
 			WHERE url = #{uri}
 			""")
 	MenuDTO findByUri(@Param("uri") String uri);
-
 
 }

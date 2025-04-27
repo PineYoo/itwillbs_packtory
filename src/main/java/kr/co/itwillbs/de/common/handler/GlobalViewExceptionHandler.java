@@ -144,7 +144,7 @@ public class GlobalViewExceptionHandler {
 	}
 
 	private String toMakeRefererURIForView(HttpServletRequest request) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		// ======================================================
 		// 이거 requestURI 보려면 HttpServletRequest 가 있어야 하는거 아녀?
 //		String requestUri = request.getRequestURI(); // 예: /admin/code
@@ -178,7 +178,7 @@ public class GlobalViewExceptionHandler {
 			viewPath = "/"; // fallback
 		}
 		// 서버 주소 제거하고 URI만 남기기 (예: /admin/code/new)
-		log.info("viewPath is {}", viewPath);
+		LogUtil.logDetail(log,"viewPath is {}", viewPath);
 		return viewPath;
 	}
 }

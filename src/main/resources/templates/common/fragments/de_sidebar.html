@@ -154,14 +154,16 @@
 		</li>
 		
 		<!-- Divider -->
-<!-- 		<hr class="sidebar-divider d-none d-md-block my-0"> -->
+		<hr class="sidebar-divider d-none d-md-block my-0">
 		 <!-- Nav Item - Dashboard -->
-<!-- 		<li class="nav-item"> -->
-<!-- 			<a class="nav-link" href="index.html" onclick="alert('test'); return false;"> -->
-<!-- 				<i class="fas fa-fw fa-tachometer-alt"></i> -->
-<!-- 				<span>Dashboard</span></a> -->
-<!-- 		</li> -->
+		<li class="nav-item">
+			<a class="nav-link" href="/main/sitemap">
+				<!--/* <i class="fas fa-fw fa-tachometer-alt"></i> */-->
+				<span>Sitemap</span></a>
+		</li>
 		<!-- Divider -->
+		<hr class="sidebar-divider d-none d-md-block">
+		
 		<hr class="sidebar-divider d-none d-md-block">
 		<ul>
 			<li th:each="menu : ${menus}" th:if="${menu.level == '1'}">

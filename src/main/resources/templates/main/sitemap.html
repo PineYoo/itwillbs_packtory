@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - SiteMap</title>
+</head>
+<body id="page-top">
+	<th:block layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-2 text-gray-800">sitemap</h1>
+			</div>
+
+
+			<!-- <div th:text="${menus}"></div> -->
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item border-0" th:each="menu : ${menus}" th:if="${menu.level == '1'}">
+					<strong th:text="${menu.menuName}"></strong>
+					<ul class="list-group list-group-flush ms-3 mt-1">
+						<li class="list-group-item border-0" th:each="subMenu : ${menus}" th:if="${subMenu.level == '2'} and ${#strings.startsWith(subMenu.treeCode, menu.treeCode + '.')}">
+							<a th:href="@{${subMenu.url}}" th:text="${subMenu.menuName}"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		
+		<script type="text/javascript">
+		</script>
+	</th:block>
+</body>
+</html>

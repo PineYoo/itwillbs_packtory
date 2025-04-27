@@ -13,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -166,11 +167,15 @@ public class MenuService {
 
 	@Cacheable(value = "menus")
 	public List<MenuDTO> getAllMenus() {
+		LogUtil.logStart(log);
+		
 		return menuMapper.getAllmenus();
 	}
 	
 	@Cacheable(value = "menuByUri", key = "#p0")
 	public MenuDTO findByUri(String uri) {
+		LogUtil.logStart(log);
+		
 		return menuMapper.findByUri(uri);
 	}
 
