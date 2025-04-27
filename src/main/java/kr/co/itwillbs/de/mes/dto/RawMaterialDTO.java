@@ -23,6 +23,7 @@ public class RawMaterialDTO {
 
 	private Long idx; // 테이블 인덱스
 	private String parentsIdx; // 부모 인덱스
+	private String parentsName; // 부모 이름
 
 	private String clientIdx; // 거래처_idx
 	private String clientCompanyName; // 거래처명
@@ -37,6 +38,7 @@ public class RawMaterialDTO {
 	private Integer quantity; // 개수
 
 	private String unit; // 단위
+	private String unitName; // 단위명
 
 	@PositiveOrZero(message = "가격은 0원 이상만 입력 가능합니다.")
 	private Integer price; // 가격
@@ -52,15 +54,22 @@ public class RawMaterialDTO {
 	private String modId; // 최종수정자
 	private LocalDateTime modDate; // 최종수정일
 
-	public String getUnitName() {
-		return switch (unit) {
-		case "1" -> "EA";
-		case "2" -> "g";
-		case "3" -> "kg";
-		case "4" -> "oz";
-		case "5" -> "mm";
-		case "6" -> "cm";
-		default -> "";
-		};
-	}
+//	public String getUnitName() {
+//		return switch (unit) {
+//		case "1" -> "EA";
+//		case "2" -> "g";
+//		case "3" -> "kg";
+//		case "4" -> "oz";
+//		case "5" -> "mm";
+//		case "6" -> "cm";
+//		default -> "";
+//		};
+//	}
+	
+	/*
+	LEFT JOIN t_commoncode_item ci
+      ON rm.unit = ci.minor_code
+     AND ci.major_code = 'ITEM_UNIT' 
+     으로 가져오세요 허민씨..
+   */
 }

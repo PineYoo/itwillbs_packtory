@@ -16,5 +16,7 @@ public class RawMaterialSearchDTO {
 	private String name; 
 	private String isDeleted; 
 
+	private String searchKeyword;
+	
 	private PageDTO pageDTO = new PageDTO(); // 페이징 정보
 }

@@ -11,7 +11,11 @@ import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
 import kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO;
@@ -122,5 +126,31 @@ public interface SearchMapper {
 	 */
 	List<WorkerMetricsDTO> getWorkerMetricList(WorkerMetricsSearchDTO searchDTO);
 
+	// ====================================================================
+	/**
+	 * 검색조건에 따른 자재 리스트 조회
+	 * @param materialSearchDTO
+	 * @return List<RawMaterialDTO>
+	 */
+	List<RawMaterialDTO> getMaterialList(RawMaterialSearchDTO materialSearchDTO);
+
+	/**
+	 * 페이징용 카운트
+	 */
+	int getMaterialCountForPaging(RawMaterialSearchDTO materialSearchDTO);
+	
+	// ====================================================================
+	/**
+	 * 검색조건에 따른 공정 리스트 조회
+	 * @param recipeProcessSearchDTO
+	 * @return List<RecipeProcessDTO>
+	 */
+	List<RecipeProcessDTO> getRecipeProcessList(RecipeProcessSearchDTO recipeProcessSearchDTO);
+	
+	/**
+	 * 페이징용 카운트
+	 */
+	int getRecipeProcessCountForPaging(RecipeProcessSearchDTO recipeProcessSearchDTO);
+	
 
 }

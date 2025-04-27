@@ -38,6 +38,8 @@ public class RecipeMaterialController {
 	private final RecipeMaterailService recipeMaterailService;
 	private final CommonCodeUtil commonCodeUtil;
 	
+	private final String ITEM_UNIT = "ITEM_UNIT";
+	
 	public RecipeMaterialController(RecipeMaterailService recipeMaterailService, CommonCodeUtil commonCodeUtil) {
 		this.recipeMaterailService = recipeMaterailService;
 		this.commonCodeUtil = commonCodeUtil;
@@ -58,6 +60,9 @@ public class RecipeMaterialController {
 		// thymeleaf th:object 용 모델 셋
 		model.addAttribute("recipeMaterailDTO", new RecipeMaterialDTO());
 		
+		List<CodeItemDTO> unitList = commonCodeUtil.getCodeItems(ITEM_UNIT);
+		log.info("나와라!!" + unitList.toString());
+		model.addAttribute("unitList", unitList);
 		return VIEW_PATH+"/material_register_form";
 	}
 	

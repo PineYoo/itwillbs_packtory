@@ -21,7 +21,13 @@ import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
 import kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeMaterialSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO;
@@ -257,5 +263,64 @@ public class SearchController {
 		List<T> list,
 		PageDTO pageInfo
 	) {}
+	
+	// ==================================================================================
+	// 자재 조회 팝업창으로 이동
+	@GetMapping(value = { "/material/search-popup", "/material/search-popup/" })
+	public String getMaterialList(Model model, @ModelAttribute RawMaterialSearchDTO materialSearchDTO) {
+		LogUtil.logStart(log);
+		// 자재 리스트 조회 요청(SELECT)
+		List<RawMaterialDTO> materialList = searchService.getMaterialList(materialSearchDTO);
+		model.addAttribute("materialList", materialList);
+		
+//		//페이징용 totalCount
+		materialSearchDTO.getPageDTO().setTotalCount(searchService.getMaterialCountForPaging(materialSearchDTO));
+		model.addAttribute("materialSearchDTO", materialSearchDTO);
+		
+		return "/common/material_search_form";
+	}
+	
+	// 검색조건에 따른 자재 목록
+	@PostMapping("/material/search-popup")
+	@ResponseBody
+	public List<RawMaterialDTO> searchMaterialList(Model model, @ModelAttribute RawMaterialSearchDTO materialSearchDTO) {
+		LogUtil.logStart(log);
+		
+		//페이징용 totalCount
+		materialSearchDTO.getPageDTO().setTotalCount(searchService.getMaterialCountForPaging(materialSearchDTO));
+		model.addAttribute("materialSearchDTO", materialSearchDTO);
+		
+		return searchService.getMaterialList(materialSearchDTO);
+	}
+
+	// ==================================================================================
+	// 공정 조회 팝업창으로 이동
+	@GetMapping(value = { "/recipeProcess/search-popup", "/recipeProcess/search-popup/" })
+	public String getRecipeProcessList(Model model, @ModelAttribute RecipeProcessSearchDTO recipeProcessSearchDTO) {
+		LogUtil.logStart(log);
+		// 공정 리스트 조회 요청(SELECT)
+		List<RecipeProcessDTO> recipeProcessList = searchService.getRecipeProcessList(recipeProcessSearchDTO);
+		model.addAttribute("recipeProcessList", recipeProcessList);
+		
+//		//페이징용 totalCount
+		recipeProcessSearchDTO.getPageDTO().setTotalCount(searchService.getRecipeProcessCountForPaging(recipeProcessSearchDTO));
+		model.addAttribute("recipeProcessSearchDTO", recipeProcessSearchDTO);
+		
+		return "/common/recipe_process_search_form";
+	}
+	
+	// 검색조건에 따른 공정 목록
+	@PostMapping("/recipeProcess/search-popup")
+	@ResponseBody
+	public List<RecipeProcessDTO> searchRecipeProcessList(Model model, @ModelAttribute RecipeProcessSearchDTO recipeProcessSearchDTO) {
+		LogUtil.logStart(log);
+		
+		//페이징용 totalCount
+		recipeProcessSearchDTO.getPageDTO().setTotalCount(searchService.getRecipeProcessCountForPaging(recipeProcessSearchDTO));
+		model.addAttribute("recipeProcessSearchDTO", recipeProcessSearchDTO);
+		
+		return searchService.getRecipeProcessList(recipeProcessSearchDTO);
+	}
+	
 	
 }

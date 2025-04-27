@@ -398,4 +398,118 @@
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 	
+	<!-- 검색조건에 따른 자재 리스트 조회 -->
+	<select id="getMaterialList" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO"
+								    resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+		SELECT 
+		      rm.idx
+		    , rm.parents_idx
+		    , rm2.name AS parentsName
+		    , rm.client_idx
+		    , c.company_name AS clientCompanyName
+		    , rm.type
+		    , ci.minor_name AS typeName
+		    , rm.name
+		    , rm.unit
+		    , ci2.minor_name AS unitName
+		    , rm.quantity
+		    , rm.price
+		    , rm.lead_time
+		    , rm.expiration_date
+		    , rm.storage_condition
+		    , rm.msds_link
+		    , rm.is_deleted
+		    , rm.reg_id
+		    , rm.reg_date
+		    , rm.mod_id
+		    , rm.mod_date
+		  FROM t_raw_material rm
+		  LEFT JOIN t_raw_material rm2
+		    ON rm.parents_idx = rm2.idx
+		  LEFT JOIN t_client c
+		    ON rm.client_idx = c.idx
+		  LEFT JOIN t_commoncode_item ci
+		    ON rm.type = ci.minor_code
+		   AND ci.major_code = 'MATERIAL_TYPE'
+		  LEFT JOIN t_commoncode_item ci2
+		    ON rm.unit = ci2.minor_code
+		   AND ci2.major_code = 'ITEM_UNIT' 
+		<where>
+			1 = 1
+			<if test="searchKeyword != null and searchKeyword != ''">
+				AND (
+					rm2.name LIKE CONCAT('%', #{searchKeyword}, '%')			-- parentsName
+					OR c.company_name LIKE CONCAT('%', #{searchKeyword}, '%')	-- clientCompanyName
+					OR rm.name LIKE CONCAT('%', #{searchKeyword}, '%')			-- name
+				)
+			</if>
+		</where>
+		ORDER BY rm.idx
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+
+	<!-- 검색조건에 따른 자재 리스트 조회(페이징처리용) -->
+	<select id="getMaterialCountForPaging" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO"
+								    resultType="int">
+		SELECT COUNT(*)
+		  FROM t_raw_material rm
+		  LEFT JOIN t_raw_material rm2
+		    ON rm.parents_idx = rm2.idx
+		  LEFT JOIN t_client c
+		    ON rm.client_idx = c.idx
+		  LEFT JOIN t_commoncode_item ci
+		    ON rm.type = ci.minor_code
+		   AND ci.major_code = 'MATERIAL_TYPE'
+		  LEFT JOIN t_commoncode_item ci2
+		    ON rm.unit = ci2.minor_code
+		   AND ci2.major_code = 'ITEM_UNIT' 
+		<where>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				AND (
+					rm2.name LIKE CONCAT('%', #{searchKeyword}, '%')			-- parentsName
+					OR c.company_name LIKE CONCAT('%', #{searchKeyword}, '%')	-- clientCompanyName
+					OR rm.name LIKE CONCAT('%', #{searchKeyword}, '%')			-- name
+				)
+			</if>
+		</where>
+	</select>
+	
+	<!-- 검색조건에 따른 공정 리스트 조회 -->
+	<select id="getRecipeProcessList" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO"
+								      resultType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
+		SELECT
+			  idx
+			, master_idx
+			, name
+			, code
+			, code_seq
+			, standard_time
+			, max_time
+			, is_deleted
+			, reg_id
+			, reg_date
+			, mod_id
+			, mod_date
+		  FROM t_recipe_process_code
+		<where>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
+		ORDER BY idx	-- code_seq로 가져오려 했으나 varchar라서 1, 10, 11, 12, ..., 2 이렇게 가져와짐
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+	
+	<!-- 검색조건에 따른 공정 리스트 조회(페이징처리용) -->
+	<select id="getRecipeProcessCountForPaging" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO"
+								      			resultType="int">
+		SELECT COUNT(*)
+		  FROM t_recipe_process_code
+		<where>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
+	</select>
+	
 </mapper>

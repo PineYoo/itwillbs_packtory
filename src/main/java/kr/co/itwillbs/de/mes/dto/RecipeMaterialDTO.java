@@ -1,5 +1,7 @@
 package kr.co.itwillbs.de.mes.dto;
 
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -18,13 +20,14 @@ public class RecipeMaterialDTO {
 
 	private String idx;
 	private String processIdx;	// 레시피 IDX
+	private String processName;	// 공정 이름
 	private String materialIdx;	// 자재 IDX
 	@NotBlank(message = "이름은 필수 입력 값입니다.")
 	private String name;		// 이름
 	@NotBlank(message = "단위는 필수 입력 값입니다.")
 	private String unit;		// 단위
 	@PositiveOrZero(message = "수량은 0개 이상만 입력 가능합니다.")
-	private String quantity;	// 개수
+	private BigDecimal quantity;	// 개수
 	@NotBlank(message = "작업시간은 필수 입력 값입니다.")
 	private String mixSeq;		// 혼합순서
 	

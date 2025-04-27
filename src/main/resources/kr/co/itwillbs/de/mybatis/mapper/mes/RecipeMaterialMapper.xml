@@ -82,7 +82,7 @@
 			<if test='processIdx !=null and !("".equals(processIdx.trim()))'>
 			#{processIdx},
 			</if>
-			<if test='bomIdx !=null and !("".equals(materialIdx.trim()))'>
+			<if test='materialIdx !=null and !("".equals(materialIdx.trim()))'>
 			#{materialIdx},
 			</if>
 			<if test='name !=null and !("".equals(name.trim()))'>

@@ -66,7 +66,7 @@ public class LotsController {
 	 */
 	// 파일을 받을 경우 MediaType.MULTIPART_FORM_DATA_VALUE
 	@PostMapping(value= {"", "/"}, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.TEXT_HTML_VALUE})
-	private String registerRecipeMaterial(@ModelAttribute @Valid LotsDTO lotsDTO, Model model) {
+	private String registerLot(@ModelAttribute @Valid LotsDTO lotsDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(lotsDTO));
 
@@ -89,7 +89,7 @@ public class LotsController {
 	 */
 	@PostMapping(value= {"", "/"}, consumes= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseBody
-	private ResponseEntity<Map<String, Object>> registerRecipeForJson(@RequestBody @Valid LotsDTO lotsDTO) {
+	private ResponseEntity<Map<String, Object>> registerLotForJson(@RequestBody @Valid LotsDTO lotsDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(lotsDTO));
 		
@@ -116,7 +116,7 @@ public class LotsController {
 	 * @return String
 	 */
 	@GetMapping(value= {"", "/"})
-	public String getRecipes(@ModelAttribute LotsSearchDTO lotsSearchDTO, Model model) {
+	public String getLots(@ModelAttribute LotsSearchDTO lotsSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		lotsSearchDTO.getPageDTO().setTotalCount(lotsService.getLotsCountBySearchDTO(lotsSearchDTO));
@@ -135,7 +135,7 @@ public class LotsController {
 	 * @return String
 	 */
 	@GetMapping(value= {"/search", "/search/"})
-	public String getRecipesBySearchDTO(@ModelAttribute LotsSearchDTO lotsSearchDTO, Model model) {
+	public String getLotsBySearchDTO(@ModelAttribute LotsSearchDTO lotsSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		lotsSearchDTO.getPageDTO().setTotalCount(lotsService.getLotsCountBySearchDTO(lotsSearchDTO));
@@ -156,7 +156,7 @@ public class LotsController {
 	 * @return String
 	 */
 	@GetMapping("/{idx}")
-	public String getRecipe(@PathVariable("idx") String idx,
+	public String getLot(@PathVariable("idx") String idx,
 							@ModelAttribute LotsSearchDTO lotsSearchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("request idx : {}, recipeSearchDTO : {}", idx, lotsSearchDTO);
@@ -179,7 +179,7 @@ public class LotsController {
 	 */
 	@PutMapping("/modifyLots")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> modifyRecipe(@RequestBody @Valid LotsDTO lotsDTO) {
+	public ResponseEntity<Map<String, Object>> modifyLot(@RequestBody @Valid LotsDTO lotsDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		log.info("requestBody : {}", lotsDTO);

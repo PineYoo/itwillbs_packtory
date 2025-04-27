@@ -14,7 +14,11 @@ import kr.co.itwillbs.de.mes.dto.LocationInfoDTO;
 import kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO;
@@ -181,6 +185,48 @@ public class SearchService {
 		LogUtil.logStart(log);
 		
 		return searchMapper.getWorkerMetricList(searchDTO);
+	}
+
+	// ======================================================================================
+	/**
+	 *  자재 정보 리스트 조회
+	 * @param materialSearchDTO
+	 * @return List<ClientDTO>
+	 */
+	public List<RawMaterialDTO> getMaterialList(RawMaterialSearchDTO materialSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getMaterialList(materialSearchDTO);
+	}
+
+	/**
+	 * 검색조건에 따른 자재 count 가져오기 페이징용
+	 * @param clientSearchDTO
+	 * @return
+	 */
+	public int getMaterialCountForPaging(RawMaterialSearchDTO materialSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getMaterialCountForPaging(materialSearchDTO);
+	}
+
+	// ======================================================================================
+	/**
+	 *  공정 정보 리스트 조회
+	 * @param recipeProcessSearchDTO
+	 * @return List<RecipeProcessDTO>
+	 */
+	public List<RecipeProcessDTO> getRecipeProcessList(RecipeProcessSearchDTO recipeProcessSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getRecipeProcessList(recipeProcessSearchDTO);
+	}
+	
+	/**
+	 * 검색조건에 따른 공정 count 가져오기 페이징용
+	 * @param recipeProcessSearchDTO
+	 * @return
+	 */
+	public int getRecipeProcessCountForPaging(RecipeProcessSearchDTO recipeProcessSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getRecipeProcessCountForPaging(recipeProcessSearchDTO);
 	}
 
 }

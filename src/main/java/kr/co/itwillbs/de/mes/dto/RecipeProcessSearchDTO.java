@@ -29,6 +29,8 @@ public class RecipeProcessSearchDTO {
 	private String regStartDate;
 	private String regEndDate;
 	
+	private String searchKeyword;
+	
 	private List<CodeItemDTO> typeList;
 	
 	// 페이징용 DTO composition
