@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
@@ -51,11 +52,17 @@ public class RecipeProcessController {
 	 * @return
 	 */
 	@GetMapping(value={"/new"})
-	private String registerRecipeForm(Model model) {
+	private String registerRecipeForm(Model model,
+									  @ModelAttribute RecipeProcessDTO recipeProcessDTO, 
+									  @RequestParam("master_idx") String masterIdx) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		if (masterIdx != null) {
+			recipeProcessDTO.setMasterIdx(masterIdx);
+		}
 		
 		// thymeleaf th:object 용 모델 셋
-		model.addAttribute("recipeProcessDTO", new RecipeProcessDTO());
+		model.addAttribute("recipeProcessDTO", recipeProcessDTO);
+//		model.addAttribute("recipeProcessDTO", new RecipeProcessDTO());
 		
 		return RECIPE_PATH+"/process_register_form";
 	}
@@ -119,9 +126,15 @@ public class RecipeProcessController {
 	 * @return String
 	 */
 	@GetMapping(value= {"", "/"})
-	public String getRecipes(@ModelAttribute RecipeProcessSearchDTO recipeProcessSearchDTO, Model model) {
+	public String getRecipes(@ModelAttribute RecipeProcessSearchDTO recipeProcessSearchDTO, 
+							 @RequestParam(value = "master_idx", required = false) String masterIdx,
+				             Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
+		if (masterIdx != null) {
+			recipeProcessSearchDTO.setMasterIdx(masterIdx);
+		}
+		
 		recipeProcessSearchDTO.getPageDTO().setTotalCount(recipeProcessService.getRecipesCountBySearchDTO(recipeProcessSearchDTO));
 //		setcodeItems(recipeSearchDTO);
 		model.addAttribute("recipeProcessSearchDTO", recipeProcessSearchDTO);

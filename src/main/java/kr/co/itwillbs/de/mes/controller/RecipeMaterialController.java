@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeMaterialSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
 import kr.co.itwillbs.de.mes.service.RecipeMaterailService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,15 +56,19 @@ public class RecipeMaterialController {
 	 * @return
 	 */
 	@GetMapping(value={"/new"})
-	private String registerRecipeForm(Model model) {
+	private String registerRecipeForm(Model model,
+									  @ModelAttribute RecipeMaterialDTO recipeMaterialDTO, 
+									  @RequestParam("process_idx") String processIdx) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		if (processIdx != null) {
+			recipeMaterialDTO.setProcessIdx(processIdx);
+		}
 		
 		// thymeleaf th:object 용 모델 셋
-		model.addAttribute("recipeMaterailDTO", new RecipeMaterialDTO());
+		model.addAttribute("recipeMaterailDTO", recipeMaterialDTO);
+		// 자재 단위 리스트
+		model.addAttribute("unitList", commonCodeUtil.getCodeItems(ITEM_UNIT));
 		
-		List<CodeItemDTO> unitList = commonCodeUtil.getCodeItems(ITEM_UNIT);
-		log.info("나와라!!" + unitList.toString());
-		model.addAttribute("unitList", unitList);
 		return VIEW_PATH+"/material_register_form";
 	}
 	
@@ -125,8 +131,14 @@ public class RecipeMaterialController {
 	 * @return
 	 */
 	@GetMapping(value= {"", "/"})
-	public String getRecipes(@ModelAttribute RecipeMaterialSearchDTO recipeMaterialSearchDTO, Model model) {
+	public String getRecipes(@ModelAttribute RecipeMaterialSearchDTO recipeMaterialSearchDTO, 
+							 @RequestParam(value = "process_idx", required = false) String processIdx,
+					         Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		if (processIdx != null) {
+			recipeMaterialSearchDTO.setProcessIdx(processIdx);
+		}
 		
 		recipeMaterialSearchDTO.getPageDTO().setTotalCount(recipeMaterailService.getRecipeMaterialCountBySearchDTO(recipeMaterialSearchDTO));
 //		setcodeItems(recipeMaterialSearchDTO);

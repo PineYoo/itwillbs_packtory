@@ -48,18 +48,18 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<form th:action="@{/mes/recipe/material}" method="post" th:object="${recipeMaterailDTO}" class="form row g-3" id="registerForm">
-							<div class="col-md-6">
-								<button type="button" id="searchRecipeProcessBtn" class="btn btn-primary mt-2" onclick="openRecipeProcessSearch()">공정 조회</button>
-								<input type="hidden" name="processIdx" id="processIdx">
-							</div>
-							<div class="col-md-6">
+								<input type="hidden" id="processIdx" th:field="*{processIdx}">
+<!-- 							<div class="col-md-6"> -->
+<!-- 								<button type="button" id="searchRecipeProcessBtn" class="btn btn-primary mt-2" onclick="openRecipeProcessSearch()">공정 조회</button> -->
+<!-- 							</div> -->
+							<div class="col-md-12">
 								<button type="button" id="searchMaterialBtn" class="btn btn-primary mt-2" onclick="openMaterialSearch()">자재 조회</button>
 								<input type="hidden" name="materialIdx" id="materialIdx">
 							</div>
-							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputText('processName','공정 이름',true,false,false)}"></div>
-							</div>
-							<div class="col-md-6">
+<!-- 							<div class="col-md-6"> -->
+<!-- 								<div th:replace="~{common/fragments/de_form :: inputText('processName','공정 이름',true,false,false)}"></div> -->
+<!-- 							</div> -->
+							<div class="col-md-12">
 								<div th:replace="~{common/fragments/de_form :: inputText('name','자재 이름',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
@@ -86,15 +86,15 @@
 		</div>
 		<script type="text/javascript">
 			// 공정 검색 함수(새 창 띄우기)
-			function openRecipeProcessSearch() {
-				window.open('/recipeProcess/search-popup', 'recipeProcessSearch', 'width=800,height=600,location=no,scrollbars=yes');
-			}
+// 			function openRecipeProcessSearch() {
+// 				window.open('/recipeProcess/search-popup', 'recipeProcessSearch', 'width=800,height=600,location=no,scrollbars=yes');
+// 			}
 
 			// 팝업창에서 가져온 공정 정보 넣는 함수
-			function setRecipeProcessInfo(data) {
-				$("#processIdx").val(data.idx);
-				$("#processName").val(data.name);
-			}			
+// 			function setRecipeProcessInfo(data) {
+// 				$("#processIdx").val(data.idx);
+// 				$("#processName").val(data.name);
+// 			}			
 			
 			// --------------------------------------------------------------------------------------------------------
 			// 자재 검색 함수(새 창 띄우기)
@@ -111,7 +111,8 @@
 			// --------------------------------------------------------------------------------------------------------
 			$(function() {
 				$('#btnList').on("click", function() {
-					location.href="/mes/recipe/material";
+					var processIdx = $('#processIdx').val();
+					location.href="/mes/recipe/material?process_idx=" + processIdx;
 				});
 				
 				// 레시피 등록
@@ -150,7 +151,8 @@
 						console.log("서버 응답:", data);
 						if(data.status === "success") {
 							alert(data.message);
-							location.href="/mes/recipe/material";
+							var processIdx = $('#processIdx').val();
+							location.href="/mes/recipe/material?process_idx=" + processIdx;
 						} else if(data.status === "validFail") {
 							console.log("hello validFail!");
 							//alert(data.message);
