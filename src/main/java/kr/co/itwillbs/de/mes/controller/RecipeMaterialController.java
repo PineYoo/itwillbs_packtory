@@ -133,11 +133,15 @@ public class RecipeMaterialController {
 	@GetMapping(value= {"", "/"})
 	public String getRecipes(@ModelAttribute RecipeMaterialSearchDTO recipeMaterialSearchDTO, 
 							 @RequestParam(value = "process_idx", required = false) String processIdx,
+							 @RequestParam(value = "master_idx", required = false) String masterIdx,
 					         Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		if (processIdx != null) {
 			recipeMaterialSearchDTO.setProcessIdx(processIdx);
+		}
+		if (masterIdx != null) {
+			recipeMaterialSearchDTO.setMasterIdx(masterIdx);
 		}
 		
 		recipeMaterialSearchDTO.getPageDTO().setTotalCount(recipeMaterailService.getRecipeMaterialCountBySearchDTO(recipeMaterialSearchDTO));
@@ -189,6 +193,8 @@ public class RecipeMaterialController {
 		}
 		
 		model.addAttribute("recipeMaterialDTO", recipeMaterailService.getRecipeMaterialByIdx(idx));
+		// 자재 단위 리스트
+		model.addAttribute("unitList", commonCodeUtil.getCodeItems(ITEM_UNIT));
 		
 		return VIEW_PATH+"/material_detail";
 	}

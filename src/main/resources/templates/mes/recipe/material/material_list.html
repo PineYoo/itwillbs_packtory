@@ -39,6 +39,7 @@
 									<input type="hidden" th:field="*{pageDTO.page}">
 									<input type="hidden" th:field="*{pageDTO.size}">
 									<input type="hidden" id="processIdx" th:field="*{processIdx}">
+									<input type="hidden" id="masterIdx" th:field="*{masterIdx}">
 									<!-- 페이징 히든 변수 -->
 									<div class="container-fluid px-5">
 										<div class="row">
@@ -70,19 +71,24 @@
 										</div>
 
 										<!-- 검색바 버튼 -->
-										<div class="row justify-content-end">
-											<div class="col-12 col-sm-auto mb-2">
-												<button type="button" class="btn btn-success btn-block" id="goNewFormBtn"
-												        th:onclick="|location.href='/mes/recipe/material/new?process_idx=' + document.getElementById('processIdx').value;|">
-					                            	등록
-					                            </button>
-											</div>
-											<div class="col-12 col-sm-auto mb-2">
-												<button type="button" class="btn btn-warning btn-block" onclick="formReset('searchForm');">초기화</button>
-											</div>
-											<div class="col-12 col-sm-auto mb-2">
-												<button type="submit" class="btn btn-primary btn-block" id="btnSearch">검색</button>
-											</div>
+										<div class="row align-items-center">
+										    <!-- 왼쪽: 공정 목록 버튼 -->
+										    <div class="col-12 col-sm-auto mb-2">
+										        <button type="button" class="btn btn-primary btn-block" id="returnBtn" 
+						        		                onclick="location.href='/mes/recipe/process?master_idx=' + document.getElementById('masterIdx').value;">
+										            공정 목록
+										        </button>
+										    </div>
+										
+										    <!-- 오른쪽: 등록/초기화/검색 버튼 묶음 -->
+										    <div class="col-12 col-sm-auto mb-2 ml-auto d-flex">
+										        <button type="button" class="btn btn-success mr-2" id="goNewFormBtn"
+										                th:onclick="|location.href='/mes/recipe/material/new?process_idx=' + document.getElementById('processIdx').value;|">
+										            등록
+										        </button>
+										        <button type="button" class="btn btn-warning mr-2" onclick="formReset('searchForm');">초기화</button>
+										        <button type="submit" class="btn btn-primary" id="btnSearch">검색</button>
+										    </div>
 										</div>
 										<!-- 검색바 버튼 끝 -->
 									</div>

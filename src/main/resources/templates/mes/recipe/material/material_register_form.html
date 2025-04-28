@@ -63,10 +63,10 @@
 								<div th:replace="~{common/fragments/de_form :: inputText('name','자재 이름',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: selectCodeItems('unit', '자재 단위', true, ${unitList}, false, false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity','레시피 개수',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<div th:replace="~{common/fragments/de_form :: inputNumber('quantity','레시피 개수',true,false,false)}"></div>
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('unit', '자재 단위', true, ${unitList}, false, false)}"></div>
 							</div>
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('mixSeq','혼합순서',true,false,false)}"></div>

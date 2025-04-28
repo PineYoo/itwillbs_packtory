@@ -3,7 +3,7 @@
 		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		layout:decorate="~{common/layouts/de_layout}">
 <head>
-<title>팩토리(PackTory) - 메뉴 관리</title>
+<title>팩토리(PackTory) - 공정 관리</title>
 	
 	<link href="/css/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 	<style type="text/css">
@@ -70,19 +70,23 @@
 										</div>
 
 										<!-- 검색바 버튼 -->
-										<div class="row justify-content-end">
-											<div class="col-12 col-sm-auto mb-2">
-												<button type="button" class="btn btn-success btn-block" id="goNewFormBtn"
-												        th:onclick="|location.href='/mes/recipe/process/new?master_idx=' + document.getElementById('masterIdx').value;|">
-					                            	등록
-					                            </button>
-											</div>
-											<div class="col-12 col-sm-auto mb-2">
-												<button type="button" class="btn btn-warning btn-block" onclick="formReset('searchForm');">초기화</button>
-											</div>
-											<div class="col-12 col-sm-auto mb-2">
-												<button type="submit" class="btn btn-primary btn-block" id="btnSearch">검색</button>
-											</div>
+										<div class="row align-items-center">
+										    <!-- 왼쪽: 레시피 목록 버튼 -->
+										    <div class="col-12 col-sm-auto mb-2">
+										        <button type="button" class="btn btn-primary btn-block" id="returnBtn" onclick="location.href='/mes/recipe/master'">
+										            레시피 목록
+										        </button>
+										    </div>
+										
+										    <!-- 오른쪽: 등록/초기화/검색 버튼들 묶음 -->
+										    <div class="col-12 col-sm-auto mb-2 ml-auto d-flex">
+										        <button type="button" class="btn btn-success mr-2" id="goNewFormBtn"
+										                th:onclick="|location.href='/mes/recipe/process/new?master_idx=' + document.getElementById('masterIdx').value;|">
+										            등록
+										        </button>
+										        <button type="button" class="btn btn-warning mr-2" onclick="formReset('searchForm');">초기화</button>
+										        <button type="submit" class="btn btn-primary" id="btnSearch">검색</button>
+										    </div>
 										</div>
 										<!-- 검색바 버튼 끝 -->
 									</div>
@@ -123,9 +127,11 @@
 									<td th:text="${item.regDate}"></td>
 									<td>
 									    <button type="button" class="btn btn-primary"
-    											th:onclick="|event.stopPropagation(); location.href='/mes/recipe/material?process_idx=${item.idx}';|">
-									        소요자재 등록
-									    </button>
+										    th:data-process-idx="${item.idx}"
+										    th:data-master-idx="${item.masterIdx}"
+										    onclick="goToMaterialPage(this)">
+										    소요자재 등록
+										</button>
 									</td>
 								</tr>
 							</tbody>
@@ -135,6 +141,14 @@
 				</div>
 			</div>
 			<script type="text/javascript">
+				// 소요자재 등록 페이지로 이동
+				function goToMaterialPage(button) {
+				    event.stopPropagation();
+				    const processIdx = button.getAttribute('data-process-idx');
+				    const masterIdx = button.getAttribute('data-master-idx');
+				    location.href = '/mes/recipe/material?process_idx=' + processIdx + '&master_idx=' + masterIdx;
+				}
+				// ---------------------------------------------------------------------
 				$(document).ready(function() {
 					console.log("document ready!");
 					

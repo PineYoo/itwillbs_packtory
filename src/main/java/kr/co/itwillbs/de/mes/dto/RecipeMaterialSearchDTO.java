@@ -19,6 +19,7 @@ public class RecipeMaterialSearchDTO {
 	private String recipeMasterName;
 	
 	private String processIdx;
+	private String masterIdx;	// 자재리스트 -> 공정 리스트로 돌아갈 때 필요
 	
 	private String type;		// 타입
 	private String name;		// 이름

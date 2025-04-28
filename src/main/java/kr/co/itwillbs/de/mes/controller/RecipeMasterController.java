@@ -181,7 +181,7 @@ public class RecipeMasterController {
 	 * @param recipeMasterDTO
 	 * @return ResponseEntity<Map<String, Object>>
 	 */
-	@PutMapping("/modifyRecipeMaterial")
+	@PutMapping("/modifyRecipeMaster")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> modifyRecipeMaster(@RequestBody @Valid RecipeMasterDTO recipeMasterDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());

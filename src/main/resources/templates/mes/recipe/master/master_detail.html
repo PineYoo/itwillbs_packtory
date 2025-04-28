@@ -48,6 +48,8 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<form th:action="@{/mes/recipe/master}" method="post" th:object="${recipeMasterDTO}" class="form row g-3" id="registerForm">
+							<!-- hidden -->
+							<input type="hidden" th:field="*{idx}" />
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('productIdx','상품 코드',true,false,false)}"></div>
 							</div>
@@ -110,7 +112,7 @@
 					// @Valid 숫자 타입을 숫자로 변환
 						// 수량은 숫자형으로 전환
 					if (_jsonObj['quantity']) {
-						_jsonObj['quantity'] = parseInt(_jsonObj['quantity']);
+						_jsonObj['quantity'] = Number(_jsonObj['quantity']);
 					}
 					// 데이터 확인
 					console.log(_jsonObj);
