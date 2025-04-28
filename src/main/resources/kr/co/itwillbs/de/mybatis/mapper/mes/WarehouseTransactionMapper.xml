@@ -148,14 +148,15 @@
 		m.name AS materialName,
 		sl.name AS source_location_name,
 		dl.name AS destination_location_name,
-		c.minor_name AS transTypeName
+		c.minor_name AS trans_type_name,
+		ci.minor_name AS unit_name
 		FROM t_warehouse_transaction w
 		LEFT JOIN t_product p ON w.product_idx = p.idx
 		LEFT JOIN t_raw_material m ON w.material_idx = m.idx
 		LEFT JOIN t_location_info sl ON w.source_location = sl.idx
 		LEFT JOIN t_location_info dl ON w.destination_location = dl.idx
-		LEFT JOIN t_commoncode_item c ON w.trans_type = c.minor_code
-		AND c.major_code = "TRANS_TYPE"
+		LEFT JOIN t_commoncode_item c ON w.trans_type = c.minor_code AND c.major_code = "TRANS_TYPE"
+		LEFT JOIN t_commoncode_item ci ON w.unit = ci.minor_code AND ci.major_code = "ITEM_UNIT"
 		<where>
 			<if test='transType != null and !("".equals(transType.trim()))'>
 				AND w.trans_type LIKE CONCAT('%', #{transType}, '%')

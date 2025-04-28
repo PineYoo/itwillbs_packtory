@@ -33,9 +33,11 @@ public class WarehouseTransactionDTO {
 	private String materialIdx; // 자재_idx
 	private String materialName; // 자재이름
 
-	private Integer quantity; // 개수
 	private String unit; // 단위
+	private String unitName;
+	private Integer quantity; // 개수
 	private String status; // 상태
+	
 
 	private String manufacturingDate; // 제조일자
 	private String sourceLocation; // 출발지 idx값
@@ -50,16 +52,4 @@ public class WarehouseTransactionDTO {
 	private LocalDate regDate; // 작성일자시간
 	private String modId; // 최종 작성자
 	private LocalDate modDate; // 최종작성일자
-
-	public String getUnitName() {
-		return switch (unit) {
-		case "1" -> "EA";
-		case "2" -> "g";
-		case "3" -> "kg";
-		case "4" -> "oz";
-		case "5" -> "mm";
-		case "6" -> "cm";
-		default -> "";
-		};
-	}
 }
