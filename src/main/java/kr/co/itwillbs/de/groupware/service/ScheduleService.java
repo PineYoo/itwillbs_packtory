@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.groupware.dto.ScheduleDTO;
+import kr.co.itwillbs.de.groupware.dto.ScheduleRecord;
 import kr.co.itwillbs.de.groupware.dto.ScheduleSearchDTO;
 import kr.co.itwillbs.de.groupware.mapper.ScheduleMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +82,16 @@ public class ScheduleService {
 		LogUtil.logStart(log);
 		
 		scheduleMapper.removeSchedule(dto);
+	}
+	
+	/**
+	 * Schedule Api호출용
+	 * @param ScheduleDTO
+	 */
+	public List<ScheduleRecord> getApiSchedule(ScheduleSearchDTO searchDTO) {
+		LogUtil.logStart(log);
+		
+		return scheduleMapper.getApiSchedule(searchDTO);
 	}
 	
 

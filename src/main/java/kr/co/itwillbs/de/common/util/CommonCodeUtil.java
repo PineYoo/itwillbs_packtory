@@ -5,12 +5,16 @@ import java.util.List;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.admin.service.CodeService;
+import kr.co.itwillbs.de.common.service.CustomUserDetails;
+import kr.co.itwillbs.de.common.vo.LoginVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -64,6 +68,20 @@ public class CommonCodeUtil {
 			return null;
 		}
 		return codeService.getCodeItems(majorCode);
+	}
+	
+	public LoginVO getAuthUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+			LoginVO loginVO = userDetails.getLoginVO();
+			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
+			LogUtil.logDetail(log,"userDetails is {}", userDetails);
+			LogUtil.logDetail(log,"loginVO is {}", loginVO);
+			
+			return loginVO;
+		}
+		return null;
 	}
 	
 	/**
