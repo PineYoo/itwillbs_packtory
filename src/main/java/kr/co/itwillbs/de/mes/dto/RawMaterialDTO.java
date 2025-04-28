@@ -53,24 +53,4 @@ public class RawMaterialDTO {
 	private LocalDateTime regDate; // 최초등록일
 	private String modId; // 최종수정자
 	private LocalDateTime modDate; // 최종수정일
-
-	
-//	public String getUnitName() {
-//		return switch (unit) {
-//		case "1" -> "EA";
-//		case "2" -> "g";
-//		case "3" -> "kg";
-//		case "4" -> "oz";
-//		case "5" -> "mm";
-//		case "6" -> "cm";
-//		default -> "";
-//		};
-//	}
-	
-	/*
-	LEFT JOIN t_commoncode_item ci
-      ON rm.unit = ci.minor_code
-     AND ci.major_code = 'ITEM_UNIT' 
-     으로 가져오세요 허민씨..
-   */
 }

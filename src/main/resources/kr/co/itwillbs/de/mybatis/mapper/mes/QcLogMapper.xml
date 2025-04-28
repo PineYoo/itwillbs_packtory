@@ -82,12 +82,15 @@
 	<select id="searchQcLog"
 		parameterType="kr.co.itwillbs.de.mes.dto.QcLogSearchDTO"
 		resultType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
-
 		SELECT
 		l.*,
-		s.name AS qcStandardName
+		s.name AS qcStandardName,
+		c.minor_name AS unit_name,
+		ci.minor_name AS qc_result_name
 		FROM t_qc_log l
 		LEFT JOIN t_qc_standard s ON l.qc_idx = s.idx
+		LEFT JOIN t_commoncode_item c ON l.unit = c.minor_code AND c.major_code = "ITEM_UNIT"
+		LEFT JOIN t_commoncode_item ci ON l.qc_result = ci.minor_code AND ci.major_code = "QC_RESULT"
 		<where>
 			<if test='qcIdx != null and !("".equals(qcIdx.trim()))'>
 				AND l.qc_idx LIKE CONCAT('%', #{qcIdx}, '%')
