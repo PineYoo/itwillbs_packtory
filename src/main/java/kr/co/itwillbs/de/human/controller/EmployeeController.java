@@ -51,18 +51,7 @@ public class EmployeeController {
 	@GetMapping("/new")
 	public String employeeRegisterForm(Model model) {
 		log.info("employeeRegisterForm --- 시작");
-
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
-			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-			LoginVO loginVO = userDetails.getLoginVO();
-			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
-			log.info("userDetails is {}", userDetails);
-			log.info("loginVO is {}", loginVO);
-			model.addAttribute("userDetails", userDetails);
-			model.addAttribute("loginVO", loginVO);
-		}
-
+		
 		EmployeeDTO employeeDTO = EmployeeDTO.builder().departmentCode("").build();
 		model.addAttribute("employeeDTO", employeeDTO);
 

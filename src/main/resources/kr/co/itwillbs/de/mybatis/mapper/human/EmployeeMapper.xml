@@ -94,14 +94,11 @@
 		e.*,
 		cc.minor_name AS department_name,
 		d.child_name AS sub_department_name,
-		p.position_code AS position_name
+		p.position_name AS position_name
 		FROM t_employee e
-		LEFT JOIN t_commoncode_item cc
-			ON cc.major_code = 'DEPARTMENT_CODE' AND cc.minor_code = e.department_code
-		LEFT JOIN t_department_info d
-			ON d.parent_code = e.department_code AND d.child_code = e.sub_department_code
-		LEFT JOIN t_position_info p
-			ON p.idx = e.position_code
+		LEFT JOIN t_commoncode_item cc ON cc.major_code = 'DEPARTMENT_CODE' AND cc.minor_code = e.department_code
+		LEFT JOIN t_department_info d ON d.parent_code = e.department_code AND d.child_code = e.sub_department_code
+		LEFT JOIN t_position_info p ON p.position_code = e.position_code
 		WHERE e.is_deleted = 'N'
 		<if test="name != null and name != ''">
 			AND name LIKE CONCAT('%', #{name}, '%')

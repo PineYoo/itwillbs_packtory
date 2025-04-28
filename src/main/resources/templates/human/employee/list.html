@@ -108,7 +108,7 @@
 													<div class="col-sm-9">
 														<select name="positionCode" class="form-select">
 															<option value="">직급 선택</option>
-															<option th:each="position : ${validPositions}" th:value="${position.idx}" th:text="${position.positionCode}" th:selected="${searchDTO != null and searchDTO.positionCode == position.idx}"></option>
+															<option th:each="position : ${validPositions}" th:value="${position.positionCode}" th:text="${position.positionName}" th:selected="${searchDTO != null and searchDTO.positionCode == position.idx}"></option>
 														</select>
 													</div>
 												</div>
