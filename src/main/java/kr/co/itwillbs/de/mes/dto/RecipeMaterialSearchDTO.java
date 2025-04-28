@@ -18,6 +18,8 @@ public class RecipeMaterialSearchDTO {
 	// TODO 25.04.21 레시피 테이블 완성 후 JOIN 걸어서 가져올 이름
 	private String recipeMasterName;
 	
+	private String processIdx;
+	
 	private String type;		// 타입
 	private String name;		// 이름
 	private String unit;		// 단위

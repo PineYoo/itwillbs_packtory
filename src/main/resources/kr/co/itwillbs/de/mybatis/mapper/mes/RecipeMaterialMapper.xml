@@ -112,7 +112,7 @@
 			count(*)
 		FROM t_recipe_material
 		<where>
-<!-- 			<if test='processIdx !=null and !("".equals(type.trim()))'>AND process_idx = #{processIdx}</if> -->
+			<if test='processIdx !=null and !("".equals(processIdx.trim()))'>AND process_idx = #{processIdx}</if>
 			<if test='name !=null and !("".equals(name.trim()))'>AND name LIKE CONCAT('%',#{name},'%')</if>
 			<if test='unit !=null and !("".equals(unit.trim()))'>AND unit LIKE CONCAT('%',#{unit},'%')</if>
 			<if test='mixSeq !=null and !("".equals(mixSeq.trim()))'>AND mix_seq LIKE CONCAT('%',#{mixSeq},'%')</if>
@@ -126,7 +126,7 @@
 			<include refid="t_recipe_columns_forSelect"></include> 
 		FROM t_recipe_material
 		<where>
-<!-- 			<if test='processIdx !=null and !("".equals(type.trim()))'>AND process_idx = #{processIdx}</if> -->
+			<if test='processIdx !=null and !("".equals(processIdx.trim()))'>AND process_idx = #{processIdx}</if>
 			<if test='name !=null and !("".equals(name.trim()))'>AND name LIKE CONCAT('%',#{name},'%')</if>
 			<if test='unit !=null and !("".equals(unit.trim()))'>AND unit LIKE CONCAT('%',#{unit},'%')</if>
 			<if test='mixSeq !=null and !("".equals(mixSeq.trim()))'>AND mix_seq LIKE CONCAT('%',#{mixSeq},'%')</if>

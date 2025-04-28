@@ -15,7 +15,7 @@ import lombok.ToString;
 @RequiredSessionIds(fields = {"regId", "modId"})
 public class RecipeProcessDTO {
 
-	private String idx;
+	private Long idx;
 	private String masterIdx;
 	@NotBlank(message = "이름은 필수 입력 값입니다.")
 	private String name;

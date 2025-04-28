@@ -48,7 +48,9 @@
 				<div class="card-body">
 					<div class="table-responsive">
 						<form th:action="@{/mes/recipe/process}" method="post" th:object="${recipeProcessDTO}" class="form row g-3" id="registerForm">
+							<!-- hidden -->
 							<input type="hidden" th:field="*{idx}" />
+							<input type="hidden" id="masterIdx" th:field="*{masterIdx}">
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('name','공정 이름',true,false,false)}"></div>
 							</div>
@@ -80,7 +82,8 @@
 		<script type="text/javascript">
 			$(function() {
 				$('#btnList').on("click", function() {
-					location.href="/mes/recipe/process";
+			        var masterIdx = $('#masterIdx').val();
+					location.href="/mes/recipe/process?master_idx=" + masterIdx;
 				});
 				
 				// 레시피 등록

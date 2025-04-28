@@ -107,6 +107,7 @@
 									<th>유효기간 종료일</th>
 									<th>작성자</th>
 									<th>작성일자</th>
+									<th>공정 등록</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -119,6 +120,19 @@
 									<td th:text="${item.validTo}"></td>
 									<td th:text="${item.regId}"></td>
 									<td th:text="${item.regDate}"></td>
+									<td>
+									    <button type="button" class="btn btn-primary"
+										        th:onclick="|event.stopPropagation(); location.href='/mes/recipe/process?master_idx=${item.idx}';|"><!-- event.stopPropagation(); 클릭 시 이벤트 전파 막기 -->
+									        공정 등록
+									    </button>
+									    <!-- post방식 추후 생각..(RecipeProcessDTO -> valid 가 걸림) -->
+<!-- 									    <form th:action="@{/mes/recipe/process}" method="post" style="display: inline;"> -->
+<!-- 										    <input type="hidden" name="idx" th:value="${item.idx}" /> -->
+<!-- 										    <button type="submit" class="btn btn-primary" onclick="event.stopPropagation();"> -->
+<!-- 										        공정 등록 -->
+<!-- 										    </button> -->
+<!-- 										</form> -->
+									</td>
 								</tr>
 							</tbody>
 						</table>
@@ -135,11 +149,17 @@
 						searching : false,
 						paging : false,
 						info : false,
+						responsive: true,
 						language: {
 							emptyTable: "조회 된 데이터가 없습니다."
 						},
-						order: [0, "asc"],
-						responsive: true
+						order: [3, "asc"],
+						columnDefs: [
+					        {
+					            targets: [6, 7, 8], // 정렬 막을 컬럼 인덱스
+					            orderable: false
+					        }
+					    ]
 					}); // end of $('#dataTables').DataTable({
 					
 				}); // end of $(document).ready(function() {
