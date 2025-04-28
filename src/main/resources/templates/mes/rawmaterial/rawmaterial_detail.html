@@ -22,22 +22,32 @@ input, select {
 			<h1 class="h3 mb-4 text-gray-800">원자재 상세</h1>
 
 			<!-- 마스터 자재 -->
-			<div class="card mb-4">
+			<div class="card shadow mb-4">
 				<div class="card-header py-3 d-flex justify-content-between align-items-center">
 					<h6 class="m-0 font-weight-bold text-primary" style="flex-grow: 1;">마스터 자재 등록</h6>
 				</div>
 				<div class="card-body">
-					<form id="registerForm" th:object="${rawMaterialDTO}" class="form row g-3">
-						<input type="hidden" th:field="*{idx}" id="idx" /> <input type="hidden" th:field="*{parentsIdx}" id="parentsIdx" />
-						<div class="col-md-6" th:replace="~{common/fragments/de_form :: selectCodeItems('type','타입',true,${materialType},false,false)}"></div>
-						<div class="col-md-6" th:replace="~{common/fragments/de_form :: inputText('name','자재명',true,false,false)}"></div>
-						<div class="col-md-6" th:replace="~{common/fragments/de_form :: inputText('storageCondition','보관조건',true,false,false)}"></div>
-						<div class="col-md-6" th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,false,false)}"></div>
-						<div class="col-12 text-center">
-							<button type="button" id="btnMasterUpdate" class="btn btn-primary">수정</button>
-							<button type="button" id="btnList" class="btn btn-secondary">목록</button>
-						</div>
-					</form>
+					<div class="table-responsive">
+						<form id="registerForm" th:object="${rawMaterialDTO}" class="form row g-3">
+							<input type="hidden" th:field="*{idx}" id="idx" /> <input type="hidden" th:field="*{parentsIdx}" id="parentsIdx" />
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('type','타입',true,${materialType},false,false)}"></div>
+							</div>
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('name','자재명',true,false,false)}"></div>
+							</div>
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: inputText('storageCondition','보관조건',true,false,false)}"></div>
+							</div>
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,false,false)}"></div>
+							</div>
+							<div class="col-12 text-center">
+								<button type="button" id="btnMasterUpdate" class="btn btn-primary">수정</button>
+								<button type="button" id="btnList" class="btn btn-secondary">목록</button>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
 
@@ -53,39 +63,41 @@ input, select {
 					</div>
 				</div>
 				<div class="card-body">
-					<table id="dataTables" class="table table-bordered text-center">
-						<thead>
-							<tr>
-								<th><input type="checkbox" id="selectAll" /></th>
-								<th>이름</th>
-								<th>거래처</th>
-								<th>단위</th>
-								<th>수량</th>
-								<th>가격</th>
-								<th>소요기간</th>
-								<th>평균사용기한</th>
-								<th>삭제유무</th>
-							</tr>
-						</thead>
-						<tbody id="subBody">
-							<tr th:each="it : ${subMaterialList}" class="childRow">
-								<td><input type="checkbox" class="rowSelect" /></td>
-								<td><input type="hidden" name="idx" th:value="${it.idx}" /> <input name="name" class="form-control" th:value="${it.name}" /></td>
-								<td>
-									<!-- hidden clientIdx remains for DTO binding --> <input type="hidden" name="clientIdx" th:value="${it.clientIdx}" /> <!-- display companyName instead of numeric id --> <input name="companyName" class="form-control companyName" th:value="${it.clientCompanyName}" readonly onclick="openClientSearch(this)" />
-								</td>
-								<td><input name="unit" class="form-control" th:value="${it.unit}" /></td>
-								<td><input name="quantity" type="number" class="form-control" th:value="${it.quantity}" /></td>
-								<td><input name="price" type="number" class="form-control" th:value="${it.price}" /></td>
-								<td><input name="leadTime" class="form-control" th:value="${it.leadTime}" /></td>
-								<td><input name="expirationDate" class="form-control" th:value="${it.expirationDate}" /></td>
-								<td><select name="isDeleted" class="form-select">
-										<option value="N" th:selected="${it.isDeleted=='N'}">사용중</option>
-										<option value="Y" th:selected="${it.isDeleted=='Y'}">삭제</option>
-								</select></td>
-							</tr>
-						</tbody>
-					</table>
+					<div class="table-responsive">
+						<table id="dataTables" class="table table-bordered text-center">
+							<thead>
+								<tr>
+									<th><input type="checkbox" id="selectAll" /></th>
+									<th>이름</th>
+									<th>거래처</th>
+									<th>단위</th>
+									<th>수량</th>
+									<th>가격</th>
+									<th>소요기간</th>
+									<th>평균사용기한</th>
+									<th>삭제유무</th>
+								</tr>
+							</thead>
+							<tbody id="subBody">
+								<tr th:each="it : ${subMaterialList}" class="childRow">
+									<td><input type="checkbox" class="rowSelect" /></td>
+									<td><input type="hidden" name="idx" th:value="${it.idx}" /> <input name="name" class="form-control" th:value="${it.name}" /></td>
+									<td>
+										<!-- hidden clientIdx remains for DTO binding --> <input type="hidden" name="clientIdx" th:value="${it.clientIdx}" /> <!-- display companyName instead of numeric id --> <input name="companyName" class="form-control companyName" th:value="${it.clientCompanyName}" readonly onclick="openClientSearch(this)" />
+									</td>
+									<td><input name="unit" class="form-control" th:value="${it.unit}" /></td>
+									<td><input name="quantity" type="number" class="form-control" th:value="${it.quantity}" /></td>
+									<td><input name="price" type="number" class="form-control" th:value="${it.price}" /></td>
+									<td><input name="leadTime" class="form-control" th:value="${it.leadTime}" /></td>
+									<td><input name="expirationDate" class="form-control" th:value="${it.expirationDate}" /></td>
+									<td><select name="isDeleted" class="form-select">
+											<option value="N" th:selected="${it.isDeleted=='N'}">사용중</option>
+											<option value="Y" th:selected="${it.isDeleted=='Y'}">삭제</option>
+									</select></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
