@@ -205,12 +205,12 @@
 			SELECT
 				*,
 				COUNT(*) OVER () AS total_count,
-				ROW_NUMBER() OVER (ORDER BY idx) AS row_asc
+				ROW_NUMBER() OVER (ORDER BY idx DESC) AS row_asc
 			FROM pattern
 		)
 		SELECT
-			(total_count - row_asc + 1) AS rownum,
-			*
+			*,
+			(total_count - row_asc + 1) AS row_num
 		FROM numberedPattern
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</sql>
@@ -229,8 +229,8 @@
 			FROM pattern
 		)
 		SELECT
-			(total_count - row_asc + 1) AS rownum,
-			*
+			*,
+			(total_count - row_asc + 1) AS rownum
 		FROM numberedPattern
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</sql>

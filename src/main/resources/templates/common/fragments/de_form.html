@@ -42,6 +42,32 @@
 					 disabled=${isDisabled ? 'disabled' : null}"></textarea>
 		<div th:id="|${fieldName}Error|" class="text-danger"></div>
 	</th:block>
+
+	<th:block th:fragment="inputDate(fieldName, labelText, isRequired, isReadonly, isDisabled)">
+		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
+		<input type="date"
+			class=""
+			th:field="*{__${fieldName}__}"
+			th:placeholder="${labelText}"
+			th:attr="data-required=${isRequired},
+					 data-name=${labelText},
+					 readonly=${isReadonly ? 'readonly' : null},
+					 disabled=${isDisabled ? 'disabled' : null}" />
+		<div th:id="|${fieldName}Error|" class="text-danger"></div>
+	</th:block>
+	
+	<th:block th:fragment="inputDateTime(fieldName, labelText, isRequired, isReadonly, isDisabled)">
+		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
+		<input type="datetime-local"
+			class=""
+			th:field="*{__${fieldName}__}"
+			th:placeholder="${labelText}"
+			th:attr="data-required=${isRequired},
+					 data-name=${labelText},
+					 readonly=${isReadonly ? 'readonly' : null},
+					 disabled=${isDisabled ? 'disabled' : null}" />
+		<div th:id="|${fieldName}Error|" class="text-danger"></div>
+	</th:block>
 	
 	<th:block th:fragment="isDeleted(fieldName, labelText, isRequired, isReadonly, isDisabled)">
 		<label class="mb-1" th:for="${fieldName}" th:text="${labelText}"></label>
