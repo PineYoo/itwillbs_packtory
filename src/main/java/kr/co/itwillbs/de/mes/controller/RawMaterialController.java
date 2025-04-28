@@ -116,9 +116,10 @@ public class RawMaterialController {
 
 	// 마스터 자재 수정
 	@PutMapping("/master/update")
-	public ResponseEntity<Map<String, Object>> updateRawMaterial(@RequestBody RawMaterialDTO rawMaterialDTO) {
+	public ResponseEntity<Map<String, Object>> updateRawMaterial(@RequestBody RawMaterialDTO rawMaterialDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
+		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {

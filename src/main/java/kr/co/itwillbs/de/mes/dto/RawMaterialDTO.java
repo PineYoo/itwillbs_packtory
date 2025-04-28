@@ -1,5 +1,6 @@
 package kr.co.itwillbs.de.mes.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
@@ -35,7 +36,7 @@ public class RawMaterialDTO {
 	@NotBlank(message = "이름은 필수 입력 값입니다.")
 	private String name; // 이름
 
-	private Integer quantity; // 개수
+	private BigDecimal quantity; // 개수
 
 	private String unit; // 단위
 	private String unitName; // 단위명

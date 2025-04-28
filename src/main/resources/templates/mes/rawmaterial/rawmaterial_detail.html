@@ -83,19 +83,41 @@ input, select {
 									<td><input type="checkbox" class="rowSelect" /></td>
 									<td><input type="hidden" name="idx" th:value="${it.idx}" /> <input name="name" class="form-control" th:value="${it.name}" /></td>
 									<td>
-										<!-- hidden clientIdx remains for DTO binding --> <input type="hidden" name="clientIdx" th:value="${it.clientIdx}" /> <!-- display companyName instead of numeric id --> <input name="companyName" class="form-control companyName" th:value="${it.clientCompanyName}" readonly onclick="openClientSearch(this)" />
+										<!-- hidden clientIdx remains for DTO binding --> <input type="hidden" name="clientIdx" th:value="${it.clientIdx}" /> <!-- display companyName instead of numeric id --> <input name="companyName" class="form-control companyName" th:value="${it.clientCompanyName}" readonly onclick="openClientSearch(this)" placeholder="거래처" />
 									</td>
-									<td><input name="unit" class="form-control" th:value="${it.unit}" /></td>
-									<td><input name="quantity" type="number" class="form-control" th:value="${it.quantity}" /></td>
-									<td><input name="price" type="number" class="form-control" th:value="${it.price}" /></td>
-									<td><input name="leadTime" class="form-control" th:value="${it.leadTime}" /></td>
-									<td><input name="expirationDate" class="form-control" th:value="${it.expirationDate}" /></td>
+									<td><select name="unit" class="form-select">
+											<option value="">선택</option>
+											<option th:each="unit : ${itemUnit}" th:value="${unit.minorCode}" th:text="${unit.minorName}" th:selected="${unit.minorCode == it.unit}"></option>
+									</select></td>
+									<td><input name="quantity" type="number" class="form-control" th:value="${it.quantity}" placeholder="개수" /></td>
+									<td><input name="price" type="number" class="form-control" th:value="${it.price}" placeholder="가격" /></td>
+									<td><input name="leadTime" class="form-control" th:value="${it.leadTime}" placeholder="소요기간" /></td>
+									<td><input name="expirationDate" class="form-control" th:value="${it.expirationDate}" placeholder="평균사용기한" /></td>
 									<td><select name="isDeleted" class="form-select">
 											<option value="N" th:selected="${it.isDeleted=='N'}">사용중</option>
 											<option value="Y" th:selected="${it.isDeleted=='Y'}">삭제</option>
 									</select></td>
 								</tr>
 							</tbody>
+							<template id="childRowTemplate">
+								<tr class="childRow">
+									<td><input type="checkbox" class="rowSelect" /></td>
+									<td><input name="idx" type="hidden" /> <input name="name" class="form-control" placeholder="이름" /></td>
+									<td><input name="clientIdx" type="hidden" /> <input name="companyName" class="form-control companyName" readonly onclick="openClientSearch(this)" placeholder="거래처" /></td>
+									<td><select name="unit" class="form-select">
+											<option value="">선택</option>
+											<option th:each="unit : ${itemUnit}" th:value="${unit.minorCode}" th:text="${unit.minorName}"></option>
+									</select></td>
+									<td><input name="quantity" type="number" class="form-control" placeholder="개수" /></td>
+									<td><input name="price" type="number" class="form-control" placeholder="가격" /></td>
+									<td><input name="leadTime" class="form-control" placeholder="소요기간" /></td>
+									<td><input name="expirationDate" class="form-control" placeholder="평균사용기한" /></td>
+									<td><select name="isDeleted" class="form-select">
+											<option value="N">사용중</option>
+											<option value="Y">삭제</option>
+									</select></td>
+								</tr>
+							</template>
 						</table>
 					</div>
 				</div>
@@ -121,22 +143,12 @@ input, select {
 		  });
 		
 		  // 행 추가
-		  $('#addChildRow').click(()=>{
-		    $('#subBody').append(`
-		      <tr class="childRow">
-		        <td><input type="checkbox" class="rowSelect"/></td>
-		        <td><input name="idx" type="hidden"/><input name="name" class="form-control"/></td>
-		        <td><input name="clientIdx" type="hidden"/><input name="companyName" class="form-control companyName" readonly onclick="openClientSearch(this)"/></td>
-		        <td><input name="unit" class="form-control"/></td>
-		        <td><input name="quantity" type="number" class="form-control"/></td>
-		        <td><input name="price" type="number" class="form-control"/></td>
-		        <td><input name="leadTime" class="form-control"/></td>
-		        <td><input name="expirationDate" class="form-control"/></td>
-		        <td><select name="isDeleted" class="form-select"><option value="N">사용중</option><option value="Y">삭제</option></select></td>
-		      </tr>
-		    `);
+		  $('#addChildRow').click(() => {
+			  const template = document.getElementById('childRowTemplate');
+			  const clone = template.content.cloneNode(true);  // 템플릿 내용을 복사
+			  $('#subBody').append(clone);                      // 복사본을 tbody에 붙인다
 		  });
-		
+				
 		  // DTO 빌드
 		  function buildDTOs(filter){ return Array.from($('#subBody tr')).map(tr=>{
 		    const dto={}; ['idx','parentsIdx','type','name','clientIdx','unit','quantity','price','leadTime','expirationDate','isDeleted'].forEach(n=>{
