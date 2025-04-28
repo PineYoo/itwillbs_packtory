@@ -138,13 +138,17 @@ public class RawMaterialController {
 	// 부속 자재 등록 (AJAX)
 	@PostMapping("/sub/new")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> insertSubMaterial(@RequestBody RawMaterialDTO rawMaterialDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		// 리턴 객체 생성
+	public ResponseEntity<Map<String, Object>> insertSubMaterial(
+	        @RequestBody List<RawMaterialDTO> rawMaterialDTOs) {
+
 	    Map<String, Object> response = new HashMap<>();
 	    try {
-	        rawMaterialService.insertSubMaterial(rawMaterialDTO);
+	        for(RawMaterialDTO dto : rawMaterialDTOs) {
+	            if(dto.getIdx() != null) {
+	                dto.setParentsIdx(String.valueOf(dto.getIdx()));
+	            }
+	            rawMaterialService.insertSubMaterial(dto);
+	        }
 	        response.put("status", "success");
 	        response.put("message", "등록되었습니다.");
 	    } catch (Exception e) {
