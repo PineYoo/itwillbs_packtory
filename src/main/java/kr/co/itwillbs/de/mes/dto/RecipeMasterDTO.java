@@ -20,6 +20,9 @@ public class RecipeMasterDTO {
 	@NotBlank(message = "상품코드는 필수 입력 값입니다.")
 	private String productIdx;		// 상품_idx
 	
+	@NotBlank(message = "BOM코드는 필수 입력 값입니다.")
+	private String bomIdx;		// bom_idx
+	
 	@NotBlank(message = "이름은 필수 입력 값입니다.")
 	private String name;			// 이름
 	
@@ -45,7 +48,7 @@ public class RecipeMasterDTO {
 	private String modId;			// 최종작성자
 	private String modDate;			// 최종작성일시
 	
-	//	TODO product_idx로 테이블을 걸었을 때 가져올 상품 이름
+	//product_idx로 테이블을 걸었을 때 가져올 상품 이름
 	private String productName;
 	
 	

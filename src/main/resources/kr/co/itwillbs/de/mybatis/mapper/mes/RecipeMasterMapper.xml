@@ -37,6 +37,7 @@
 	<sql id="t_recipe_columns_forSelect">
 		r.idx
 		, r.product_idx
+		, r.bom_idx
 		, r.name
 		, r.version
 		, r.batch_size
@@ -57,6 +58,9 @@
 			<trim suffixOverrides=",">
 			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
 			product_idx,
+			</if>
+			<if test='bomIdx !=null and !("".equals(bomIdx.trim()))'>
+			bom_idx,
 			</if>
 			<if test='name !=null and !("".equals(name.trim()))'>
 			name,
@@ -87,6 +91,9 @@
 			<trim suffixOverrides=",">
 			<if test='productIdx !=null and !("".equals(productIdx.trim()))'>
 			#{productIdx},
+			</if>
+			<if test='bomIdx !=null and !("".equals(bomIdx.trim()))'>
+			#{bomIdx},
 			</if>
 			<if test='name !=null and !("".equals(name.trim()))'>
 			#{name},
@@ -166,6 +173,7 @@
 		UPDATE t_recipe_master
 			<set>
 				<if test='productIdx !=null and !("".equals(productIdx.trim()))'>product_idx = #{productIdx},</if>
+				<if test='bomIdx !=null and !("".equals(bomIdx.trim()))'>bom_idx = #{bomIdx},</if>
 				<if test='name !=null and !("".equals(name.trim()))'>name = #{name},</if>
 				<if test='version !=null and !("".equals(version.trim()))'>version = #{version},</if>
 				<if test='batchSize !=null and !("".equals(batchSize.trim()))'>batch_size = #{batchSize},</if>
@@ -178,14 +186,6 @@
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 			</set>
 		WHERE idx = #{idx}
-	</update>
-	
-	<update id="removeSample" parameterType="kr.co.itwillbs.de.sample.dto.SampleSearchDTO">
-		update t_demo
-			<set>
-				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-			</set>
-		where idx = #{idx}
 	</update>
 	
 </mapper>

@@ -22,12 +22,14 @@ public class QcLogDTO {
 	
 	@NotBlank(message = "측정결과는 필수 입력 값입니다.")
 	private String qcResult; // 측정결과
+	private String qcResultName;
 	
 	@NotBlank(message = "측정값은 필수 입력 값입니다.")
 	private String value; // 측정값
 	
 	@NotBlank(message = "단위는 필수 입력 값입니다.")
 	private String unit; // 단위
+	private String unitName;
 	
 	private String memo; // 메모
 
@@ -37,23 +39,4 @@ public class QcLogDTO {
 	private String regDate; // 작성일자시간
 	private String modId; // 최종작성자
 	private String modDate; // 최종작성일자
-	
-	public String getUnitName() {
-        return switch (unit) {
-            case "1" -> "EA";
-            case "2" -> "g";
-            case "3" -> "kg";
-            case "4" -> "oz";
-            case "5" -> "mm";
-            case "6" -> "cm";
-		default -> "";
-		};
-	}
-	public String getResultName() {
-        return switch (unit) {
-            case "1" -> "적합";
-            case "2" -> "부적합";
-		default -> "";
-		};
-	}
 }
