@@ -372,7 +372,7 @@
 				<if test='masterMemo !=null and !("".equals(masterMemo.trim()))'>memo = #{masterMemo},</if>
 				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+				<if test='modDate !=null and !("".equals(modDate.trim()))'>mod_date = now(),</if>
 			</set>
 		WHERE idx = #{idx}
 	</update>
@@ -397,9 +397,34 @@
 				<if test='itemsMemo !=null and !("".equals(itemsMemo.trim()))'>memo = #{itemsMemo},</if>
 				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+				<if test='modDate !=null and !("".equals(modDate.trim()))'>mod_date = now(),</if>
 			</set>
-		WHERE document_number = #{documentNumber}
+		WHERE idx = #{idx}
+		<!--
+		문서번호를 DOC001을 DOC002로 바꾼다고 했을때
+		밑에 처럼 DOC002 기준으로 WHERE 절에 걸리게 됨
+		(DOC001을 찾아야하는데..)
+		UPDATE t_work_orders_items
+		   SET document_number = 'DOC002'
+		 WHERE document_number = 'DOC002';
+		
+		solution1)
+		UPDATE t_work_orders_items
+		   SET document_number = #{newDocumentNumber}
+		 WHERE document_number = #{oldDocumentNumber};
+		
+		solution2)
+		UPDATE t_work_orders_items
+		   SET document_number = #{documentNumber}
+		 WHERE idx = #{idx};
+		
+		=> 동시에 같은 파라미터로 SET과 WHERE를 걸면 문제 발생할 수 있음
+		-->
+		<!-- 
+		DTO에 전부 String 으로 선언해서 if절 안에 trim()을 걸 수 있는것 같음
+		DateTime 이나 int로 받으면 trim() 제거해야함
+		modDate는 if 필요없지 않으려나..? 무조건 NOW() 해도 될것 같은데
+		 -->
 	</update>
 	
 </mapper>
