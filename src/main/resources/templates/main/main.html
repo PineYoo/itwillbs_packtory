@@ -455,6 +455,11 @@
 			            comeBackBtn.prop("disabled", false);	// 복귀 O
 			        }
 			     	
+			     	// 휴가
+			        if (statusName === '휴가') {
+			            checkInBtn.show().prop("disabled", true);	// 출근버튼은 보이나 disabled
+			        }
+			     	
 		            // 퇴근 후: 퇴근버튼 외 아무 버튼도 안 보이게
 			        if (modelCheckOutTime) {
 			            checkInBtn.hide();
