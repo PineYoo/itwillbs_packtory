@@ -1,7 +1,5 @@
 package kr.co.itwillbs.de.groupware.dto;
 
-import java.time.LocalDateTime;
-
 import kr.co.itwillbs.de.common.vo.PageDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +14,8 @@ public class ScheduleSearchDTO {
 
 	private String title;
 	private String content;
-	private LocalDateTime startDatetime;
-	private LocalDateTime endDatetime;
+	private String startDate;
+	private String endDate;
 	private String departmentCode;
 	private String subDepartmentCode;
 	private String isDeleted;

@@ -1,7 +1,5 @@
 package kr.co.itwillbs.de.groupware.dto;
 
-import java.time.LocalDateTime;
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,9 +19,9 @@ public class ScheduleDTO {
 	@NotBlank(message = "내용은 필수 입력 값입니다.")
 	private String content;
 	@NotBlank(message = "시작일시는 필수 입력 값입니다.")
-	private LocalDateTime startDatetime;
+	private String startDatetime;
 	@NotBlank(message = "종료일시는 필수 입력 값입니다.")
-	private LocalDateTime endDatetime;
+	private String endDatetime;
 	
 	private boolean allDay;
 	private String backgroundColor;
@@ -36,4 +34,9 @@ public class ScheduleDTO {
 	private String regDate;
 	private String modId;
 	private String modDate;
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 }

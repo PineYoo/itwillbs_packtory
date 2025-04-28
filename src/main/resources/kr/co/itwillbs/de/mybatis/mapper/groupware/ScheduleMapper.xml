@@ -38,8 +38,8 @@
 		idx,
 		title,
 		content,
-		start_datetime,
-		end_datetime,
+		DATE_FORMAT(start_datetime, '%Y-%m-%d %H:%i:%s') AS start_datetime,
+		DATE_FORMAT(end_datetime, '%Y-%m-%d %H:%i:%s') AS end_datetime,
 		all_day,
 		background_color,
 		border_color,
@@ -134,18 +134,18 @@
 			<if test='subDepartmentCode !=null and !("".equals(subDepartmentCode.trim()))'>AND sub_department_code = #{subDepartmentCode}</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
 			<choose>
-				<when test="startDatetime != null and startDatetime.trim() != '')
-							and (accessEndDate != null and accessEndDate.trim() != '')">
-					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDatetime}, '000000'),'%Y-%m-%d%H%i%S')
-					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDatetime}, '235959'),'%Y-%m-%d%H%i%S')
+				<when test="(startDate != null and startDate.trim() != '')
+							and (endDate != null and endDate.trim() != '')">
+					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S') 
+					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
-				<when test="startDatetime != null and startDatetime.trim() != '')
-							and (accessEndDate == null or accessEndDate.trim() == '')">
-					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDatetime}, '000000'),'%Y-%m-%d%H%i%S')
+				<when test="(startDate != null and startDate.trim() != '')
+							and (endDate == null or endDate.trim() == '')">
+					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S')
 				</when>
-				<when test="startDatetime == null or startDatetime.trim() == '')
-							and (accessEndDate != null and accessEndDate.trim() != '')">
-					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDatetime}, '235959'),'%Y-%m-%d%H%i%S')
+				<when test="(startDate == null or startDate.trim() == '')
+							and (endDate != null and endDate.trim() != '')">
+					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 		</where>
@@ -164,18 +164,18 @@
 			<if test='subDepartmentCode !=null and !("".equals(subDepartmentCode.trim()))'>AND sub_department_code = #{subDepartmentCode}</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
 			<choose>
-				<when test="startDatetime != null and startDatetime.trim() != '')
-							and (accessEndDate != null and accessEndDate.trim() != '')">
-					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDatetime}, '000000'),'%Y-%m-%d%H%i%S')
-					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDatetime}, '235959'),'%Y-%m-%d%H%i%S')
+				<when test="(startDate != null and startDate.trim() != '')
+							and (endDate != null and endDate.trim() != '')">
+					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S') 
+					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
-				<when test="startDatetime != null and startDatetime.trim() != '')
-							and (accessEndDate == null or accessEndDate.trim() == '')">
-					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDatetime}, '000000'),'%Y-%m-%d%H%i%S')
+				<when test="(startDate != null and startDate.trim() != '')
+							and (endDate == null or endDate.trim() == '')">
+					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S')
 				</when>
-				<when test="startDatetime == null or startDatetime.trim() == '')
-							and (accessEndDate != null and accessEndDate.trim() != '')">
-					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDatetime}, '235959'),'%Y-%m-%d%H%i%S')
+				<when test="(startDate == null or startDate.trim() == '')
+							and (endDate != null and endDate.trim() != '')">
+					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 		</where>
@@ -223,4 +223,31 @@
 		where idx = #{idx}
 	</update>
 	
+	<select id="getApiSchedule" parameterType="kr.co.itwillbs.de.groupware.dto.ScheduleSearchDTO"
+								resultType="kr.co.itwillbs.de.groupware.dto.ScheduleRecord">
+		SELECT 
+			idx,
+			title,
+			content,
+			start_datetime as start,
+			end_datetime as end,
+			all_day,
+			background_color,
+			border_color,
+			text_color,
+			department_code,
+			sub_department_code,
+			is_deleted,
+			reg_id,
+			reg_date,
+			mod_id,
+			mod_date
+		FROM t_schedules
+		<where>
+			is_deleted = 'N'
+			AND department_code is null
+			<if test='departmentCode !=null and !("".equals(departmentCode.trim()))'>OR department_code = #{departmentCode}</if>
+			<if test='subDepartmentCode !=null and !("".equals(subDepartmentCode.trim()))'>OR sub_department_code = #{subDepartmentCode}</if>
+		</where>
+	</select>
 </mapper>

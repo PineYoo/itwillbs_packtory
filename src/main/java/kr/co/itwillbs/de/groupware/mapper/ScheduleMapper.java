@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import kr.co.itwillbs.de.groupware.dto.ScheduleDTO;
+import kr.co.itwillbs.de.groupware.dto.ScheduleRecord;
 import kr.co.itwillbs.de.groupware.dto.ScheduleSearchDTO;
 
 @Mapper
@@ -52,4 +53,11 @@ public interface ScheduleMapper {
 	 * @return affectedRow
 	 */
 	int removeSchedule(ScheduleDTO dto);
+	
+	/**
+	 * 메인 화면에서 사용하는 FullCalendar에 가져갈 JSON List형 조회
+	 * @param searchDTO department_code, sub_department_code 를 보내서 관련된 부서 것만 가져올 수 있다.
+	 * @return
+	 */
+	List<ScheduleRecord> getApiSchedule(ScheduleSearchDTO searchDTO);
 }

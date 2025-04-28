@@ -22,7 +22,9 @@ import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
+import kr.co.itwillbs.de.common.vo.LoginVO;
 import kr.co.itwillbs.de.groupware.dto.ScheduleDTO;
+import kr.co.itwillbs.de.groupware.dto.ScheduleRecord;
 import kr.co.itwillbs.de.groupware.dto.ScheduleSearchDTO;
 import kr.co.itwillbs.de.groupware.service.ScheduleService;
 import lombok.extern.slf4j.Slf4j;
@@ -150,7 +152,7 @@ public class ScheduleController {
 		}
 		
 		model.addAttribute("typeList", this.getCodeItems(COMMON_MAJOR_DEPARTMENT_CODE));
-		model.addAttribute("bomDTO", scheduleService.getScheduleByIdx(idx));
+		model.addAttribute("scheduleDTO", scheduleService.getScheduleByIdx(idx));
 		
 		return VIEW_PATH+"/schedule_detail";
 	}
@@ -190,5 +192,25 @@ public class ScheduleController {
 	private List<CodeItemDTO> getCodeItems(String str) {
 		LogUtil.logStart(log);
 		return commonCodeUtil.getCodeItems(str);
+	}
+	
+	/**
+	 * 메인 화면에서 보여지는 일정 데이터 조회용
+	 * <br>FullCalendar 에 데이터 JSON으로 전송함
+	 * <br>(반복기능 HREF : https://fullcalendar.io/docs/rrule-plugin ) 여유가 있을 때 이런것도 해보면 좋겠다.
+	 * @param searchDTO
+	 * @return
+	 */
+	@GetMapping("/api/getSchedules")
+	@ResponseBody
+	public List<ScheduleRecord> getScheduleForApi(ScheduleSearchDTO searchDTO) {
+		LogUtil.logStart(log);
+		LoginVO loginVO = commonCodeUtil.getAuthUser();
+		if(loginVO != null) {
+			LogUtil.logDetail(log,"loginVO : {}", loginVO);
+			searchDTO.setDepartmentCode(loginVO.getDepartmentCode());
+		}
+		
+		return scheduleService.getApiSchedule(searchDTO);
 	}
 }

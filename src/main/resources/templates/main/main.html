@@ -309,65 +309,7 @@
 						center : 'title',
 						right : 'dayGridMonth,timeGridWeek'
 					},
-					events : [
-					// 나중에 서버에서 JSON 받아서 동적으로 처리 가능
-					{
-						title : '프로젝트 1차 마무리중..',
-						start : '2025-04-07',
-						end : '2025-04-11'
-					},
-					{
-						title : '✔️ 1차 발표일',
-						start : '2025-04-10',
-					    backgroundColor: '#FF4C4C',	// 배경색
-					    borderColor: '#FF4C4C'      // 테두리색
-					},
-					{
-						title : '창립기념일 10주년',
-						start : '2025-04-15',
-					    backgroundColor: '#FFA500',	// 배경색
-					    borderColor: '#FFA500'      // 테두리색
-					},
-					{
-						title : 'MES 시작 ㅎ',
-						start : '2025-04-11',
-// 					    textColor: '#000000',       // 글자색
-					    backgroundColor: '#B39DDB',	// 배경색
-					    borderColor: '#B39DDB'     	// 테두리색
-					},
-					{
-						title : 'A거래처 미팅',
-						start : '2025-04-18T14:30:00',
-						end : '2025-04-18T16:00:00',
-					    backgroundColor: '#B39DDB',	// 배경색
-					    borderColor: '#B39DDB'     	// 테두리색
-					},
-					{
-						title : '✈️ 휴가.. 가고싶다',
-						start : '2025-04-30',
-						end : '2025-05-03',
-					    backgroundColor: '#2ECC71',	// 배경색
-					    borderColor: '#2ECC71'     	// 테두리색
-					},
-					{
-						title : '🙊 어른이날',
-						start : '2025-05-05',
-					    backgroundColor: '#FFA500',	// 배경색
-					    borderColor: '#FFA500'     	// 테두리색
-					},
-					{
-						title : '대체공휴일 ~~',
-						start : '2025-05-06',
-					    backgroundColor: '#FFA500',	// 배경색
-					    borderColor: '#FFA500'     	// 테두리색
-					},
-					{
-						title : '✔️ 2차 발표일',
-						start : '2025-05-07',
-					    backgroundColor: '#FF4C4C',	// 배경색
-					    borderColor: '#FF4C4C'      // 테두리색
-					} 
-					]
+					events: '/groupware/schedule/api/getSchedules' // 여기서 서버 호출
 				});
 				calendar.render();
 				
