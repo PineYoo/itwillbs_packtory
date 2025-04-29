@@ -124,7 +124,7 @@ input, select {
 			</div>
 		</div>
 
-		<script>
+		<script type="text/javascript">
 		let selectedCompanyInput;
 		function openClientSearch(input){ selectedCompanyInput = input; window.open('/client/search-popup','pop','width=800,height=600'); }
 		function setClientInfo(data){ const $tr=$(selectedCompanyInput).closest('tr'); $tr.find('input[name="companyName"]').val(data.companyName); $tr.find('input[name="clientIdx"]').val(data.idx); }
@@ -132,9 +132,26 @@ input, select {
 		$(function(){
 		  const masterIdx=$('#idx').val(), masterType=$('select[name="type"]').val();
 		  $('#parentsIdx').val(masterIdx);
-		  $('#dataTables').DataTable({lengthChange:false,searching:false,paging:false,info:false});
+		  $('#dataTables').DataTable({
+		      lengthChange : false,
+		      searching : false,
+		      paging : false,
+		      info : false,
+		      responsive : true,
+		      language : {
+		          emptyTable : "조회 된 데이터가 없습니다."
+		      },
+		      order : [1, "asc"],
+		      columnDefs : [
+		          {
+		              targets : [0 , 3, 8], // 정렬 막을 컬럼 인덱스
+		              orderable: false
+	              }
+	          ]
+	      });// end of $('#dataTables').DataTable({
+	          
 		  $('#btnList').click(()=>location.href='/mes/rawmaterial');
-		
+		  
 		  // 마스터 수정
 		  $('#btnMasterUpdate').click(()=>{
 		    const obj={}; $('#registerForm').serializeArray().forEach(f=>obj[f.name]=f.value);
