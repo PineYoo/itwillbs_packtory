@@ -61,7 +61,7 @@
 		            
 		            <div class="row g-2 mb-3">
 					    <div class="col-md-12 col-sm-6 mb-2">
-					        <input type="text" id="searchKeyword" class="form-control" placeholder="사업자번호 / 자재명 / 대표자명 검색">
+					        <input type="text" id="searchKeyword" class="form-control" placeholder="자재명 / 거래처명 검색">
 					    </div>
 					</div>
 		        </form>
@@ -94,7 +94,7 @@
 							        <input type="hidden" class="type" th:value="${item.type}" />
 							        <input type="hidden" class="unit" th:value="${item.unit}" />
 							        <input type="hidden" class="lead-time" th:value="${item.leadTime}" />
-							        <input type="hidden" class="expiration-date" th:value="${item.expirationDate}" />
+							        <input type="hidden" class="expiry-date" th:value="${item.expiryDate}" />
 							        <input type="hidden" class="storage-condition" th:value="${item.storageCondition}" />
 							        <input type="hidden" class="msds-link" th:value="${item.msdsLink}" />
 							        
@@ -180,7 +180,7 @@
 					                    <input type="hidden" class="type" value="${item.type || ''}" />
 					                    <input type="hidden" class="unit" value="${item.unit || ''}" />
 					                    <input type="hidden" class="lead-time" value="${item.leadTime || ''}" />
-					                    <input type="hidden" class="expiration-date" value="${item.expirationDate || ''}" />
+					                    <input type="hidden" class="expiry-date" value="${item.expiryDate || ''}" />
 					                    <input type="hidden" class="storage-condition" value="${item.storageCondition || ''}" />
 					                    <input type="hidden" class="msds-link" value="${item.msdsLink || ''}" />
 					                    <button class="btn btn-success">선택</button>
@@ -225,7 +225,7 @@
 			        type: $row.find(".type").val(),
 			        unit: $row.find(".unit").val(),
 			        leadTime: $row.find(".lead-time").val(),
-			        expirationDate: $row.find(".expiration-date").val(),
+			        expiryDate: $row.find(".expiry-date").val(),
 			        storageCondition: $row.find(".storage-condition").val(),
 			        msdsLink: $row.find(".msds-link").val()
 			    };

@@ -415,7 +415,7 @@
 		    , rm.quantity
 		    , rm.price
 		    , rm.lead_time
-		    , rm.expiration_date
+		    , rm.expiry_date
 		    , rm.storage_condition
 		    , rm.msds_link
 		    , rm.is_deleted
@@ -435,7 +435,8 @@
 		    ON rm.unit = ci2.minor_code
 		   AND ci2.major_code = 'ITEM_UNIT' 
 		<where>
-			1 = 1
+				rm.parents_idx IS NULL
+			AND rm.client_idx IS NULL
 			<if test="searchKeyword != null and searchKeyword != ''">
 				AND (
 					rm2.name LIKE CONCAT('%', #{searchKeyword}, '%')			-- parentsName
@@ -464,6 +465,8 @@
 		    ON rm.unit = ci2.minor_code
 		   AND ci2.major_code = 'ITEM_UNIT' 
 		<where>
+				rm.parents_idx IS NULL
+			AND rm.client_idx IS NULL
 			<if test="searchKeyword != null and searchKeyword != ''">
 				AND (
 					rm2.name LIKE CONCAT('%', #{searchKeyword}, '%')			-- parentsName
