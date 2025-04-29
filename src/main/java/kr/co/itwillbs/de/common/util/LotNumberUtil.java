@@ -16,7 +16,7 @@ public class LotNumberUtil {
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
 	// 롯 넘버 접두사
-	private static final String PREFIX_LOTNUMBER = "lots";
+	private static final String PREFIX_LOTNUMBER = "lot";
 	
 	// StringBuilder 재사용을 위한 초기 용량 설정 (날짜 14자리 + 나노초 9자리 = 23자리 + 여유) -> 이러면 이론상 1억분의 1?
 	// private final StringBuilder builder = new StringBuilder(30);
@@ -32,6 +32,11 @@ public class LotNumberUtil {
 		return INSTANCE;
 	}
 	
+	/**
+	 * lotsyyyyMMddHHmmssN9 => 26자리
+	 * <br>3 + 14 + 9 = 26자리 시간기반 숫자 생성
+	 * @return
+	 */
 	public String generateLotNumber() {
 		LogUtil.logStart(log);
 		StringBuilder builder = builderThreadLocal.get();
@@ -39,7 +44,7 @@ public class LotNumberUtil {
 		builder.setLength(0);
 
 		// 접두사 추가
-		builder.append(PREFIX_LOTNUMBER);
+		builder.append(PREFIX_LOTNUMBER); // lot
 		
 		// 날짜/시간 포맷팅 (미리 생성된 포맷터 사용)
 		LocalDateTime now = LocalDateTime.now();
@@ -52,7 +57,12 @@ public class LotNumberUtil {
 		return builder.toString();
 	}
 
-	// 나노초를 효율적으로 0-패딩
+	/**
+	 * 나노초가 항상 9자리를 유지하는것이 아님, 0~999_999_999까지가 범위.
+	 * <br>따라서 String.format("%09d", nanos) 하는 역할을 직접 구현함으로써 성능에 도움이 됨
+	 * @param sb
+	 * @param nanos
+	 */
 	private void padNanos(StringBuilder sb, long nanos) {
 		// 나노초는 최대 9자리
 		if (nanos < 10) {
@@ -96,6 +106,6 @@ public class LotNumberUtil {
 		long end = System.nanoTime();
 
 		System.out.println("생성된 ID 예시: " + generator.generateLotNumber());
-		System.out.println("100,000번 생성 소요 시간: " + ((end - start) / 100_000) + "ms");
+		System.out.println("100,000번 생성 소요 시간: " + ((end - start) / 1_000_000) + "ms");
 	}
 }
