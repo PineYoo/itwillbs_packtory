@@ -61,7 +61,7 @@
 		            
 		            <div class="row g-2 mb-3">
 					    <div class="col-md-12 col-sm-6 mb-2">
-					        <input type="text" id="searchKeyword" class="form-control" placeholder="자재명 / 거래처명 검색">
+					        <input type="text" id="searchKeyword" class="form-control" placeholder="자재명 / 타입 검색">
 					    </div>
 					</div>
 		        </form>
@@ -70,22 +70,26 @@
 				        <thead>
 				            <tr>
 				                <th class="text-nowrap">자재명</th>
-				                <th class="text-nowrap">거래처명</th>
+<!-- 				                <th class="text-nowrap">거래처명</th> -->
 				                <th class="text-nowrap">타입</th>
-				                <th class="text-nowrap">개수</th>
-				                <th class="text-nowrap">단위</th>
-				                <th class="text-nowrap">가격</th>
+<!-- 				                <th class="text-nowrap">개수</th> -->
+<!-- 				                <th class="text-nowrap">단위</th> -->
+<!-- 				                <th class="text-nowrap">가격</th> -->
+				                <th class="text-nowrap">평균사용기한</th>
+				                <th class="text-nowrap">보관조건</th>
 				                <th class="text-nowrap">선택</th>
 				            </tr>
 				        </thead>
 				        <tbody id="materialList">
 				        	<tr th:each="item , status : ${materialList}" th:data-id="${item.idx}">
 								<td class="name" th:text="${item.name != null ? item.name : '-'}"></td>
-							    <td class="client-company-name" th:text="${item.clientCompanyName != null ? item.clientCompanyName : '-'}"></td>
+<!-- 							    <td class="client-company-name" th:text="${item.clientCompanyName != null ? item.clientCompanyName : '-'}"></td> -->
 							    <td class="type-name" th:text="${item.typeName != null ? item.typeName : '-'}"></td>
-							    <td class="quantity" th:text="${item.quantity != null ? item.quantity : '-'}"></td>
-							    <td class="unit-name" th:text="${item.unitName != null ? item.unitName : '-'}"></td>
-							    <td class="price" th:text="${item.price != null ? item.price : '-'}"></td>
+<!-- 							    <td class="quantity" th:text="${item.quantity != null ? item.quantity : '-'}"></td> -->
+<!-- 							    <td class="unit-name" th:text="${item.unitName != null ? item.unitName : '-'}"></td> -->
+<!-- 							    <td class="price" th:text="${item.price != null ? item.price : '-'}"></td> -->
+							    <td class="expiry-date" th:text="${item.expiryDate != null ? item.expiryDate : '-'}" /></td>
+							    <td class="storage-condition" th:text="${item.storageCondition != null ? item.storageCondition : '-'}" /></td>
 				        		<td>
 				        			<!-- hidden ! -->
 									<input type="hidden" class="idx" th:value="${item.idx}" />
@@ -94,8 +98,6 @@
 							        <input type="hidden" class="type" th:value="${item.type}" />
 							        <input type="hidden" class="unit" th:value="${item.unit}" />
 							        <input type="hidden" class="lead-time" th:value="${item.leadTime}" />
-							        <input type="hidden" class="expiry-date" th:value="${item.expiryDate}" />
-							        <input type="hidden" class="storage-condition" th:value="${item.storageCondition}" />
 							        <input type="hidden" class="msds-link" th:value="${item.msdsLink}" />
 							        
 									<button class="btn btn-success">선택</button>
@@ -160,7 +162,7 @@
 					    $tbody.empty();
 
 					    if (data.length === 0) {
-					        $tbody.append('<tr><td colspan="7">조회 된 데이터가 없습니다.</td></tr>');
+					        $tbody.append('<tr><td colspan="5">조회 된 데이터가 없습니다.</td></tr>');
 					        return;
 					    }
 
@@ -168,11 +170,9 @@
 					        const row = `
 					            <tr data-id="${item.idx}">
 					                <td class="name">${item.name || '-'}</td>
-					                <td class="client-company-name">${item.clientCompanyName || '-'}</td>
 					                <td class="type-name">${item.typeName || '-'}</td>
-					                <td class="quantity">${item.quantity != null ? item.quantity : '-'}</td>
-					                <td class="unit-name">${item.unitName || '-'}</td>
-					                <td class="price">${item.price != null ? item.price : '-'}</td>
+					                <td class="expiry-date">${item.expiryDate || '-'}</td>
+								    <td class="storage-condition">${item.storageCondition || '-'}</td>
 					                <td>
 					                    <input type="hidden" class="idx" value="${item.idx || ''}" />
 					                    <input type="hidden" class="parents-idx" value="${item.parentsIdx || ''}" />
@@ -180,8 +180,6 @@
 					                    <input type="hidden" class="type" value="${item.type || ''}" />
 					                    <input type="hidden" class="unit" value="${item.unit || ''}" />
 					                    <input type="hidden" class="lead-time" value="${item.leadTime || ''}" />
-					                    <input type="hidden" class="expiry-date" value="${item.expiryDate || ''}" />
-					                    <input type="hidden" class="storage-condition" value="${item.storageCondition || ''}" />
 					                    <input type="hidden" class="msds-link" value="${item.msdsLink || ''}" />
 					                    <button class="btn btn-success">선택</button>
 					                </td>
@@ -213,11 +211,9 @@
 			    // 행에서 자재 정보 추출
 			    const materialInfo = {
 			        name: cleanText($row.find(".name").text()),
-			        clientCompanyName: cleanText($row.find(".client-company-name").text()),
 			        typeName: cleanText($row.find(".type-name").text()),
-			        quantity: cleanText($row.find(".quantity").text()),
-			        unitName: cleanText($row.find(".unit-name").text()),
-			        price: cleanText($row.find(".price").text()),
+			        expiryDate: cleanText($row.find(".expiry-date").val()),
+			        storageCondition: cleanText($row.find(".storage-condition").val()),
 
 			        idx: $row.find(".idx").val(),
 			        parentsIdx: $row.find(".parents-idx").val(),
@@ -225,8 +221,6 @@
 			        type: $row.find(".type").val(),
 			        unit: $row.find(".unit").val(),
 			        leadTime: $row.find(".lead-time").val(),
-			        expiryDate: $row.find(".expiry-date").val(),
-			        storageCondition: $row.find(".storage-condition").val(),
 			        msdsLink: $row.find(".msds-link").val()
 			    };
 

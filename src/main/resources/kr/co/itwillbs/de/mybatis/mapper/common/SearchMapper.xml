@@ -439,9 +439,8 @@
 			AND rm.client_idx IS NULL
 			<if test="searchKeyword != null and searchKeyword != ''">
 				AND (
-					rm2.name LIKE CONCAT('%', #{searchKeyword}, '%')			-- parentsName
-					OR c.company_name LIKE CONCAT('%', #{searchKeyword}, '%')	-- clientCompanyName
-					OR rm.name LIKE CONCAT('%', #{searchKeyword}, '%')			-- name
+					rm.name LIKE CONCAT('%', #{searchKeyword}, '%')				-- name
+					OR ci.minor_name LIKE CONCAT('%', #{searchKeyword}, '%')	-- typeName
 				)
 			</if>
 		</where>
@@ -469,9 +468,8 @@
 			AND rm.client_idx IS NULL
 			<if test="searchKeyword != null and searchKeyword != ''">
 				AND (
-					rm2.name LIKE CONCAT('%', #{searchKeyword}, '%')			-- parentsName
-					OR c.company_name LIKE CONCAT('%', #{searchKeyword}, '%')	-- clientCompanyName
-					OR rm.name LIKE CONCAT('%', #{searchKeyword}, '%')			-- name
+					rm.name LIKE CONCAT('%', #{searchKeyword}, '%')				-- name
+					OR ci.minor_name LIKE CONCAT('%', #{searchKeyword}, '%')	-- typeName
 				)
 			</if>
 		</where>
