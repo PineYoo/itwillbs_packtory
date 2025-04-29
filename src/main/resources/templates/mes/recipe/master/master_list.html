@@ -121,7 +121,7 @@
 									<td th:text="${item.regId}"></td>
 									<td th:text="${item.regDate}"></td>
 									<td>
-									    <button type="button" class="btn btn-primary"
+									    <button type="button" class="btn btn-outline-primary"
 										        th:onclick="|event.stopPropagation(); location.href='/mes/recipe/process?master_idx=${item.idx}';|"><!-- event.stopPropagation(); 클릭 시 이벤트 전파 막기 -->
 									        공정 등록
 									    </button>

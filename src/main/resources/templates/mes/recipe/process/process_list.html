@@ -73,7 +73,7 @@
 										<div class="row align-items-center">
 										    <!-- 왼쪽: 레시피 목록 버튼 -->
 										    <div class="col-12 col-sm-auto mb-2">
-										        <button type="button" class="btn btn-primary btn-block" id="returnBtn" onclick="location.href='/mes/recipe/master'">
+										        <button type="button" class="btn btn-secondary btn-block" id="returnBtn" onclick="location.href='/mes/recipe/master'">
 										            레시피 목록
 										        </button>
 										    </div>
@@ -126,7 +126,7 @@
 									<td th:text="${item.regId}"></td>
 									<td th:text="${item.regDate}"></td>
 									<td>
-									    <button type="button" class="btn btn-primary"
+									    <button type="button" class="btn btn-outline-primary"
 										    th:data-process-idx="${item.idx}"
 										    th:data-master-idx="${item.masterIdx}"
 										    onclick="goToMaterialPage(this)">
@@ -141,7 +141,7 @@
 				</div>
 			</div>
 			<script type="text/javascript">
-				// 소요자재 등록 페이지로 이동
+				// 소요자재 등록 페이지로 이도
 				function goToMaterialPage(button) {
 				    event.stopPropagation();
 				    const processIdx = button.getAttribute('data-process-idx');
