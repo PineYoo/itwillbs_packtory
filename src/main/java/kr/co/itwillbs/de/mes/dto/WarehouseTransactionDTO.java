@@ -25,11 +25,11 @@ public class WarehouseTransactionDTO {
 	@NotBlank(message = "코드는 필수 입력 값입니다.")
 	private String code; // 코드
 
-	@NotBlank(message = "상품정보는 필수 입력 값입니다.")
+//	@NotBlank(message = "상품정보는 필수 입력 값입니다.") // 둘중 하나만 있으면 됨
 	private String productIdx; // 상품_idx
 	private String productName; // 상품이름
 
-	@NotBlank(message = "자재정보는 필수 입력 값입니다.")
+//	@NotBlank(message = "자재정보는 필수 입력 값입니다.") // 둘중 하나만 있으면 됨
 	private String materialIdx; // 자재_idx
 	private String materialName; // 자재이름
 
