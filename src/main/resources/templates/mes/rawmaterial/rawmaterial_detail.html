@@ -92,7 +92,7 @@ input, select {
 									<td><input name="quantity" type="number" class="form-control" th:value="${it.quantity}" placeholder="개수" /></td>
 									<td><input name="price" type="number" class="form-control" th:value="${it.price}" placeholder="가격" /></td>
 									<td><input name="leadTime" class="form-control" th:value="${it.leadTime}" placeholder="소요기간" /></td>
-									<td><input name="expirationDate" class="form-control" th:value="${it.expirationDate}" placeholder="평균사용기한" /></td>
+									<td><input name="expiryDate" class="form-control" th:value="${it.expiryDate}" placeholder="평균사용기한" /></td>
 									<td><select name="isDeleted" class="form-select">
 											<option value="N" th:selected="${it.isDeleted=='N'}">사용중</option>
 											<option value="Y" th:selected="${it.isDeleted=='Y'}">삭제</option>
@@ -111,7 +111,7 @@ input, select {
 									<td><input name="quantity" type="number" class="form-control" placeholder="개수" /></td>
 									<td><input name="price" type="number" class="form-control" placeholder="가격" /></td>
 									<td><input name="leadTime" class="form-control" placeholder="소요기간" /></td>
-									<td><input name="expirationDate" class="form-control" placeholder="평균사용기한" /></td>
+									<td><input name="expiryDate" class="form-control" placeholder="평균사용기한" /></td>
 									<td><select name="isDeleted" class="form-select">
 											<option value="N">사용중</option>
 											<option value="Y">삭제</option>
@@ -151,7 +151,7 @@ input, select {
 				
 		  // DTO 빌드
 		  function buildDTOs(filter){ return Array.from($('#subBody tr')).map(tr=>{
-		    const dto={}; ['idx','parentsIdx','type','name','clientIdx','unit','quantity','price','leadTime','expirationDate','isDeleted'].forEach(n=>{
+		    const dto={}; ['idx','parentsIdx','type','name','clientIdx','unit','quantity','price','leadTime','expiryDate','isDeleted'].forEach(n=>{
 		      if(n==='parentsIdx') dto[n]=masterIdx;
 		      else if(n==='type') dto[n]=masterType;
 		      else { const el=tr.querySelector(`[name="${n}"]`); dto[n]=el?el.value:null; }

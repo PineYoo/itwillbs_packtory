@@ -45,7 +45,7 @@ public class RawMaterialDTO {
 	private Integer price; // 가격
 
 	private String leadTime; // 소요기간
-	private String expirationDate; // 평균사용기한
+	private String expiryDate; // 평균사용기한
 	private String storageCondition; // 보관조건
 	private String msdsLink; // MSDS링크
 	private String isDeleted; // 삭제 여부

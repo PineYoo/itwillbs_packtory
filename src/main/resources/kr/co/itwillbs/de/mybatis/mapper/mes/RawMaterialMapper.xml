@@ -132,7 +132,7 @@
 			<if test='quantity != null'>quantity,</if>
 			<if test='price != null'>price,</if>
 			<if test='leadTime != null'>lead_time,</if>
-			<if test='expirationDate != null'>expiration_date,</if>
+			<if test='expiryDate != null'>expiry_date,</if>
 			<if test='msdsLink != null and !("".equals(msdsLink.trim()))'>msds_link,</if>
 			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted,</if>
 			reg_id,
@@ -148,7 +148,7 @@
 			<if test='quantity != null'>#{quantity},</if>
 			<if test='price != null'>#{price},</if>
 			<if test='leadTime != null'>#{leadTime},</if>
-			<if test='expirationDate != null'>#{expirationDate},</if>
+			<if test='expiryDate != null'>#{expiryDate},</if>
 			<if test='msdsLink != null and !("".equals(msdsLink.trim()))'>#{msdsLink},</if>
 			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>#{isDeleted},</if>
 			#{regId},
@@ -168,7 +168,7 @@
 			<if test='quantity != null'>quantity = #{quantity},</if>
 			<if test='price != null'>price = #{price},</if>
 			<if test='leadTime != null'>lead_time = #{leadTime},</if>
-			<if test='expirationDate != null'>expiration_date = #{expirationDate},</if>
+			<if test='expiryDate != null'>expiry_date = #{expiryDate},</if>
 			<if test='msdsLink != null and !("".equals(msdsLink.trim()))'>msds_link = #{msdsLink},</if>
 			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
 			<if test='modId != null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
