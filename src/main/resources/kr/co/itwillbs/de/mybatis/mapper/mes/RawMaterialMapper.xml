@@ -99,6 +99,7 @@
 		<set>
 			<if test='type != null and !("".equals(type.trim()))'>type = #{type},</if>
 			<if test='name != null and !("".equals(name.trim()))'>name = #{name},</if>
+			<if test='storageCondition != null and !("".equals(storageCondition.trim()))'>storage_condition = #{storageCondition},</if>
 			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
 			<if test='modId != null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
 			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
