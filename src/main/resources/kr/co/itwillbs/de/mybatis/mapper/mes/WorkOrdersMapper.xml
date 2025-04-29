@@ -427,4 +427,11 @@
 		 -->
 	</update>
 	
+	<!-- 외부용 -->
+	<select id="selectWorkOrdersList" resultType="kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO">
+		SELECT product_lines_idx, lines_manager_id, actual_start_date, actual_end_date, status
+		FROM t_work_orders_items
+		WHERE is_deleted = 'N'
+	</select>
+	
 </mapper>

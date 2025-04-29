@@ -23,6 +23,7 @@ import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerScheduleSearchDTO;
 import kr.co.itwillbs.de.mes.service.LocationInfoService;
+import kr.co.itwillbs.de.mes.service.WorkOrdersService;
 import kr.co.itwillbs.de.mes.service.WorkerScheduleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public class WorkerSchedulesController {
 
 	private final WorkerScheduleService workerScheduleService;
 	private final LocationInfoService locationInfoService;
+	private final WorkOrdersService workOrdersService;
 	private final CommonCodeUtil commonCodeUtil;
 	private final String PATH = "/mes/workerschedule";
 
@@ -43,9 +45,10 @@ public class WorkerSchedulesController {
 	public String workerScheduleRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		// 공통코드 + 장소
+		// 공통코드 + 장소 + 작업지시
 		model.addAttribute("shiftType", commonCodeUtil.getCodeItems("SHIFT_TYPE"));
 		model.addAttribute("locationList", locationInfoService.getLocationInfoList());
+		model.addAttribute("workOrdersList", workOrdersService.getWorkOrdersList());
 
 		model.addAttribute("workerScheduleDTO", new WorkerScheduleDTO());
 
@@ -103,9 +106,10 @@ public class WorkerSchedulesController {
 		WorkerScheduleDTO workerScheduleDTO = workerScheduleService.getWorkerScheduleByIdx(idx);
 		model.addAttribute("workerScheduleDTO", workerScheduleDTO);
 
-		// 공통코드 + 장소
+		// 공통코드 + 장소 + 작업지시
 		model.addAttribute("shiftType", commonCodeUtil.getCodeItems("SHIFT_TYPE"));
 		model.addAttribute("locationList", locationInfoService.getLocationInfoList());
+		model.addAttribute("workOrdersList", workOrdersService.getWorkOrdersList());
 
 		return PATH + "/workerschedule_detail";
 	}

@@ -77,6 +77,11 @@ public interface WorkOrdersMapper {
 	 * @return affectedRow
 	 */
 	int modifyWorkOrdersItems(WorkOrdersFormDTO workOrdersFormDTO);
+	
+	/*
+	 * 외부용
+	 */
+	public List<WorkOrdersFormDTO> selectWorkOrdersList();
 
 
 }
