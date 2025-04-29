@@ -1,5 +1,6 @@
 package kr.co.itwillbs.de.mes.controller;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +101,7 @@ public class RawMaterialController {
 		// 마스터 자재 상세정보 조회
 		RawMaterialDTO rawMaterialDTO = rawMaterialService.getMasterMaterial(idx);
 		model.addAttribute("rawMaterialDTO", rawMaterialDTO);
-		
+
 		// 부속 자재 목록 조회
 		List<RawMaterialDTO> subMaterialList = rawMaterialService.getSubMaterialsByIdx(idx);
 		model.addAttribute("subMaterialList", subMaterialList);
@@ -108,7 +109,7 @@ public class RawMaterialController {
 		// 공통코드 + BOM
 		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
 		model.addAttribute("materialType", commonCodeUtil.getCodeItems("MATERIAL_TYPE"));
-		model.addAttribute("clientList",clientService.getClientList());
+		model.addAttribute("clientList", clientService.getClientList());
 		model.addAttribute("bomList", bomService.getBomList());
 
 		return PATH + "/rawmaterial_detail";
@@ -116,7 +117,8 @@ public class RawMaterialController {
 
 	// 마스터 자재 수정
 	@PutMapping("/master/update")
-	public ResponseEntity<Map<String, Object>> updateRawMaterial(@RequestBody RawMaterialDTO rawMaterialDTO, Model model) {
+	public ResponseEntity<Map<String, Object>> updateRawMaterial(@RequestBody RawMaterialDTO rawMaterialDTO,
+			Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
@@ -135,48 +137,62 @@ public class RawMaterialController {
 		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
 		return ResponseEntity.ok(response);
 	}
-	
+
 	// 부속 자재 등록 (AJAX)
 	@PostMapping("/sub/new")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> insertSubMaterial(
-	        @RequestBody List<RawMaterialDTO> rawMaterialDTOs) {
+	public ResponseEntity<Map<String, Object>> insertSubMaterial(@RequestBody List<RawMaterialDTO> rawMaterialDTOs) {
 
-	    Map<String, Object> response = new HashMap<>();
-	    try {
-	        for(RawMaterialDTO dto : rawMaterialDTOs) {
-	            if(dto.getIdx() != null) {
-	                dto.setParentsIdx(String.valueOf(dto.getIdx()));
-	            }
-	            rawMaterialService.insertSubMaterial(dto);
-	        }
-	        response.put("status", "success");
-	        response.put("message", "등록되었습니다.");
-	    } catch (Exception e) {
-	        log.error("부속 자재 등록 실패", e);
-	        response.put("status", "fail");
-	        response.put("message", "등록에 실패했습니다.");
-	    }
-	    return ResponseEntity.ok(response);
+		Map<String, Object> response = new HashMap<>();
+		try {
+			for (RawMaterialDTO dto : rawMaterialDTOs) {
+				// 부모 인덱스 값만 설정하고, 유효한 데이터만 등록하도록 처리
+				if (dto.getIdx() != null) {
+					dto.setParentsIdx(String.valueOf(dto.getIdx())); // 부모 인덱스 설정
+				}
+				if (dto.getType() == null) {
+					dto.setType("기본값"); // 기본값 설정 (필요한 경우)
+				}
+
+				// 유효한 필드들만 등록되도록 필터링
+				if (isValidSubMaterial(dto)) {
+					rawMaterialService.insertSubMaterial(dto);
+				}
+			}
+			response.put("status", "success");
+			response.put("message", "등록되었습니다.");
+		} catch (Exception e) {
+			log.error("부속 자재 등록 실패", e);
+			response.put("status", "fail");
+			response.put("message", "등록에 실패했습니다.");
+		}
+		return ResponseEntity.ok(response);
 	}
-	
+
+	// 유효한 자재만 처리하는 메서드
+	private boolean isValidSubMaterial(RawMaterialDTO dto) {
+		return dto.getName() != null && !dto.getName().trim().isEmpty() && dto.getQuantity() != null
+				&& dto.getQuantity().compareTo(BigDecimal.ZERO) > 0 && dto.getPrice() != null;
+//				&& dto.getPrice().compareTo(BigDecimal.ZERO) > 0;
+	}
+
 	// 부속 자재 수정 (AJAX)
 	@PutMapping("/sub/update")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> updateSubMaterial(@RequestBody RawMaterialDTO rawMaterialDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
+
 		// 리턴 객체 생성
-	    Map<String, Object> response = new HashMap<>();
-	    try {
-	        rawMaterialService.updateSubMaterial(rawMaterialDTO);
-	        response.put("status", "success");
-	        response.put("message", "수정되었습니다.");
-	    } catch (Exception e) {
-	        log.error("부속 자재 수정 실패", e);
-	        response.put("status", "fail");
-	        response.put("message", "수정에 실패했습니다.");
-	    }
-	    return ResponseEntity.ok(response);
+		Map<String, Object> response = new HashMap<>();
+		try {
+			rawMaterialService.updateSubMaterial(rawMaterialDTO);
+			response.put("status", "success");
+			response.put("message", "수정되었습니다.");
+		} catch (Exception e) {
+			log.error("부속 자재 수정 실패", e);
+			response.put("status", "fail");
+			response.put("message", "수정에 실패했습니다.");
+		}
+		return ResponseEntity.ok(response);
 	}
 }

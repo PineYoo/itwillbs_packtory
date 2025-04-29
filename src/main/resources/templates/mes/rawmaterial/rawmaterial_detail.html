@@ -79,7 +79,7 @@ input, select {
 								</tr>
 							</thead>
 							<tbody id="subBody">
-								<tr th:each="it : ${subMaterialList}" class="childRow">
+								<tr th:each="it : ${subMaterialList}" th:if="${it.name != null}" class="childRow">
 									<td><input type="checkbox" class="rowSelect" /></td>
 									<td><input type="hidden" name="idx" th:value="${it.idx}" /> <input name="name" class="form-control" th:value="${it.name}" /></td>
 									<td>
