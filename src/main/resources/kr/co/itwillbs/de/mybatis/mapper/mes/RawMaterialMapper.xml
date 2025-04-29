@@ -77,8 +77,7 @@
 			</if>
 			AND r.parents_idx IS NULL
 		</where>
-
-		ORDER BY r.idx ASC
+		ORDER BY r.name ASC
 		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
 	</select>
 
