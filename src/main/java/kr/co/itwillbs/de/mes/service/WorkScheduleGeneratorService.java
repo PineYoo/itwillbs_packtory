@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 
 import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class WorkScheduleGeneratorService {
 
 	/**
@@ -55,7 +57,7 @@ public class WorkScheduleGeneratorService {
 		return result;
 	}
 
-	// 주말/공휴일 여부 체크 (단순히 주말 체크로 구현)
+	// 주말 여부 체크 (단순히 주말 체크로 구현)
 	private boolean isBusinessDay(LocalDate date) {
 		return !(date.getDayOfWeek().getValue() == 6 || date.getDayOfWeek().getValue() == 7); // 토요일, 일요일 제외
 	}

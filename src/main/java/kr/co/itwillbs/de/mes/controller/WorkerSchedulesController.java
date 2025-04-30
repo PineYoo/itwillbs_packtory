@@ -66,6 +66,7 @@ public class WorkerSchedulesController {
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
+			// 여기서 workerScheduleDTO에 들어간 shiftType, locationCode 등을 사용해 일정을 생성
 			workerScheduleService.insertWorkerSchedule(workerScheduleDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
@@ -122,6 +123,7 @@ public class WorkerSchedulesController {
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
+			// 여기서 workerScheduleDTO에 들어간 shiftType, locationCode 등을 사용해 일정을 업데이트
 			workerScheduleService.updateWorkerSchedule(workerScheduleDTO);
 			response.put("status", "success");
 			response.put("message", "정상적으로 수행 되었습니다.");
