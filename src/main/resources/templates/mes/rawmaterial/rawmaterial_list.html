@@ -94,6 +94,7 @@
 								<tr>
 									<th>타입</th>
 									<th>이름</th>
+									<th>품질검사</th>
 									<th>삭제유무</th>
 								</tr>
 							</thead>
@@ -101,6 +102,7 @@
 								<tr th:each="item : ${rawMaterialList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
 									<td th:text="${item.typeName}"></td>
 									<td th:text="${item.name}"></td>
+									<td th:text="${item.qcTypeName}"></td>
 									<td th:text="${item.isDeleted}"></td>
 								</tr>
 							</tbody>

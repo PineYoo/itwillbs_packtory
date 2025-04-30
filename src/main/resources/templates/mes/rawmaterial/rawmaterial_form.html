@@ -61,11 +61,16 @@ input, select {
 									<div th:replace="~{common/fragments/de_form :: inputText('name', '자재 명', true,false,false)}"></div>
 								</div>
 
+								<!-- 품질검사 -->
+								<div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: selectCodeItems('qcType', '품질검사', true, ${qcType},false,false)}"></div>
+								</div>
+
 								<!-- 보관조건 -->
 								<div class="col-md-6">
 									<div th:replace="~{common/fragments/de_form :: inputText('storageCondition', '보관조건', true,false,false)}"></div>
 								</div>
-								
+
 								<!-- 삭제 유무 -->
 								<div class="col-md-6">
 									<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>

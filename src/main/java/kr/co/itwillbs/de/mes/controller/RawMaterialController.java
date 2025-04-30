@@ -23,7 +23,7 @@ import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
-import kr.co.itwillbs.de.mes.service.BomService;
+import kr.co.itwillbs.de.mes.service.QcStandardService;
 import kr.co.itwillbs.de.mes.service.RawMaterialService;
 import kr.co.itwillbs.de.orders.service.ClientService;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class RawMaterialController {
 	private final RawMaterialService rawMaterialService;
 	private final CommonCodeUtil commonCodeUtil;
 	private final ClientService clientService;
-	private final BomService bomService;
+	private final QcStandardService qcStandardService;
 	private final String PATH = "/mes/rawmaterial";
 
 	// 마스터 자재 등록 폼 페이지
@@ -46,8 +46,10 @@ public class RawMaterialController {
 	public String rawMaterialRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-		// 공통코드 + BOM
+		// 공통코드
 		model.addAttribute("materialType", commonCodeUtil.getCodeItems("MATERIAL_TYPE"));
+		model.addAttribute("qcType", commonCodeUtil.getCodeItems("QC_STANDARD"));
+		model.addAttribute("qcType1", qcStandardService.getQcStandardList());
 		model.addAttribute("rawMaterialDTO", new RawMaterialDTO());
 
 		return PATH + "/rawMaterial_form";
@@ -86,6 +88,8 @@ public class RawMaterialController {
 		// 마스터 자재 목록 조회
 		List<RawMaterialDTO> rawMaterialList = rawMaterialService.getMasterMaterialList(searchDTO);
 		model.addAttribute("materialType", commonCodeUtil.getCodeItems("MATERIAL_TYPE"));
+		model.addAttribute("qcType", commonCodeUtil.getCodeItems("QC_STANDARD"));
+		model.addAttribute("qcType1", qcStandardService.getQcStandardList());
 		model.addAttribute("rawMaterialList", rawMaterialList);
 
 		model.addAttribute("searchDTO", searchDTO); // 검색조건 유지용
@@ -106,11 +110,12 @@ public class RawMaterialController {
 		List<RawMaterialDTO> subMaterialList = rawMaterialService.getSubMaterialsByIdx(idx);
 		model.addAttribute("subMaterialList", subMaterialList);
 
-		// 공통코드 + BOM
+		// 공통코드
 		model.addAttribute("itemUnit", commonCodeUtil.getCodeItems("ITEM_UNIT"));
 		model.addAttribute("materialType", commonCodeUtil.getCodeItems("MATERIAL_TYPE"));
 		model.addAttribute("clientList", clientService.getClientList());
-		model.addAttribute("bomList", bomService.getBomList());
+		model.addAttribute("qcType", commonCodeUtil.getCodeItems("QC_STANDARD"));
+		model.addAttribute("qcType1", qcStandardService.getQcStandardList());
 
 		return PATH + "/rawmaterial_detail";
 	}
@@ -141,11 +146,11 @@ public class RawMaterialController {
 	// 부속 자재 등록 (AJAX)
 	@PostMapping("/sub/new")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> insertSubMaterial(@RequestBody List<RawMaterialDTO> rawMaterialDTOs) {
+	public ResponseEntity<Map<String, Object>> insertSubMaterial(@RequestBody List<RawMaterialDTO> rawMaterialDTO) {
 
 		Map<String, Object> response = new HashMap<>();
 		try {
-			for (RawMaterialDTO dto : rawMaterialDTOs) {
+			for (RawMaterialDTO dto : rawMaterialDTO) {
 				// 부모 인덱스 값만 설정하고, 유효한 데이터만 등록하도록 처리
 				if (dto.getIdx() != null) {
 					dto.setParentsIdx(String.valueOf(dto.getIdx())); // 부모 인덱스 설정
@@ -173,7 +178,6 @@ public class RawMaterialController {
 	private boolean isValidSubMaterial(RawMaterialDTO dto) {
 		return dto.getName() != null && !dto.getName().trim().isEmpty() && dto.getQuantity() != null
 				&& dto.getQuantity().compareTo(BigDecimal.ZERO) > 0 && dto.getPrice() != null;
-//				&& dto.getPrice().compareTo(BigDecimal.ZERO) > 0;
 	}
 
 	// 부속 자재 수정 (AJAX)

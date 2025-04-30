@@ -36,6 +36,12 @@ input, select {
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('name','자재명',true,false,false)}"></div>
 							</div>
+
+							<!-- 품질검사 -->
+							<div class="col-md-6">
+								<div th:replace="~{common/fragments/de_form :: selectCodeItems('qcType', '품질검사', true, ${qcType},false,false)}"></div>
+							</div>
+
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('storageCondition','보관조건',true,false,false)}"></div>
 							</div>
@@ -82,9 +88,7 @@ input, select {
 								<tr th:each="it : ${subMaterialList}" th:if="${it.name != null}" class="childRow">
 									<td><input type="checkbox" class="rowSelect" /></td>
 									<td><input type="hidden" name="idx" th:value="${it.idx}" /> <input name="name" class="form-control" th:value="${it.name}" /></td>
-									<td>
-										<!-- hidden clientIdx remains for DTO binding --> <input type="hidden" name="clientIdx" th:value="${it.clientIdx}" /> <!-- display companyName instead of numeric id --> <input name="companyName" class="form-control companyName" th:value="${it.clientCompanyName}" readonly onclick="openClientSearch(this)" placeholder="거래처" />
-									</td>
+									<td><input type="hidden" name="clientIdx" th:value="${it.clientIdx}" /><input name="companyName" class="form-control companyName" th:value="${it.clientCompanyName}" readonly onclick="openClientSearch(this)" placeholder="거래처" /></td>
 									<td><select name="unit" class="form-select">
 											<option value="">선택</option>
 											<option th:each="unit : ${itemUnit}" th:value="${unit.minorCode}" th:text="${unit.minorName}" th:selected="${unit.minorCode == it.unit}"></option>

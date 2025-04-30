@@ -139,7 +139,7 @@ public class WorkOrdersService {
 //		workOrdersMapper.modifyWorkOrdersItems(workOrdersItemsDTO);
 	}
 
-	// 공장 장소 목록 가져가기 (외부용)
+	// (외부용)
 	public List<WorkOrdersFormDTO> getWorkOrdersList() {
 		return workOrdersMapper.selectWorkOrdersList();
 	}

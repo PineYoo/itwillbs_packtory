@@ -147,9 +147,10 @@
 	<!-- 품질 기준 목록 들고가기 (외부용) -->
 	<select id="selectQcStandardList"
 		resultType="kr.co.itwillbs.de.mes.dto.QcStandardDTO">
-		SELECT idx, name
+		SELECT idx, name, type
 		FROM t_qc_standard
 		WHERE is_deleted = 'N'
+		ORDER BY name
 	</select>
 
 </mapper>

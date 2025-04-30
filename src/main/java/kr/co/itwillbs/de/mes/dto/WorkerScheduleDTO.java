@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotBlank;
 import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +14,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
+@Builder
 @RequiredSessionIds(fields = { "regId", "modId" })
 public class WorkerScheduleDTO {
 

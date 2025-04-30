@@ -12,6 +12,9 @@
 			<if test='type != null and !("".equals(type.trim()))'>
 				type,
 			</if>
+			<if test='qcType != null and !("".equals(qcType.trim()))'>
+				qc_type,
+			</if>
 			<if test='name != null and !("".equals(name.trim()))'>
 				name,
 			</if>
@@ -23,6 +26,9 @@
 		</trim>
 		) VALUES (
 		<trim suffixOverrides=",">
+			<if test='qcType != null and !("".equals(qcType.trim()))'>
+				#{qcType},
+			</if>
 			<if test='type != null and !("".equals(type.trim()))'>
 				#{type},
 			</if>
@@ -61,10 +67,12 @@
 		SELECT
 		r.*,
 		c.minor_name AS type_name,
-		ci.minor_name AS unit_name
+		ci.minor_name AS unit_name,
+		qc.name AS qc_type_name
 		FROM t_raw_material r
 		LEFT JOIN t_commoncode_item c ON r.type = c.minor_code AND c.major_code = "MATERIAL_TYPE"
 		LEFT JOIN t_commoncode_item ci ON r.unit = ci.minor_code AND ci.major_code = "ITEM_UNIT"
+		LEFT JOIN t_qc_standard qc ON r.type = qc.type
 		<where>
 			<if test="type != null and !(''.equals(type.trim()))">
 				AND r.type = #{type}
@@ -85,10 +93,12 @@
 	<select id="getMasterMaterialByIdx" parameterType="Long" resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
 		SELECT
 		r.*,
-		c.minor_name AS type_name
+		c.minor_name AS type_name,
+		qc.name AS qc_type_name
 		FROM
 		t_raw_material r
 		LEFT JOIN t_commoncode_item c ON r.type = c.minor_code AND c.major_code = "MATERIAL_TYPE"
+		LEFT JOIN t_qc_standard qc ON r.type = qc.type
 		WHERE r.idx = #{idx}
 	</select>
 
@@ -97,6 +107,7 @@
 		UPDATE t_raw_material
 		<set>
 			<if test='type != null and !("".equals(type.trim()))'>type = #{type},</if>
+			<if test='qcType != null and !("".equals(qcType.trim()))'>qc_type = #{qcType},</if>
 			<if test='name != null and !("".equals(name.trim()))'>name = #{name},</if>
 			<if test='storageCondition != null and !("".equals(storageCondition.trim()))'>storage_condition = #{storageCondition},</if>
 			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
@@ -124,8 +135,8 @@
 		INSERT INTO t_raw_material (
 		<trim suffixOverrides=",">
 			parents_idx,
+			type,
 			<if test='clientIdx != null'>client_idx,</if>
-			<if test='type != null and !("".equals(type.trim()))'>type,</if>
 			<if test='name != null and !("".equals(name.trim()))'>name,</if>
 			<if test='unit != null and !("".equals(unit.trim()))'>unit,</if>
 			<if test='quantity != null'>quantity,</if>
@@ -140,8 +151,8 @@
 		) VALUES (
 		<trim suffixOverrides=",">
 			#{parentsIdx},
+			#{type},
 			<if test='clientIdx != null'>#{clientIdx},</if>
-			<if test='type != null and !("".equals(type.trim()))'>#{type},</if>
 			<if test='name != null and !("".equals(name.trim()))'>#{name},</if>
 			<if test='unit != null and !("".equals(unit.trim()))'>#{unit},</if>
 			<if test='quantity != null'>#{quantity},</if>
@@ -161,7 +172,6 @@
 		UPDATE t_raw_material
 		<set>
 			<if test='clientIdx != null'>client_idx = #{clientIdx},</if>
-			<if test='type != null and !("".equals(type.trim()))'>type = #{type},</if>
 			<if test='name != null and !("".equals(name.trim()))'>name = #{name},</if>
 			<if test='unit != null and !("".equals(unit.trim()))'>unit = #{unit},</if>
 			<if test='quantity != null'>quantity = #{quantity},</if>

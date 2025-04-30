@@ -33,6 +33,9 @@ public class RawMaterialDTO {
 	private String type; // 타입
 	private String typeName; // 타입명
 
+	private String qcType;
+	private String qcTypeName;
+	
 	@NotBlank(message = "이름은 필수 입력 값입니다.")
 	private String name; // 이름
 
