@@ -52,6 +52,10 @@
 							<input type="hidden" th:field="*{idx}" />
 							<input type="hidden" id="processIdx" th:field="*{processIdx}">
 							<div class="col-md-12">
+								<button type="button" id="searchMaterialBtn" class="btn btn-primary mt-2" onclick="openMaterialSearch()">자재 조회</button>
+								<input type="hidden" name="materialIdx" id="materialIdx">
+							</div>
+							<div class="col-md-12">
 								<div th:replace="~{common/fragments/de_form :: inputText('name','자재 이름',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
@@ -77,6 +81,18 @@
 			</div>
 		</div>
 		<script type="text/javascript">
+			// 자재 검색 함수(새 창 띄우기)
+			function openMaterialSearch() {
+				window.open('/material/search-popup', 'materialSearch', 'width=800,height=600,location=no,scrollbars=yes');
+			}
+	
+			// 팝업창에서 가져온 자재 정보 넣는 함수
+			function setMaterialInfo(data) {
+				$("#materialIdx").val(data.idx);
+				$("#name").val(data.name);
+			}			
+			
+			// --------------------------------------------------------------------------------------------------------
 			$(function() {
 				$('#btnList').on("click", function() {
 					var processIdx = $('#processIdx').val();
