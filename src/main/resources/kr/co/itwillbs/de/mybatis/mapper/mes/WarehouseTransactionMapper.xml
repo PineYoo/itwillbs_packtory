@@ -234,4 +234,101 @@
 		WHERE idx = #{idx}
 	</update>
 
+	<select id="getRequiredQCCountBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO"
+											 resultType="int">
+		SELECT
+			count(wt.idx)
+		FROM t_warehouse_transaction wt
+		WHERE wt.status = #{status}
+	</select>
+	<select id="getRequiredQCListBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO"
+											 resultType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO">
+		WITH material AS (
+		SELECT
+			rm.idx,
+			rm.type,
+			ci1.minor_name AS type_name,
+			rm.qc_type,
+			rm.name,
+			rm.expiry_date
+		FROM t_raw_material rm
+		JOIN (
+				SELECT
+					minor_code,
+					minor_name
+				FROM t_commoncode_item
+				WHERE major_code = 'MATERIAL_TYPE'
+			) AS ci1 ON ci1.minor_code = rm.type
+		WHERE rm.is_deleted = 'N'
+			AND rm.parents_idx is null
+		),
+		product AS (
+		SELECT
+			p.idx,
+			p.name,
+			p.code,
+			p.spec,
+			p.expiry_date,
+			p.status,
+			ci1.minor_name AS statusName
+		FROM t_product p
+		JOIN (
+				SELECT
+					minor_code,
+					minor_name
+				FROM t_commoncode_item
+				WHERE major_code = 'PRODUCT_STATUS'
+			) AS ci1 ON ci1.minor_code = p.status
+		WHERE is_deleted = 'N'
+		),
+		pattern AS (
+		SELECT
+			wt.idx,
+			wt.trans_type,
+			ci1.minor_name AS trans_type_name,
+			wt.code,
+			wt.product_idx,
+			p.name AS product_name,
+			wt.material_idx,
+			m.name as material_name,
+			replace(m.qc_type,'|','-') as qc_type,
+			wt.unit,
+			ci3.minor_name as unit_name,
+			wt.quantity,
+			wt.status,
+			ci2.minor_name as status_name
+		FROM t_warehouse_transaction wt
+		JOIN (
+				SELECT
+					minor_code,
+					minor_name
+				FROM t_commoncode_item
+				WHERE major_code = 'TRANS_TYPE'
+			) AS ci1 ON ci1.minor_code = wt.trans_type
+		JOIN (
+				SELECT
+					minor_code,
+					minor_name
+				FROM t_commoncode_item
+				WHERE major_code = 'PROCESS_FLOW_STATUS'
+			) AS ci2 ON ci2.minor_code = wt.status
+		JOIN (
+				SELECT
+					minor_code,
+					minor_name
+				FROM t_commoncode_item
+				WHERE major_code = 'ITEM_UNIT'
+			) AS ci3 ON ci3.minor_code = wt.unit
+		LEFT JOIN material AS m ON m.idx = wt.material_idx
+		LEFT JOIN product AS p ON p.idx = wt.product_idx
+		<where>
+			AND wt.status = #{status}
+			<if test='materialName != null and !("".equals(materialName.trim()))'>
+				AND m.name LIKE CONCAT('%', #{materialName}, '%')
+			</if>
+		</where>
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
+	</select>
+
+
 </mapper>

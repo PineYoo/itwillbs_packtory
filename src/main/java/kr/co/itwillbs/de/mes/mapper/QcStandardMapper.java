@@ -3,6 +3,7 @@ package kr.co.itwillbs.de.mes.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.co.itwillbs.de.mes.dto.QcStandardDTO;
 import kr.co.itwillbs.de.mes.dto.QcStandardSearchDTO;
@@ -27,4 +28,8 @@ public interface QcStandardMapper {
 
 	// 품질 기준 목록 들고가기 (외부용)
 	public List<QcStandardDTO> selectQcStandardList();
+	
+	// 품질 기준 목록 들고가기 (외부용)
+	public List<QcStandardDTO> selectQcStandardGroupByIdx(@Param("idx")String idx,
+														@Param("isProduct")boolean isProduct);
 }

@@ -37,6 +37,7 @@ public class WarehouseTransactionDTO {
 	private String unitName;
 	private Integer quantity; // 개수
 	private String status; // 상태
+	private String statusName;
 	
 
 	private String manufacturingDate; // 제조일자
@@ -52,4 +53,12 @@ public class WarehouseTransactionDTO {
 	private LocalDate regDate; // 작성일자시간
 	private String modId; // 최종 작성자
 	private LocalDate modDate; // 최종작성일자
+	
+	// t_raw_material.qc_type 품질 검사 변수 추가
+	private String qcType;
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 }

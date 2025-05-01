@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 품질관리</title>
+<style type="text/css">
+.form {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+input, select {
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 2px;
+}
+
+.essential {
+	background-color: #fffbe6; /* 연한 노랑 */
+}
+
+.filled {
+	background-color: white;
+}
+
+/* ----------------- */
+.addressInfo {
+	display: flex;
+}
+
+@media ( max-width : 768px) {
+	.addressInfo {
+		display: block;
+	}
+}
+</style>
+</head>
+<body id="page-top">
+
+	<div layout:fragment="contents">
+		<!-- 페이지 내용 -->
+		<div class="container mt-5">
+			<!-- 카드 형식 -->
+			<div class="container-fluid">
+				<div class="d-sm-flex align-items-center justify-content-between mb-4">
+					<h1 class="h3 mb-4 text-gray-800">품질검사 등록</h1>
+				</div>
+
+				<!-- 본문 컨테이너 -->
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<div class="table-responsive">
+							<form th:action="@{/mes/qclog/group/new}" method="post" th:object="${formDTO}" class="form row g-3" id="registerForm">
+
+								<th:block th:each="item : *{standardList}">
+									<input type="hidden" th:name="|${item.idx}_qc_standard_idx|" th:value="${item.idx}" />
+								<div class="col-md-12" th:if="${#strings.isEmpty(item.unit)}">
+									<label class="mb-1" for="value" th:text="${item.name}">검사명</label>
+									<label><input type="radio" th:name="|${item.idx}_qcResult|" id="qcResult" value="pass">적합</label>
+									<label><input type="radio" th:name="|${item.idx}_qcResult|" id="qcResult" value="fail" checked>부적합</label>
+								</div>
+								<div th:unless="${#strings.isEmpty(item.unit)}">
+									<label class="mb-1" for="targetValue" th:text="${item.name}">검사 결과</label>
+									<input type="number" class="form-control" th:name="|${item.idx}_qcResult|" id="qcResult" th:placeholder="${item.targetValue}" max="9999"/>
+								</div>
+								<div class="col-md-12">
+									<label class="mb-1" th:for="memo">메모</label>
+									<textarea class="form-control" th:name="|${item.idx}_memo|"
+										placeholder="메모 사항" rows="5" cols="3">
+									</textarea>
+								</div>
+								</th:block>
+								<!-- 단위 -->
+								<!--/* <div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: selectCodeItems('unit', '단위', true, ${itemUnit},false,false)}"></div>
+								</div> */-->
+
+								<!-- 메모 -->
+
+								<!-- 삭제 유무 -->
+								<!-- <div class="col-md-6">
+									<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제 유무',true,false,false)}"></div>
+								</div> -->
+
+								<hr>
+
+								<!-- 버튼들 -->
+								<div class="col-md-12 row align-items-center justify-content-center">
+									<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+									<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">목록으로</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			$(function() {
+				$('#btnList').on("click", function() {
+					location.href="/mes/qclog";
+				});
+				
+				// 품질로그 등록
+				$('#btnSubmitForm').on("click", function() {
+					console.group('click! #btnSubmitForm!');
+					// error 내용 삭제
+					$("div[id$='Error']").text("")
+					// 만세 폼이다!
+					const _formData = $('#registerForm').serializeArray();
+					const _grouped = {};
+					
+					_formData.forEach(({ name, value }) => {
+						const [prefix, field] = name.split('_');
+						
+						if(!_grouped[prefix]) {
+							_grouped[prefix] = {};
+						}
+						_grouped[prefix][field] = value;
+					});
+					
+					const _jsonObj = Object.values(_grouped);
+					// 데이터 확인
+					console.log(_jsonObj);
+					// JSON 데이터를 서버로 전송
+					fetch("/mes/qclog/group/new", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(_jsonObj)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.status === "success") {
+							alert(data.message);
+							location.href="/mes/qclog"; // 현재 페이지 새로 고침
+						} else if(data.status === "validFail") {
+							console.log("hello validFail!1");
+							//alert(data.message);
+							let _errors = data.errors;
+							console.log(_errors);
+							for (let field in _errors) {
+								$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
+							} // end of for (let field in errors) {
+						}
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						alert("요청 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해 주시기 바랍니다.");
+					});
+					
+					console.groupEnd();
+				}); // end of $('#btnSubmitForm').on("click", function() {
+				    
+			}); // end of $(function() {
+		</script>
+	</div>
+</body>
+</html>

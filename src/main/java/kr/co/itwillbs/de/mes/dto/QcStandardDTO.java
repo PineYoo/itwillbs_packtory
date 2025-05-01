@@ -12,7 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @RequiredSessionIds(fields = { "regId", "modId" })
-public class QcStandardDTO {	
+public class QcStandardDTO {
 
 	private Long idx;
 	private String type;

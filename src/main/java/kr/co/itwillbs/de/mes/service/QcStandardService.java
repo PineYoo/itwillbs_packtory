@@ -6,9 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.mes.dto.QcStandardDTO;
 import kr.co.itwillbs.de.mes.dto.QcStandardSearchDTO;
+import kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO;
+import kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO;
 import kr.co.itwillbs.de.mes.mapper.QcStandardMapper;
+import kr.co.itwillbs.de.mes.mapper.WarehouseTransactionMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class QcStandardService {
 
 	private final QcStandardMapper qcStandardMapper;
+	private final WarehouseTransactionMapper warehouseTransactionMapper;
 
 	// 품질 등록
 	@LogExecution
@@ -64,6 +69,34 @@ public class QcStandardService {
 	// 품질기준 목록 들고가기 (외부용)
 	public List<QcStandardDTO> getQcStandardList() {
 		return qcStandardMapper.selectQcStandardList();
+	}
+	
+	// 품질기준 목록 들고가기 (외부용)
+	public List<QcStandardDTO> selectQcStandardGroupByIdx(String idx, boolean b) {
+		return qcStandardMapper.selectQcStandardGroupByIdx(idx, b);
+	}
+
+	// =======================================품질 검사 조회 , 등록, 수정?
+	/**
+	 * 품질 검사 항목 카운트 - 페이징용
+	 * @param searchDTO
+	 * @return
+	 */
+	public int getRequiredQCCount(WarehouseTransactionSearchDTO searchDTO) {
+		LogUtil.logStart(log);
+		
+		return warehouseTransactionMapper.getRequiredQCCountBySearchDTO(searchDTO);
+	}
+
+	/**
+	 * 품질 검사 항목 조회
+	 * @param searchDTO status = {"1", "5"} 둘 중 하나가 필요함
+	 * @return
+	 */
+	public List<WarehouseTransactionDTO> getRequiredQCListBySearchDTO(WarehouseTransactionSearchDTO searchDTO) {
+		LogUtil.logStart(log);
+		
+		return warehouseTransactionMapper.getRequiredQCListBySearchDTO(searchDTO);
 	}
 
 }

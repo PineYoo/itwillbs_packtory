@@ -30,7 +30,7 @@ public class CustomUserDetails implements UserDetails {
 	
 	@Override
 	public boolean isAccountNonLocked() {
-		log.info("isAccountNonLocked---start");
+//		log.info("isAccountNonLocked---start");
 		return true; // 강제로 잠기지 않았다고 리턴
 		// 단, DB에 별도로 만료 여부 값을 저장한 후 해당 값을 조회하여 리턴하도록 하면 만료 여부 컨트롤 가능
 	}
@@ -38,7 +38,7 @@ public class CustomUserDetails implements UserDetails {
 	// 7) 계정 사용 가능 여부 리턴하는 메서드(true : 사용 가능, false : 안됨) - 선택 2
 	@Override
 	public boolean isEnabled() {
-		log.info("isEnabled---start");
+//		log.info("isEnabled---start");
 		return !"Y".equalsIgnoreCase(loginVO.getIsDeleted()); // 탈퇴 계정이면 false 처리; // 강제로 만료되지 않았다고 리턴
 		// 단, DB에 별도로 만료 여부 값을 저장한 후 해당 값을 조회하여 리턴하도록 하면 만료 여부 컨트롤 가능
 	}
@@ -46,7 +46,7 @@ public class CustomUserDetails implements UserDetails {
 	// 4) 계정 만료 여부 리턴하는 메서드(true : 만료 안됨, false : 만료) - 선택 3
 	@Override
 	public boolean isAccountNonExpired() {
-		log.info("isAccountNonExpired---start");
+//		log.info("isAccountNonExpired---start");
 		return true; // 강제로 만료되지 않았다고 리턴
 		// 단, DB에 별도로 만료 여부 값을 저장한 후 해당 값을 조회하여 리턴하도록 하면 만료 여부 컨트롤 가능
 	}
@@ -56,14 +56,14 @@ public class CustomUserDetails implements UserDetails {
 	//	기존 getPassword() 메서드와의 중복 문제를 발생하지 않도록 명시적으로 구현하자!
 	@Override
 	public String getPassword() {
-		log.info("getPassword---start");
+//		log.info("getPassword---start");
 		return loginVO.getPassword();
 	}
 	
 	// 6) 계정 비밀번호 만료 여부 리턴하는 메서드(true : 만료 안됨, false : 만료) - 선택 5
 	@Override
 	public boolean isCredentialsNonExpired() {
-		log.info("isCredentialsNonExpired---start");
+//		log.info("isCredentialsNonExpired---start");
 		return true; // 강제로 만료되지 않았다고 리턴
 		// 단, DB에 별도로 만료 여부 값을 저장한 후 해당 값을 조회하여 리턴하도록 하면 만료 여부 컨트롤 가능
 	}
@@ -71,7 +71,7 @@ public class CustomUserDetails implements UserDetails {
 	// 6
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		log.info("Collection---start");
+//		log.info("Collection---start");
 		// 숫자 role을 문자열 role로 매핑
 		String roleName;
 		switch (loginVO.getRole()) {
@@ -90,7 +90,7 @@ public class CustomUserDetails implements UserDetails {
 		default:
 			roleName = "USER"; // 기본값
 		}
-		log.info("role is {} roleName is {}", loginVO.getRole(), roleName);
+//		log.info("role is {} roleName is {}", loginVO.getRole(), roleName);
 		
 		//return List.of(new SimpleGrantedAuthority("ROLE_"+ roleName));
 		return List.of(new SimpleGrantedAuthority(roleName));
@@ -100,12 +100,12 @@ public class CustomUserDetails implements UserDetails {
 	// => 현재 어플리케이션에서는 email 을 아이디로 사용하므로 email 값 리턴
 	@Override
 	public String getUsername() {
-		log.info("getUsername---start");
+//		log.info("getUsername---start");
 		return loginVO.getMemberId();
 	}
 	
 	public String getGroupId() {
-		log.info("getGroupId---start");
+//		log.info("getGroupId---start");
 		return loginVO.getDepartmentCode();
 	}
 	

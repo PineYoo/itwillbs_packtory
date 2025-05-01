@@ -153,4 +153,46 @@
 		ORDER BY name
 	</select>
 
+	<!-- 품질 기준 목록 material_idx(o) / product_idx 별로 가져오기 -->
+	<select id="selectQcStandardGroupByIdx" parameterType="string"
+										resultType="kr.co.itwillbs.de.mes.dto.QcStandardDTO">
+		SELECT
+			idx,
+			type,
+			name,
+			unit,
+			target_value,
+			min_value,
+			max_value,
+			memo
+		FROM t_qc_standard qs
+		WHERE is_deleted = 'N'
+			<choose>
+				<when test="isProduct == false">
+				AND EXISTS (
+					SELECT 1
+					FROM t_raw_material rm,
+					JSON_TABLE(
+							f_get_json_split_cte(rm.qc_type, '|'),
+							"$[*]" COLUMNS (value VARCHAR(255) PATH "$")
+							) jt
+					WHERE rm.idx = #{idx}
+					AND jt.value = qs.type
+					)
+				</when>
+				<when test="isProduct == true">
+				AND EXISTS (
+					SELECT 1
+					FROM t_product p,
+					JSON_TABLE(
+							f_get_json_split_cte(p.qc_type, '|'),
+							"$[*]" COLUMNS (value VARCHAR(255) PATH "$")
+							) jt
+					WHERE p.idx = #{idx}
+					AND jt.value = qs.type
+					)
+				</when>
+			</choose>
+	</select>
+
 </mapper>

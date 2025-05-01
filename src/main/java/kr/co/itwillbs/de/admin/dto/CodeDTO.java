@@ -21,7 +21,6 @@ public class CodeDTO {
  * 공통코드 DTO CommonCodeDTO 너무 길어서 Common은 제외함
  */
 	private String idx;
-	private int rownum;
 	@NotBlank(message = "코드는 필수입니다.")
 	private String majorCode;
 	
@@ -38,4 +37,9 @@ public class CodeDTO {
 	private LocalDateTime regDate;
 	private String modId;
 	private LocalDateTime modDate;
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 }

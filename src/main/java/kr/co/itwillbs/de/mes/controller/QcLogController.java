@@ -15,13 +15,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.mes.dto.QcLogDTO;
+import kr.co.itwillbs.de.mes.dto.QcLogFormDTO;
 import kr.co.itwillbs.de.mes.dto.QcLogSearchDTO;
+import kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO;
+import kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO;
 import kr.co.itwillbs.de.mes.service.QcLogService;
 import kr.co.itwillbs.de.mes.service.QcStandardService;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +46,7 @@ public class QcLogController {
 	// 품질로그 등록 폼 페이지
 	@GetMapping("/new")
 	public String qcLogRegisterForm(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 
 		// 공통코드 + 품질 기준
 		model.addAttribute("qcResult", commonCodeUtil.getCodeItems("QC_RESULT"));
@@ -57,8 +62,8 @@ public class QcLogController {
 	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	private ResponseEntity<Map<String, Object>> qcLogRegister(@RequestBody @Valid QcLogDTO qcLogDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("requestDTO : {}", StringUtil.objToString(qcLogDTO));
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(qcLogDTO));
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
@@ -78,7 +83,7 @@ public class QcLogController {
 	// 품질로그 목록 조회 (검색)
 	@GetMapping("")
 	public String getQcLogList(@ModelAttribute QcLogSearchDTO searchDTO, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 
 		// 페이징
 		searchDTO.getPageDTO().setTotalCount(qcLogService.searchQcLogCount(searchDTO));
@@ -99,7 +104,7 @@ public class QcLogController {
 	// 품질로그 상세 조회
 	@GetMapping("/{idx}")
 	public String getQcLog(@PathVariable("idx") Long idx, Model model) {
-		log.info("{}---start, request param {}", Thread.currentThread().getStackTrace()[1].getMethodName(), idx);
+		LogUtil.logStart(log);
 
 		// 품질로그 상세정보 조회
 		QcLogDTO qcLogDTO = qcLogService.getQcLogByIdx(idx);
@@ -116,7 +121,7 @@ public class QcLogController {
 	// 품질로그 수정
 	@PutMapping("/updateQcLog")
 	public ResponseEntity<Map<String, Object>> updateQcLog(@RequestBody QcLogDTO qcLogDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
@@ -132,5 +137,65 @@ public class QcLogController {
 
 		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
 		return ResponseEntity.ok(response);
+	}
+	
+	// =======================================품질 검사 조회 , 등록, 수정?
+	
+	/**
+	 * 창고 품질 검사 대기 목록 조회
+	 * @param status
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/required/{status}")
+	public String getRequiredQCListByStatus(@PathVariable(name="status") String status,
+											@ModelAttribute WarehouseTransactionSearchDTO searchDTO, Model model) {
+		LogUtil.logStart(log);
+		
+		// status 값이 숫자가 아닐 때 리스트로 리다이렉트
+		if(!StringUtil.isLongValue(status)) {
+			return "redirect:/main"; // 일단 메인으로 던지자
+		}
+		// 값 init
+		searchDTO.setStatus(status);
+		
+		// 페이징 카운트, 리스트 가져오기
+		int totalCount = qcStandardService.getRequiredQCCount(searchDTO);
+		searchDTO.getPageDTO().setTotalCount(totalCount);
+		List<WarehouseTransactionDTO> list = totalCount > 0
+									? qcStandardService.getRequiredQCListBySearchDTO(searchDTO) : List.of();
+		
+		// viewResolver 전달할 model
+		model.addAttribute("searchDTO", searchDTO);
+		model.addAttribute("requiredList", list);
+		
+		return QC_PATH + "/required_list";
+	}
+	
+	// 품질로그 등록 폼 페이지
+	@GetMapping("/new/{idx}")
+	public String qcLogRegisterFormByIdx(@PathVariable(name="idx") String idx,
+								@RequestParam(name = "isProduct", required = false) String isProduct, Model model) {
+		LogUtil.logStart(log);
+
+		// idx 값이 숫자가 아닐 때 리스트로 리다이렉트
+		if(!StringUtil.isLongValue(idx)) {
+			return "redirect:/main"; // 일단 메인으로 던지자
+		}
+		
+		// 공통코드 + 품질 기준
+		QcLogFormDTO formDTO = new QcLogFormDTO();
+		formDTO.setStandardList(qcStandardService.selectQcStandardGroupByIdx(idx, false));
+		
+		model.addAttribute("formDTO", formDTO);
+
+		return QC_PATH + "/qclog_group_form";
+	}
+	
+	@PostMapping(name="/new/{idx}", consumes= {MediaType.APPLICATION_JSON_VALUE})
+	@ResponseBody
+	public void qcLogRegisterFormByIdx(@RequestBody QcLogFormDTO formDTO) {
+		LogUtil.logStart(log);
+		
 	}
 }
