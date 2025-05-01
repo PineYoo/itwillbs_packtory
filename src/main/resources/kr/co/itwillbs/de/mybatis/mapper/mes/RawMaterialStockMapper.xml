@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.mes.mapper.RawMaterialStockMapper">
+	<select id="getMaterialStockList" resultType="kr.co.itwillbs.de.mes.dto.RawMaterialStockDTO"
+									  parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialStockSearchDTO">
+		WITH latest_transaction AS (
+		    SELECT 
+		        wt.material_idx,
+		        wt.destination_location,
+		        wt.mod_date,
+		        wt.mod_id,
+		        ROW_NUMBER() OVER (
+		            PARTITION BY wt.material_idx, wt.destination_location
+		            ORDER BY wt.mod_date DESC
+		        ) AS rn
+		    FROM t_warehouse_transaction wt
+		    WHERE wt.status = 2
+		)
+		SELECT 
+		    rm.idx,
+		    rm.name,
+		    rm.type,
+		    ci.minor_name AS type_name,
+		    COALESCE(SUM(
+		        CASE
+                    WHEN wt.status IN (2, 4, 6) AND wt.trans_type IN (1, 4) THEN wt.quantity
+                    WHEN wt.status IN (2, 4, 6) AND wt.trans_type IN (2, 3, 5) THEN -wt.quantity
+                    ELSE 0
+                END
+		    ), 0) AS stock,
+		    wt.unit,
+            ci2.minor_name AS unitName,
+		    wt.destination_location AS location,
+		    li.name AS location_name,
+		    lt.mod_id,
+		    lt.mod_date
+		FROM t_raw_material rm
+		LEFT JOIN t_commoncode_item ci
+		    ON rm.type = ci.minor_code
+		   AND ci.major_code = 'MATERIAL_TYPE'
+		LEFT JOIN t_warehouse_transaction wt
+		    ON rm.idx = wt.material_idx
+		LEFT JOIN t_location_info li
+		    ON wt.destination_location = li.idx
+		LEFT JOIN latest_transaction lt
+		    ON rm.idx = lt.material_idx
+		   AND li.idx = lt.destination_location
+		   AND lt.rn = 1
+		LEFT JOIN t_commoncode_item ci2
+		    ON wt.unit = ci2.minor_code
+		   AND ci2.major_code = 'ITEM_UNIT'
+		WHERE rm.parents_idx IS NULL
+		  AND rm.client_idx IS NULL
+			<if test="name != null and !(''.equals(name.trim()))">
+				AND rm.name LIKE CONCAT('%', #{name}, '%')
+			</if>
+			<if test="type != null and !(''.equals(type.trim()))">
+				AND rm.type = #{type}
+			</if>
+			<if test="locationName != null and !(''.equals(locationName.trim()))">
+				AND li.name LIKE CONCAT('%', #{locationName}, '%')
+			</if>
+			<if test="isDeleted != null and !(''.equals(isDeleted.trim()))">
+				AND rm.is_deleted = #{isDeleted}
+			</if>
+		GROUP BY 
+		    rm.idx,
+		    rm.name,
+		    rm.type,
+		    ci.minor_name,
+		    li.name,
+		    lt.mod_date,
+		    lt.mod_id
+		ORDER BY 
+		    rm.idx,
+		    li.name
+   		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+	
+	<select id="searchMaterialStockCount" resultType="int"
+									      parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialStockSearchDTO">
+		WITH latest_transaction AS (
+		    SELECT 
+		        wt.material_idx,
+		        wt.destination_location,
+		        wt.mod_date,
+		        wt.mod_id,
+		        ROW_NUMBER() OVER (
+		            PARTITION BY wt.material_idx, wt.destination_location
+		            ORDER BY wt.mod_date DESC
+		        ) AS rn
+		    FROM t_warehouse_transaction wt
+		    WHERE wt.status = 2
+		),
+		grouped_result AS (
+		    SELECT 
+		        rm.idx
+		    FROM t_raw_material rm
+		    LEFT JOIN t_warehouse_transaction wt
+		        ON rm.idx = wt.material_idx
+		    LEFT JOIN t_location_info li
+		        ON wt.destination_location = li.idx
+		    LEFT JOIN latest_transaction lt
+		        ON rm.idx = lt.material_idx
+		        AND li.idx = lt.destination_location
+		        AND lt.rn = 1
+		    WHERE rm.parents_idx IS NULL
+		      AND rm.client_idx IS NULL
+				<if test="name != null and !(''.equals(name.trim()))">
+					AND rm.name LIKE CONCAT('%', #{name}, '%')
+				</if>
+				<if test="type != null and !(''.equals(type.trim()))">
+					AND rm.type = #{type}
+				</if>
+				<if test="locationName != null and !(''.equals(locationName.trim()))">
+					AND li.name LIKE CONCAT('%', #{locationName}, '%')
+				</if>
+				<if test="isDeleted != null and !(''.equals(isDeleted.trim()))">
+					AND rm.is_deleted = #{isDeleted}
+				</if>
+		    GROUP BY 
+		        rm.idx,
+		        li.idx
+		)
+		SELECT COUNT(*) AS total_count
+		FROM grouped_result
+	</select>
+
+</mapper>

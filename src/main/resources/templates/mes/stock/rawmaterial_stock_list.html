@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layouts/de_layout}">
+<head>
+<title>팩토리(PackTory) - 자재 재고 목록</title>
+
+<style>
+.left-form {
+	border-right: 1px solid #e3e6f0;
+}
+
+@media ( max-width : 768px) {
+	.left-form {
+		border-right: none !important;
+	}
+}
+</style>
+</head>
+
+<body id="page-top">
+	<div layout:fragment="contents">
+		<!-- Begin Page Content -->
+		<div class="container-fluid">
+			<!-- Page Heading -->
+			<div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="h3 mb-4 text-gray-800">자재 재고 목록</h1>
+			</div>
+
+			<!-- 검색바 컨테이너 -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<!-- 검색 폼 -->
+					<div class="search-wrap border">
+						<section class="d-flex search-inner">
+							<div class="col pl-4 search-box">
+								<form th:action="@{/mes/stock/material}" method="get" th:object="${searchDTO}" id="searchForm">
+									<input type="hidden" th:field="*{pageDTO.page}"> <input type="hidden" th:field="*{pageDTO.size}">
+
+									<div class="container-fluid px-5 mt-3">
+										<div class="row">
+
+											<!-- 왼쪽 컬럼 -->
+											<div class="col-md-6 left-form">
+
+												<!-- 자재명 -->
+												<div class="form-group row mb-3">
+													<div th:replace="~{common/fragments/de_search_form :: inputText('name','자재명',false)}"></div>
+												</div>
+
+												<!-- 종류 -->
+												<div class="form-group row mb-3">
+													<div th:replace="~{common/fragments/de_search_form :: selectCodeItems('type', '자재 종류', false, ${materialTypeList})}"></div>
+												</div>
+											</div>
+
+											<!-- 오른쪽 컬럼 -->
+											<div class="col-md-6">
+												<!-- 창고명 -->
+												<div class="form-group row mb-3">
+													<div th:replace="~{common/fragments/de_search_form :: inputText('locationName','창고명',false)}"></div>
+												</div>
+
+												<!-- 삭제 유무 -->
+												<div class="form-group row mb-3">
+													<div th:replace="~{common/fragments/de_search_form :: isDeleted('isDeleted','삭제유무',false)}"></div>
+												</div>
+											</div>
+										</div>
+
+										<!-- 검색바 버튼 -->
+										<div class="row justify-content-end">
+											<div class="col-12 col-sm-auto mb-2">
+												<button type="button" class="btn btn-warning btn-block" onclick="formReset('searchForm');">초기화</button>
+											</div>
+											<div class="col-12 col-sm-auto mb-2">
+												<button class="btn btn-primary btn-block" id="btnSearch" type="submit">검색</button>
+											</div>
+										</div>
+										<!-- 검색바 버튼 끝 -->
+									</div>
+								</form>
+							</div>
+						</section>
+					</div>
+					<!-- 검색폼 끝 -->
+				</div>
+			</div>
+			<!-- 검색바 컨테이너 끝 -->
+
+			<!-- 본문 컨테이너 -->
+			<!-- 목록 카드 -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
+							<thead class="table-light">
+								<tr>
+									<th>종류</th>
+									<th>자재명</th>
+									<th>재고</th>
+									<th>단위</th>
+									<th>창고</th>
+									<th>재고량변경일</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item : ${rawMaterialStockList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
+									<td th:text="${item.typeName}"></td>
+									<td th:text="${item.name}"></td>
+									<td th:text="${item.stock}"></td>
+									<td th:text="${item.unitName}"></td>
+									<td th:text="${item.locationName}"></td>
+									<td th:text="${item.modDate}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div th:replace="~{common/fragments/de_pagination :: pagination(${searchDTO})}"></div>
+		</div>
+		<!-- 본문 컨테이너 끝 -->
+
+		<script type="text/javascript">
+            $(document).ready(function() {
+
+                // DataTable 초기화
+                $('#dataTables').DataTable({
+                    lengthChange : false,
+                    searching : false,
+                    paging : false,
+                    info : false,
+                    order : [ 1, "asc" ],
+                    responsive : true
+                }); // end of $('#dataTables').DataTable({
+
+                // 상세 페이지 이동
+                /*
+				$("#dataTables tbody").on('click', 'tr', function() {
+                    console.log("dataTables tbody click!!");
+                    var documentNumber = $(this).data('idx');
+
+                    if(!documentNumber) {
+                        return; // 페이지 이동 막기
+                    }
+                    location.href = `/mes/stock/${documentNumber}`;
+                });
+				*/
+            });
+        </script>
+	</div>
+</body>
+</html>
