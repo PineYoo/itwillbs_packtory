@@ -160,22 +160,33 @@ public class QcLogController {
 		searchDTO.setStatus(status);
 		
 		// 페이징 카운트, 리스트 가져오기
-		int totalCount = qcStandardService.getRequiredQCCount(searchDTO);
+		int totalCount = qcLogService.getRequiredQCCount(searchDTO);
 		searchDTO.getPageDTO().setTotalCount(totalCount);
 		List<WarehouseTransactionDTO> list = totalCount > 0
-									? qcStandardService.getRequiredQCListBySearchDTO(searchDTO) : List.of();
+									? qcLogService.getRequiredQCListBySearchDTO(searchDTO) : List.of();
 		
-		// viewResolver 전달할 model
+		// viewResolver 에 전달 할 model
 		model.addAttribute("searchDTO", searchDTO);
 		model.addAttribute("requiredList", list);
 		
 		return QC_PATH + "/required_list";
 	}
 	
-	// 품질로그 등록 폼 페이지
-	@GetMapping("/new/{idx}")
+	
+	// 어 이거 지금 좀 머리가 이상하게 돌아간다...?
+	// t_warehouse_transaction 테이블에서 idx 값을 가져와서 움직여야 하는데...
+	// 지금 여기 idx 값은 t_raw_material.idx 값이고.. 
+	// 이거 키를 통일 시켜야 한다. 슬슬 졸려서 머리가 안돌아가니 아침에 해야지
+	/**
+	 * 품질검사 대기 자재/상품의 품질 작성 페이지(리스트형)
+	 * @param idx t_raw_material.idx > 자재에 따라 검사 해야하는 품질검사기준의 목록을 가져와 작성화면을 만듬
+	 * @param isProduct false 자재, true 상품 > 스프링에서 required = false 로 값이 없을 경우 기본값 셋팅 됨 boolean 은 false
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/group/new/{idx}")
 	public String qcLogRegisterFormByIdx(@PathVariable(name="idx") String idx,
-								@RequestParam(name = "isProduct", required = false) String isProduct, Model model) {
+								@RequestParam(name = "isProduct", required = false) boolean isProduct, Model model) {
 		LogUtil.logStart(log);
 
 		// idx 값이 숫자가 아닐 때 리스트로 리다이렉트
@@ -185,17 +196,23 @@ public class QcLogController {
 		
 		// 공통코드 + 품질 기준
 		QcLogFormDTO formDTO = new QcLogFormDTO();
-		formDTO.setStandardList(qcStandardService.selectQcStandardGroupByIdx(idx, false));
+		formDTO.setStandardList(qcLogService.selectQcStandardGroupByIdx(idx, isProduct));
 		
+		// viewResolver 에 전달 할 model
+		formDTO.setIdx(idx);
+		formDTO.setProduct(isProduct);
 		model.addAttribute("formDTO", formDTO);
 
 		return QC_PATH + "/qclog_group_form";
 	}
 	
-	@PostMapping(name="/new/{idx}", consumes= {MediaType.APPLICATION_JSON_VALUE})
+	@PostMapping(value="/group/new", consumes= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseBody
-	public void qcLogRegisterFormByIdx(@RequestBody QcLogFormDTO formDTO) {
+	public void setQCLogRegisterForm(@RequestBody QcLogFormDTO formDTO) {
 		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "requried data: {}", formDTO.getQcList());
 		
+		// qc검사 서비스로 보내기
+		qcLogService.validatingQCs(formDTO);
 	}
 }

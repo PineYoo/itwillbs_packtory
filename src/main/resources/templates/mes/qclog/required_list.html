@@ -132,13 +132,7 @@
 					responsive : true
 				}); // end of $('#dataTables').DataTable({
 
-				// 등록 페이지 이동
-				$("#btnRegister").on("click", function() {
-					console.log("btnRegister click!!!");
-					location.href = "/mes/qclog/new"; // 품질로그 등록 페이지로 이동
-				});
-
-				// 상세 페이지 이동
+				// 상세 페이지 이동 -> 항목 품질 검사 작성...?
 				$("#dataTables tbody").on('click', 'tr', function() {
 					console.log("dataTables tbody click!!");
 					var id = $(this).data('id');
@@ -146,7 +140,7 @@
 					if (!id) {
 						return; // 페이지 이동 막기
 					}
-					location.href = '/mes/qclog/new/'+id;
+					location.href = '/mes/qclog/group/new/'+id;
 				});
 			});
 		</script>

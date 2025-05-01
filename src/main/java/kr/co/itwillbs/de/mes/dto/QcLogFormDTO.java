@@ -15,6 +15,8 @@ import lombok.ToString;
 @RequiredSessionIds(fields = { "regId", "modId" })
 public class QcLogFormDTO {
 
+	private String idx;
+	private boolean isProduct;
 	/*
 	@NotBlank(message = "품질IDX 는 필수 입력 값입니다.")
 	private String qcIdx; // 품질IDX

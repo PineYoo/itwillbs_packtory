@@ -37,7 +37,7 @@ public class LotNumberUtil {
 	 * <br>3 + 14 + 9 = 26자리 시간기반 숫자 생성
 	 * @return
 	 */
-	public String generateLotNumber() {
+	public static String generateLotNumber() {
 		LogUtil.logStart(log);
 		StringBuilder builder = builderThreadLocal.get();
 		// StringBuilder 초기화 (재사용)
@@ -63,7 +63,7 @@ public class LotNumberUtil {
 	 * @param sb
 	 * @param nanos
 	 */
-	private void padNanos(StringBuilder sb, long nanos) {
+	private static void padNanos(StringBuilder sb, long nanos) {
 		// 나노초는 최대 9자리
 		if (nanos < 10) {
 			sb.append("00000000").append(nanos);
@@ -87,8 +87,6 @@ public class LotNumberUtil {
 	}
 
 	public static void main(String[] args) {
-		LotNumberUtil generator = LotNumberUtil.getInstance();
-
 		LotNumberUtil a = LotNumberUtil.getInstance();
 		LotNumberUtil b = LotNumberUtil.getInstance();
 		LotNumberUtil c = LotNumberUtil.getInstance();
@@ -101,11 +99,11 @@ public class LotNumberUtil {
 		// 성능 테스트
 		long start = System.nanoTime();
 		for (int i = 0; i < 100_000; i++) {
-			generator.generateLotNumber();
+			LotNumberUtil.generateLotNumber();
 		}
 		long end = System.nanoTime();
 
-		System.out.println("생성된 ID 예시: " + generator.generateLotNumber());
+		System.out.println("생성된 ID 예시: " + LotNumberUtil.generateLotNumber());
 		System.out.println("100,000번 생성 소요 시간: " + ((end - start) / 1_000_000) + "ms");
 	}
 }
