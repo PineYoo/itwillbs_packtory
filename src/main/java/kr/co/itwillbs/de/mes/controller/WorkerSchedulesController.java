@@ -40,7 +40,7 @@ public class WorkerSchedulesController {
 	private final CommonCodeUtil commonCodeUtil;
 	private final String PATH = "/mes/workerschedule";
 
-	// 보유 자격증 정보 등록 폼 페이지
+	// 근무일정 등록 폼 페이지
 	@GetMapping("/new")
 	public String workerScheduleRegisterForm(Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -50,12 +50,13 @@ public class WorkerSchedulesController {
 		model.addAttribute("locationList", locationInfoService.getLocationInfoList());
 		model.addAttribute("workOrdersList", workOrdersService.getWorkOrdersList());
 
+		// DTO를 모델에 추가 (폼에 자동으로 바인딩)
 		model.addAttribute("workerScheduleDTO", new WorkerScheduleDTO());
 
 		return PATH + "/workerschedule_form";
 	}
 
-	// 보유 자격증 정보 등록 폼 페이지 AJAX용
+	// 근무일정 등록 폼 페이지 AJAX용
 	@PostMapping(value = { "/new", "/" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	private ResponseEntity<Map<String, Object>> workerScheduleRegister(
@@ -63,13 +64,19 @@ public class WorkerSchedulesController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("requestDTO : {}", StringUtil.objToString(workerScheduleDTO));
 
-		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
 		try {
-			// 여기서 workerScheduleDTO에 들어간 shiftType, locationCode 등을 사용해 일정을 생성
-			workerScheduleService.insertWorkerSchedule(workerScheduleDTO);
+			// 스케줄 생성
+			List<WorkerScheduleDTO> scheduleList = workerScheduleService.generateSchedules(workerScheduleDTO);
+
+			for (WorkerScheduleDTO dto : scheduleList) {
+				workerScheduleService.insertWorkerSchedule(dto);
+			}
+
 			response.put("status", "success");
-			response.put("message", "정상적으로 수행 되었습니다.");
+			response.put("message", "정상적으로 저장되었습니다.");
+			response.put("scheduleList", scheduleList);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.put("status", "fail");
@@ -79,7 +86,7 @@ public class WorkerSchedulesController {
 		return ResponseEntity.ok(response);
 	}
 
-	// 보유 자격증 정보 목록 조회 (검색)
+	// 근무일정 목록 조회 (검색)
 	@GetMapping("")
 	public String getWorkerScheduleList(@ModelAttribute WorkerScheduleSearchDTO searchDTO, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -87,7 +94,7 @@ public class WorkerSchedulesController {
 		// 페이징
 		searchDTO.getPageDTO().setTotalCount(workerScheduleService.searchWorkerScheduleCount(searchDTO));
 
-		// 보유 자격증 정보 목록 조회
+		// 근무일정 목록 조회
 		List<WorkerScheduleDTO> workerScheduleList = workerScheduleService.searchWorkerSchedule(searchDTO);
 		model.addAttribute("workerScheduleList", workerScheduleList);
 
@@ -98,12 +105,12 @@ public class WorkerSchedulesController {
 		return PATH + "/workerschedule_list";
 	}
 
-	// 보유 자격증 정보 상세 조회
+	// 근무일정 상세 조회
 	@GetMapping("/{idx}")
 	public String getWorkerSchedule(@PathVariable("idx") Long idx, Model model) {
 		log.info("{}---start, request param {}", Thread.currentThread().getStackTrace()[1].getMethodName(), idx);
 
-		// 보유 자격증 정보 상세정보 조회
+		// 근무일정 상세정보 조회
 		WorkerScheduleDTO workerScheduleDTO = workerScheduleService.getWorkerScheduleByIdx(idx);
 		model.addAttribute("workerScheduleDTO", workerScheduleDTO);
 
@@ -115,7 +122,7 @@ public class WorkerSchedulesController {
 		return PATH + "/workerschedule_detail";
 	}
 
-	// 보유 자격증 정보 수정
+	// 근무일정 수정
 	@PutMapping("/updateWorkerSchedule")
 	public ResponseEntity<Map<String, Object>> updateWorkerSchedule(@RequestBody WorkerScheduleDTO workerScheduleDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -136,4 +143,5 @@ public class WorkerSchedulesController {
 		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
 		return ResponseEntity.ok(response);
 	}
+
 }

@@ -81,7 +81,7 @@ public interface WorkOrdersMapper {
 	/*
 	 * 외부용
 	 */
-	public List<WorkOrdersFormDTO> selectWorkOrdersList();
+	public List<WorkOrdersItemsDTO> selectWorkOrdersList();
 
 
 }

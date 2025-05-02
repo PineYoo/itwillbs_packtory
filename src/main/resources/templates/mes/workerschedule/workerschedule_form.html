@@ -77,21 +77,19 @@ input, select {
 										<option th:each="location : ${locationList}" th:value="${location.idx}" th:text="${location.name}"></option>
 									</select>
 								</div>
-								
+
 								<!-- 시작일자 -->
 								<div class="col-md-6">
-									<label for="startDate" class="form-label">시작일자</label> 
-									<select th:field="*{startDate}" class="form-select">
-										<option value="">시작일자를 선택하세요</option>
+									<label for="startDate" class="form-label">시작일자</label> <select th:field="*{startDate}" class="form-select">
+										<option value="">장소를 선택하세요</option>
 										<option th:each="work : ${workOrdersList}" th:value="${work.actualStartDate}" th:text="${work.actualStartDate}"></option>
 									</select>
 								</div>
-								
+
 								<!-- 종료일자 -->
 								<div class="col-md-6">
-									<label for="endDate" class="form-label">종료일자</label> 
-									<select th:field="*{endDate}" class="form-select">
-										<option value="">종료일자를 선택하세요</option>
+									<label for="endDate" class="form-label">종료일자</label> <select th:field="*{endDate}" class="form-select">
+										<option value="">장소를 선택하세요</option>
 										<option th:each="work : ${workOrdersList}" th:value="${work.actualEndDate}" th:text="${work.actualEndDate}"></option>
 									</select>
 								</div>

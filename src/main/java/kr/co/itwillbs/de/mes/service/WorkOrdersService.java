@@ -140,7 +140,7 @@ public class WorkOrdersService {
 	}
 
 	// (외부용)
-	public List<WorkOrdersFormDTO> getWorkOrdersList() {
+	public List<WorkOrdersItemsDTO> getWorkOrdersList() {
 		return workOrdersMapper.selectWorkOrdersList();
 	}
 

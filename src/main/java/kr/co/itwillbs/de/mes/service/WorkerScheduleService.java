@@ -1,17 +1,15 @@
 package kr.co.itwillbs.de.mes.service;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
-import kr.co.itwillbs.de.human.dto.EmployeeDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerScheduleSearchDTO;
 import kr.co.itwillbs.de.mes.mapper.WorkerScheduleMapper;
@@ -63,61 +61,77 @@ public class WorkerScheduleService {
 		if (workerScheduleDTO != null) {
 			// 근무 일정 정보를 업데이트하는 쿼리 호출
 			workerScheduleMapper.updateWorkerSchedule(workerScheduleDTO);
-			log.info("근무 일정 수정 완료 - qcIdx: {}", workerScheduleDTO.getIdx());
+			log.info("근무 일정 수정 완료 - idx: {}", workerScheduleDTO.getIdx());
 		}
 	}
 
 	// 비즈니스 데이 계산
-	private List<LocalDate> getBusinessDays(LocalDate startDate, LocalDate endDate) {
-		List<LocalDate> businessDays = new ArrayList<>();
-		LocalDate date = startDate;
-		while (!date.isAfter(endDate)) {
+	private List<String> getBusinessDays(String startDate, String endDate) {
+		List<String> businessDays = new ArrayList<>();
+
+		// DateTimeFormatter를 사용하여 지정된 포맷으로 파싱
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+		// String을 LocalDateTime으로 변환
+		LocalDateTime date = LocalDateTime.parse(startDate, formatter);
+		LocalDateTime end = LocalDateTime.parse(endDate, formatter);
+
+		// 비즈니스 데이 계산
+		while (!date.isAfter(end)) {
 			DayOfWeek day = date.getDayOfWeek();
+			// 주말 제외
 			if (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY) {
-				businessDays.add(date);
+				businessDays.add(date.toString()); // String 날짜로 저장
 			}
 			date = date.plusDays(1);
 		}
 		return businessDays;
 	}
 
-	public List<WorkerScheduleDTO> generateSchedules(List<EmployeeDTO> employees, LocalDate startDate,
-			LocalDate endDate, String shiftType1, String location1Code, String shiftType2, String location2Code) {
-		// 생산부 소속 직원만 필터링 (부서 코드가 5인 직원만)
-		List<EmployeeDTO> productionEmployees = employees.stream().filter(e -> "5".equals(e.getDepartmentCode()))
-				.collect(Collectors.toList());
-
-		// 팀별 근무 일정 생성 (부서가 5이고 서브부서가 4 또는 5인 직원들만)
-		List<EmployeeDTO> team1 = productionEmployees.stream().filter(e -> "4".equals(e.getSubDepartmentCode()))
-				.collect(Collectors.toList());
-		List<EmployeeDTO> team2 = productionEmployees.stream().filter(e -> "5".equals(e.getSubDepartmentCode()))
-				.collect(Collectors.toList());
+	// 근무 일정 생성
+	public List<WorkerScheduleDTO> generateSchedules(WorkerScheduleDTO workerScheduleDTO) {
+		String startDate = workerScheduleDTO.getStartDate();
+		String endDate = workerScheduleDTO.getEndDate();
 
 		// 비즈니스 데이 계산
-		List<LocalDate> businessDays = getBusinessDays(startDate, endDate);
+		List<String> businessDays = getBusinessDays(startDate, endDate);
 
-		// 근무 일정 리스트 생성
+		// 근무 일정 생성
+		String shiftType = workerScheduleDTO.getShiftType();
+		String locationCode = workerScheduleDTO.getLocationIdx();
+
 		List<WorkerScheduleDTO> scheduleList = new ArrayList<>();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		// 동적으로 등록폼에서 받은 shiftType과 locationCode를 사용하여 팀별 일정 생성
-		scheduleList.addAll(createSchedulesForTeam(team1, businessDays, shiftType1, location1Code, formatter)); // 1팀
-		scheduleList.addAll(createSchedulesForTeam(team2, businessDays, shiftType2, location2Code, formatter)); // 2팀
+		// 팀별 근무 일정 생성
+		List<WorkerScheduleDTO> teamSchedules = createSchedulesForTeam(workerScheduleDTO.getEmployeeId(), businessDays,
+				shiftType, locationCode, endDate);
 
+		// 각 스케줄에 endDate 세팅
+		for (WorkerScheduleDTO dto : teamSchedules) {
+			dto.setEndDate(endDate);
+		}
+
+		scheduleList.addAll(teamSchedules);
+
+		log.info("생성된 근무일정 수: {}", scheduleList.size());
 		return scheduleList;
 	}
 
 	// 팀별 근무 일정 생성
-	private List<WorkerScheduleDTO> createSchedulesForTeam(List<EmployeeDTO> team, List<LocalDate> businessDays,
-			String shiftType, String locationCode, DateTimeFormatter formatter) {
+	private List<WorkerScheduleDTO> createSchedulesForTeam(String employeeId, List<String> businessDays,
+			String shiftType, String locationCode, String endDate) {
 		List<WorkerScheduleDTO> schedules = new ArrayList<>();
-		for (EmployeeDTO emp : team) {
-			for (LocalDate day : businessDays) {
-				WorkerScheduleDTO schedule = WorkerScheduleDTO.builder().employeeId(emp.getId()).shiftType(shiftType)
-						.locationIdx(locationCode).startDate(day.format(formatter)).build();
-				schedules.add(schedule);
-			}
+
+		for (String day : businessDays) {
+			String startDateString = day + " 00:00:00";
+
+			WorkerScheduleDTO schedule = WorkerScheduleDTO.builder().employeeId(employeeId).shiftType(shiftType)
+					.locationIdx(locationCode).startDate(startDateString).endDate(endDate).build();
+
+			schedules.add(schedule);
 		}
+
 		return schedules;
 	}
+
 }
