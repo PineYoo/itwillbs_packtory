@@ -25,6 +25,7 @@ import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.mes.dto.QcLogDTO;
 import kr.co.itwillbs.de.mes.dto.QcLogFormDTO;
 import kr.co.itwillbs.de.mes.dto.QcLogSearchDTO;
+import kr.co.itwillbs.de.mes.dto.QcRequiredLogDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO;
 import kr.co.itwillbs.de.mes.service.QcLogService;
@@ -173,20 +174,16 @@ public class QcLogController {
 	}
 	
 	
-	// 어 이거 지금 좀 머리가 이상하게 돌아간다...?
-	// t_warehouse_transaction 테이블에서 idx 값을 가져와서 움직여야 하는데...
-	// 지금 여기 idx 값은 t_raw_material.idx 값이고.. 
-	// 이거 키를 통일 시켜야 한다. 슬슬 졸려서 머리가 안돌아가니 아침에 해야지
 	/**
 	 * 품질검사 대기 자재/상품의 품질 작성 페이지(리스트형)
-	 * @param idx t_raw_material.idx > 자재에 따라 검사 해야하는 품질검사기준의 목록을 가져와 작성화면을 만듬
-	 * @param isProduct false 자재, true 상품 > 스프링에서 required = false 로 값이 없을 경우 기본값 셋팅 됨 boolean 은 false
+	 * @param idx t_warehouse_transaction.idx > 자재에 따라 검사 해야하는 품질검사기준의 목록을 가져와 작성화면을 만듬
+	 * @param status 1: 입고, 5: 출고
 	 * @param model
 	 * @return
 	 */
 	@GetMapping("/group/new/{idx}")
 	public String qcLogRegisterFormByIdx(@PathVariable(name="idx") String idx,
-								@RequestParam(name = "isProduct", required = false) boolean isProduct, Model model) {
+										@RequestParam(name="status", required = false) String status, Model model) {
 		LogUtil.logStart(log);
 
 		// idx 값이 숫자가 아닐 때 리스트로 리다이렉트
@@ -196,11 +193,11 @@ public class QcLogController {
 		
 		// 공통코드 + 품질 기준
 		QcLogFormDTO formDTO = new QcLogFormDTO();
-		formDTO.setStandardList(qcLogService.selectQcStandardGroupByIdx(idx, isProduct));
+		formDTO.setStandardList(qcLogService.selectQcStandardGroupByIdx(idx));
 		
 		// viewResolver 에 전달 할 model
 		formDTO.setIdx(idx);
-		formDTO.setProduct(isProduct);
+		formDTO.setViewStatus(status);
 		model.addAttribute("formDTO", formDTO);
 
 		return QC_PATH + "/qclog_group_form";
@@ -208,11 +205,41 @@ public class QcLogController {
 	
 	@PostMapping(value="/group/new", consumes= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseBody
-	public void setQCLogRegisterForm(@RequestBody QcLogFormDTO formDTO) {
+	public ResponseEntity<Map<String, Object>> setQCLogRegisterForm(@RequestBody QcLogFormDTO formDTO) {
 		LogUtil.logStart(log);
 		LogUtil.logDetail(log, "requried data: {}", formDTO.getQcList());
 		
-		// qc검사 서비스로 보내기
-		qcLogService.validatingQCs(formDTO);
+		// 리턴 객체 생성
+		Map<String, Object> response = new HashMap<>();
+		try {
+			// qc검사 서비스로 보내기
+			qcLogService.validatingQCs(formDTO);
+			response.put("status", "success");
+			response.put("message", "정상적으로 수행 되었습니다.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("status", "fail");
+			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
+		}
+
+		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
+		return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping("/required/list")
+	public String getQCRequiredLogList(@ModelAttribute WarehouseTransactionSearchDTO searchDTO, Model model) {
+		LogUtil.logStart(log);
+		
+		// 페이징 카운트, 리스트 가져오기
+		int totalCount = qcLogService.getRequiredQCLogCountBySearchDTO(searchDTO);
+		searchDTO.getPageDTO().setTotalCount(totalCount);
+		List<QcRequiredLogDTO> list = totalCount > 0
+									? qcLogService.getRequiredQCLogListBySearchDTO(searchDTO) : List.of();
+		
+		// viewResolver 에 전달 할 model
+		model.addAttribute("searchDTO", searchDTO);
+		model.addAttribute("requiredList", list);
+		
+		return QC_PATH + "/required_log_list";
 	}
 }

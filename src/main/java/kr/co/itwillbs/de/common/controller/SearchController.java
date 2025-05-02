@@ -294,6 +294,35 @@ public class SearchController {
 	}
 
 	// ==================================================================================
+	// 주문할 자재 조회 팝업창으로 이동
+	@GetMapping(value = { "/material/order/search-popup", "/material/order/search-popup/" })
+	public String getMaterialOrderList(Model model, @ModelAttribute RawMaterialSearchDTO materialSearchDTO) {
+		LogUtil.logStart(log);
+		// 자재 리스트 조회 요청(SELECT)
+		List<RawMaterialDTO> materialList = searchService.getMaterialOrderList(materialSearchDTO);
+		model.addAttribute("materialList", materialList);
+		
+//		//페이징용 totalCount
+		materialSearchDTO.getPageDTO().setTotalCount(searchService.getMaterialOrderCountForPaging(materialSearchDTO));
+		model.addAttribute("materialSearchDTO", materialSearchDTO);
+		
+		return "/common/material_order_search_form";
+	}
+	
+	// 검색조건에 따른 자재 목록
+	@PostMapping("/material/order/search-popup")
+	@ResponseBody
+	public List<RawMaterialDTO> searchMaterialOrderList(Model model, @ModelAttribute RawMaterialSearchDTO materialSearchDTO) {
+		LogUtil.logStart(log);
+		
+		//페이징용 totalCount
+		materialSearchDTO.getPageDTO().setTotalCount(searchService.getMaterialOrderCountForPaging(materialSearchDTO));
+		model.addAttribute("materialSearchDTO", materialSearchDTO);
+		
+		return searchService.getMaterialOrderList(materialSearchDTO);
+	}
+	
+	// ==================================================================================
 	// 공정 조회 팝업창으로 이동
 	@GetMapping(value = { "/recipeProcess/search-popup", "/recipeProcess/search-popup/" })
 	public String getRecipeProcessList(Model model, @ModelAttribute RecipeProcessSearchDTO recipeProcessSearchDTO) {

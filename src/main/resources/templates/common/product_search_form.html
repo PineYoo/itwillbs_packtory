@@ -87,7 +87,7 @@
 								<td class="name" th:text="${item.name}"></td>
 								<!-- <td class="unit" th:text="${item.unit != null ? item.unit : '-'}"></td> -->
 								<!-- <td class="quantity" th:text="${item.quantity != null ? item.quantity : '-'}"></td> -->
-								<td class="price" th:text="${item.price != null ? item.price : '-'}"></td>
+								<td class="price" th:text="${item.price != null ? #numbers.formatInteger(item.price, 3, 'COMMA') : '-'}"></td>
 								<td class="reg-date" th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd')}"></td>
 				        		<td>
 				        			<!-- hidden ! -->
@@ -175,7 +175,7 @@
 										<td class="name">${item.name || '-'}</td>
 										/* <td class="unit">${item.unit || '-'}</td>
 										<td class="quantity">${item.quantity || '-'}</td> */
-										<td class="price">${item.price || '-'}</td>
+							            <td class="price">${item.price != null ? Number(item.price).toLocaleString() : '-'}</td>
 				                        <td class="reg-date">${regDate}</td>
 						        		<td>
 											<input type="hidden" class="idx" value="${item.idx || ''}" />

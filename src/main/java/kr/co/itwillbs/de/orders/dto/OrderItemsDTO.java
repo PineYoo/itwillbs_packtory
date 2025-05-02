@@ -18,8 +18,8 @@ public class OrderItemsDTO {
 	private Long idx; 					// 테이블 인덱스
 	
     private String documentNumber;		// 주문번호(orderDocumentNumber)
-    private String productCode; 		// 물품코드
-    private String productNumber; 		// 물품번호
+    private String materialIdx; 		// 자재_idx
+    private String productNumber; 		// 상품_idx
     private String productName; 		// 아이템명
     private String productValue; 		// 개수
     private Integer unitPrice; 			// 개수별 금액

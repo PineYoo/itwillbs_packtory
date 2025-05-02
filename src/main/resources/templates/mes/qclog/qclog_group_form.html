@@ -52,8 +52,8 @@ input, select {
 					<div class="card-body">
 						<div class="table-responsive">
 							<form th:action="@{/mes/qclog/group/new}" method="post" th:object="${formDTO}" class="form row g-3" id="registerForm">
-								<input type="hidden" th:filed="*{idx}" />
-								<input type="hidden" th:filed="*{isProduct}" />
+								<input type="hidden" th:field="*{idx}" />
+								<input type="hidden" th:field="*{viewStatus}" />
 								
 								<th:block th:each="item : *{standardList}">
 									<input type="hidden" th:name="|${item.idx}_qcIdx|" th:value="${item.idx}" />
@@ -67,9 +67,9 @@ input, select {
 									<input type="number" class="form-control" th:name="|${item.idx}_value|" id="qcResult" th:placeholder="${item.targetValue}" max="9999"/>
 								</div>
 								<div class="col-md-12">
-									<label class="mb-1" th:for="memo">메모</label>
+									<label class="mb-1" th:for="|${item.idx}_memo|" onclick="toggleStyle(this);">▶ 메모 작성</label>
 									<textarea class="form-control" th:name="|${item.idx}_memo|"
-										placeholder="메모 사항" rows="5" cols="3">
+										placeholder="메모 사항" rows="5" cols="3" style="display: none;">
 									</textarea>
 								</div>
 								</th:block>
@@ -100,9 +100,22 @@ input, select {
 		</div>
 
 		<script type="text/javascript">
+		
+			function toggleStyle(label) {
+				const ul = label.nextElementSibling;
+				if (ul.style.display === "none") {
+					ul.style.display = "block";
+					label.innerText = "▼ " + label.innerText.replace(/^▶|▼/g, '').trim();
+				} else {
+					ul.style.display = "none";
+					label.innerText = "▶ " + label.innerText.replace(/^▶|▼/g, '').trim();
+				}
+			}
+		
 			$(function() {
 				$('#btnList').on("click", function() {
-					location.href="/mes/qclog";
+					let status = document.querySelector('#viewStatus').value;
+					location.href="/mes/qclog/required/"+status;
 				});
 				
 				// 품질로그 등록
@@ -124,6 +137,10 @@ input, select {
 					});
 					
 					const _jsonObj = { qcList: Object.values(_grouped) };
+					
+					_jsonObj['idx']=document.querySelector('#idx').value;
+					_jsonObj['viewStatus']=document.querySelector('#viewStatus').value;
+					
 					// 데이터 확인
 					console.log(_jsonObj);
 					// JSON 데이터를 서버로 전송

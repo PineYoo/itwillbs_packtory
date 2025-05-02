@@ -141,6 +141,19 @@ public interface SearchMapper {
 	
 	// ====================================================================
 	/**
+	 * 검색조건에 따른 구매할 자재 리스트 조회
+	 * @param materialSearchDTO
+	 * @return List<RawMaterialDTO>
+	 */
+	List<RawMaterialDTO> getMaterialOrderList(RawMaterialSearchDTO materialSearchDTO);
+	
+	/**
+	 * 페이징용 카운트
+	 */
+	int getMaterialOrderCountForPaging(RawMaterialSearchDTO materialSearchDTO);
+	
+	// ====================================================================
+	/**
 	 * 검색조건에 따른 공정 리스트 조회
 	 * @param recipeProcessSearchDTO
 	 * @return List<RecipeProcessDTO>

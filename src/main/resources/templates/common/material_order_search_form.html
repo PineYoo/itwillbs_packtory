@@ -75,11 +75,11 @@
 				        <thead>
 				            <tr>
 				                <th class="text-nowrap">자재명</th>
-<!-- 				                <th class="text-nowrap">거래처명</th> -->
+				                <th class="text-nowrap">거래처명</th>
 				                <th class="text-nowrap">타입</th>
-<!-- 				                <th class="text-nowrap">개수</th> -->
-<!-- 				                <th class="text-nowrap">단위</th> -->
-<!-- 				                <th class="text-nowrap">가격</th> -->
+				                <th class="text-nowrap">개수</th>
+				                <th class="text-nowrap">단위</th>
+				                <th class="text-nowrap">가격</th>
 				                <th class="text-nowrap">평균사용기한</th>
 				                <th class="text-nowrap">보관조건</th>
 				                <th class="text-nowrap">선택</th>
@@ -88,11 +88,11 @@
 				        <tbody id="materialList">
 				        	<tr th:each="item , status : ${materialList}" th:data-id="${item.idx}">
 								<td class="name" th:text="${item.name != null ? item.name : '-'}"></td>
-<!-- 							    <td class="client-company-name" th:text="${item.clientCompanyName != null ? item.clientCompanyName : '-'}"></td> -->
+							    <td class="client-company-name" th:text="${item.clientCompanyName != null ? item.clientCompanyName : '-'}"></td>
 							    <td class="type-name" th:text="${item.typeName != null ? item.typeName : '-'}"></td>
-<!-- 							    <td class="quantity" th:text="${item.quantity != null ? item.quantity : '-'}"></td> -->
-<!-- 							    <td class="unit-name" th:text="${item.unitName != null ? item.unitName : '-'}"></td> -->
-<!-- 							    <td class="price" th:text="${item.price != null ? item.price : '-'}"></td> -->
+							    <td class="quantity" th:text="${item.quantity != null ? item.quantity : '-'}"></td>
+							    <td class="unit-name" th:text="${item.unitName != null ? item.unitName : '-'}"></td>
+								<td class="price" th:text="${item.price != null ? #numbers.formatInteger(item.price, 3, 'COMMA') : '-'}"></td>
 							    <td class="expiry-date" th:text="${item.expiryDate != null ? item.expiryDate : '-'}" /></td>
 							    <td class="storage-condition" th:text="${item.storageCondition != null ? item.storageCondition : '-'}" /></td>
 				        		<td>
@@ -154,7 +154,7 @@
 			    var size = $('input[name="pageDTO.size"]').val();
 			    
 		        $.ajax({
-		            url: '/material/search-popup',
+		            url: '/material/order/search-popup',
 		            type: 'POST',
 		            data: {
 		            	searchKeyword : searchKeyword,
@@ -166,7 +166,7 @@
 					    $tbody.empty();
 
 					    if (data.length === 0) {
-					        $tbody.append('<tr><td colspan="5">조회 된 데이터가 없습니다.</td></tr>');
+					        $tbody.append('<tr><td colspan="9">조회 된 데이터가 없습니다.</td></tr>');
 					        return;
 					    }
 
@@ -174,7 +174,11 @@
 					        const row = `
 					            <tr data-id="${item.idx}">
 					                <td class="name">${item.name || '-'}</td>
+								    <td class="client-company-name">${item.clientCompanyName || '-'}</td>
 					                <td class="type-name">${item.typeName || '-'}</td>
+								    <td class="quantity">${item.quantity || '-'}</td>
+								    <td class="unit-name">${item.unitName || '-'}</td>
+						            <td class="price">${item.price != null ? Number(item.price).toLocaleString() : '-'}</td>
 					                <td class="expiry-date">${item.expiryDate || '-'}</td>
 								    <td class="storage-condition">${item.storageCondition || '-'}</td>
 					                <td>
@@ -207,7 +211,7 @@
 
 // 		    let selectedCount = selectedIdxList.length; // 초기 개수
 
-		    // 초기화: 이미 선택된 상품은 선택됨 표시
+		    // 초기화: 이미 선택된 자재는 선택됨 표시
 		    $('#materialList tr').each(function () {
 		        const idx = parseInt($(this).find('.idx').val());
 		        if (selectedIdxList.includes(idx)) {
@@ -222,7 +226,8 @@
 		    $(document).on('click', '.select-btn', function () {
 		        const $btn = $(this);
 		        const $row = $btn.closest('tr');
-
+		        const idx = parseInt($row.find('.idx').val());
+		        
 			    // '-'일 경우 빈 문자열로 변환하는 헬퍼 함수
 			    function cleanText(text) {
 			        return text.trim() === '-' ? '' : text.trim();
@@ -234,6 +239,7 @@
 			        typeName: cleanText($row.find(".type-name").text()),
 			        expiryDate: cleanText($row.find(".expiry-date").val()),
 			        storageCondition: cleanText($row.find(".storage-condition").val()),
+		            price: parseInt($row.find('.price').text().trim().replace(/,/g, '')) || 0,
 
 			        idx: $row.find(".idx").val(),
 			        parentsIdx: $row.find(".parents-idx").val(),
@@ -264,12 +270,12 @@
 		                .removeClass('selected btn-secondary')
 		                .addClass('btn-success')
 		                .text('선택');
-					// 상품 삭제
+					// 자재 삭제
 		            if (window.opener && typeof window.opener.removeMaterialInfo === 'function') {
 		                window.opener.removeMaterialInfo(idx);
 		            }
 			        
-				    // 상품의 총합 계산
+				    // 자재의 총합 계산
 		            if (window.opener && typeof window.opener.updateTotalSelectedPrice === 'function') {
 		                window.opener.updateTotalSelectedPrice();
 		            }
@@ -282,12 +288,12 @@
 		                .removeClass('btn-success')
 		                .text('선택됨');
 
-					// 상품 정보 추가
+					// 자재 정보 추가
 		            if (window.opener && typeof window.opener.appendMaterialInfo === 'function') {
 		                window.opener.appendMaterialInfo(materialInfo);
 		            }
 			        
-				    // 상품의 총합 계산
+				    // 자재의 총합 계산
 		            if (window.opener && typeof window.opener.updateTotalSelectedPrice === 'function') {
 		                window.opener.updateTotalSelectedPrice();
 		            }

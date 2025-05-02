@@ -142,43 +142,70 @@
 	</select>
 
 	<!-- 품질 기준 목록 material_idx(o) / product_idx 별로 가져오기 -->
-	<select id="selectQcStandardGroupByIdx" parameterType="string" resultType="kr.co.itwillbs.de.mes.dto.QcStandardDTO">
-		SELECT
-		idx,
-		type,
-		name,
-		unit,
-		target_value,
-		min_value,
-		max_value,
-		memo
-		FROM t_qc_standard qs
-		WHERE is_deleted = 'N'
-		<choose>
-			<when test="isProduct == false">
-				AND EXISTS (
-				SELECT 1
-				FROM t_raw_material rm,
-				JSON_TABLE(
-				f_get_json_split_cte(rm.qc_type, '|'),
-				"$[*]" COLUMNS (value VARCHAR(255) PATH "$")
-				) jt
-				WHERE rm.idx = #{idx}
-				AND jt.value = qs.type
-				)
-			</when>
-			<when test="isProduct == true">
-				AND EXISTS (
-				SELECT 1
-				FROM t_product p,
-				JSON_TABLE(
-				f_get_json_split_cte(p.qc_type, '|'),
-				"$[*]" COLUMNS (value VARCHAR(255) PATH "$")
-				) jt
-				WHERE p.idx = #{idx}
-				AND jt.value = qs.type
-				)
-			</when>
-		</choose>
+	<select id="selectQcStandardGroupByIdx" parameterType="string"
+										resultType="kr.co.itwillbs.de.mes.dto.QcStandardDTO">
+		WITH material AS (
+			SELECT
+				rm.idx,
+				rm.type,
+				rm.qc_type,
+				rm.name,
+				rm.expiry_date
+			FROM t_raw_material rm
+			WHERE rm.parents_idx is null
+			),
+			product AS (
+			SELECT
+				p.idx,
+				p.name,
+				p.code,
+				p.spec,
+				p.expiry_date,
+				p.status,
+				p.qc_type
+			FROM t_product p
+			WHERE is_deleted = 'N'
+			),
+			base AS (
+			SELECT
+				wt.idx,
+				wt.trans_type,
+				wt.code,
+				wt.product_idx,
+				p.name AS product_name,
+				wt.material_idx,
+				m.name as material_name,
+				(CASE WHEN wt.status = '1' THEN m.qc_type
+					WHEN wt.status = '5' THEN p.qc_type
+					ELSE 'status not found'
+				END) AS qc_type,
+				wt.unit,
+				wt.quantity,
+				wt.status
+			FROM t_warehouse_transaction wt
+			LEFT JOIN material AS m ON m.idx = wt.material_idx
+			LEFT JOIN product AS p ON p.idx = wt.product_idx
+			)
+			SELECT
+				idx,
+				type,
+				name,
+				unit,
+				target_value,
+				min_value,
+				max_value,
+				memo
+			FROM t_qc_standard qs
+			WHERE is_deleted = 'N'
+			AND EXISTS (
+					select 1
+					from base AS b,
+					JSON_TABLE (
+								f_get_json_split_cte(b.qc_type, '|'),
+								"$[*]" COLUMNS (value VARCHAR(255) PATH "$")
+								) jt
+					WHERE b.idx = #{idx}
+					AND jt.value = qs.type
+					)
 	</select>
 </mapper>
