@@ -210,6 +210,27 @@ public class SearchService {
 
 	// ======================================================================================
 	/**
+	 *  구매할 자재 정보 리스트 조회
+	 * @param materialSearchDTO
+	 * @return List<ClientDTO>
+	 */
+	public List<RawMaterialDTO> getMaterialOrderList(RawMaterialSearchDTO materialSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getMaterialOrderList(materialSearchDTO);
+	}
+	
+	/**
+	 * 검색조건에 따른 자재 count 가져오기 페이징용
+	 * @param clientSearchDTO
+	 * @return
+	 */
+	public int getMaterialOrderCountForPaging(RawMaterialSearchDTO materialSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getMaterialOrderCountForPaging(materialSearchDTO);
+	}
+	
+	// ======================================================================================
+	/**
 	 *  공정 정보 리스트 조회
 	 * @param recipeProcessSearchDTO
 	 * @return List<RecipeProcessDTO>

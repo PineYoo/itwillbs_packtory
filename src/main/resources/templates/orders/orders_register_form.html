@@ -66,6 +66,22 @@
 	#dataTables td:nth-child(5), #dataTables th:nth-child(5) {width: 20%;}
 	#dataTables td:nth-child(6), #dataTables th:nth-child(6) {width: 10%;}
 	
+	/*
+	.productTables td:nth-child(1), .productTables th:nth-child(1) {width: 10%;}
+	.productTables td:nth-child(2), .productTables th:nth-child(2) {width: 30%;}
+	.productTables td:nth-child(3), .productTables th:nth-child(3) {width: 15%;}
+	.productTables td:nth-child(4), .productTables th:nth-child(4) {width: 15%;}
+	.productTables td:nth-child(5), .productTables th:nth-child(5) {width: 20%;}
+	.productTables td:nth-child(6), .productTables th:nth-child(6) {width: 10%;}
+	
+	.materialTables td:nth-child(1), .materialTables th:nth-child(1) {width: 10%;}
+	.materialTables td:nth-child(2), .materialTables th:nth-child(2) {width: 22%;}
+	.materialTables td:nth-child(3), .materialTables th:nth-child(3) {width: 13%;}
+	.materialTables td:nth-child(4), .materialTables th:nth-child(4) {width: 15%;}
+	.materialTables td:nth-child(5), .materialTables th:nth-child(5) {width: 15%;}
+	.materialTables td:nth-child(6), .materialTables th:nth-child(6) {width: 15%;}
+	.materialTables td:nth-child(7), .materialTables th:nth-child(7) {width: 10%;}
+	*/
 	
 	/* 수량 입력 필드 스타일링 */
 	#dataTables .product-value {
@@ -182,8 +198,8 @@
 									</div>
 
 									<!-- ------------------------------------------------------------------------------------------------------- -->
-									<hr>
-									<div class="data-container">
+									<hr th:if="${orderFormDTO.tradeCode == '1'}">
+									<div class="data-container" th:if="${orderFormDTO.tradeCode == '1'}">
 										<div class="row">
 											<div>
 												<button type="button" id="searchClientBtn" class="btn btn-primary mt-2" onclick="openClientSearch()">거래처 조회</button>
@@ -211,7 +227,7 @@
 										</div>
 										<!-- ---------- 상품 리스트 출력 영역 ---------- -->
 										<div class="table-responsive">
-											<table class="table table-bordered text-center" id="dataTables">
+											<table class="table table-bordered text-center productTables" id="dataTables">
 												<thead class="table-light">
 													<tr>
 														<th>상품번호</th>
@@ -291,7 +307,46 @@
 										</div>
 									</th:block>
 									<th:block th:case="3">
-										구매
+										<div class="mb-2 d-flex align-items-center">
+											<button type="button" class="btn btn-primary mr-2" onclick="openMaterialSearch()">자재 조회</button>
+											<div id="orderItemsError" class="text-danger"></div>
+										</div>
+										<!-- ---------- 자재 리스트 출력 영역 ---------- -->
+										<div class="table-responsive">
+											<table class="table table-bordered text-center materialTables" id="dataTables">
+												<thead class="table-light">
+													<tr>
+														<th>자재번호</th>
+														<th>자재명</th>
+<!-- 														<th>거래처 선택</th> -->
+														<th>단가</th>
+														<th>수량</th>
+														<th>합계금액</th>
+														<th>삭제</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="item, status : ${orderFormDTO.orderItems}" th:data-id="${item.materialIdx}">
+														<td class="material-idx" th:text="${item.materialIdx}"></td>
+														<td class="product-name" th:text="${item.productName}"></td>
+<!-- 														<td><button type="button" class="btn btn-success client-row">선택</button></td> -->
+														<td class="unit-price" th:text="${#numbers.formatInteger(item.unitPrice, 3, 'COMMA')}"></td> <!-- 세자리마다 콤마 -->
+														<td><input class="product-value" type="number" min="0" step="10" th:value="${item.productValue}"></td>
+														<td class="total-price" th:text="${#numbers.formatInteger(item.totalPrice, 3, 'COMMA')}"></td>
+														<td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
+													</tr>
+													<tr th:if="${#lists.isEmpty(orderFormDTO.orderItems)}" class="clickable-row menu2depth_items">
+														<td colspan="7"><span>상품을 담아주세요.</span></td>
+													</tr>
+												</tbody>
+												<tfoot>
+												    <tr>
+												        <td style="width: 70%;" colspan="5" class="text-left"><strong>총 합계</strong></td>
+											 	        <td style="width: 30%;" colspan="2" class="text-center"><strong id="totalSelectedPrice">0</strong></td>
+												    </tr>
+												</tfoot>
+											</table>
+										</div>
 									</th:block>
 									
 									<th:block th:case="*">
@@ -352,7 +407,7 @@
 					const selectedIdxList = [];
 				
 					// 현재 테이블에 이미 추가된 상품의 idx 수집
-					$('#dataTables tbody tr[data-id]').each(function() {
+					$('.productTables tbody tr[data-id]').each(function() {
 						const id = parseInt($(this).data('id'));
 						if (!isNaN(id)) {
 							selectedIdxList.push(id);
@@ -370,7 +425,7 @@
 				
 				// 팝업창에서 가져온 상품 정보 추가하는 함수
 				function appendProductInfo(product) {
-				    const $tbody = $('#dataTables tbody');
+				    const $tbody = $('.productTables tbody');
 					
 				    // 기존 안내 문구 제거
 				    $tbody.find('.menu2depth_items').remove();
@@ -392,7 +447,7 @@
 				
 				// 상품 삭제하는 함수
 				function removeProductInfo(idx) {
-				    const $tbody = $('#dataTables tbody');
+				    const $tbody = $('.productTables tbody');
 				    
 				    // 해당 상품 인덱스를 가진 행 찾고 삭제
 				    const $row = $tbody.find(`tr[data-id='${idx}']`);
@@ -419,6 +474,68 @@
 						totalSum += val;
 					});
 					$('#totalSelectedPrice').text(totalSum.toLocaleString());
+				}
+				
+				// --------------------------------------------------------------------------------------------------------
+				// 자재 검색 함수(새 창 띄우기)
+				function openMaterialSearch() {
+					const selectedIdxList = [];
+
+					// 현재 테이블에 이미 추가된 상품의 idx 수집
+					$('.materialTables tbody tr[data-id]').each(function() {
+						const id = parseInt($(this).data('id'));
+						if (!isNaN(id)) {
+							selectedIdxList.push(id);
+						}
+					});
+
+					window.open('/material/order/search-popup', 'materialSearch', 'width=800,height=600,location=no,scrollbars=yes');
+					window.isSingleSelect = false; // 다중선택 모드
+
+					// 자식창이 열릴 때 데이터 넘겨주기 위한 전역 변수
+					window.selectedIdxListFromParent = selectedIdxList;
+				}
+				
+				// 팝업창에서 가져온 자재 정보 추가하는 함수
+				function appendMaterialInfo(material) {
+				    const $tbody = $('.materialTables tbody');
+					
+				    // 기존 안내 문구 제거
+				    $tbody.find('.menu2depth_items').remove();
+				
+				    // 마스터 자재 행 생성
+				    const newRow = `
+				        <tr data-id="${material.idx}">
+				            <td class="material-idx">${material.idx}</td>
+				            <td class="product-name">${material.name}</td>
+				            <td class="unit-price">${parseInt(material.price).toLocaleString()}</td>
+				            <td><input class="product-value" type="number" min="0" step="10" value="0"/></td>
+				            <td class="total-price">0</td>
+				            <td><button type="button" class="btn btn-danger delete-row" onclick="removeMaterialInfo(${material.idx})">삭제</button></td>
+				        </tr>
+				    `;
+
+				    $tbody.append(newRow);
+				    
+				}
+				
+				// 자재 삭제하는 함수
+				function removeMaterialInfo(idx) {
+				    const $tbody = $('.materialTables tbody');
+				    
+				    // 해당 상품 인덱스를 가진 행 찾고 삭제
+				    const $row = $tbody.find(`tr[data-id='${idx}']`);
+				    $row.remove();  // 해당 행을 삭제
+				    
+				    // 삭제 후 상품이 하나도 없으면 안내 문구 삽입
+				    if ($tbody.find('tr').not('.clickable-row').length === 0) {
+				        const emptyRow = `
+				            <tr class="clickable-row menu2depth_items">
+				                <td colspan="6"><span>상품을 담아주세요.</span></td>
+				            </tr>
+				        `;
+				        $tbody.append(emptyRow);
+				    }
 				}
 				
 				// --------------------------------------------------------------------------------------------------------
@@ -544,6 +661,7 @@
 					    const $row = $(this).closest('tr');
 						const idx = parseInt($row.data('id'));  // 해당 상품의 idx 값 가져오기
 						removeProductInfo(idx);
+						removeMaterialInfo(idx);
 						
 						$(this).closest('tr').remove();
 					    updateTotalSelectedPrice(); // 삭제 후 총 합계 다시 계산
@@ -572,7 +690,8 @@
 					    $('#dataTables tbody tr').each(function() {
 					        const item = {
 					        	// 물품코드 넣을 값이 없다 ?
-				                productNumber: $(this).find('.product-number').text(),  // 물품 번호
+				                materialIdx: $(this).find('.material-idx').text(),  // 자재_idx
+				                productNumber: $(this).find('.product-number').text(),  // 상품_idx
 				                productName: $(this).find('.product-name').text(),  // 아이템명
 				                productValue: $(this).find('.product-value').val(),  // 개수
 				                unitPrice: $(this).find('.unit-price').text().replace(/,/g, ''),  // 개수별금액 (콤마 제거)

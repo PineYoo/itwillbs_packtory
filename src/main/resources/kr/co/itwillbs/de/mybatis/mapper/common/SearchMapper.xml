@@ -475,6 +475,83 @@
 		</where>
 	</select>
 	
+	<!-- 검색조건에 따른 자재 리스트 조회 -->
+	<select id="getMaterialOrderList" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO"
+								      resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+		SELECT 
+		      rm.idx
+		    , rm.parents_idx
+		    , rm2.name AS parentsName
+		    , rm.client_idx
+		    , c.company_name AS clientCompanyName
+		    , rm.type
+		    , ci.minor_name AS typeName
+		    , rm.name
+		    , rm.unit
+		    , ci2.minor_name AS unitName
+		    , rm.quantity
+		    , rm.price
+		    , rm.lead_time
+		    , rm.expiry_date
+		    , rm.storage_condition
+		    , rm.msds_link
+		    , rm.is_deleted
+		    , rm.reg_id
+		    , rm.reg_date
+		    , rm.mod_id
+		    , rm.mod_date
+		  FROM t_raw_material rm
+		  LEFT JOIN t_raw_material rm2
+		    ON rm.parents_idx = rm2.idx
+		  LEFT JOIN t_client c
+		    ON rm.client_idx = c.idx
+		  LEFT JOIN t_commoncode_item ci
+		    ON rm.type = ci.minor_code
+		   AND ci.major_code = 'MATERIAL_TYPE'
+		  LEFT JOIN t_commoncode_item ci2
+		    ON rm.unit = ci2.minor_code
+		   AND ci2.major_code = 'ITEM_UNIT' 
+		<where>
+				rm.parents_idx IS NOT NULL
+			AND rm.client_idx IS NOT NULL
+			<if test="searchKeyword != null and searchKeyword != ''">
+				AND (
+					rm.name LIKE CONCAT('%', #{searchKeyword}, '%')				-- name
+					OR ci.minor_name LIKE CONCAT('%', #{searchKeyword}, '%')	-- typeName
+				)
+			</if>
+		</where>
+		ORDER BY rm.idx
+		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	</select>
+
+	<!-- 검색조건에 따른 자재 리스트 조회(페이징처리용) -->
+	<select id="getMaterialOrderCountForPaging" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO"
+								   				resultType="int">
+		SELECT COUNT(*)
+		  FROM t_raw_material rm
+		  LEFT JOIN t_raw_material rm2
+		    ON rm.parents_idx = rm2.idx
+		  LEFT JOIN t_client c
+		    ON rm.client_idx = c.idx
+		  LEFT JOIN t_commoncode_item ci
+		    ON rm.type = ci.minor_code
+		   AND ci.major_code = 'MATERIAL_TYPE'
+		  LEFT JOIN t_commoncode_item ci2
+		    ON rm.unit = ci2.minor_code
+		   AND ci2.major_code = 'ITEM_UNIT' 
+		<where>
+				rm.parents_idx IS NOT NULL
+			AND rm.client_idx IS NOT NULL
+			<if test="searchKeyword != null and searchKeyword != ''">
+				AND (
+					rm.name LIKE CONCAT('%', #{searchKeyword}, '%')				-- name
+					OR ci.minor_name LIKE CONCAT('%', #{searchKeyword}, '%')	-- typeName
+				)
+			</if>
+		</where>
+	</select>
+	
 	<!-- 검색조건에 따른 공정 리스트 조회 -->
 	<select id="getRecipeProcessList" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO"
 								      resultType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
