@@ -69,7 +69,7 @@
 		SELECT
 		r.*,
 		c.minor_name AS type_name,
-		ci.minor_name AS unit_name,
+		ci.minor_name AS unit_name
 		FROM t_raw_material r
 		LEFT JOIN t_commoncode_item c
 		ON r.type = c.minor_code AND c.major_code = 'MATERIAL_TYPE'
