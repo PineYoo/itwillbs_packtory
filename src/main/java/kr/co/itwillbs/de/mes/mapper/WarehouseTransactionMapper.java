@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import kr.co.itwillbs.de.mes.dto.QcRequiredLogDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO;
 
@@ -34,9 +35,23 @@ public interface WarehouseTransactionMapper {
 	int getRequiredQCCountBySearchDTO(WarehouseTransactionSearchDTO searchDTO);
 	
 	/**
-	 * 창고 품질 검사 대기 목록 조회
+	 * 창고 품질 검사 대기 리스트 조회
 	 * @param status 1 입고 검수 대기, 5 출고 검수 대기 조회용
 	 * @return list List<WarehouseTransactionDTO>
 	 */
 	List<WarehouseTransactionDTO> getRequiredQCListBySearchDTO(WarehouseTransactionSearchDTO searchDTO);
+	
+	/**
+	 * 창고 품질 검사 이전 기록 카운트 - 페이징용
+	 * @param searchDTO
+	 * @return int count
+	 */
+	int getRequiredQCLogCountBySearchDTO(WarehouseTransactionSearchDTO searchDTO);
+	
+	/**
+	 * 창고 품질 검사 이전 기록 리스트 조회
+	 * @param searchDTO
+	 * @return list List<QcRequiredLogDTO>
+	 */
+	List<QcRequiredLogDTO> getRequiredQCLogListBySearchDTO(WarehouseTransactionSearchDTO searchDTO);
 }

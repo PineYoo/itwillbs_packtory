@@ -11,6 +11,7 @@ import kr.co.itwillbs.de.common.util.LotNumberUtil;
 import kr.co.itwillbs.de.mes.dto.QcLogDTO;
 import kr.co.itwillbs.de.mes.dto.QcLogFormDTO;
 import kr.co.itwillbs.de.mes.dto.QcLogSearchDTO;
+import kr.co.itwillbs.de.mes.dto.QcRequiredLogDTO;
 import kr.co.itwillbs.de.mes.dto.QcStandardDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO;
@@ -99,8 +100,8 @@ public class QcLogService {
 	 * @param b
 	 * @return
 	 */
-	public List<QcStandardDTO> selectQcStandardGroupByIdx(String idx, boolean b) {
-		return qcStandardMapper.selectQcStandardGroupByIdx(idx, b);
+	public List<QcStandardDTO> selectQcStandardGroupByIdx(String idx) {
+		return qcStandardMapper.selectQcStandardGroupByIdx(idx);
 	}
 
 	/**
@@ -117,5 +118,25 @@ public class QcLogService {
 	public void validatingQCs(QcLogFormDTO formDTO) {
 		LogUtil.logStart(log);
 		LogUtil.logDetail(log, "currentLotNumber is {}", LotNumberUtil.generateLotNumber());
+	}
+	
+	/**
+	 * 품질 검사 기록된 리스트 조회 카운트 - 페이징용
+	 * @param searchDTO idx = t_warehouse_transaction.idx
+	 * @return
+	 */
+	public int getRequiredQCLogCountBySearchDTO(WarehouseTransactionSearchDTO searchDTO) {
+		LogUtil.logStart(log);
+		
+		return warehouseTransactionMapper.getRequiredQCLogCountBySearchDTO(searchDTO);
+	}
+
+	/**
+	 * 품질 검사 기록된 리스트 조회
+	 * @param idx
+	 * @return
+	 */
+	public List<QcRequiredLogDTO> getRequiredQCLogListBySearchDTO(WarehouseTransactionSearchDTO searchDTO) {
+		return warehouseTransactionMapper.getRequiredQCLogListBySearchDTO(searchDTO);
 	}
 }

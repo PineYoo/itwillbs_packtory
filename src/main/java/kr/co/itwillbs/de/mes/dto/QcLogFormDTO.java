@@ -16,7 +16,7 @@ import lombok.ToString;
 public class QcLogFormDTO {
 
 	private String idx;
-	private boolean isProduct;
+	private String viewStatus;
 	/*
 	@NotBlank(message = "품질IDX 는 필수 입력 값입니다.")
 	private String qcIdx; // 품질IDX

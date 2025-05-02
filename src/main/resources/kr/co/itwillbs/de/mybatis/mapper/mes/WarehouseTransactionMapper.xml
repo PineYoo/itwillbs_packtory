@@ -234,14 +234,15 @@
 		WHERE idx = #{idx}
 	</update>
 
-	<select id="getRequiredQCCountBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO"
+	<select id="getRequiredQCCountBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.QcRequiredSearchDTO"
 											 resultType="int">
 		SELECT
 			count(wt.idx)
 		FROM t_warehouse_transaction wt
 		WHERE wt.status = #{status}
 	</select>
-	<select id="getRequiredQCListBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO"
+	
+	<select id="getRequiredQCListBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.QcRequiredSearchDTO"
 											 resultType="kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO">
 		WITH material AS (
 		SELECT
@@ -270,6 +271,7 @@
 			p.spec,
 			p.expiry_date,
 			p.status,
+			p.qc_type,
 			ci1.minor_name AS statusName
 		FROM t_product p
 		JOIN (
@@ -291,7 +293,10 @@
 			p.name AS product_name,
 			wt.material_idx,
 			m.name as material_name,
-			replace(m.qc_type,'|','-') as qc_type,
+				(CASE WHEN wt.status = '1' THEN replace(m.qc_type,'|','-')
+					WHEN wt.status = '5' THEN replace(p.qc_type,'|','-')
+					ELSE 'status not found'
+				END) AS qc_type,
 			wt.unit,
 			ci3.minor_name as unit_name,
 			wt.quantity,
@@ -329,6 +334,64 @@
 		</where>
 		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
-
+	
+	<select id="getRequiredQCLogCountBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.QcRequiredSearchDTO"
+											 resultType="int">
+		SELECT
+			count(wt.idx)
+		FROM t_warehouse_transaction AS wt
+		LEFT JOIN t_warehouse_transaction_lots AS wtl
+			ON wtl.transaction_idx = wt.idx
+		LEFT JOIN t_lots AS l
+			ON l.idx = wtl.lot_idx
+		LEFT JOIN t_qc_log AS ql
+			ON ql.lots_idx = l.idx
+		LEFT JOIN t_qc_standard AS qs
+			ON qs.idx = ql.qc_idx
+		WHERE wt.idx = #{idx}
+	</select>
+	
+	<select id="getRequiredQCLogListBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.QcRequiredSearchDTO"
+											 resultType="kr.co.itwillbs.de.mes.dto.QcRequiredLogDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
+		SELECT
+			wt.idx,
+			wt.trans_type,
+			get_item_name('TRANS_TYPE',wt.trans_type) AS trans_type_name,
+			wt.code,
+			wt.product_idx,
+			wt.material_idx,
+			wt.unit,
+			get_item_name('ITEM_UNIT',wt.unit) AS unit_name,
+			wt.quantity,
+			wt.status,
+			wtl.lot_idx,
+			l.lot_number,
+			ql.idx as qc_log_idx,
+			ql.qc_result,
+			get_item_name('QC_RESULT',ql.qc_result) AS qc_result_name,
+			qs.name as qc_name,
+			qs.type as qc_type,
+			ql.reg_id,
+			ql.reg_date,
+			ql.mod_id,
+			ql.mod_date
+		FROM t_warehouse_transaction AS wt
+		LEFT JOIN t_warehouse_transaction_lots AS wtl
+			ON wtl.transaction_idx = wt.idx
+		LEFT JOIN t_lots AS l
+			ON l.idx = wtl.lot_idx
+		LEFT JOIN t_qc_log AS ql
+			ON ql.lots_idx = l.idx
+		LEFT JOIN t_qc_standard AS qs
+			ON qs.idx = ql.qc_idx
+		<where>
+			wt.idx = #{idx}
+			<if test='materialName != null and !("".equals(materialName.trim()))'>
+				AND qs.name LIKE CONCAT('%', #{materialName}, '%')
+			</if>
+		</where>
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
+	</select>
 
 </mapper>

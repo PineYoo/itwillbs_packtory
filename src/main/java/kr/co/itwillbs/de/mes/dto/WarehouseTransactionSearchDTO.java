@@ -12,6 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class WarehouseTransactionSearchDTO {
 
+	private String idx;
 	private String transType; // 타입
 	private String productIdx; // 상품 인덱스
 	private String productName;

@@ -32,9 +32,7 @@ public interface QcStandardMapper {
 	/**
 	 * 품질 검사 기준에서 자재, 상품에 따라 검사해야 할 검사 리스트 가져오기
 	 * @param idx
-	 * @param isProduct
 	 * @return
 	 */
-	public List<QcStandardDTO> selectQcStandardGroupByIdx(@Param("idx")String idx,
-														@Param("isProduct")boolean isProduct);
+	public List<QcStandardDTO> selectQcStandardGroupByIdx(@Param("idx")String idx);
 }

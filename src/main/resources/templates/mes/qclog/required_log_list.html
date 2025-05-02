@@ -22,7 +22,7 @@
 		<div class="container-fluid">
 			<!-- Page Heading -->
 			<div class="d-sm-flex align-items-center justify-content-between mb-4">
-				<h1 class="h3 mb-4 text-gray-800">원자재 검사</h1>
+				<h1 class="h3 mb-4 text-gray-800">원자재 검사 기록</h1>
 			</div>
 
 			<!-- 검색바 컨테이너 -->
@@ -35,6 +35,7 @@
 								<th:block th:with="status=${searchDTO.status}">
 								<form th:action="@{/mes/qclog/required/{status}(status=${status})}" method="get" th:object="${searchDTO}" id="searchForm">
 									<input type="hidden" th:field="*{status}">
+									<input type="hidden" th:field="*{idx}">
 									<input type="hidden" th:field="*{pageDTO.page}">
 									<input type="hidden" th:field="*{pageDTO.size}">
 
@@ -61,9 +62,9 @@
 
 											<!-- 검색바 버튼 -->
 											<div class="row justify-content-end">
-												<!--/* <div class="col-12 col-sm-auto mb-2">
-													<button class="btn btn-success btn-block" id="btnRegister" type="button">품질로그 등록</button>
-												</div> */-->
+												<div class="col-12 col-sm-auto mb-2">
+													<button class="btn btn-success btn-block" id="btnRegister" type="button">검사 하기</button>
+												</div>
 												<div class="col-12 col-sm-auto mb-2">
 													<button type="button" class="btn btn-warning btn-block" onclick="formReset('searchForm');">초기화</button>
 												</div>
@@ -92,24 +93,24 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
-									<th>번호</th>
+									<!-- <th>번호</th> -->
 									<th>타입명</th>
-									<th>자재키값</th>
-									<th>자재명</th>
-									<th>단위</th>
-									<th>개수</th>
-									<th>상태명</th>
+									<th>롯(LOT)넘버</th>
+									<th>QC결과</th>
+									<th>QC검사명</th>
+									<th>QC타입</th>
+									<th>검사일자</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item : ${requiredList}" th:data-id="${item.idx}">
-									<td th:text="${item.rowNum}"></td>
+								<tr th:each="item : ${requiredList}" th:data-qc-id="${item.qcLogIdx}">
+									<!-- <td th:text="${item.rowNum}"></td> -->
 									<td th:text="${item.transTypeName}"></td>
-									<td th:text="${item.materialIdx}"></td>
-									<td th:text="${item.materialName}"></td>
-									<td th:text="${item.unitName}"></td>
-									<td th:text="${item.quantity}"></td>
-									<td th:text="${item.statusName}"></td>
+									<td th:text="${#strings.isEmpty(item.lotNumber) ? '-': item.lotNumber}"></td>
+									<td th:text="${#strings.isEmpty(item.qcResultName) ? '-': item.qcResultName}"></td>
+									<td th:text="${#strings.isEmpty(item.qcName) ? '-': item.qcName}"></td>
+									<td th:text="${#strings.isEmpty(item.qcTypeName) ? '-': item.qcTypeName}"></td>
+									<td th:text="${#strings.isEmpty(item.regDate) ? '-' : (item.regDate < item.modDate ? item.modDate : item.regDate)}"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -123,6 +124,17 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 
+				// 검사 하기 버튼 막기
+// 				function writeButtonToggle() {
+// 					//TODO 무슨 기준으로 검사 버튼을 막을 건지 떠오르지가 않아
+// 					const _nodeList = document.querySelectorAll('#dataTables tbody tr');
+// 					//_nodeList.foreach(function() {
+						
+// 					});
+					
+					
+// 				}
+				
 				// init DataTable
 				$('#dataTables').DataTable({
 					lengthChange : false,
@@ -133,17 +145,25 @@
 					responsive : true
 				}); // end of $('#dataTables').DataTable({
 
+					
+				// 등록 페이지 이동
+				$("#btnRegister").on("click", function() {
+					console.log("btnRegister click!!!");
+					let id = document.querySelector('#idx').value;
+					let status = document.querySelector('#status').value;
+					
+					location.href = '/mes/qclog/group/new/'+id+"?status="+status;
+				});
+					
 				// 상세 페이지 이동 -> 항목 품질 검사 작성...?
 				$("#dataTables tbody").on('click', 'tr', function() {
 					console.log("dataTables tbody click!!");
-					let id = $(this).data('id');
-					let status = document.querySelector('#status').value;
+					let id = $(this).data('qc-id');
 
 					if (!id) {
 						return; // 페이지 이동 막기
 					}
-					//location.href = '/mes/qclog/group/new/'+id+"?status="+status;
-					location.href = '/mes/qclog/required/list?idx='+id+"&status="+status;
+					location.href = '/mes/qclog/'+id+"?status="+status;
 				});
 			});
 		</script>
