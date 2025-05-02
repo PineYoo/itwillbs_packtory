@@ -268,7 +268,7 @@
 		    ON p.idx = rm.product_idx
 	    <where>
 		        rm.is_deleted = 'N'
-	        AND rm.approval_status = '0'
+	        AND rm.approval_status = '1'
 	        <if test="searchKeyword != null and searchKeyword != ''">
 	            AND (
 	                   rm.name LIKE CONCAT('%', #{searchKeyword}, '%')
