@@ -15,10 +15,10 @@ public interface QcStandardMapper {
 	public void insertQcStandard(QcStandardDTO qcStandardDTO);
 
 	// 품질 기준 목록 페이징
-	public int searchQcStandardCount(QcStandardSearchDTO searchDTO);
+	public int QcStandardCount(QcStandardSearchDTO searchDTO);
 
 	// 품질 기준 목록 + 검색
-	public List<QcStandardDTO> searchQcStandard(QcStandardSearchDTO searchDTO);
+	public List<QcStandardDTO> QcStandard(QcStandardSearchDTO searchDTO);
 
 	// 품질 기준 상세 조회
 	public QcStandardDTO getQcStandardByIdx(Long idx);

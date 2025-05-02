@@ -20,6 +20,7 @@ public interface MessageRepository extends JpaRepository<Message, Long>, JpaSpec
 		       "AND (:receiverId IS NULL OR :receiverId = '' OR m.receiverId LIKE %:receiverId%) " +
 		       "AND (:type IS NULL OR :type = '' OR m.type = :type) " +
 		       "ORDER BY m.sendDate DESC")
+	
 	List<Message> searchMessages(
 		    @Param("sendDate") LocalDate sendDate,
 		    @Param("receiveDate") LocalDate receiveDate,
@@ -28,6 +29,6 @@ public interface MessageRepository extends JpaRepository<Message, Long>, JpaSpec
 		    @Param("type") String type
 	);
 	
-	@Query("SELECT m FROM Message m WHERE m.isDeleted = 'N' ORDER BY m.idx ASC")
+	@Query("SELECT m FROM Message m ORDER BY m.idx ASC")
     List<Message> findValidMessages();
 }

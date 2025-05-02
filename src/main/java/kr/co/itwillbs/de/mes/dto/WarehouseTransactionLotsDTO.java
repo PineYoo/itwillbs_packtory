@@ -26,6 +26,7 @@ public class WarehouseTransactionLotsDTO {
 	
 	private Integer quantity; // 개수
 	private String unit; // 단위
+	private String unitName; // 단위
 	
 	private String memo; // 메모
 	private String isDeleted; // 삭제유무
@@ -34,4 +35,9 @@ public class WarehouseTransactionLotsDTO {
 	private LocalDate regDate; // 작성일자시간
 	private String modId; // 최종 작성자
 	private LocalDate modDate; // 최종작성일자
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 }

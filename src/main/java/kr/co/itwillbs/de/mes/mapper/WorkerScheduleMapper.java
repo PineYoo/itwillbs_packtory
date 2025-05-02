@@ -14,10 +14,10 @@ public interface WorkerScheduleMapper {
 	public void insertWorkerSchedule(WorkerScheduleDTO workerScheduleDTO);
 
 	// 근무 일정 목록 페이징
-	public int searchWorkerScheduleCount(WorkerScheduleSearchDTO searchDTO);
+	public int WorkerScheduleCount(WorkerScheduleSearchDTO searchDTO);
 
 	// 근무 일정 목록 + 검색
-	public List<WorkerScheduleDTO> searchWorkerSchedule(WorkerScheduleSearchDTO searchDTO);
+	public List<WorkerScheduleDTO> WorkerSchedule(WorkerScheduleSearchDTO searchDTO);
 
 	// 근무 일정 상세 조회
 	public WorkerScheduleDTO getWorkerScheduleByIdx(Long idx);

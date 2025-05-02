@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO;
 import kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO;
 import kr.co.itwillbs.de.mes.mapper.WorkerMetricsMapper;
@@ -22,28 +23,30 @@ public class WorkerMetricsService {
 	// 보유 자격증 정보 등록
 	@LogExecution
 	@Transactional
-	public String insertWorkerMetrics(WorkerMetricsDTO workerMetricsDTO) {
-		log.info("보유 자격증 정보 등록 요청: {}", workerMetricsDTO);
+	public void insertWorkerMetrics(WorkerMetricsDTO workerMetricsDTO) {
+		LogUtil.logStart(log);
+
 		workerMetricsMapper.insertWorkerMetrics(workerMetricsDTO);
-		log.info("보유 자격증 정보 등록 완료 - idx: {}", workerMetricsDTO.getIdx());
-		return "redirect:/mes/workermetrics";
 	}
 
 	// 보유 자격증 정보 총 개수 (검색 조건 포함)
 	public int searchWorkerMetricsCount(WorkerMetricsSearchDTO searchDTO) {
-		log.info("보유 자격증 정보 개수 조회 - 검색 조건: {}", searchDTO);
-		return workerMetricsMapper.searchWorkerMetricsCount(searchDTO);
+		LogUtil.logStart(log);
+
+		return workerMetricsMapper.WorkerMetricsCount(searchDTO);
 	}
 
 	// 보유 자격증 정보 목록 조회 (검색 + 페이징)
 	public List<WorkerMetricsDTO> searchWorkerMetrics(WorkerMetricsSearchDTO searchDTO) {
-		log.info("보유 자격증 정보 목록 조회 - 검색 조건: {}", searchDTO);
-		return workerMetricsMapper.searchWorkerMetrics(searchDTO);
+		LogUtil.logStart(log);
+
+		return workerMetricsMapper.WorkerMetrics(searchDTO);
 	}
 
 	// 보유 자격증 정보 상세 조회
-	public WorkerMetricsDTO getWorkerMetricsByIdx	(Long idx) {
-		log.info("보유 자격증 정보 상세 조회 - idx: {}", idx);
+	public WorkerMetricsDTO getWorkerMetricsByIdx(Long idx) {
+		LogUtil.logStart(log);
+
 		return workerMetricsMapper.getWorkerMetricsByIdx(idx);
 	}
 
@@ -51,13 +54,8 @@ public class WorkerMetricsService {
 	@LogExecution
 	@Transactional
 	public void updateWorkerMetrics(WorkerMetricsDTO workerMetricsDTO) {
-		log.info("보유 자격증 정보 수정 요청 - idx: {}", workerMetricsDTO.getIdx());
+		LogUtil.logStart(log);
 
-		// WorkerMetricsDTO 가 널인지 체크
-		if (workerMetricsDTO != null) {
-			// 보유 자격증 정보 정보를 업데이트하는 쿼리 호출
-			workerMetricsMapper.updateWorkerMetrics(workerMetricsDTO);
-			log.info("보유 자격증 정보 수정 완료 - qcIdx: {}", workerMetricsDTO.getIdx());
-		}
+		workerMetricsMapper.updateWorkerMetrics(workerMetricsDTO);
 	}
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionLotsDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionLotsSearchDTO;
 import kr.co.itwillbs.de.mes.mapper.WarehouseTransactionLotsMapper;
@@ -22,29 +23,31 @@ public class WarehouseTransactionLotsService {
 	// 트랜잭션 LOT 등록
 	@LogExecution
 	@Transactional
-	public String insertWarehouseTransactionLots(WarehouseTransactionLotsDTO warehouseTransactionLotsDTO) {
-		log.info("트랜잭션 LOT 등록 요청: {}", warehouseTransactionLotsDTO);
+	public void insertWarehouseTransactionLots(WarehouseTransactionLotsDTO warehouseTransactionLotsDTO) {
+		LogUtil.logStart(log);
+
 		warehouseTransactionLotsMapper.insertWarehouseTransactionLots(warehouseTransactionLotsDTO);
-		log.info("트랜잭션 LOT 등록 완료 - idx: {}", warehouseTransactionLotsDTO.getIdx());
-		return "redirect:/mes/warehousetransactionlots";
 	}
 
 	// 트랜잭션 LOT 총 개수 (검색 조건 포함)
 	public int searchWarehouseTransactionLotsCount(WarehouseTransactionLotsSearchDTO searchDTO) {
-		log.info("트랜잭션 LOT 개수 조회 - 검색 조건: {}", searchDTO);
-		return warehouseTransactionLotsMapper.searchWarehouseTransactionLotsCount(searchDTO);
+		LogUtil.logStart(log);
+
+		return warehouseTransactionLotsMapper.WarehouseTransactionLotsCount(searchDTO);
 	}
 
 	// 트랜잭션 LOT 목록 조회 (검색 + 페이징)
 	public List<WarehouseTransactionLotsDTO> searchWarehouseTransactionLots(
 			WarehouseTransactionLotsSearchDTO searchDTO) {
-		log.info("트랜잭션 LOT 목록 조회 - 검색 조건: {}", searchDTO);
-		return warehouseTransactionLotsMapper.searchWarehouseTransactionLots(searchDTO);
+		LogUtil.logStart(log);
+
+		return warehouseTransactionLotsMapper.WarehouseTransactionLots(searchDTO);
 	}
 
 	// 트랜잭션 LOT 상세 조회
 	public WarehouseTransactionLotsDTO getWarehouseTransactionLotsByIdx(Long idx) {
-		log.info("트랜잭션 LOT 상세 조회 - idx: {}", idx);
+		LogUtil.logStart(log);
+
 		return warehouseTransactionLotsMapper.getWarehouseTransactionLotsByIdx(idx);
 	}
 
@@ -52,13 +55,8 @@ public class WarehouseTransactionLotsService {
 	@LogExecution
 	@Transactional
 	public void updateWarehouseTransactionLots(WarehouseTransactionLotsDTO warehouseTransactionLotsDTO) {
-		log.info("트랜잭션 LOT 수정 요청 - idx: {}", warehouseTransactionLotsDTO.getIdx());
+		LogUtil.logStart(log);
 
-		// WarehouseTransactionLotsDTO 가 널인지 체크
-		if (warehouseTransactionLotsDTO != null) {
-			// 트랜잭션 LOT 정보를 업데이트하는 쿼리 호출
-			warehouseTransactionLotsMapper.updateWarehouseTransactionLots(warehouseTransactionLotsDTO);
-			log.info("트랜잭션 LOT 수정 완료 - qcIdx: {}", warehouseTransactionLotsDTO.getIdx());
-		}
+		warehouseTransactionLotsMapper.updateWarehouseTransactionLots(warehouseTransactionLotsDTO);
 	}
 }

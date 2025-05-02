@@ -39,7 +39,7 @@ input, select {
 
 							<!-- 품질기준 선택 -->
 							<div class="col-md-6">
-								<label for="bomIdx" class="form-label">품질기준</label> <select th:field="*{qcIdx}" class="form-select">
+								<label for="qcIdx" class="form-label">품질기준</label> <select th:field="*{qcIdx}" class="form-select">
 									<option value="">품질기준을 선택하세요</option>
 									<option th:each="qc : ${qcStandaradList}" th:value="${qc.idx}" th:text="${qc.name}"></option>
 								</select>

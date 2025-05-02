@@ -1,11 +1,11 @@
 package kr.co.itwillbs.de.mes.mapper;
 
-import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
-import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
+import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
+import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
 
 @Mapper
 public interface RawMaterialMapper {
@@ -14,10 +14,10 @@ public interface RawMaterialMapper {
 	public void insertMasterMaterial(RawMaterialDTO rawmaterialDTO);
 
 	// 마스터 자재 조회 + 페이징
-	public int searchMasterMaterialCount(RawMaterialSearchDTO searchDTO);
+	public int MasterMaterialCount(RawMaterialSearchDTO searchDTO);
 
 	// 마스터 자재 조회
-	public List<RawMaterialDTO> searchMasterMaterial(RawMaterialSearchDTO searchDTO);
+	public List<RawMaterialDTO> MasterMaterial(RawMaterialSearchDTO searchDTO);
 
 	// 마스터 자재 상세 조회
 	public RawMaterialDTO getMasterMaterialByIdx(Long idx);

@@ -41,4 +41,9 @@ public class LocationInfoDTO {
 	private LocalDate regDate; // 작성일자시간
 	private String modId; // 최종 작성자
 	private LocalDate modDate; // 최종작성일자
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 }

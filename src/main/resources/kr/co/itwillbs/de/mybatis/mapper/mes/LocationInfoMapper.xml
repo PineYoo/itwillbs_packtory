@@ -60,15 +60,23 @@
 		)
 	</insert>
 
-	<!-- 공장 장소 정보 목록 조회 + 페이징 -->
-	<select id="searchLocationInfoCount" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="int">
-		SELECT COUNT(*)
+	<!-- 공장 장소 정보 카운트 조회 -->
+	<select id="LocationInfoCount" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="int">
+		WITH location_info AS (
+		SELECT
+		l.idx,
+		l.name,
+		l.address1,
+		l.address2,
+		l.postcode,
+		l.type,
+		l.is_deleted
 		FROM t_location_info l
 		<where>
-			<if test="name != null and !(''.equals(name.trim()))">
+			<if test="name != null and name != ''">
 				AND l.name LIKE CONCAT('%', #{name}, '%')
 			</if>
-			<if test="address != null and !(''.equals(address.trim()))">
+			<if test="address != null and address != ''">
 				AND (l.address1 LIKE CONCAT('%', #{address}, '%') OR
 				l.address2 LIKE CONCAT('%', #{address}, '%'))
 			</if>
@@ -76,20 +84,32 @@
 				AND l.is_deleted = #{isDeleted}
 			</if>
 		</where>
+		)
+		SELECT COUNT(*) FROM location_info
 	</select>
 
 	<!-- 공장 장소 정보 목록 조회 -->
-	<select id="searchLocationInfo" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.LocationInfoDTO">
-		SELECT l.*,
+	<select id="LocationInfo" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.LocationInfoDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
+
+		WITH location_info AS (
+		SELECT
+		l.idx,
+		l.name,
+		l.address1,
+		l.address2,
+		l.postcode,
+		l.type,
+		l.is_deleted,
 		c.minor_name AS type_name
 		FROM t_location_info l
 		LEFT JOIN t_commoncode_item c ON l.type = c.minor_code
 		AND c.major_code = "LOCATION_TYPE"
 		<where>
-			<if test="name != null and !(''.equals(name.trim()))">
+			<if test="name != null and name != ''">
 				AND l.name LIKE CONCAT('%', #{name}, '%')
 			</if>
-			<if test="address != null and !(''.equals(address.trim()))">
+			<if test="address != null and address != ''">
 				AND (l.address1 LIKE CONCAT('%', #{address}, '%') OR
 				l.address2 LIKE CONCAT('%', #{address}, '%'))
 			</if>
@@ -97,9 +117,9 @@
 				AND l.is_deleted = #{isDeleted}
 			</if>
 		</where>
-
-		ORDER BY l.idx ASC
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		)
+		SELECT * FROM location_info
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 
 	<!-- 공장 장소 정보 상세 조회 -->
@@ -125,12 +145,11 @@
 		</set>
 		WHERE idx = #{idx}
 	</update>
-	
+
 	<!-- 공장 장소 정보 들고가기 -->
 	<select id="selectLocationInfoList" resultType="kr.co.itwillbs.de.mes.dto.LocationInfoDTO">
 		SELECT idx, name
 		FROM t_location_info
 		WHERE is_deleted = 'N'
 	</select>
-
 </mapper>

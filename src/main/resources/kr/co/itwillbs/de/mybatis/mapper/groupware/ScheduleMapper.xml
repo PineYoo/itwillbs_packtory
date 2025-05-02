@@ -5,11 +5,11 @@
 <mapper namespace="kr.co.itwillbs.de.groupware.mapper.ScheduleMapper">
 
 	<!-- href: https://mybatis.org/mybatis-3/ko/dynamic-sql.html -->
-	<select id="templates" >
+	<select id="templates">
 		<![CDATA[]]><!-- Character DATA(CDATA) 는 <![CDATA[문자열]]> 파싱되지 않고 그대로 출력을 위함, 쿼리에서 이스케이프 문자를 사용하지 않기 위해 썼음 -->
 		<!-- 예시) 컬럼명 &gt;(&lt;) #{필드명} -> 컬럼명<![CDATA[>(<)]]> #{필드명} -->
 		<if test="blabla != null"></if><!-- mybatis가 동적쿼리가 되는 시작 점. -->
-		
+
 		<choose><!-- mybatis switch 문 -->
 			<when test="bla != null">
 			</when>
@@ -18,22 +18,22 @@
 			<otherwise>
 			</otherwise>
 		</choose>
-		
+
 		<where></where><!-- where 엘리먼트는 태그에 의해 컨텐츠가 리턴되면 단순히 “WHERE”만을 추가한다. 게다가 컨텐츠가 “AND”나 “OR”로 시작한다면 그 “AND”나 “OR”를 지워버린다. -->
 		<trim prefix="WHERE" prefixOverrides="AND |OR "></trim><!-- 위의<where>의 <trim>버전 -->
-		
-		<set></set><!--  set 엘리먼트는 동적으로 SET 키워드를 붙히고 필요없는 콤마를 제거한다. -->
+
+		<set></set><!-- set 엘리먼트는 동적으로 SET 키워드를 붙히고 필요없는 콤마를 제거한다. -->
 		<trim prefix="SET" suffixOverrides=","></trim><!-- 위의<set>의 <trim>버전 -->
-		
+
 		<foreach item="item" index="index" collection="list" open="(" separator="," close=")" nullable="true">
 			#{item}
 		</foreach>
-		
+
 		<foreach item="item" index="index" collection="list">
 			(#{item.index}, #{item.id}, #{item.name}, #{item.isDeleted})
 		</foreach>
 	</select>
-	
+
 	<sql id="t_schedules_columns_forSelect">
 		idx,
 		title,
@@ -52,80 +52,79 @@
 		mod_id,
 		mod_date
 	</sql>
-	
-		<!-- useGeneratedKeys : true 일때, keyProperty : idx >> affectRow가 아닌 생성된 idx가 리턴타입에 셋 mysql은 확인됨 -->
+
+	<!-- useGeneratedKeys : true 일때, keyProperty : idx >> affectRow가 아닌 생성된 idx가 리턴타입에 셋 mysql은 확인됨 -->
 	<insert id="registerSchedule" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.groupware.dto.ScheduleDTO">
 		INSERT INTO t_schedules (
-			<trim suffixOverrides=",">
+		<trim suffixOverrides=",">
 			title,
 			content,
 			start_datetime,
 			end_datetime,
 			<if test='allDay !=null'>
-			all_day,
+				all_day,
 			</if>
 			<if test='backgroundColor !=null and !("".equals(backgroundColor.trim()))'>
-			background_color,
+				background_color,
 			</if>
 			<if test='borderColor !=null and !("".equals(borderColor.trim()))'>
-			border_color,
+				border_color,
 			</if>
 			<if test='textColor !=null and !("".equals(textColor.trim()))'>
-			text_color,
+				text_color,
 			</if>
 			<if test='departmentCode !=null and !("".equals(departmentCode.trim()))'>
-			department_code,
+				department_code,
 			</if>
 			<if test='subDepartmentCode !=null and !("".equals(subDepartmentCode.trim()))'>
-			sub_department_code,
+				sub_department_code,
 			</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
-			is_deleted,
+				is_deleted,
 			</if>
 			<if test='regId !=null and !("".equals(regId.trim()))'>
-			reg_id,
-			reg_date,
+				reg_id,
+				reg_date,
 			</if>
-			</trim>
+		</trim>
 		) VALUES (
-			<trim suffixOverrides=",">
+		<trim suffixOverrides=",">
 			#{title},
 			#{content},
 			#{startDatetime},
 			#{endDatetime},
 			<if test='allDay !=null'>
-			#{allDay},
+				#{allDay},
 			</if>
 			<if test='backgroundColor !=null and !("".equals(backgroundColor.trim()))'>
-			#{backgroundColor},
+				#{backgroundColor},
 			</if>
 			<if test='borderColor !=null and !("".equals(borderColor.trim()))'>
-			#{borderColor},
+				#{borderColor},
 			</if>
 			<if test='textColor !=null and !("".equals(textColor.trim()))'>
-			#{textColor},
+				#{textColor},
 			</if>
 			<if test='departmentCode !=null and !("".equals(departmentCode.trim()))'>
-			#{departmentCode},
+				#{departmentCode},
 			</if>
 			<if test='subDepartmentCode !=null and !("".equals(subDepartmentCode.trim()))'>
-			#{subDepartmentCode},
+				#{subDepartmentCode},
 			</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
-			#{isDeleted},
+				#{isDeleted},
 			</if>
 			<if test='regId !=null and !("".equals(regId.trim()))'>
-			#{regId},
-			now(),
+				#{regId},
+				now(),
 			</if>
-			</trim>
-			)
+		</trim>
+		)
 	</insert>
-	
-	<select id="getSchedulesCountBySearchDTO" parameterType="kr.co.itwillbs.de.groupware.dto.ScheduleSearchDTO"
-										resultType="int">
-		SELECT 
-			count(*)
+
+	<select id="getSchedulesCountBySearchDTO" parameterType="kr.co.itwillbs.de.groupware.dto.ScheduleSearchDTO" resultType="int">
+		SELECT
+		count(*)
 		FROM t_schedules
 		<where>
 			<if test='title !=null and !("".equals(title.trim()))'>AND title LIKE CONCAT('%',#{title},'%')</if>
@@ -136,26 +135,29 @@
 			<choose>
 				<when test="(startDate != null and startDate.trim() != '')
 							and (endDate != null and endDate.trim() != '')">
-					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S') 
-					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
+					AND start_datetime <![CDATA[>=]]>
+					STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S')
+					AND end_datetime <![CDATA[<=]]>
+					STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(startDate != null and startDate.trim() != '')
 							and (endDate == null or endDate.trim() == '')">
-					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S')
+					AND start_datetime <![CDATA[>=]]>
+					STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(startDate == null or startDate.trim() == '')
 							and (endDate != null and endDate.trim() != '')">
-					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
+					AND end_datetime <![CDATA[<=]]>
+					STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 		</where>
 	</select>
 
-	<select id="getSchedulesBySearchDTO" parameterType="kr.co.itwillbs.de.groupware.dto.ScheduleSearchDTO"
-									resultType="kr.co.itwillbs.de.groupware.dto.ScheduleDTO">
+	<select id="getSchedulesBySearchDTO" parameterType="kr.co.itwillbs.de.groupware.dto.ScheduleSearchDTO" resultType="kr.co.itwillbs.de.groupware.dto.ScheduleDTO">
 		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
-		SELECT 
-			<include refid="t_schedules_columns_forSelect"></include> 
+		SELECT
+		<include refid="t_schedules_columns_forSelect"></include>
 		FROM t_schedules
 		<where>
 			<if test='title !=null and !("".equals(title.trim()))'>AND title LIKE CONCAT('%',#{title},'%')</if>
@@ -166,82 +168,82 @@
 			<choose>
 				<when test="(startDate != null and startDate.trim() != '')
 							and (endDate != null and endDate.trim() != '')">
-					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S') 
-					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
+					AND start_datetime <![CDATA[>=]]>
+					STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S')
+					AND end_datetime <![CDATA[<=]]>
+					STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(startDate != null and startDate.trim() != '')
 							and (endDate == null or endDate.trim() == '')">
-					AND start_datetime <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S')
+					AND start_datetime <![CDATA[>=]]>
+					STR_TO_DATE(CONCAT(#{startDate},'000000'),'%Y-%m-%d%H%i%S')
 				</when>
 				<when test="(startDate == null or startDate.trim() == '')
 							and (endDate != null and endDate.trim() != '')">
-					AND end_datetime <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
+					AND end_datetime <![CDATA[<=]]>
+					STR_TO_DATE(CONCAT(#{endDate}, '235959'),'%Y-%m-%d%H%i%S')
 				</when>
 			</choose>
 		</where>
 		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
-	
-	<select id="getScheduleByIdx" parameterType="string"
-									resultType="kr.co.itwillbs.de.groupware.dto.ScheduleDTO">
-		SELECT 
-			<include refid="t_schedules_columns_forSelect"></include> 
+
+	<select id="getScheduleByIdx" parameterType="string" resultType="kr.co.itwillbs.de.groupware.dto.ScheduleDTO">
+		SELECT
+		<include refid="t_schedules_columns_forSelect"></include>
 		FROM t_schedules
 		where idx = #{idx}
 	</select>
-	
-	
-	
+
 	<!-- <set>이 분명 마지막 , 를 제거해준다고 알고 있다? 맞나? -->
 	<update id="modifySchedule" parameterType="kr.co.itwillbs.de.groupware.dto.ScheduleDTO">
 		UPDATE t_schedules
-			<set>
-				<if test='title !=null and !("".equals(title.trim()))'>title = #{title},</if>
-				<if test='content !=null and !("".equals(content.trim()))'>content = #{content},</if>
-				<if test='startDatetime !=null'>start_datetime = #{startDatetime},</if>
-				<if test='endDatetime !=null'>end_datetime = #{endDatetime},</if>
-				<if test='allDay !=null'>all_day = #{allDay},</if>
-				<if test='backgroundColor !=null and !("".equals(backgroundColor.trim()))'>background_color = #{backgroundColor},</if>
-				<if test='borderColor !=null and !("".equals(borderColor.trim()))'>border_color = #{borderColor},</if>
-				<if test='textColor !=null and !("".equals(textColor.trim()))'>text_color = #{textColor},</if>
-				<if test='departmentCode !=null and !("".equals(departmentCode.trim()))'>department_code = #{departmentCode},</if>
-				<if test='subDepartmentCode !=null and !("".equals(subDepartmentCode.trim()))'>sub_department_code = #{subDepartmentCode},</if>
-				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
-				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
-			</set>
+		<set>
+			<if test='title !=null and !("".equals(title.trim()))'>title = #{title},</if>
+			<if test='content !=null and !("".equals(content.trim()))'>content = #{content},</if>
+			<if test='startDatetime !=null'>start_datetime = #{startDatetime},</if>
+			<if test='endDatetime !=null'>end_datetime = #{endDatetime},</if>
+			<if test='allDay !=null'>all_day = #{allDay},</if>
+			<if test='backgroundColor !=null and !("".equals(backgroundColor.trim()))'>background_color = #{backgroundColor},</if>
+			<if test='borderColor !=null and !("".equals(borderColor.trim()))'>border_color = #{borderColor},</if>
+			<if test='textColor !=null and !("".equals(textColor.trim()))'>text_color = #{textColor},</if>
+			<if test='departmentCode !=null and !("".equals(departmentCode.trim()))'>department_code = #{departmentCode},</if>
+			<if test='subDepartmentCode !=null and !("".equals(subDepartmentCode.trim()))'>sub_department_code = #{subDepartmentCode},</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+		</set>
 		WHERE idx = #{idx}
 	</update>
-	
+
 	<update id="removeSchedule" parameterType="kr.co.itwillbs.de.groupware.dto.ScheduleDTO">
 		update t_schedules
-			<set>
-				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
-				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
-			</set>
+		<set>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+		</set>
 		where idx = #{idx}
 	</update>
-	
-	<select id="getApiSchedule" parameterType="kr.co.itwillbs.de.groupware.dto.ScheduleSearchDTO"
-								resultType="kr.co.itwillbs.de.groupware.dto.ScheduleRecord">
-		SELECT 
-			idx,
-			title,
-			content,
-			start_datetime as start,
-			end_datetime as end,
-			all_day,
-			background_color,
-			border_color,
-			text_color,
-			department_code,
-			sub_department_code,
-			is_deleted,
-			reg_id,
-			reg_date,
-			mod_id,
-			mod_date
+
+	<select id="getApiSchedule" parameterType="kr.co.itwillbs.de.groupware.dto.ScheduleSearchDTO" resultType="kr.co.itwillbs.de.groupware.dto.ScheduleRecord">
+		SELECT
+		idx,
+		title,
+		content,
+		start_datetime as start,
+		end_datetime as end,
+		all_day,
+		background_color,
+		border_color,
+		text_color,
+		department_code,
+		sub_department_code,
+		is_deleted,
+		reg_id,
+		reg_date,
+		mod_id,
+		mod_date
 		FROM t_schedules
 		<where>
 			is_deleted = 'N'

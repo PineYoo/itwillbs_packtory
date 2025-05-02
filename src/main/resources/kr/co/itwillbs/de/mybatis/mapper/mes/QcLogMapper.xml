@@ -5,8 +5,7 @@
 <mapper namespace="kr.co.itwillbs.de.mes.mapper.QcLogMapper">
 
 	<!-- 품질로그 등록 -->
-	<insert id="insertQcLog" useGeneratedKeys="true"
-		keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
+	<insert id="insertQcLog" useGeneratedKeys="true" keyProperty="idx" parameterType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
 		INSERT INTO t_qc_log (
 		<trim suffixOverrides=",">
 			<if test='qcIdx !=null and !("".equals(qcIdx.trim()))'>
@@ -57,69 +56,71 @@
 		)
 	</insert>
 
-	<!-- 품질 로그 목록 조회 + 페이징 -->
-	<select id="searchQcLogCount"
-		parameterType="kr.co.itwillbs.de.mes.dto.QcLogSearchDTO" resultType="int">
-		SELECT count(*)
-		FROM t_qc_log l
-		<where>
-			<if test='qcIdx !=null and !("".equals(qcIdx.trim()))'>
-				AND l.qc_idx LIKE CONCAT('%', #{qcIdx}, '%')
-			</if>
-
-			<if test='qcResult !=null and !("".equals(qcResult.trim()))'>
-				AND l.qc_result LIKE CONCAT('%', #{qcResult}, '%')
-			</if>
-
-			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
-				AND l.is_deleted = #{isDeleted}
-			</if>
-		</where>
-
-	</select>
-
-	<!-- 품질 로그 목록 조회 -->
-	<select id="searchQcLog"
-		parameterType="kr.co.itwillbs.de.mes.dto.QcLogSearchDTO"
-		resultType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
-		SELECT
-		l.*,
-		s.name AS qcStandardName,
-		c.minor_name AS unit_name,
-		ci.minor_name AS qc_result_name
-		FROM t_qc_log l
-		LEFT JOIN t_qc_standard s ON l.qc_idx = s.idx
-		LEFT JOIN t_commoncode_item c ON l.unit = c.minor_code AND c.major_code = "ITEM_UNIT"
-		LEFT JOIN t_commoncode_item ci ON l.qc_result = ci.minor_code AND ci.major_code = "QC_RESULT"
+	<!-- 품질 로그 목록 페이징 -->
+	<select id="QcLogCount" parameterType="kr.co.itwillbs.de.mes.dto.QcLogSearchDTO" resultType="int">
+		WITH qc_log_cte AS (
+		SELECT count(*) AS total_count
+		FROM t_qc_log qc
 		<where>
 			<if test='qcIdx != null and !("".equals(qcIdx.trim()))'>
-				AND l.qc_idx LIKE CONCAT('%', #{qcIdx}, '%')
+				AND qc.qc_idx LIKE CONCAT('%', #{qcIdx}, '%')
 			</if>
 
 			<if test='qcResult != null and !("".equals(qcResult.trim()))'>
-				AND l.qc_result LIKE CONCAT('%', #{qcResult}, '%')
+				AND qc.qc_result LIKE CONCAT('%', #{qcResult}, '%')
 			</if>
 
 			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
-				AND l.is_deleted = #{isDeleted}
+				AND qc.is_deleted = #{isDeleted}
 			</if>
 		</where>
+		)
+		SELECT total_count FROM qc_log_cte
+	</select>
 
-		ORDER BY l.idx ASC
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	<!-- 품질 로그 목록 + 검색 -->
+	<select id="QcLog" parameterType="kr.co.itwillbs.de.mes.dto.QcLogSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
+
+		WITH qc_log_cte AS (
+		SELECT
+		qc.*,
+		s.name AS qcStandardName,
+		c.minor_name AS unit_name,
+		ci.minor_name AS qc_result_name
+		FROM t_qc_log qc
+		LEFT JOIN t_qc_standard s ON qc.qc_idx = s.idx
+		LEFT JOIN t_commoncode_item c ON qc.unit = c.minor_code AND c.major_code = 'ITEM_UNIT'
+		LEFT JOIN t_commoncode_item ci ON qc.qc_result = ci.minor_code AND ci.major_code = 'QC_RESULT'
+		<where>
+			<if test='qcIdx != null and !("".equals(qcIdx.trim()))'>
+				AND qc.qc_idx LIKE '%' || #{qcIdx} || '%'
+			</if>
+			<if test='qcResult != null and !("".equals(qcResult.trim()))'>
+				AND qc.qc_result LIKE '%' || #{qcResult} || '%'
+			</if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
+				AND qc.is_deleted = #{isDeleted}
+			</if>
+		</where>
+		)
+
+		SELECT
+		qc.*
+		FROM qc_log_cte qc
+
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 
 	<!-- 품질로그 상세 조회 -->
-	<select id="getQcLogByIdx" parameterType="Long"
-		resultType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
+	<select id="getQcLogByIdx" parameterType="Long" resultType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
 		SELECT *
 		FROM t_qc_log
 		WHERE idx = #{idx}
 	</select>
 
 	<!-- 품질로그 정보 수정 -->
-	<update id="updateQcLog"
-		parameterType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
+	<update id="updateQcLog" parameterType="kr.co.itwillbs.de.mes.dto.QcLogDTO">
 		UPDATE t_qc_log
 		<set>
 			<if test='qcIdx !=null and !("".equals(qcIdx.trim()))'>qc_idx = #{qcIdx},</if>

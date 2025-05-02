@@ -14,15 +14,14 @@ public interface WarehouseTransactionLotsMapper {
 	public void insertWarehouseTransactionLots(WarehouseTransactionLotsDTO warehouseTransactionLotsDTO);
 
 	// 트랜잭션 LOT 목록 페이징
-	public int searchWarehouseTransactionLotsCount(WarehouseTransactionLotsSearchDTO searchDTO);
+	public int WarehouseTransactionLotsCount(WarehouseTransactionLotsSearchDTO searchDTO);
 
 	// 트랜잭션 LOT 목록 + 검색
-	public List<WarehouseTransactionLotsDTO> searchWarehouseTransactionLots(WarehouseTransactionLotsSearchDTO searchDTO);
+	public List<WarehouseTransactionLotsDTO> WarehouseTransactionLots(WarehouseTransactionLotsSearchDTO searchDTO);
 
 	// 트랜잭션 LOT 상세 조회
 	public WarehouseTransactionLotsDTO getWarehouseTransactionLotsByIdx(Long idx);
 
 	// 트랜잭션 LOT 정보 수정
 	public void updateWarehouseTransactionLots(WarehouseTransactionLotsDTO warehouseTransactionLotsDTO);
-
 }

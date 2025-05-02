@@ -57,4 +57,9 @@ public class RawMaterialDTO {
 	private LocalDateTime regDate; // 최초등록일
 	private String modId; // 최종수정자
 	private LocalDateTime modDate; // 최종수정일
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 }

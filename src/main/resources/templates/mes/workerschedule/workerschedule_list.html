@@ -116,6 +116,7 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
+									<th>번호</th>
 									<th>사원 번호</th>
 									<th>근무 타입</th>
 									<th>장소 이름</th>
@@ -127,6 +128,7 @@
 							</thead>
 							<tbody>
 								<tr th:each="item : ${workerScheduleList}" th:data-id="${item.idx}" th:data-idx="${item.idx}">
+									<td th:text="${item.rowNum}"></td>
 									<td th:text="${item.employeeId}"></td>
 									<td th:text="${item.shiftTypeName}"></td>
 									<td th:text="${item.locationName}"></td>
@@ -157,9 +159,9 @@
                     language : {
                         emptyTable : "조회 된 데이터가 없습니다."
                     },
-                    order : [ 0, "asc" ],
+                    order : [ 0, "desc" ],
                     columnDefs : [ {
-                        targets : [ 1, 2, 5, 6 ], // 정렬 막을 컬럼 인덱스
+                        targets : [ 2, 6, 7 ], // 정렬 막을 컬럼 인덱스
                         orderable : false
                     } ]
                 }); // end of $('#dataTables').DataTable({

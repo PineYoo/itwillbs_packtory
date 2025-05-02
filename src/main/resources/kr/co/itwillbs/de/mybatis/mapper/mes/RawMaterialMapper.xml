@@ -45,7 +45,7 @@
 	</insert>
 
 	<!-- 마스터 자재 조회 + 페이징 -->
-	<select id="searchMasterMaterialCount" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO" resultType="int">
+	<select id="MasterMaterialCount" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO" resultType="int">
 		SELECT count(*)
 		FROM t_raw_material r
 		<where>
@@ -53,26 +53,28 @@
 				AND r.type = #{type}
 			</if>
 			<if test="name != null and !(''.equals(name.trim()))">
-				AND r.name LIKE CONCAT('%', #{name}, '%')
+				AND r.name LIKE '%' || #{name} || '%'
 			</if>
 			<if test="isDeleted != null and !(''.equals(isDeleted.trim()))">
-				AND r.is_deleted LIKE CONCAT('%', #{isDeleted}, '%')
+				AND r.is_deleted LIKE '%' || #{isDeleted} || '%'
 			</if>
 			AND r.parents_idx IS NULL
 		</where>
 	</select>
 
 	<!-- 마스터 자재 조회 -->
-	<select id="searchMasterMaterial" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+	<select id="MasterMaterial" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
+
 		SELECT
 		r.*,
 		c.minor_name AS type_name,
 		ci.minor_name AS unit_name,
-		qc.name AS qc_type_name
 		FROM t_raw_material r
-		LEFT JOIN t_commoncode_item c ON r.type = c.minor_code AND c.major_code = "MATERIAL_TYPE"
-		LEFT JOIN t_commoncode_item ci ON r.unit = ci.minor_code AND ci.major_code = "ITEM_UNIT"
-		LEFT JOIN t_qc_standard qc ON r.type = qc.type
+		LEFT JOIN t_commoncode_item c
+		ON r.type = c.minor_code AND c.major_code = 'MATERIAL_TYPE'
+		LEFT JOIN t_commoncode_item ci
+		ON r.unit = ci.minor_code AND ci.major_code = 'ITEM_UNIT'
 		<where>
 			<if test="type != null and !(''.equals(type.trim()))">
 				AND r.type = #{type}
@@ -85,8 +87,8 @@
 			</if>
 			AND r.parents_idx IS NULL
 		</where>
-		ORDER BY r.name ASC
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 
 	<!-- 마스터 자재 상세 조회 -->

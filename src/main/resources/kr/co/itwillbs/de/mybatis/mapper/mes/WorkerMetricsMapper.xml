@@ -60,9 +60,11 @@
 		)
 	</insert>
 
-	<!-- 보유 자격증 정보 목록 조회 + 페이징 -->
-	<select id="searchWorkerMetricsCount" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="int">
-		SELECT COUNT(*)
+	<!-- 보유 자격증 카운트 조회 -->
+	<select id="WorkerMetricsCount" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="int">
+		WITH worker_metrics AS (
+		SELECT
+		wm.*
 		FROM t_worker_metrics wm
 		<where>
 			<if test="employeeId != null and !(''.equals(employeeId.trim()))">
@@ -75,11 +77,17 @@
 				AND wm.is_deleted = #{isDeleted}
 			</if>
 		</where>
+		)
+		SELECT COUNT(*) FROM worker_metrics
 	</select>
 
 	<!-- 보유 자격증 정보 목록 조회 -->
-	<select id="searchWorkerMetrics" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO">
-		SELECT wm.*
+	<select id="WorkerMetrics" parameterType="kr.co.itwillbs.de.mes.dto.LocationInfoSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
+
+		WITH worker_metrics AS (
+		SELECT
+		wm.*
 		FROM t_worker_metrics wm
 		<where>
 			<if test="employeeId != null and !(''.equals(employeeId.trim()))">
@@ -92,9 +100,9 @@
 				AND wm.is_deleted = #{isDeleted}
 			</if>
 		</where>
-
-		ORDER BY wm.idx ASC
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		)
+		SELECT * FROM worker_metrics
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 
 	<!-- 보유 자격증 정보 상세 조회 -->

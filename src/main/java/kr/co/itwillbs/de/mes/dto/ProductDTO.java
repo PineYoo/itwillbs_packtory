@@ -39,5 +39,10 @@ public class ProductDTO {
 	private String regId; 
 	private LocalDateTime regDate; 
 	private String modId;
-	private LocalDateTime modDate; 
+	private LocalDateTime modDate;
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 }

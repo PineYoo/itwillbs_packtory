@@ -98,12 +98,12 @@
 	</insert>
 
 	<!-- 창고 목록 조회 + 페이징 -->
-	<select id="searchWarehouseCount" parameterType="kr.co.itwillbs.de.mes.dto.WarehouseSearchDTO" resultType="int">
+	<select id="WarehouseCount" parameterType="kr.co.itwillbs.de.mes.dto.WarehouseSearchDTO" resultType="int">
 		SELECT count(*)
 		FROM t_warehouse w
 		<where>
 			<if test="name != null and !(''.equals(name.trim()))">
-				AND w.name LIKE CONCAT('%', #{name}, '%')
+				AND w.name LIKE '%' || #{name} || '%'
 			</if>
 
 			<if test="directionCode != null and !(''.equals(directionCode.trim()))">
@@ -115,26 +115,18 @@
 			</if>
 
 			<choose>
-				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '')
-							and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
-					AND w.manufacturing_date BETWEEN
-					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
-					'%Y-%m-%d%H%i%S')
-					AND
-					STR_TO_DATE(CONCAT(#{endManufacturingDate},
-					'235959'), '%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '') 
+                        and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
+					AND w.manufacturing_date BETWEEN TO_DATE(#{startManufacturingDate} || '000000', 'YYYY-MM-DDHH24MISS')
+					AND TO_DATE(#{endManufacturingDate} || '235959', 'YYYY-MM-DDHH24MISS')
 				</when>
-				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '')
-							and (endManufacturingDate == null or endManufacturingDate.trim() == '')">
-					AND w.manufacturing_date <![CDATA[>=]]>
-					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
-					'%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '') 
+                        and (endManufacturingDate == null or endManufacturingDate.trim() == '')">
+					AND w.manufacturing_date &gt;= TO_DATE(#{startManufacturingDate} || '000000', 'YYYY-MM-DDHH24MISS')
 				</when>
-				<when test="(startManufacturingDate == null or startManufacturingDate.trim() == '')
-							and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
-					AND w.manufacturing_date <![CDATA[<=]]>
-					STR_TO_DATE(CONCAT(#{endManufacturingDate}, '235959'),
-					'%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate == null or startManufacturingDate.trim() == '') 
+                        and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
+					AND w.manufacturing_date &lt;= TO_DATE(#{endManufacturingDate} || '235959', 'YYYY-MM-DDHH24MISS')
 				</when>
 			</choose>
 
@@ -149,16 +141,19 @@
 	</select>
 
 	<!-- 창고 목록 조회 -->
-	<select id="searchWarehouse" parameterType="kr.co.itwillbs.de.mes.dto.WarehouseSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.WarehouseDTO">
+	<select id="Warehouse" parameterType="kr.co.itwillbs.de.mes.dto.WarehouseSearchDTO" resultType="kr.co.itwillbs.de.mes.dto.WarehouseDTO">
 
-		SELECT w.*,
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
+
+		SELECT
+		w.*,
 		p.name AS product_name
 		FROM t_warehouse w
 		LEFT JOIN t_product p
 		ON w.product_idx = CAST(p.idx AS CHAR)
 		<where>
 			<if test="name != null and !(''.equals(name.trim()))">
-				AND w.name LIKE CONCAT('%', #{name}, '%')
+				AND w.name LIKE '%' || #{name} || '%'
 			</if>
 
 			<if test="directionCode != null and !(''.equals(directionCode.trim()))">
@@ -170,26 +165,18 @@
 			</if>
 
 			<choose>
-				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '')
-							and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
-					AND w.manufacturing_date BETWEEN
-					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
-					'%Y-%m-%d%H%i%S')
-					AND
-					STR_TO_DATE(CONCAT(#{endManufacturingDate},
-					'235959'), '%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '') 
+                        and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
+					AND w.manufacturing_date BETWEEN TO_DATE(#{startManufacturingDate} || '000000', 'YYYY-MM-DDHH24MISS')
+					AND TO_DATE(#{endManufacturingDate} || '235959', 'YYYY-MM-DDHH24MISS')
 				</when>
-				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '')
-							and (endManufacturingDate == null or endManufacturingDate.trim() == '')">
-					AND w.manufacturing_date <![CDATA[>=]]>
-					STR_TO_DATE(CONCAT(#{startManufacturingDate}, '000000'),
-					'%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate != null and startManufacturingDate.trim() != '') 
+                        and (endManufacturingDate == null or endManufacturingDate.trim() == '')">
+					AND w.manufacturing_date &gt;= TO_DATE(#{startManufacturingDate} || '000000', 'YYYY-MM-DDHH24MISS')
 				</when>
-				<when test="(startManufacturingDate == null or startManufacturingDate.trim() == '')
-							and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
-					AND w.manufacturing_date <![CDATA[<=]]>
-					STR_TO_DATE(CONCAT(#{endManufacturingDate}, '235959'),
-					'%Y-%m-%d%H%i%S')
+				<when test="(startManufacturingDate == null or startManufacturingDate.trim() == '') 
+                        and (endManufacturingDate != null and endManufacturingDate.trim() != '')">
+					AND w.manufacturing_date &lt;= TO_DATE(#{endManufacturingDate} || '235959', 'YYYY-MM-DDHH24MISS')
 				</when>
 			</choose>
 
@@ -202,9 +189,7 @@
 			</if>
 		</where>
 
-		<!-- 페이징 처리 -->
-		ORDER BY w.idx ASC
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 
 	<!-- 창고 상세 조회 -->

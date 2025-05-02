@@ -54,4 +54,9 @@ public class WarehouseDTO {
 
 	// 한글 변환 (뷰페이지)
 	private String productName;
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 }
