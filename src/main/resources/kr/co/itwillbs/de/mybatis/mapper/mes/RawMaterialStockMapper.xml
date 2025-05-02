@@ -18,7 +18,8 @@
 		        ) AS rn
 		    FROM t_warehouse_transaction wt
 		    WHERE wt.status = 2
-		)
+		),
+		pattern AS (
 		SELECT 
 		    rm.idx,
 		    rm.name,
@@ -77,7 +78,7 @@
 		ORDER BY 
 		    rm.idx,
 		    li.name
-   		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+	<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<select id="searchMaterialStockCount" resultType="int"
