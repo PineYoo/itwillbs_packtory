@@ -26,8 +26,8 @@ import kr.co.itwillbs.de.mes.dto.QcLogDTO;
 import kr.co.itwillbs.de.mes.dto.QcLogFormDTO;
 import kr.co.itwillbs.de.mes.dto.QcLogSearchDTO;
 import kr.co.itwillbs.de.mes.dto.QcRequiredLogDTO;
+import kr.co.itwillbs.de.mes.dto.QcRequiredSearchDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO;
-import kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO;
 import kr.co.itwillbs.de.mes.service.QcLogService;
 import kr.co.itwillbs.de.mes.service.QcStandardService;
 import lombok.RequiredArgsConstructor;
@@ -150,7 +150,7 @@ public class QcLogController {
 	 */
 	@GetMapping("/required/{status}")
 	public String getRequiredQCListByStatus(@PathVariable(name="status") String status,
-											@ModelAttribute WarehouseTransactionSearchDTO searchDTO, Model model) {
+											@ModelAttribute QcRequiredSearchDTO searchDTO, Model model) {
 		LogUtil.logStart(log);
 		
 		// status 값이 숫자가 아닐 때 리스트로 리다이렉트
@@ -197,17 +197,22 @@ public class QcLogController {
 		
 		// viewResolver 에 전달 할 model
 		formDTO.setIdx(idx);
-		formDTO.setViewStatus(status);
+		formDTO.setStatus(status);
 		model.addAttribute("formDTO", formDTO);
 
 		return QC_PATH + "/qclog_group_form";
 	}
 	
+	/**
+	 * 품질검사 대기 자재/상품의 품질 작성 등록(리스트형) 중요파라미터들은 위의 작성 페이지와 같다
+	 * @param formDTO
+	 * @return
+	 */
 	@PostMapping(value="/group/new", consumes= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> setQCLogRegisterForm(@RequestBody QcLogFormDTO formDTO) {
 		LogUtil.logStart(log);
-		LogUtil.logDetail(log, "requried data: {}", formDTO.getQcList());
+		LogUtil.logDetail(log, "requried data: {}", StringUtil.objToString(formDTO));
 		
 		// 리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
@@ -227,7 +232,7 @@ public class QcLogController {
 	}
 	
 	@GetMapping("/required/list")
-	public String getQCRequiredLogList(@ModelAttribute WarehouseTransactionSearchDTO searchDTO, Model model) {
+	public String getQCRequiredLogList(@ModelAttribute QcRequiredSearchDTO searchDTO, Model model) {
 		LogUtil.logStart(log);
 		
 		// 페이징 카운트, 리스트 가져오기

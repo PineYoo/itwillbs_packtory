@@ -32,8 +32,7 @@
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
-								<th:block th:with="status=${searchDTO.status}">
-								<form th:action="@{/mes/qclog/required/{status}(status=${status})}" method="get" th:object="${searchDTO}" id="searchForm">
+								<form th:action="@{/mes/qclog/required/{status}(status=${searchDTO.status})}" method="get" th:object="${searchDTO}" id="searchForm">
 									<input type="hidden" th:field="*{status}">
 									<input type="hidden" th:field="*{pageDTO.page}">
 									<input type="hidden" th:field="*{pageDTO.size}">
@@ -75,7 +74,6 @@
 										</div>
 									</div>
 								</form>
-								</th:block>
 							</div>
 						</section>
 					</div>

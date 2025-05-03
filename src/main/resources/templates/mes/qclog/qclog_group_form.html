@@ -53,7 +53,7 @@ input, select {
 						<div class="table-responsive">
 							<form th:action="@{/mes/qclog/group/new}" method="post" th:object="${formDTO}" class="form row g-3" id="registerForm">
 								<input type="hidden" th:field="*{idx}" />
-								<input type="hidden" th:field="*{viewStatus}" />
+								<input type="hidden" th:field="*{status}" />
 								
 								<th:block th:each="item : *{standardList}">
 									<input type="hidden" th:name="|${item.idx}_qcIdx|" th:value="${item.idx}" />
@@ -69,8 +69,7 @@ input, select {
 								<div class="col-md-12">
 									<label class="mb-1" th:for="|${item.idx}_memo|" onclick="toggleStyle(this);">▶ 메모 작성</label>
 									<textarea class="form-control" th:name="|${item.idx}_memo|"
-										placeholder="메모 사항" rows="5" cols="3" style="display: none;">
-									</textarea>
+										placeholder="메모 사항" rows="5" cols="3" style="display: none;"></textarea>
 								</div>
 								</th:block>
 								<!-- 단위 -->
@@ -139,7 +138,7 @@ input, select {
 					const _jsonObj = { qcList: Object.values(_grouped) };
 					
 					_jsonObj['idx']=document.querySelector('#idx').value;
-					_jsonObj['viewStatus']=document.querySelector('#viewStatus').value;
+					_jsonObj['status']=document.querySelector('#status').value;
 					
 					// 데이터 확인
 					console.log(_jsonObj);
@@ -156,7 +155,7 @@ input, select {
 						console.log("서버 응답:", data);
 						if(data.status === "success") {
 							alert(data.message);
-							location.href="/mes/qclog"; // 현재 페이지 새로 고침
+							//location.href="/mes/qclog"; // 현재 페이지 새로 고침
 						} else if(data.status === "validFail") {
 							console.log("hello validFail!1");
 							//alert(data.message);

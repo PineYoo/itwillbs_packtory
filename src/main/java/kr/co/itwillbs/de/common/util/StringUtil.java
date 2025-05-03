@@ -2,6 +2,8 @@ package kr.co.itwillbs.de.common.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,65 +11,50 @@ import lombok.extern.slf4j.Slf4j;
 public class StringUtil {
 
 	/**
-	 * Object 안에 null이 아닌 필드 값 출력
+	 * <pre>
+	 * 우리 프로젝트 스프링부트로 전달받은 DTO 클래스 내부를 탐색하며
+	 * 클래스 필드 변수들을 출력 (null 또는 "" 이 아닌 value가 있는 멤버들)
+	 * 클래스 필드 안의 list는 위의 조건을 보지 않고 출력시킨다.(개선 필요)
+	 * </pre>
 	 * @param obj
-	 * @return StringBuffer.toString()
+	 * @return
 	 */
 	public static String objToString(Object obj) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-
 		if (obj == null) {
 			return "Object is null";
 		}
 
-		Class<?> cls = obj.getClass(); // static 메서드에서는 this 대신 전달된 객체 사용
-		Method[] arrMethod = cls.getMethods();
-		StringBuffer sb = new StringBuffer();
-		sb.append("\n");
-		try {
-			for (Method m : arrMethod) {
-				if (m.getName().startsWith("get") && !m.getName().equals("getClass") && m.invoke(obj) != null && !"".equals(m.invoke(obj))) {
-					sb.append(m.getName());
-					sb.append(" : ");
-					sb.append(m.invoke(obj));
-					sb.append("\n");
-				}
+		StringBuilder sb = new StringBuilder("\n");
+
+		if (obj instanceof List<?> list) {
+			for (int i = 0; i < list.size(); i++) {
+				sb.append("[").append(i).append("] ").append(objToString(list.get(i))).append("\n");
 			}
-		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
+		} else if (obj instanceof Map<?, ?> map) {
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				sb.append("[").append(entry.getKey()).append("] => ").append(objToString(entry.getValue())).append("\n");
+			}
+		} else {
+			Class<?> cls = obj.getClass();
+			Method[] arrMethod = cls.getMethods();
+			try {
+				for (Method m : arrMethod) {
+					if (m.getName().startsWith("get") 
+							&& !m.getName().equals("getClass") 
+							&& m.getParameterCount() == 0
+							&& m.invoke(obj) != null
+							&& !"".equals(m.invoke(obj))) {
+						sb.append(m.getName()).append(" : ").append(m.invoke(obj)).append("\n");
+					}
+				}
+			} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return sb.toString();
 	}
-
-	/**
-	 * Object 안에 null이 아닌 필드 값 출력
-	 * @param obj
-	 * @return StringBuffer.toString()
-	 */
-	@Deprecated
-	public String old_objToString(Object obj) {
-		log.debug("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		Class<?> cls = this.getClass();
-		Method[] arrMethod = cls.getMethods();
-		StringBuffer sb = new StringBuffer(/*this.getClass().toString() 유틸에서는 여기 클래스가 찍히니 패스!*/);
-		sb.append("\n");
-		try {
-			for (Method m : arrMethod) {
-				if(m.getName().startsWith("get") && !m.getName().equals("getClass") && m.invoke(this) != null) {
-					sb.append(m.getName());
-					sb.append(" : ");
-					sb.append(m.invoke(this));
-					sb.append("\n ");
-				}
-			}
-		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		
-		return sb.toString();
-	}
-
+	
 	/**
 	 * String 값을 받아서
 	 * <br>Long 값 체크
@@ -76,7 +63,7 @@ public class StringUtil {
 	 * @return boolean -> true: 정수 값, false: 정수가 아닌 값
 	 */
 	public static boolean isLongValue(String str){
-		log.debug("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		try {
 			Long.parseLong(str);
 		} catch (NumberFormatException e) {

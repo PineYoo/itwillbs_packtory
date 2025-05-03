@@ -1,6 +1,8 @@
 package kr.co.itwillbs.de.mes.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,13 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.common.util.LotNumberUtil;
+import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.mes.dto.QcLogDTO;
 import kr.co.itwillbs.de.mes.dto.QcLogFormDTO;
 import kr.co.itwillbs.de.mes.dto.QcLogSearchDTO;
 import kr.co.itwillbs.de.mes.dto.QcRequiredLogDTO;
+import kr.co.itwillbs.de.mes.dto.QcRequiredSearchDTO;
 import kr.co.itwillbs.de.mes.dto.QcStandardDTO;
 import kr.co.itwillbs.de.mes.dto.WarehouseTransactionDTO;
-import kr.co.itwillbs.de.mes.dto.WarehouseTransactionSearchDTO;
 import kr.co.itwillbs.de.mes.mapper.QcLogMapper;
 import kr.co.itwillbs.de.mes.mapper.QcStandardMapper;
 import kr.co.itwillbs.de.mes.mapper.WarehouseTransactionMapper;
@@ -76,7 +79,7 @@ public class QcLogService {
 	 * @param searchDTO
 	 * @return
 	 */
-	public int getRequiredQCCount(WarehouseTransactionSearchDTO searchDTO) {
+	public int getRequiredQCCount(QcRequiredSearchDTO searchDTO) {
 		LogUtil.logStart(log);
 
 		return warehouseTransactionMapper.getRequiredQCCountBySearchDTO(searchDTO);
@@ -88,7 +91,7 @@ public class QcLogService {
 	 * @param searchDTO status = {"1", "5"} 둘 중 하나가 필요함
 	 * @return
 	 */
-	public List<WarehouseTransactionDTO> getRequiredQCListBySearchDTO(WarehouseTransactionSearchDTO searchDTO) {
+	public List<WarehouseTransactionDTO> getRequiredQCListBySearchDTO(QcRequiredSearchDTO searchDTO) {
 		LogUtil.logStart(log);
 
 		return warehouseTransactionMapper.getRequiredQCListBySearchDTO(searchDTO);
@@ -121,6 +124,13 @@ public class QcLogService {
 	public void validatingQCs(QcLogFormDTO formDTO) {
 		LogUtil.logStart(log);
 		LogUtil.logDetail(log, "currentLotNumber is {}", LotNumberUtil.generateLotNumber());
+		
+		List<QcStandardDTO> standardList = selectQcStandardGroupByIdx(formDTO.getIdx());
+		Map<String, QcStandardDTO> standardMap = new HashMap<>();
+		for(QcStandardDTO item: standardList) {
+			LogUtil.logDetail(log, "standardList.item is {}", StringUtil.objToString(item));
+			standardMap.put(String.valueOf(item.getIdx()), item);
+		}
 	}
 	
 	/**
@@ -128,7 +138,7 @@ public class QcLogService {
 	 * @param searchDTO idx = t_warehouse_transaction.idx
 	 * @return
 	 */
-	public int getRequiredQCLogCountBySearchDTO(WarehouseTransactionSearchDTO searchDTO) {
+	public int getRequiredQCLogCountBySearchDTO(QcRequiredSearchDTO searchDTO) {
 		LogUtil.logStart(log);
 		
 		return warehouseTransactionMapper.getRequiredQCLogCountBySearchDTO(searchDTO);
@@ -139,7 +149,7 @@ public class QcLogService {
 	 * @param idx
 	 * @return
 	 */
-	public List<QcRequiredLogDTO> getRequiredQCLogListBySearchDTO(WarehouseTransactionSearchDTO searchDTO) {
+	public List<QcRequiredLogDTO> getRequiredQCLogListBySearchDTO(QcRequiredSearchDTO searchDTO) {
 		return warehouseTransactionMapper.getRequiredQCLogListBySearchDTO(searchDTO);
 	}
 }

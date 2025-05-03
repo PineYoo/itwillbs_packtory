@@ -1,5 +1,7 @@
 package kr.co.itwillbs.de.mes.dto;
 
+import org.springframework.util.StringUtils;
+
 import jakarta.validation.constraints.NotBlank;
 import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.Getter;
@@ -35,5 +37,27 @@ public class QcStandardDTO {
 	private int totalCount;
 	private int rowAsc;
 	private int rowNum;
+	
+	/**
+	 * <pre>
+	 * 품질 검사 기준을 DB에서 가져와 있는 객체이기에 여기에서 검사를 진행 한다.
+	 * idx 기준으로 입력값 체크 함 (이렇게 보니 targetValue가 의미가 모호해짐)
+	 * </pre>
+	 * @param inputValue
+	 * @return true: 적합결과, false: 부적합결과
+	 */
+	public boolean isPassed(String inputValue) {
+		if(StringUtils.hasLength(minValue) && StringUtils.hasLength(maxValue)) {
+			try {
+				float value = Float.parseFloat(inputValue);
+				
+				return value >= Float.parseFloat(minValue) && value <= Float.parseFloat(maxValue);
+			} catch (NumberFormatException e) {
+				return false; // 이건 얄짤 없이 넘겨도 되나?
+			}
+		} else {
+			return "pass".equalsIgnoreCase(inputValue);
+		}
+	}
 }
 

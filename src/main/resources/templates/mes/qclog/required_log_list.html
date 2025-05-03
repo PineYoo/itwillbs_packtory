@@ -32,10 +32,9 @@
 					<div class="search-wrap border">
 						<section class="d-flex search-inner">
 							<div class="col pl-4 search-box">
-								<th:block th:with="status=${searchDTO.status}">
-								<form th:action="@{/mes/qclog/required/{status}(status=${status})}" method="get" th:object="${searchDTO}" id="searchForm">
-									<input type="hidden" th:field="*{status}">
+								<form th:action="@{/mes/qclog/required/list(idx=${searchDTO.idx}, status=${searchDTO.status})}" method="get" th:object="${searchDTO}" id="searchForm">
 									<input type="hidden" th:field="*{idx}">
+									<input type="hidden" th:field="*{status}">
 									<input type="hidden" th:field="*{pageDTO.page}">
 									<input type="hidden" th:field="*{pageDTO.size}">
 
@@ -76,7 +75,6 @@
 										</div>
 									</div>
 								</form>
-								</th:block>
 							</div>
 						</section>
 					</div>
@@ -103,7 +101,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item : ${requiredList}" th:data-qc-id="${item.qcLogIdx}">
+								<tr th:each="item : ${requiredList}" th:data-qc-id="${item.qcLogIdx}" th:data-lot-id="${item.lotIdx}">
 									<!-- <td th:text="${item.rowNum}"></td> -->
 									<td th:text="${item.transTypeName}"></td>
 									<td th:text="${#strings.isEmpty(item.lotNumber) ? '-': item.lotNumber}"></td>
@@ -125,15 +123,37 @@
 			$(document).ready(function() {
 
 				// 검사 하기 버튼 막기
-// 				function writeButtonToggle() {
-// 					//TODO 무슨 기준으로 검사 버튼을 막을 건지 떠오르지가 않아
-// 					const _nodeList = document.querySelectorAll('#dataTables tbody tr');
-// 					//_nodeList.foreach(function() {
-						
-// 					});
+				function writeButtonToggle() {
+					console.log("writeButtonToggle---start");
+					/*
+						어떤 기준으로 검사 버튼을 보이게 하고 보이지 않게 할지 불분명함
+						조건은 화면에서 주어진 정보만! 일때의 기준으로 생각해 봄
+						1. 작성된 QC검사 기록이 있을 경우 #dataTables tbody tr에 n개의 tr이 생성 됨
+						2. 정상적으로 생성된 데이터일 경우 tr의 dataset.qcId 값이 존재함 (t_qc_logs의 idx 값임)
+						3. tr 개수와 qcId가 값이 일치 할때 검사하기 버튼 보이지 않게.
+						(확실히 서버의 데이터를 받아보는게 더 맞는것 같은데...)
+					*/
+					const _nodeList = document.querySelectorAll('#dataTables tbody tr');
+					let _nodeSize = _nodeList.length;
+					let _isIdxCount = 0;
+					_nodeList.forEach(function(item) {
+						if(item.dataset.qcId != undefined && item.dataset.qcId != "") {
+							_isIdxCount += 1;
+						}
+					});
+					console.log(_nodeSize);
+					console.log(_isIdxCount);
+					// 버튼 보이지 않게 처리
+					if(_nodeSize == _isIdxCount) {
+						document.querySelector('#btnRegister').style.display = 'none';
+					} else {
+						document.querySelector('#btnRegister').style.display = '';
+					}
 					
-					
-// 				}
+				}
+				
+				// 검사 하기 버튼 막기 수행
+				writeButtonToggle();
 				
 				// init DataTable
 				$('#dataTables').DataTable({
