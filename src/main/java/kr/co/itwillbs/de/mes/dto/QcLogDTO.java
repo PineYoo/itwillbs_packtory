@@ -16,6 +16,7 @@ public class QcLogDTO {
 
 	private Long idx; // 테이블 인덱스
 	
+	private String lotsIdx;
 	@NotBlank(message = "품질IDX 는 필수 입력 값입니다.")
 	private String qcIdx; // 품질IDX
 	private String qcStandardName; // 품질기준 이름

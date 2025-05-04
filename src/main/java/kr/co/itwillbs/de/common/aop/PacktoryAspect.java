@@ -192,6 +192,7 @@ public class PacktoryAspect {
 	}
 	// ===실험실0====================================================================================================================
 
+	@SuppressWarnings("unused")
 	@AfterThrowing(pointcut = "@annotation(logExecution)", throwing = "ex")
 	public void logException(JoinPoint joinPoint, LogExecution logExecution, Exception ex) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());

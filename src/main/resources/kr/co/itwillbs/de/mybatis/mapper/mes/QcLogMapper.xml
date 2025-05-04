@@ -11,6 +11,9 @@
 			<if test='qcIdx !=null and !("".equals(qcIdx.trim()))'>
 				qc_idx,
 			</if>
+			<if test='lotsIdx !=null and !("".equals(lotsIdx.trim()))'>
+				lots_idx,
+			</if>
 			<if test='qcResult !=null and !("".equals(qcResult.trim()))'>
 				qc_result,
 			</if>
@@ -34,6 +37,9 @@
 
 			<if test='qcIdx !=null and !("".equals(qcIdx.trim()))'>
 				#{qcIdx},
+			</if>
+			<if test='lotsIdx !=null and !("".equals(lotsIdx.trim()))'>
+				#{lotsIdx},
 			</if>
 			<if test='qcResult !=null and !("".equals(qcResult.trim()))'>
 				#{qcResult},
