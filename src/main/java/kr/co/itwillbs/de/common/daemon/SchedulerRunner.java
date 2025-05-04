@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import kr.co.itwillbs.de.common.service.HealthCheckService;
 import kr.co.itwillbs.de.common.service.StatisticsService;
 import kr.co.itwillbs.de.common.service.TaskReportRegistryService;
-import kr.co.itwillbs.de.groupware.service.ApprovalService;
+import kr.co.itwillbs.de.common.service.WorkScheduleAuditingService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,21 +21,26 @@ public class SchedulerRunner implements CommandLineRunner {
 	private final HealthCheckService healthCheckService;
 	private final StatisticsService statisticsService;
 	private final TaskReportRegistryService taskReportRegistryService;
+	private final WorkScheduleAuditingService workScheduleAuditingService;
+	
 //	private final ApprovalService approvalService;
 
 	
 
 	public SchedulerRunner(ThreadPoolTaskScheduler scheduler, HealthCheckService healthCheckService,
-			StatisticsService statisticsService, TaskReportRegistryService taskReportRegistryService) {
+			StatisticsService statisticsService, TaskReportRegistryService taskReportRegistryService,
+			WorkScheduleAuditingService workScheduleAuditingService) {
 		this.scheduler = scheduler;
 		this.healthCheckService = healthCheckService;
 		this.statisticsService = statisticsService;
+		this.workScheduleAuditingService = workScheduleAuditingService;
 		this.taskReportRegistryService= taskReportRegistryService;
 	}
 
 	@Override
 	public void run(String... args) {
 		// sample task 등록
+		registerTaskForSec("WorkScheduler", 10);
 //		registerTaskForSec("every45SecHealthCheck", 45);
 //		registerTaskForMin("E-ApprovalMonitor", 1);
 //		// cron 형식 작업
@@ -49,7 +54,8 @@ public class SchedulerRunner implements CommandLineRunner {
 		Runnable task = () -> {
 			taskReportRegistryService.updateReport(taskName, "Running");
 			try {
-				healthCheckService.check(taskName);
+//				healthCheckService.check(taskName);
+				workScheduleAuditingService.startWorkSchedule(taskName);
 				taskReportRegistryService.updateReport(taskName, "Success");
 			} catch (Exception e) {
 				taskReportRegistryService.updateReport(taskName, "Fail");

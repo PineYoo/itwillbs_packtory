@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.common.mapper.WorkScheduleAuditingMapper">
+
+	<!-- 진행 중이고 날짜가 있는 작업 아이템 조회 -->
+	<select id="selectActiveWorkItemsWithDates" resultType="kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO">
+		 SELECT 
+			i.*
+		FROM 
+			t_work_orders_items i
+		JOIN 
+			t_work_orders_master m 
+			ON i.document_number = m.document_number
+		WHERE 
+			m.status = '2'
+			AND i.actual_start_date IS NOT NULL
+			AND i.actual_end_date IS NOT NULL
+	</select>
+	
+	<!-- 조건에 맞는 직원 전체 조회 -->
+	<select id="selectAvailableEmployees" resultType="kr.co.itwillbs.de.human.dto.EmployeeDTO">
+	    SELECT 
+	        *
+	    FROM 
+	        t_employee
+	    WHERE 
+	        department_code = '5'
+	        AND sub_department_code IN ('4', '5')
+	        AND is_deleted = 'N'
+	</select>
+	
+	<insert id="insertWorkerSchedules" parameterType="kr.co.itwillbs.de.mes.dto.WorkerScheduleDTO">
+	    INSERT INTO t_worker_schedule 
+	    (shift_type, employee_id, location_idx, start_date, end_date, memo, is_deleted, reg_id, reg_date)
+	    VALUES
+	    <foreach item="item" index="index" collection="list" separator=",">
+			(UPPER(#{item.shiftType}), #{item.employeeId}, #{item.locationIdx}, #{item.startDate}, #{item.endDate}, #{item.memo}, #{item.isDeleted}, #{item.regId}, now())
+		</foreach>
+	</insert>
+	
+	<update id="updateWorkOrdersItems" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO">
+		UPDATE t_work_orders_items
+		<set>
+			<if test='status != null and !("".equals(status.trim()))'>status = #{status},</if>
+			<if test='modId != null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+			<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+		</set>
+	</update>
+
+</mapper>
