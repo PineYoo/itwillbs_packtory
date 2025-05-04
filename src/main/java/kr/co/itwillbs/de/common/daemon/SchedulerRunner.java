@@ -40,7 +40,7 @@ public class SchedulerRunner implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		// sample task 등록
-		registerTaskForSec("WorkScheduler", 10);
+//		registerTaskForSec("WorkScheduler", 10);
 //		registerTaskForSec("every45SecHealthCheck", 45);
 //		registerTaskForMin("E-ApprovalMonitor", 1);
 //		// cron 형식 작업
