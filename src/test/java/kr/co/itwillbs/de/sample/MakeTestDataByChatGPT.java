@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class MakeTestDataByChatGPT {
 
+	@SuppressWarnings("unused")
 	public static void toMakeWarehouseTransactionData() {
 		int setCount = 4;
 		LocalDate startDate = LocalDate.of(2025, 4, 14);
@@ -24,8 +25,8 @@ public class MakeTestDataByChatGPT {
 
 		int entryCount = 0;
 		
-		String reg_id = "chatGPT";
-		String reg_date = "now()";
+//		String reg_id = "chatGPT";
+//		String reg_date = "now()";
 		
 		for (int i = 0; i < setCount; i++) {
 			LocalDate inDate = startDate.plusDays(i * 2);

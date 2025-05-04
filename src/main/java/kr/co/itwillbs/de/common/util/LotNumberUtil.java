@@ -35,7 +35,7 @@ public class LotNumberUtil {
 	/**
 	 * lotsyyyyMMddHHmmssN9 => 26자리
 	 * <br>3 + 14 + 9 = 26자리 시간기반 숫자 생성
-	 * @return
+	 * @return string
 	 */
 	public static String generateLotNumber() {
 		LogUtil.logStart(log);

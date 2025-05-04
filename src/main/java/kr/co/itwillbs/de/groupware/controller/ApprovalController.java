@@ -271,7 +271,7 @@ public class ApprovalController {
 		String sessionId = userDetails.getUsername();
 		// ------------------------------
 		
-		String status = approvalDTO.getProgressStatus();
+		String progressStatus = approvalDTO.getProgressStatus();
 		String drafter = approvalDTO.getDrafterId();
 		
 		String approver1 = approvalDTO.getApprover1();
@@ -284,30 +284,35 @@ public class ApprovalController {
 		
 		// 기안자 : drafterId 일치하면서 progressStatus 1(결재요청) 인 경우
 		// 			=> 결재 진행 되었을 땐 기안자이더라도 수정불가해야함
-	    boolean isDrafter  = sessionId.equals(drafter) && "1".equals(status);
+	    boolean isDrafter  = sessionId.equals(drafter) && "1".equals(progressStatus);
 	    
 	    // 결재자 : 앞사람은 결재 완료(3) 했으나, 나는 아직 미결인 상태
 	    // => 진행상태(1: 결재요청, 2: 진행중, 3: 결재완료, 4: 반려)
 	    boolean isApprover = false;
 
 	    // 결재자1: 결재요청 상태에서 결재 가능
-	    if (sessionId.equals(approver1) && approver1Status == null && "1".equals(status)) {
+	    if (sessionId.equals(approver1) && approver1Status == null && "1".equals(progressStatus)) {
 	        isApprover = true;
 
 	    // 결재자2: 진행중 상태에서 1번 결재자가 승인한 경우
 	    } else if (sessionId.equals(approver2) && approver2Status == null 
-	    			&& "3".equals(approver1Status) && "2".equals(status)) {
+	    			&& "3".equals(approver1Status) && "2".equals(progressStatus)) {
 	        isApprover = true;
 
 	    // 결재자3: 진행중 상태에서 결재자2가 있으면 2번이 승인, 없으면 1번이 승인해야 함
-	    } else if (sessionId.equals(approver3) && approver3Status == null && "2".equals(status)
+	    } else if (sessionId.equals(approver3) && approver3Status == null && "2".equals(progressStatus)
 	            && (
-	                (approver2 != null && "3".equals(approver2Status)) ||
-	                (approver2 == null && "3".equals(approver1Status))
+	                (approver2 != null && !approver2.isEmpty() && "3".equals(approver2Status)) ||
+	                (approver2 == null || approver2.isEmpty() && "3".equals(approver1Status))
 	            )) {
 	        isApprover = true;
 	    }
 
+	    log.info("approver3 check => sessionId: {}, approver3: {}", sessionId, approver3);
+	    log.info("approver3Status: {}, progressStatus: {}", approver3Status, progressStatus);
+	    log.info("approver1Status: {}, approver2: {}, approver2Status: {}", approver1Status, approver2, approver2Status);
+
+	    log.info("!!!!!!!!!!!!!!! isDrafter : " + isDrafter + ", isApprover : " + isApprover);
 	    model.addAttribute("isDrafter", isDrafter);
 	    model.addAttribute("isApprover", isApprover);
 	    

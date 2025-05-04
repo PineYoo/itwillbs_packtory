@@ -3,16 +3,12 @@ package kr.co.itwillbs.de.common.securityhandler;
 import java.io.IOException;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import kr.co.itwillbs.de.admin.dto.LogDTO;
 import kr.co.itwillbs.de.admin.mapper.LogMapper;
 import kr.co.itwillbs.de.common.util.ServletRequestUtil;

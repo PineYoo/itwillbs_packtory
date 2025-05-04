@@ -75,7 +75,7 @@ public class CommonCodeUtil {
 		if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 			LoginVO loginVO = userDetails.getLoginVO();
-			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
+//			String memberId = userDetails.getUsername(); // 이렇게 자유롭게 사용 가능!
 			LogUtil.logDetail(log,"userDetails is {}", userDetails);
 			LogUtil.logDetail(log,"loginVO is {}", loginVO);
 			

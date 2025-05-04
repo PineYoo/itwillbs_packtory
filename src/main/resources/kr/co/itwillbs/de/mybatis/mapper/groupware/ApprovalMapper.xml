@@ -199,10 +199,15 @@
 			1 = 1
 			<if test="drafterId != null and drafterId != ''">	<!-- 기안자 / 결재자 -->
 			   AND (a.drafter_id = #{drafterId}	<!-- 기안자 -->
-			    OR  ai.approver1 = #{drafterId}	<!-- 결재자1(진행상태:1) -->
-			    OR (ai.approver2 = #{drafterId} AND a.progress_status != 1 AND ai.approver1_status = '3') <!-- 결재자2(결재자1이 승인 했을 경우) -->
-			    OR (ai.approver3 = #{drafterId} AND a.progress_status != 1 AND ai.approver2_status = '3') <!-- 결재자3(결재자2이 승인 했을 경우) -->
-			     )
+				    OR  ai.approver1 = #{drafterId}	<!-- 결재자1(진행상태:1) -->
+				    OR (ai.approver2 = #{drafterId} AND a.progress_status != 1 AND ai.approver1_status = '3') <!-- 결재자2(결재자1이 승인 했을 경우) -->
+				    OR (ai.approver3 = #{drafterId} AND a.progress_status != 1 AND ( <!-- 결재자3 -->
+							(ai.approver2 IS NOT NULL AND ai.approver2 != '' AND ai.approver2_status = '3')	<!-- (결재자2이 승인 했을 경우) -->
+							OR 
+							((ai.approver2 IS NULL OR ai.approver2 = '') AND ai.approver1_status = '3')	<!-- (결재자1이 승인 했을 경우) -->
+						  )
+						)
+			        )
 			</if>
 			<if test="drafterName != null and drafterName.trim() != ''">
 			   AND e.name LIKE CONCAT('%', #{drafterName}, '%')
@@ -258,10 +263,15 @@
 			1 = 1
 			<if test="drafterId != null and drafterId != ''">	<!-- 기안자 / 결재자 -->
 			   AND (a.drafter_id = #{drafterId}
-			    OR  ai.approver1 = #{drafterId}
-			    OR (ai.approver2 = #{drafterId} AND a.progress_status != 1 AND ai.approver1_status = '3')
-			    OR (ai.approver3 = #{drafterId} AND a.progress_status != 1 AND ai.approver2_status = '3')
-			     )
+				    OR  ai.approver1 = #{drafterId}
+				    OR (ai.approver2 = #{drafterId} AND a.progress_status != 1 AND ai.approver1_status = '3')
+				    OR (ai.approver3 = #{drafterId} AND a.progress_status != 1 AND (
+							(ai.approver2 IS NOT NULL AND ai.approver2 != '' AND ai.approver2_status = '3')	<!-- (결재자2이 승인 했을 경우) -->
+							OR 
+							((ai.approver2 IS NULL OR ai.approver2 = '') AND ai.approver1_status = '3')	<!-- (결재자1이 승인 했을 경우) -->
+						  )
+						)
+			        )
 			</if>
 			<if test="drafterName != null and drafterName.trim() != ''">
 			   AND e.name LIKE CONCAT('%', #{drafterName}, '%')
@@ -443,9 +453,10 @@
 					    	(ai.approver2 = #{memberId} AND ai.approver2_status IS NULL AND ai.approver1_status = '3')	 <!-- 결재자2일 경우, 1진행상태:결재완료(3) -->
 				 	      OR
 				 	      	(ai.approver3 = #{memberId} AND ai.approver3_status IS NULL AND (							 <!-- 결재자3일 경우, -->
-								(ai.approver2 IS NOT NULL AND ai.approver2_status = '3') <!-- 결재자2가 있으면, 2진행상태:결재완료(3) -->
+								
+								(ai.approver2 IS NOT NULL AND ai.approver2 != '' AND ai.approver2_status = '3') <!-- 결재자2가 있으면, 2진행상태:결재완료(3) -->
 								OR 
-								(ai.approver2 IS NULL AND ai.approver1_status = '3')	 <!-- 결재자2가 없으면, 1진행상태:결재완료(3) -->
+						        ((ai.approver2 IS NULL OR ai.approver2 = '') AND ai.approver1_status = '3')	 <!-- 결재자2가 없으면, 1진행상태:결재완료(3) -->
 							))
 					    )
 				</when>
