@@ -33,6 +33,10 @@ public class QcStandardDTO {
 	private String modId;
 	private String modDate;
 	
+	// 25.05.05 추가 필드
+	private int quantity;
+	private float acceptablePassRate; // QC 통과율.. 여기까지 고민하니까 머리가 너무 아프다
+	
 	// 페이징 변수들
 	private int totalCount;
 	private int rowAsc;
@@ -47,6 +51,11 @@ public class QcStandardDTO {
 	 * @return true: 적합결과, false: 부적합결과
 	 */
 	public boolean isPassed(String inputValue) {
+		if(!StringUtils.hasLength(inputValue)) {
+			return false;
+		}
+		
+		// 계산을 하지 않음. 단순 비교연산자이기에 float이면 되지 않을까?
 		if(StringUtils.hasLength(minValue) && StringUtils.hasLength(maxValue)) {
 			try {
 				float value = Float.parseFloat(inputValue);

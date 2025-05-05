@@ -91,5 +91,16 @@ public interface OrderMapper {
 	 */
 	void deleteOrderItemsByDocumentNumber(String documentNumber);
 
+	/**
+	 * <pre>
+	 * [입고신청] 에서 사용
+	 * select * from t_order_items where orderDocumentNumber for update
+	 * 위의 쿼리로 select 구매 신청한 주문번호의 원자재, 부자재 등을 t_warehouse_transaction 에 입력전 선행함
+	 * </pre>
+	 * @param orderDocumentNumber
+	 * @return
+	 */
+	List<OrderItemsDTO> getOrderItemsByDocumentNumberForUpodate(String orderDocumentNumber);
+
 
 }

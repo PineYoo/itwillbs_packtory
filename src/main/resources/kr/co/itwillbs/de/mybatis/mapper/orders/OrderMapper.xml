@@ -24,7 +24,7 @@
 			count(*)
 		  FROM t_order o
 		  LEFT JOIN t_order_detail d
-		    ON o.document_number = d.document_number
+			ON o.document_number = d.document_number
 		<where>
 			o.trade_code = #{tradeCode}
 			<if test="documentNumber != null and documentNumber.trim() != ''">
@@ -80,7 +80,7 @@
 			<include refid="order_list_columns_forSelect"></include>
 		  FROM t_order o
 		  LEFT JOIN t_order_detail d
-		    ON o.document_number = d.document_number
+			ON o.document_number = d.document_number
 		<where>
 			o.trade_code = #{tradeCode}
 			<if test="documentNumber != null and documentNumber.trim() != ''">
@@ -190,22 +190,22 @@
 		INSERT INTO t_order_items
 		VALUES 
 			<foreach collection="orderItems" item="item" separator=",">
-		        (
-		          null					-- idx(auto_increment)
-		        , #{documentNumber}		-- order_document_number
-		        , #{item.materialIdx}	-- material_idx
-		        , #{item.productNumber}	-- product_number
-		        , #{item.productName}	-- product_name
-		        , #{item.productValue}	-- product_value
-		        , #{item.unitPrice}		-- unit_price
-		        , #{item.totalPrice}	-- total_price
-		        , 'Y'					-- is_deleted(default)
+				(
+				  null					-- idx(auto_increment)
+				, #{documentNumber}		-- order_document_number
+				, #{item.materialIdx}	-- material_idx
+				, #{item.productNumber}	-- product_number
+				, #{item.productName}	-- product_name
+				, #{item.productValue}	-- product_value
+				, #{item.unitPrice}		-- unit_price
+				, #{item.totalPrice}	-- total_price
+				, 'Y'					-- is_deleted(default)
 				, #{regId}				-- reg_id
 				, now()					-- reg_date
 				, null					-- mod_id(최초 등록시는 reg_id 만 넣고 update 시 mod_id 입력)
 				, null					-- mod_date
-		        )
-		    </foreach>
+				)
+			</foreach>
 	</insert>
 	
 	<!-- ============================================================= -->
@@ -251,7 +251,7 @@
 		SELECT
 			<include refid="order_detail_columns_forSelect"></include>
 		  FROM t_order o
-     LEFT JOIN t_order_detail d
+	 LEFT JOIN t_order_detail d
 			ON d.document_number = o.document_number
 		 WHERE o.document_number = #{documentNumber}
 	</select>
@@ -309,8 +309,8 @@
 	<update id="updateOrderDetail" parameterType="kr.co.itwillbs.de.orders.dto.OrderFormDTO">
 		UPDATE t_order_detail
 			<set>
-			      department_code = #{departmentCode}			-- 담당부서_코드
-			    , sub_department_code = #{subDepartmentCode}	-- 담당하위부서_코드
+				  department_code = #{departmentCode}			-- 담당부서_코드
+				, sub_department_code = #{subDepartmentCode}	-- 담당하위부서_코드
 				, client_name = #{clientName}					-- 담당자_이름
 				, client_phone = #{clientPhone}					-- 담당자_연락처
 				, mod_id = #{modId}								-- 최종 작성자
@@ -324,4 +324,28 @@
 		DELETE FROM t_order_items
 		 WHERE order_document_number = #{documentNumber}
 	</delete>
+	
+	<select id="getOrderItemsByDocumentNumberForUpodate" parameterType="string"
+													resultType="kr.co.itwillbs.de.orders.dto.OrderItemsDTO">
+	
+	SELECT
+		oi.idx,
+		oi.order_document_number,
+		oi.material_idx,
+		oi.product_idx,
+		oi.name,
+		oi.quantity,
+		oi.unit_price,
+		oi.total_price,
+		oi.is_deleted,
+		o.idx as orderIdx,
+		o.trade_code,
+		o.status_code,
+		rm.unit
+	FROM t_order_items AS oi
+		JOIN t_order AS o ON o.document_number = oi.order_document_number
+		JOIN t_raw_material as rm ON oi.material_idx = rm.idx
+	WHERE order_document_number = #{orderDocumentNumber}
+	FOR UPDATE
+	</select>
 </mapper>

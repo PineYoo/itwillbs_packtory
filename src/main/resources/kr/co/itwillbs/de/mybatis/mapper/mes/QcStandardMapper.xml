@@ -187,25 +187,21 @@
 			LEFT JOIN product AS p ON p.idx = wt.product_idx
 			)
 			SELECT
-				idx,
-				type,
-				name,
-				unit,
-				target_value,
-				min_value,
-				max_value,
-				memo
+				qs.idx,
+				qs.type,
+				qs.name,
+				qs.unit,
+				qs.target_value,
+				qs.min_value,
+				qs.max_value,
+				qs.memo,
+				b.quantity
 			FROM t_qc_standard qs
-			WHERE is_deleted = 'N'
-			AND EXISTS (
-					select 1
-					from base AS b,
-					JSON_TABLE (
-								f_get_json_split_cte(b.qc_type, '|'),
-								"$[*]" COLUMNS (value VARCHAR(255) PATH "$")
-								) jt
-					WHERE b.idx = #{idx}
-					AND jt.value = qs.type
-					)
+			JOIN base b ON b.idx = #{idx}
+			JOIN JSON_TABLE(
+				f_get_json_split_cte(b.qc_type, '|'),
+				"$[*]" COLUMNS (value VARCHAR(255) PATH "$")
+			) jt ON jt.value = qs.type
+			WHERE qs.is_deleted = 'N'
 	</select>
 </mapper>

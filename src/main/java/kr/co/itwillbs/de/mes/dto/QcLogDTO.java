@@ -25,10 +25,12 @@ public class QcLogDTO {
 	private String qcResult; // 측정결과
 	private String qcResultName;
 	
-	@NotBlank(message = "측정값은 필수 입력 값입니다.")
+	@NotBlank(message = "개수는 필수 입력 값입니다.")
+	private Integer quantity;
+	
 	private String value; // 측정값
 	
-	@NotBlank(message = "단위는 필수 입력 값입니다.")
+//	@NotBlank(message = "단위는 필수 입력 값입니다.")
 	private String unit; // 단위
 	private String unitName;
 	

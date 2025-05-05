@@ -12,6 +12,7 @@ import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.admin.dto.CodeSearchDTO;
 import kr.co.itwillbs.de.admin.mapper.CodeMapper;
 import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,6 +32,7 @@ public class CodeService {
 	 */
 	@LogExecution
 	@CacheEvict(value = "majorCodes", allEntries = true) // 캐시 삭제! true: 메서드 호출 전 실행, false: 메서드 호출 후 실행
+	@Transactional(readOnly = false)
 	public int registerCode(CodeDTO codeDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -44,6 +46,7 @@ public class CodeService {
 	 * @return List<CodeDTO>
 	 */
 	@Cacheable(value = "majorCodes") // 캐시 저장 기능 value의 이름이 존재/미존재 시 모두 헤서드 호출 후 실행? 맞아?
+	@Transactional(readOnly = true)
 	public List<CodeDTO> getCodes() {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -56,6 +59,7 @@ public class CodeService {
 	 * @return
 	 */
 	@Cacheable(value = "codeItems", key = "#p0") // #majorCode로 매핑이 될 것 같았는데 계속 Null 이라고 나온다. 기절하겠넹
+	@Transactional(readOnly = true)
 	public List<CodeItemDTO> getCodeItems(String majorCode) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		log.info("Caching with key: {}", majorCode);
@@ -68,6 +72,7 @@ public class CodeService {
 	 * @param codeSearchDTO
 	 * @return List<CodeDTO>
 	 */
+	@Transactional(readOnly = true)
 	public int getCodesCountBySearchDTO(CodeSearchDTO codeSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -79,6 +84,7 @@ public class CodeService {
 	 * @param codeSearchDTO
 	 * @return List<CodeDTO>
 	 */
+	@Transactional(readOnly = true)
 	public List<CodeDTO> getCodesBySearchDTO(CodeSearchDTO codeSearchDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -90,6 +96,7 @@ public class CodeService {
 	 * @param codeSearchDTO
 	 * @return CodeDTO
 	 */
+	@Transactional(readOnly = true)
 	public CodeDTO getCodeByIdx(CodeSearchDTO codeSearchDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -101,6 +108,7 @@ public class CodeService {
 	 * @param codeSearchDTO
 	 * @return List<CodeItemDTO>
 	 */
+	@Transactional(readOnly = true)
 	public List<CodeItemDTO> getCodeItemsByMajorCode(CodeSearchDTO codeSearchDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -114,6 +122,7 @@ public class CodeService {
 	 */
 	@LogExecution
 	@CacheEvict(value = "codeItems", key = "#codeDTO.majorCode")
+	@Transactional(readOnly = false)
 	public void modifyCode(CodeDTO codeDTO) throws Exception {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -130,24 +139,27 @@ public class CodeService {
 	 */
 	@LogExecution // 로그 남길 서비스
 	@CacheEvict(value = "codeItems", key = "#itemList.get(0).majorCode")
-	@Transactional
+	@Transactional(readOnly = false)
 	public void registerCodeItems(List<CodeItemDTO> itemList) throws Exception {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
-		int affectedRow = 0;
-		if(itemList.size() > 0) {
+		if(!itemList.isEmpty()) {
+			int affectedRow = 0;
 			//등록 전에 삭제부터 하고
 			affectedRow = codeMapper.removeCodeItems((CodeItemDTO)itemList.get(0));
 			log.info("after removeCodeItems, affectedRow is {}", affectedRow);
+			
+			affectedRow = 0;
+			affectedRow = codeMapper.registerCodeItems(itemList);
+			log.info("itemList.size is {}, // affectedRow is {}", itemList.size(), affectedRow);
+			
+			if(affectedRow < 1 || itemList.size() != affectedRow) {
+				throw new RuntimeException("코드 입력을 완료하지 못했습니다.\\n잠시 후 다시 시도해주시기 바랍니다.");
+			}
+		} else {
+			LogUtil.warn(log, "등록 할 아이템이 없습니다. itemList.size is {}", itemList.size());
 		}
 		
-		affectedRow = 0;
-		affectedRow = codeMapper.registerCodeItems(itemList);
-		log.info("itemList.size is {}, // affectedRow is {}", itemList.size(), affectedRow);
-		
-		if(affectedRow < 1 || itemList.size() != affectedRow) {
-			throw new Exception("코드 입력을 완료하지 못했습니다.\\n잠시 후 다시 시도해주시기 바랍니다.");
-		}
 	}
 	
 }

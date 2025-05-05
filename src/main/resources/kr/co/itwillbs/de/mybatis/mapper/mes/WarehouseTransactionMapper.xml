@@ -385,4 +385,41 @@
 		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 
+	<insert id="insertWarehouseTransactionFromList" parameterType="list">
+		INSERT INTO t_warehouse_transaction (
+		<trim suffixOverrides=",">
+			trans_type,
+			code,
+			product_idx,
+			material_idx,
+			unit,
+			quantity,
+			status,
+			source_location,
+			destination_location,
+			memo,
+			is_deleted,
+			reg_id,
+			reg_date,
+		</trim>
+		) VALUES 
+		<foreach item="item" index="index" collection="list" separator="," nullable="true">
+		(
+			#{item.transType}, 
+			#{item.code},
+			#{item.productIdx},
+			#{item.materialIdx},
+			#{item.unit},
+			#{item.quantity},
+			#{item.status},
+			#{item.sourceLocation},
+			#{item.destinationLocation},
+			#{item.memo},
+			#{item.isDeleted},
+			#{item.regId},
+			now()
+		)
+		</foreach>
+	</insert>
+
 </mapper>
