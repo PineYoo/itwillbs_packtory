@@ -130,4 +130,88 @@
 		FROM grouped_result
 	</select>
 
+	<!-- 등록된 레시피를 기준으로 현재 창고에 6개월간 입고된 자재를 파악해 재고를 조회하는 쿼리 -->
+	<!-- 레시피 마스터에 넣을려다가 stockMapper가 있어서 일단 여기에 넣기로.. -->
+	<!-- 
+		수주 => 작업시지 전 레시피를 기준으로 자재조회 => 자재구매신청 => 구매자재 검수장이동 => 검수 => 자재창고입고
+		=> 작업지시 => 생산(공정 별 검수) => 완제품 검수 => 완제품 자재창고 입고 => 출고
+	-->
+	<!--
+	WITH latest_transaction AS (
+    SELECT 
+        wt.idx,
+        wt.material_idx,
+        wt.destination_location,
+        wt.mod_date,
+        wt.mod_id,
+        ROW_NUMBER() OVER (
+            PARTITION BY wt.material_idx, wt.destination_location
+            ORDER BY wt.mod_date DESC
+        ) AS rn
+    FROM t_warehouse_transaction wt
+    WHERE wt.status = 2
+	),
+	
+	6개월치 재고 집계
+	stock_summary AS (
+    SELECT
+        rm.idx AS material_idx,
+        COALESCE(SUM(
+            CASE
+                WHEN wt.status = 3 AND wt.trans_type = 1 THEN wt.quantity
+                WHEN wt.status IN (3, 4) AND wt.trans_type = 2 THEN -wt.quantity
+                ELSE 0
+            END
+        ), 0) AS stock
+    FROM t_raw_material rm
+    LEFT
+    JOIN t_warehouse_transaction wt
+      ON rm.idx = wt.material_idx
+      
+    WHERE wt.reg_date >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 6 MONTH), '%Y-%m-01')
+      AND rm.parents_idx IS NULL
+      AND rm.client_idx IS NULL
+    GROUP BY rm.idx
+	)
+	최종 출력: 소요자재 목록 + 실제 필요 수량 + 재고 비교
+	SELECT 
+    	rma.material_idx,
+    	rma.name AS material_name,
+    
+     환산된 필요 수량 (레시피상 수량 * 작업지시 목표수량 / 배치사이즈)
+    ROUND(rma.quantity * (100 / rm.batch_size), 2) AS required_quantity,
+    rma.unit,
+    
+    현재 재고
+    COALESCE(ss.stock, 0) AS current_stock,
+    
+    부족 수량
+    ROUND(rma.quantity * (100 / rm.batch_size), 2) - COALESCE(ss.stock, 0) AS shortage,
+    
+    상태 판단
+    CASE
+        WHEN COALESCE(ss.stock, 0) < ROUND(rma.quantity * (100 / rm.batch_size), 2) THEN '부족'
+        ELSE '충분'
+    END AS stock_status
+	FROM t_recipe_master rm
+	LEFT
+	JOIN t_recipe_process_code rp
+	  ON rm.idx = rp.master_idx
+	  
+	LEFT
+	JOIN t_recipe_material rma
+	  ON rp.idx = rma.process_idx
+	  
+	LEFT
+	JOIN stock_summary ss
+	  ON rma.material_idx = ss.material_idx
+	
+	해당 레시피 IDX
+	WHERE rm.idx = 7  
+	  AND rma.name IS NOT NULL
+	ORDER BY rma.material_idx;
+	-->
+
+
+
 </mapper>
