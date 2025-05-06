@@ -203,12 +203,17 @@
 	  ON rp.idx = rma.process_idx
 	  
 	LEFT
+	JOIN t_raw_material raw
+      ON rma.material_idx = raw.idx
+	  
+	LEFT
 	JOIN stock_summary ss
 	  ON rma.material_idx = ss.material_idx
 	
 	해당 레시피 IDX
 	WHERE rm.idx = 7  
 	  AND rma.name IS NOT NULL
+	  AND raw.type IN (1,3) 
 	ORDER BY rma.material_idx;
 	-->
 
