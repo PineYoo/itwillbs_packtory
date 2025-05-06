@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.itwillbs.de.mes.mapper.RecipeMapper">
+
+	<!-- href: https://mybatis.org/mybatis-3/ko/dynamic-sql.html -->
+	<select id="templates" >
+		<![CDATA[]]><!-- Character DATA(CDATA) 는 <![CDATA[문자열]]> 파싱되지 않고 그대로 출력을 위함, 쿼리에서 이스케이프 문자를 사용하지 않기 위해 썼음 -->
+		<!-- 예시) 컬럼명 &gt;(&lt;) #{필드명} -> 컬럼명<![CDATA[>(<)]]> #{필드명} -->
+		<if test="blabla != null"></if><!-- mybatis가 동적쿼리가 되는 시작 점. -->
+		
+		<choose><!-- mybatis switch 문 -->
+			<when test="bla != null">
+			</when>
+			<when test="bla != null and blabla != null">
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		
+		<where></where><!-- where 엘리먼트는 태그에 의해 컨텐츠가 리턴되면 단순히 “WHERE”만을 추가한다. 게다가 컨텐츠가 “AND”나 “OR”로 시작한다면 그 “AND”나 “OR”를 지워버린다. -->
+		<trim prefix="WHERE" prefixOverrides="AND |OR "></trim><!-- 위의<where>의 <trim>버전 -->
+		
+		<set></set><!--  set 엘리먼트는 동적으로 SET 키워드를 붙히고 필요없는 콤마를 제거한다. -->
+		<trim prefix="SET" suffixOverrides=","></trim><!-- 위의<set>의 <trim>버전 -->
+		
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")" nullable="true">
+			#{item}
+		</foreach>
+		
+		<foreach item="item" index="index" collection="list">
+			(#{item.index}, #{item.id}, #{item.name}, #{item.isDeleted})
+		</foreach>
+	</select>
+
+	<select id="selectRecipeByProductIdx" resultType="kr.co.itwillbs.de.mes.dto.RecipeMasterDTO"
+										  parameterType="string">
+		SELECT
+			  idx
+			, product_idx
+			, bom_idx
+			, name
+			, version
+			, batch_size
+			, status
+			, approval_status
+			, valid_from
+			, valid_to
+			, is_deleted
+			, reg_id
+			, reg_date
+			, mod_id
+			, mod_date
+		  FROM t_recipe_master
+		 WHERE status=1
+		   AND approval_status=1
+		   AND now() between valid_from AND valid_to
+		   AND product_idx = #{orderItems.productIdx}
+	</select>	
+	
+	
+	<select id="selectMaterialStockByProductIdx">
+		WITH
+			-- 1. 유효한 레시피 마스터
+			recipe_master AS (
+			    SELECT idx, batch_size
+			    FROM t_recipe_master
+			    WHERE product_idx = #{productIdx}
+			      AND status = 1
+				  AND approval_status=1
+				  AND now() between valid_from AND valid_to
+			    LIMIT 1
+			),
+			-- 2. 해당 레시피의 공정 목록
+			recipe_process AS (
+			    SELECT idx
+			    FROM t_recipe_process_code
+			    WHERE master_idx = (SELECT idx FROM recipe_master)
+			),
+			-- 3. 공정별 자재 목록
+			recipe_materials AS (
+			    SELECT idx AS material_idx, name AS material_name, quantity, process_idx, unit
+			    FROM t_recipe_material
+			    WHERE process_idx IN (SELECT idx FROM recipe_process)
+			),
+			-- 4. 최근 6개월간 재고 요약
+			stock_summary AS (
+			    SELECT
+			        rm.idx AS material_idx,
+			        COALESCE(SUM(
+			            CASE
+			                WHEN wt.status = 3 AND wt.trans_type = 1 THEN wt.quantity
+			                WHEN wt.status IN (3, 4) AND wt.trans_type = 2 THEN -wt.quantity
+			                ELSE 0
+			            END
+			        ), 0) AS stock
+			    FROM t_raw_material rm
+			    JOIN t_warehouse_transaction wt ON rm.idx = wt.material_idx
+			    WHERE wt.reg_date >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 6 MONTH), '%Y-%m-01')
+			      AND rm.parents_idx IS NULL
+			      AND rm.client_idx IS NULL
+			      AND rm.type = 1
+			    GROUP BY rm.idx
+			)
+			
+			-- 최종 결과
+			SELECT
+			    rm.material_idx AS idx,             -- 자재_idx
+			    rm.material_name AS name,           -- 자재명
+			    rm.unit,                            -- 단위
+			    unit_item.minor_name AS unit_name,  -- 단위명
+			    rm.process_idx,                     -- 공정_idx
+			    rm.quantity,                        -- 단위 수량
+			    (
+			        CASE 
+			            WHEN MOD(#{quantity}, rmst.batch_size) = 0
+			                THEN (#{quantity} / rmst.batch_size + 1)
+			            ELSE CEIL(#{quantity} / rmst.batch_size)
+			        END
+			    ) * rm.quantity AS required_quantity,   -- 필요한 자재 수량
+			    COALESCE(ss.stock, 0) AS stock, 		-- 현재 재고
+			    -- 필요 수량 - 재고량 = 부족 수량 (양수면 부족)
+			    (
+			        (
+			            CASE 
+			                WHEN MOD(#{quantity}, rmst.batch_size) = 0
+			                    THEN (#{quantity} / rmst.batch_size + 1)
+			                ELSE CEIL(#{quantity} / rmst.batch_size)
+			            END
+			        ) * rm.quantity
+			    ) - COALESCE(ss.stock, 0) AS stock_gap,
+			    
+			    -- 재고가 부족한 경우 '구매 필요' 표시
+			    CASE
+			        WHEN COALESCE(ss.stock, 0) &lt; (
+			            CASE 
+			                WHEN MOD(#{quantity}, rmst.batch_size) = 0
+			                    THEN (#{quantity} / rmst.batch_size + 1)
+			                ELSE CEIL(#{quantity} / rmst.batch_size)
+			            END
+			        ) * rm.quantity
+			        THEN '구매 필요'
+			        ELSE '충분'
+			    END AS stock_status
+			FROM
+			    recipe_materials rm
+			JOIN recipe_master rmst ON 1=1
+			LEFT JOIN stock_summary ss ON rm.material_idx = ss.material_idx
+			LEFT JOIN t_raw_material raw ON rm.material_idx = raw.idx
+			LEFT JOIN t_commoncode_item unit_item
+			    ON rm.unit = unit_item.minor_code AND unit_item.major_code = 'ITEM_UNIT'
+			WHERE raw.type IN (1, 3)
+			ORDER BY
+			    rm.process_idx,
+			    rm.material_idx
+	</select>
+	
+</mapper>

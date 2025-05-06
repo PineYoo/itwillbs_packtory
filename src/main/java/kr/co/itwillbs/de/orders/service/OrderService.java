@@ -1,6 +1,9 @@
 package kr.co.itwillbs.de.orders.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -8,8 +11,11 @@ import kr.co.itwillbs.de.common.aop.annotation.LogExecution;
 import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialStockDTO;
+import kr.co.itwillbs.de.mes.mapper.RecipeMapper;
 import kr.co.itwillbs.de.orders.dto.OrderDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
+import kr.co.itwillbs.de.orders.dto.OrderItemsDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 import kr.co.itwillbs.de.orders.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +25,12 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderService {
 	
 	private final OrderMapper orderMapper;
+	private final RecipeMapper recipeMapper;
 	private final CommonService commonService;
 	
-	public OrderService(OrderMapper orderMapper, CommonService commonService) {
+	public OrderService(OrderMapper orderMapper, RecipeMapper recipeMapper, CommonService commonService) {
 		this.orderMapper = orderMapper;
+		this.recipeMapper = recipeMapper;
 		this.commonService = commonService;
 	}
 	
@@ -120,6 +128,40 @@ public class OrderService {
 		// => 바뀐 값 하나하나 비교해서 update 하기 번거로움 ..
 		orderMapper.deleteOrderItemsByDocumentNumber(orderFormDTO.getDocumentNumber());
 		orderMapper.insertOrderItems(orderFormDTO);	// 재사용
+	}
+
+	/**
+	 * 주문별 상품에 따른 필요 자재 수 계산
+	 * @param orderFormDTO
+	 * @return
+	 */
+	public List<RawMaterialStockDTO> getOrderMaterialStockByProductIdx(OrderFormDTO orderFormDTO) {
+	    Map<Long, RawMaterialStockDTO> totalMaterialMap = new HashMap<>();
+
+	    for (OrderItemsDTO item : orderFormDTO.getOrderItems()) {
+	        String productIdx = item.getProductIdx();
+	        int quantity = item.getQuantity();
+
+	        // 해당 상품의 배치사이즈 고려하여 필요 자재 수 계산
+//	        List<RawMaterialStockDTO> materialList = recipeMapper.selectMaterialStockByProductIdx(productIdx, quantity);
+	        List<RawMaterialStockDTO> materialList = recipeMapper.selectMaterialStockByProductIdx(item);
+
+	        for (RawMaterialStockDTO mat : materialList) {
+	            totalMaterialMap.merge(
+	                mat.getIdx(),
+	                mat,
+	                (existing, current) -> {
+	                    // 동일 자재일 경우 수량 누적
+	                	existing.setRequiredQuantity(existing.getRequiredQuantity().add(current.getRequiredQuantity()));
+	                	existing.setStockGap(existing.getStockGap().add(current.getStockGap()));
+	                    return existing;
+	                }
+	            );
+	        }
+	    }
+
+	    // Map → List로 변환하여 반환
+	    return new ArrayList<>(totalMaterialMap.values());
 	}
 
 	

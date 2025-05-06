@@ -24,8 +24,8 @@ import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
+import kr.co.itwillbs.de.mes.dto.RawMaterialStockDTO;
 import kr.co.itwillbs.de.orders.dto.OrderFormDTO;
-import kr.co.itwillbs.de.orders.dto.OrderItemsDTO;
 import kr.co.itwillbs.de.orders.dto.OrderSearchDTO;
 import kr.co.itwillbs.de.orders.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -182,14 +182,18 @@ public class OrderController {
 								 @PathVariable("documentNumber") String documentNumber, Model model) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		System.out.println("documentNumber : "  + documentNumber);
-		
 		// 주문정보 가져오기
-		model.addAttribute("orderFormDTO", orderService.getOrderByDocumentNumber(documentNumber));
+		OrderFormDTO orderFormDTO = orderService.getOrderByDocumentNumber(documentNumber);
+		model.addAttribute("orderFormDTO", orderFormDTO);
 		// statusCodes 에 사용할 공통코드 조회 결과 셋
 		model.addAttribute("statusCodes", this.getStatusCodesByTradeName(tradeName));
 		
 		// TODO 25.04.16 상품이 추가 될 경우 t_order_items 테이블에 입력한 것 조회 하기
 		// => 25.04.18 orderFormDTO 안에 List<OrderItemsDTO> orderItems로 넣어감
+		
+		// 상품에 따른 필요자재, 재고 등 조회
+		List<RawMaterialStockDTO> materialStock = orderService.getOrderMaterialStockByProductIdx(orderFormDTO);
+		model.addAttribute("materialStock", materialStock);
 		
 		return COMMON_PATH + "/orders_detail";
 	}

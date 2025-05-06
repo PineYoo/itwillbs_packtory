@@ -20,12 +20,17 @@ public class RawMaterialStockDTO {
 	private String name;
 	private String type;
 	private String typeName;
+	private String quantity;
+	private BigDecimal requiredQuantity;
 	private BigDecimal stock;
+	private BigDecimal stockGap;
 	private String unit;
 	private String unitName;
 
 	private String location;
 	private String locationName;
+	
+	private String stockStatus;
 	
 	private String isDeleted;
 	private String regId;

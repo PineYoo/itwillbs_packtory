@@ -30,7 +30,7 @@ public class RecipeMasterDTO {
 	private String version;			// 버전
 	
 	@NotBlank(message = "레시피 단위는 필수 입력 값입니다.")
-	private String batchSize;		// 레시피_단위
+	private int batchSize;		// 레시피_단위
 	private String status;			// 상태
 	private String approvalStatus;	// 결재_상태
 	private String approvalStatusName;
