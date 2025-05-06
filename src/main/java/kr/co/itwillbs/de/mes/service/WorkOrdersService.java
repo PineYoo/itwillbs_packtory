@@ -137,7 +137,7 @@ public class WorkOrdersService {
 	public void modifyWorkOrdersItems(WorkOrdersItemsDTO workOrdersItemsDTO) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
-//		workOrdersMapper.modifyWorkOrdersItems(workOrdersItemsDTO);
+		workOrdersMapper.modifyWorkOrdersItems(workOrdersItemsDTO);
 	}
 
 	// (외부용)

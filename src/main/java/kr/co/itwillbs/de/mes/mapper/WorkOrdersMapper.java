@@ -72,12 +72,13 @@ public interface WorkOrdersMapper {
 	
 	int removeWorkOrdersItems(WorkOrdersFormDTO workOrdersFormDTO);
 	
+	
 	/**
 	 * UPDATE t_work_orders_itmes SET workOrdersItemsDTO
 	 * @param workOrdersItemsDTO
 	 * @return affectedRow
 	 */
-	int modifyWorkOrdersItems(WorkOrdersFormDTO workOrdersFormDTO);
+	int modifyWorkOrdersItems(WorkOrdersItemsDTO workOrdersItemsDTO);
 	
 	/*
 	 * 외부용

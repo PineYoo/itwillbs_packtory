@@ -383,23 +383,6 @@
 	</delete>
 	
 	<!-- t_work_orders_itmes ..전혀 성장하지 않았어 방세현...-->
-	<update id="modifyWorkOrdersItems" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO">
-		UPDATE t_work_orders_items
-			<set>
-				<if test='documentNumber !=null and !("".equals(documentNumber.trim()))'>document_number = #{documentNumber},</if>
-				<if test='productLinesIdx !=null and !("".equals(productLinesIdx.trim()))'>product_lines_idx = #{productLinesIdx},</if>
-				<if test='linesManagerId !=null and !("".equals(linesManagerId.trim()))'>lines_manager_id = #{linesManagerId},</if>
-				<if test='actualStartDate !=null and !("".equals(actualStartDate.trim()))'>actual_start_date = #{actualStartDate},</if>
-				<if test='actualEndDate !=null and !("".equals(actualEndDate.trim()))'>actual_end_date = #{actualEndDate},</if>
-				<if test='producedQuantity !=null and !("".equals(producedQuantity.trim()))'>produced_quantity = #{producedQuantity},</if>
-				<if test='unit !=null and !("".equals(unit.trim()))'>unit = #{unit},</if>
-				<if test='status !=null and !("".equals(status.trim()))'>status = #{status},</if>
-				<if test='itemsMemo !=null and !("".equals(itemsMemo.trim()))'>memo = #{itemsMemo},</if>
-				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
-				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
-				<if test='modDate !=null and !("".equals(modDate.trim()))'>mod_date = now(),</if>
-			</set>
-		WHERE idx = #{idx}
 		<!--
 		문서번호를 DOC001을 DOC002로 바꾼다고 했을때
 		밑에 처럼 DOC002 기준으로 WHERE 절에 걸리게 됨
@@ -425,6 +408,23 @@
 		DateTime 이나 int로 받으면 trim() 제거해야함
 		modDate는 if 필요없지 않으려나..? 무조건 NOW() 해도 될것 같은데
 		 -->
+	<update id="modifyWorkOrdersItems" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO">
+		UPDATE t_work_orders_items
+			<set>
+				<if test='documentNumber !=null and !("".equals(documentNumber.trim()))'>document_number = #{documentNumber},</if>
+				<if test='productLinesIdx !=null and !("".equals(productLinesIdx.trim()))'>product_lines_idx = #{productLinesIdx},</if>
+				<if test='linesManagerId !=null and !("".equals(linesManagerId.trim()))'>lines_manager_id = #{linesManagerId},</if>
+				<if test='actualStartDate !=null and !("".equals(actualStartDate.trim()))'>actual_start_date = #{actualStartDate},</if>
+				<if test='actualEndDate !=null and !("".equals(actualEndDate.trim()))'>actual_end_date = #{actualEndDate},</if>
+				<if test='producedQuantity !=null and !("".equals(producedQuantity.trim()))'>produced_quantity = #{producedQuantity},</if>
+				<if test='unit !=null and !("".equals(unit.trim()))'>unit = #{unit},</if>
+				<if test='status !=null and !("".equals(status.trim()))'>status = #{status},</if>
+				<if test='memo !=null and !("".equals(memo.trim()))'>memo = #{memo},</if>
+				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_id = #{modId},</if>
+				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
+			</set>
+		WHERE idx = #{idx}
 	</update>
 	
 	<!-- 외부용 -->

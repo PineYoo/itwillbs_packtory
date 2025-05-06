@@ -240,6 +240,7 @@ public class WorkOrdersController {
 		LogUtil.logStart(log);
 		
 		model.addAttribute("workItemDTO", workOrdersService.selectWorkItemByIdx(idx));
+		model.addAttribute("codeItems", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_STATUS));
 		
 		return VIEW_PATH+"/work_items_detail";
 	}
