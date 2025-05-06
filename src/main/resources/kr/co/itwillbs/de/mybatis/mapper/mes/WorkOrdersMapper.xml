@@ -434,4 +434,201 @@
 		WHERE is_deleted = 'N'
 	</select>
 	
+	
+	<select id="selectWorkItemsCountBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersItemsSearchDTO"
+												resultType="int">
+		WITH emp AS (
+			SELECT *
+			FROM v_emp_info
+			WHERE is_deleted = 'N'
+		),
+		code_item AS (
+			SELECT 
+				minor_code,
+				minor_name,
+				description
+			FROM t_commoncode_item
+			WHERE major_code = 'WORK_ORDERS_STATUS'
+		)
+		SELECT
+			count(*)
+		FROM t_work_orders_items AS woi
+		JOIN t_work_orders_master AS wom ON wom.document_number = woi.document_number
+		JOIN t_location_info AS li ON li.idx = woi.product_lines_idx
+		LEFT JOIN emp AS e1 ON e1.id = woi.lines_manager_id
+		LEFT JOIN emp AS e2 ON e2.id = wom.supervisor_id
+		LEFT JOIN code_item AS ci1 ON ci1.minor_code = woi.status
+		LEFT JOIN code_item AS ci2 ON ci2.minor_code = wom.status
+			<where>
+				<if test='documentNumber != null and !("".equals(documentNumber.trim()))'>
+				AND woi.document_number = #{documentNumber}
+				</if>
+				<if test='status != null and !("".equals(status.trim()))'>
+				AND woi.status = #{status}
+				</if>
+				<if test='productLinesName != null and !("".equals(productLinesName.trim()))'>
+				AND li.name like CONCAT('%',#{productLinesName},'%')
+				</if>
+				<if test='linesManagerName != null and !("".equals(linesManagerName.trim()))'>
+				AND e1.name like CONCAT('%',#{linesManagerName},'%')
+				</if>
+				<choose>
+					<when test="actualStartDate != null and actualStartDate != ''
+								 and actualEndDate != null and actualEndDate != ''">
+						AND woi.actual_start_date BETWEEN
+						STR_TO_DATE(CONCAT(#{actualStartDate}, '000000'), '%Y-%m-%d%H%i%S')
+						AND STR_TO_DATE(CONCAT(#{actualEndDate}, '235959'), '%Y-%m-%d%H%i%S')
+					</when>
+					<when test="actualStartDate != null and actualStartDate != ''
+								 and (actualEndDate == null or actualEndDate == '')">
+						AND woi.actual_start_date <![CDATA[>=]]>
+						STR_TO_DATE(CONCAT(#{actualStartDate}, '000000'), '%Y-%m-%d%H%i%S')
+					</when>
+					<when test="(actualStartDate == null or actualStartDate == '')
+								 and actualEndDate != null and actualEndDate != ''">
+						AND woi.actual_end_date <![CDATA[<=]]>
+						STR_TO_DATE(CONCAT(#{actualEndDate}, '235959'), '%Y-%m-%d%H%i%S')
+					</when>
+				</choose>
+			</where>
+	</select>
+	<select id="selectWorkItemsListBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersItemsSearchDTO"
+												resultType="kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO">
+		WITH emp AS (
+			SELECT *
+			FROM v_emp_info
+			WHERE is_deleted = 'N'
+		),
+		code_item AS (
+			SELECT 
+				minor_code,
+				minor_name,
+				description
+			FROM t_commoncode_item
+			WHERE major_code = 'WORK_ORDERS_STATUS'
+		),
+		pattern AS (
+			SELECT
+				woi.idx,
+				woi.document_number,
+				woi.product_lines_idx,
+				li.name AS product_lines_name,
+				woi.lines_manager_id,
+				e1.name AS lines_manager_name,
+				woi.actual_start_date,
+				woi.actual_end_date,
+				woi.produced_quantity,
+				woi.unit,
+				woi.status,
+				ci1.description AS status_name,
+				woi.memo,
+				woi.is_deleted,
+				woi.reg_id,
+				woi.mod_id,
+				woi.reg_date,
+				woi.mod_date,
+				wom.idx AS master_idx,
+				wom.product_idx,
+				wom.recipe_master_idx,
+				wom.target_quantity,
+				wom.supervisor_id,
+				e2.name AS supervisor_name,
+				wom.priority,
+				wom.status AS master_status,
+				ci2.description AS master_status_name
+			FROM t_work_orders_items AS woi
+			JOIN t_work_orders_master AS wom ON wom.document_number = woi.document_number
+			JOIN t_location_info AS li ON li.idx = woi.product_lines_idx
+			LEFT JOIN emp AS e1 ON e1.id = woi.lines_manager_id
+			LEFT JOIN emp AS e2 ON e2.id = wom.supervisor_id
+			LEFT JOIN code_item AS ci1 ON ci1.minor_code = woi.status
+			LEFT JOIN code_item AS ci2 ON ci2.minor_code = wom.status
+			<where>
+				<if test='documentNumber != null and !("".equals(documentNumber.trim()))'>
+				AND woi.document_number = #{documentNumber}
+				</if>
+				<if test='status != null and !("".equals(status.trim()))'>
+				AND woi.status = #{status}
+				</if>
+				<if test='productLinesName != null and !("".equals(productLinesName.trim()))'>
+				AND li.name like CONCAT('%',#{productLinesName},'%')
+				</if>
+				<if test='linesManagerName != null and !("".equals(linesManagerName.trim()))'>
+				AND e1.name like CONCAT('%',#{linesManagerName},'%')
+				</if>
+				<choose>
+					<when test="actualStartDate != null and actualStartDate != ''
+								 and actualEndDate != null and actualEndDate != ''">
+						AND woi.actual_start_date BETWEEN
+						STR_TO_DATE(CONCAT(#{actualStartDate}, '000000'), '%Y-%m-%d%H%i%S')
+						AND STR_TO_DATE(CONCAT(#{actualEndDate}, '235959'), '%Y-%m-%d%H%i%S')
+					</when>
+					<when test="actualStartDate != null and actualStartDate != ''
+								 and (actualEndDate == null or actualEndDate == '')">
+						AND woi.actual_start_date <![CDATA[>=]]>
+						STR_TO_DATE(CONCAT(#{actualStartDate}, '000000'), '%Y-%m-%d%H%i%S')
+					</when>
+					<when test="(actualStartDate == null or actualStartDate == '')
+								 and actualEndDate != null and actualEndDate != ''">
+						AND woi.actual_end_date <![CDATA[<=]]>
+						STR_TO_DATE(CONCAT(#{actualEndDate}, '235959'), '%Y-%m-%d%H%i%S')
+					</when>
+				</choose>
+			</where>
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
+	</select>
+	
+	<select id="selectWorkItemByIdx" parameterType="string"
+										resultType="kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO">
+		WITH emp AS (
+			SELECT *
+			FROM v_emp_info
+			WHERE is_deleted = 'N'
+		),
+		code_item AS (
+		SELECT 
+			minor_code,
+			minor_name,
+			description
+		FROM t_commoncode_item
+		WHERE major_code = 'WORK_ORDERS_STATUS'
+		)
+		SELECT
+			woi.idx,
+			woi.document_number,
+			woi.product_lines_idx,
+			li.name AS product_lines_name,
+			woi.lines_manager_id,
+			e1.name AS lines_manager_name,
+			woi.actual_start_date,
+			woi.actual_end_date,
+			woi.produced_quantity,
+			woi.unit,
+			woi.status,
+			ci1.description AS status_name,
+			woi.memo,
+			woi.is_deleted,
+			woi.reg_id,
+			woi.mod_id,
+			woi.reg_date,
+			woi.mod_date,
+			wom.idx AS master_idx,
+			wom.product_idx,
+			wom.recipe_master_idx,
+			wom.target_quantity,
+			wom.supervisor_id,
+			e2.name AS supervisor_name,
+			wom.priority,
+			wom.status AS master_status,
+			ci2.description AS master_status_name
+		FROM t_work_orders_items AS woi
+		JOIN t_work_orders_master AS wom ON wom.document_number = woi.document_number
+		JOIN t_location_info AS li ON li.idx = woi.product_lines_idx
+		LEFT JOIN emp AS e1 ON e1.id = woi.lines_manager_id
+		LEFT JOIN emp AS e2 ON e2.id = wom.supervisor_id
+		LEFT JOIN code_item AS ci1 ON ci1.minor_code = woi.status
+		LEFT JOIN code_item AS ci2 ON ci2.minor_code = wom.status
+		WHERE woi.idx = #{idx}
+	</select>
+	
 </mapper>

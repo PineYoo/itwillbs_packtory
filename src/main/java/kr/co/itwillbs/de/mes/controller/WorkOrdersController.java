@@ -20,9 +20,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.common.util.CommonCodeUtil;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import kr.co.itwillbs.de.mes.dto.RecipeMasterSearchDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO;
+import kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO;
+import kr.co.itwillbs.de.mes.dto.WorkOrdersItemsSearchDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersSearchDTO;
 import kr.co.itwillbs.de.mes.service.WorkOrdersService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +45,7 @@ public class WorkOrdersController {
 	
 	// 계속 사용하게 될 클래스 RequestMapping 문자열 값
 	private final String VIEW_PATH="/mes/workorders";
+	private final String COMMON_MAJOR_CODE_STATUS = "WORK_ORDERS_STATUS";
 	
 	/**
 	 * MES > 작업지시 등록 화면 GET
@@ -198,5 +202,73 @@ public class WorkOrdersController {
 	private List<CodeItemDTO> getCodeItems(String str) {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		return commonCodeUtil.getCodeItems(str);
+	}
+	
+	/**
+	 * <pre>
+	 * 공장에 관리 권한이 있는 사람이 접속하여
+	 * 작업지시 문서에 실제 값을 보고하기 위함
+	 * MES > ? > 작업 현황 보고 리스트
+	 * </pre>
+	 * @return
+	 */
+	@GetMapping(value={"/items", "/items/"})
+	public String getWorkOrderItems(@ModelAttribute WorkOrdersItemsSearchDTO searchDTO, Model model) {
+		LogUtil.logStart(log);
+		
+		int totalCount = workOrdersService.selectWorkItemsCountBySearchDTO(searchDTO);
+		searchDTO.getPageDTO().setTotalCount(totalCount);
+		List<WorkOrdersItemsDTO> list = totalCount > 0 
+							? workOrdersService.selectWorkItemsListBySearchDTO(searchDTO) 
+							: List.of();
+		
+		model.addAttribute("codeItems", commonCodeUtil.getCodeItems(COMMON_MAJOR_CODE_STATUS));
+		model.addAttribute("searchDTO", searchDTO);
+		model.addAttribute("workItems", list);
+		
+		return VIEW_PATH+"/work_items_list";
+	}
+	
+	/**
+	 * 작업 현황 보고서 상세보기
+	 * @param idx
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value={"/items/{idx}"})
+	public String getWorkOrderItem(@PathVariable("idx") String idx, Model model) {
+		LogUtil.logStart(log);
+		
+		model.addAttribute("workItemDTO", workOrdersService.selectWorkItemByIdx(idx));
+		
+		return VIEW_PATH+"/work_items_detail";
+	}
+	
+	/**
+	 * 작업 현황 보고 업데이트 하기
+	 * @param dto
+	 * @return
+	 */
+	@PutMapping("/modifyWorkItem")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> modifyWorkItem(@RequestBody @Valid WorkOrdersItemsDTO dto) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		log.info("requestBody : {}", dto);
+		
+		//리턴 객체 생성
+		Map<String, Object> response = new HashMap<>();
+		try {
+			workOrdersService.modifyWorkOrdersItems(dto);
+			response.put("status", "success");
+			response.put("message", "정상적으로 수행 되었습니다.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("status", "fail");
+			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
+		}
+		
+		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
+		return ResponseEntity.ok(response);
 	}
 }

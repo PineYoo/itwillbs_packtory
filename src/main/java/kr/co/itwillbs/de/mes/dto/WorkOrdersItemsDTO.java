@@ -39,6 +39,7 @@ public class WorkOrdersItemsDTO {
 	private String unit;
 	// 상태(1:준비 2:진행 3:완료 4:취소)
 	private String status;
+	private String statusName;
 	
 	private String memo;
 	private String isDeleted;
@@ -46,5 +47,20 @@ public class WorkOrdersItemsDTO {
 	private String regDate;
 	private String modId;
 	private String modDate;
+	
+	// 참조해야 하는 컬럼
+	private String masterIdx;
+	private String productIdx;
+	private String recipeMasterIdx;
+	private String targetQuantity;
+	private String supervisorId;
+	private String supervisorName;
+	private String priority;
+	private String masterStatus;
+	private String masterStatusName;
 
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 }

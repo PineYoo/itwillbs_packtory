@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO;
+import kr.co.itwillbs.de.mes.dto.WorkOrdersItemsSearchDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersMasterDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersSearchDTO;
 
@@ -83,5 +84,26 @@ public interface WorkOrdersMapper {
 	 */
 	public List<WorkOrdersItemsDTO> selectWorkOrdersList();
 
+	/**
+	 * select count(*) from t_work-orders_items where searchDTO
+	 * <br>작업 현황 보고 리스트 페이징용 카운트
+	 * @param WorkOrdersItemsSearchDTO
+	 * @return int 카운트
+	 */
+	int selectWorkItemsCountBySearchDTO(WorkOrdersItemsSearchDTO searchDTO);
+	
+	/**
+	 * select * from t_work-orders_items where searchDTO
+	 * <br>작업 현황 보고 리스트 페이징
+	 * @param searchDTO WorkOrdersItemsSearchDTO
+	 * @return list List<WorkOrdersItemsDTO>
+	 */
+	List<WorkOrdersItemsDTO> selectWorkItemsListBySearchDTO(WorkOrdersItemsSearchDTO searchDTO);
 
+	/**
+	 * 작업 현황 보고 상세 조회
+	 * @param searchDTO WorkOrdersItemsSearchDTO
+	 * @return WorkOrdersItemsDTO
+	 */
+	WorkOrdersItemsDTO selectWorkItemByIdx(@Param("idx") String idx);
 }

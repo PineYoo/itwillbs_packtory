@@ -10,6 +10,7 @@ import kr.co.itwillbs.de.common.service.CommonService;
 import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersFormDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersItemsDTO;
+import kr.co.itwillbs.de.mes.dto.WorkOrdersItemsSearchDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersMasterDTO;
 import kr.co.itwillbs.de.mes.dto.WorkOrdersSearchDTO;
 import kr.co.itwillbs.de.mes.mapper.WorkOrdersMapper;
@@ -142,6 +143,39 @@ public class WorkOrdersService {
 	// (외부용)
 	public List<WorkOrdersItemsDTO> getWorkOrdersList() {
 		return workOrdersMapper.selectWorkOrdersList();
+	}
+	
+	/**
+	 * 작업 현황 보고 리스트 페이징용 카운트
+	 * @param searchDTO
+	 * @return
+	 */
+	public int selectWorkItemsCountBySearchDTO(WorkOrdersItemsSearchDTO searchDTO) {
+		LogUtil.logStart(log);
+
+		return workOrdersMapper.selectWorkItemsCountBySearchDTO(searchDTO);
+	}
+	
+	/**
+	 * 작업 현황 보고 리스트 페이징
+	 * @param searchDTO
+	 * @return
+	 */
+	public List<WorkOrdersItemsDTO> selectWorkItemsListBySearchDTO(WorkOrdersItemsSearchDTO searchDTO) {
+		LogUtil.logStart(log);
+		
+		return workOrdersMapper.selectWorkItemsListBySearchDTO(searchDTO);
+	}
+	
+	/**
+	 * 작업 현황 보고 상세 조회
+	 * @param searchDTO
+	 * @return
+	 */
+	public WorkOrdersItemsDTO selectWorkItemByIdx(String idx) {
+		LogUtil.logStart(log);
+		
+		return workOrdersMapper.selectWorkItemByIdx(idx);
 	}
 
 }
