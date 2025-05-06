@@ -194,9 +194,9 @@
 				  null					-- idx(auto_increment)
 				, #{documentNumber}		-- order_document_number
 				, #{item.materialIdx}	-- material_idx
-				, #{item.productNumber}	-- product_number
-				, #{item.productName}	-- product_name
-				, #{item.productValue}	-- product_value
+				, #{item.productIdx}	-- product_number
+				, #{item.name}			-- product_name
+				, #{item.quantity}		-- product_value
 				, #{item.unitPrice}		-- unit_price
 				, #{item.totalPrice}	-- total_price
 				, 'Y'					-- is_deleted(default)
@@ -260,10 +260,10 @@
 	<sql id="order_items_columns_forSelect">
 		  idx					-- 인덱스	
 		, order_document_number	-- 문서번호	
-		, material_idx			-- 자재_idx		
-		, product_number		-- 상품_idx	
-		, product_name			-- 아이템명	
-		, product_value			-- 개수		
+		, material_idx			-- 자재_idx	
+		, product_idx			-- 상품_idx	
+		, name					-- 아이템명	
+		, quantity				-- 개수		
 		, unit_price			-- 개수별금액	
 		, total_price			-- 합계액		
 		, is_deleted			-- 삭제유무	

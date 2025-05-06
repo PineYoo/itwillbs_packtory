@@ -19,7 +19,7 @@ public class OrderItemsDTO {
 	private String documentNumber; // 주문번호(orderDocumentNumber)
 	private String materialIdx; // 자재_idx
 	private String productIdx; // 상품_idx
-	private String Name; // 아이템명
+	private String name; // 아이템명
 	private Integer quantity; // 개수
 	private Integer unitPrice; // 개수별 금액
 	private Integer totalPrice; // 합계액

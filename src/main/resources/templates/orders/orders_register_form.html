@@ -84,7 +84,7 @@
 	*/
 	
 	/* 수량 입력 필드 스타일링 */
-	#dataTables .product-value {
+	#dataTables .quantity {
         border: 1px solid #ccc;
 	    width: 80%;  /* 수량 입력 필드 너비를 줄임 */
 	    padding: 5px;  /* 안쪽 여백 추가 */
@@ -239,11 +239,11 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr th:each="item, status : ${orderFormDTO.orderItems}" th:data-id="${item.productNumber}">
-														<td class="product-number" th:text="${item.productNumber}"></td>
-														<td class="product-name" th:text="${item.productName}"></td>
+													<tr th:each="item, status : ${orderFormDTO.orderItems}" th:data-id="${item.productIdx}">
+														<td class="product-idx" th:text="${item.productIdx}"></td>
+														<td class="name" th:text="${item.name}"></td>
 														<td class="unit-price" th:text="${#numbers.formatInteger(item.unitPrice, 3, 'COMMA')}"></td> <!-- 세자리마다 콤마 -->
-														<td><input class="product-value" type="number" min="0" step="10" th:value="${item.productValue}"></td>
+														<td><input class="quantity" type="number" min="0" step="10" th:value="${item.quantity}"></td>
 														<td class="total-price" th:text="${#numbers.formatInteger(item.totalPrice, 3, 'COMMA')}"></td>
 														<td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
 													</tr>
@@ -328,10 +328,10 @@
 												<tbody>
 													<tr th:each="item, status : ${orderFormDTO.orderItems}" th:data-id="${item.materialIdx}">
 														<td class="material-idx" th:text="${item.materialIdx}"></td>
-														<td class="product-name" th:text="${item.productName}"></td>
+														<td class="name" th:text="${item.name}"></td>
 <!-- 														<td><button type="button" class="btn btn-success client-row">선택</button></td> -->
 														<td class="unit-price" th:text="${#numbers.formatInteger(item.unitPrice, 3, 'COMMA')}"></td> <!-- 세자리마다 콤마 -->
-														<td><input class="product-value" type="number" min="0" step="10" th:value="${item.productValue}"></td>
+														<td><input class="quantity" type="number" min="0" step="10" th:value="${item.quantity}"></td>
 														<td class="total-price" th:text="${#numbers.formatInteger(item.totalPrice, 3, 'COMMA')}"></td>
 														<td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
 													</tr>
@@ -433,10 +433,10 @@
 				 	// 상품 행 생성
 				    const newRow = `
 				        <tr data-id="${product.idx}">
-				            <td class="product-number">${product.idx}</td>
-				            <td class="product-name">${product.name}</td>
+				            <td class="product-idx">${product.idx}</td>
+				            <td class="name">${product.name}</td>
 				            <td class="unit-price">${parseInt(product.price).toLocaleString()}</td>
-				            <td><input class="product-value" type="number" min="0" step="10" value="0"/></td>
+				            <td><input class="quantity" type="number" min="0" step="10" value="0"/></td>
 				            <td class="total-price">0</td>
 				            <td><button type="button" class="btn btn-danger delete-row">삭제</button></td>
 				        </tr>
@@ -507,9 +507,9 @@
 				    const newRow = `
 				        <tr data-id="${material.idx}">
 				            <td class="material-idx">${material.idx}</td>
-				            <td class="product-name">${material.name}</td>
+				            <td class="name">${material.name}</td>
 				            <td class="unit-price">${parseInt(material.price).toLocaleString()}</td>
-				            <td><input class="product-value" type="number" min="0" step="10" value="0"/></td>
+				            <td><input class="quantity" type="number" min="0" step="10" value="0"/></td>
 				            <td class="total-price">0</td>
 				            <td><button type="button" class="btn btn-danger delete-row" onclick="removeMaterialInfo(${material.idx})">삭제</button></td>
 				        </tr>
@@ -643,7 +643,7 @@
 					// ===== 캘린더 끝 ============================================
 					//---------------------------------------------------
 					// 상품 수량 입력 시 이벤트
-					$(document).on('input', '.product-value', function () {
+					$(document).on('input', '.quantity', function () {
 						const $row = $(this).closest('tr');
 					    const price = parseInt($row.find('.unit-price').text().replace(/,/g, '')) || 0; // 단가
 					    const quantity = parseInt($(this).val()) || 0; // 수량
@@ -691,15 +691,15 @@
 					        const item = {
 					        	// 물품코드 넣을 값이 없다 ?
 				                materialIdx: $(this).find('.material-idx').text(),  // 자재_idx
-				                productNumber: $(this).find('.product-number').text(),  // 상품_idx
-				                productName: $(this).find('.product-name').text(),  // 아이템명
-				                productValue: $(this).find('.product-value').val(),  // 개수
+				                productIdx: $(this).find('.product-idx').text(),  // 상품_idx
+				                name: $(this).find('.name').text(),  // 아이템명
+				                quantity: $(this).find('.quantity').val(),  // 개수
 				                unitPrice: $(this).find('.unit-price').text().replace(/,/g, ''),  // 개수별금액 (콤마 제거)
 				                totalPrice: $(this).find('.total-price').text().replace(/,/g, ''),  // 합계액 (콤마 제거)
 				                // 나머지 값들을 추가할 수 있다면 여기에 추가
 				            };
 					        
-					        if (item.productValue > 0) { // 수량이 0보다 큰 상품만 추가
+					        if (item.quantity > 0) { // 수량이 0보다 큰 상품만 추가
 					            orderItems.push(item);
 					        }
 					    });
