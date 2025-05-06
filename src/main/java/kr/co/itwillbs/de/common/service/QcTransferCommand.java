@@ -95,7 +95,7 @@ public class QcTransferCommand implements TransferCommand {
 		wtDTO.setSourceLocation(IN_DESINATION_LOCATION_1);
 		wtDTO.setDestinationLocation(QC_DESINATION_LOCATION_1);
 		wtDTO.setMemo("QC_시작_창고to검수장");
-		wtDTO.setIsDeleted("N");
+		wtDTO.setIsDeleted(IS_DELETE_N);
 		wtDTO.setRegId(REG_ID_TRANSFER);
 		
 		// 디게 복잡하게 느껴질 수 있는데 실제로도 복잡하니까 걱정하지말자
@@ -139,7 +139,7 @@ public class QcTransferCommand implements TransferCommand {
 			wtDTO.setSourceLocation(QC_DESINATION_LOCATION_1); // 검수장에서
 			wtDTO.setDestinationLocation(IN_DESINATION_LOCATION_2); // 창고로
 			wtDTO.setMemo("QC 완료 → 창고");
-			wtDTO.setIsDeleted("N");
+			wtDTO.setIsDeleted(IS_DELETE_N);
 			wtDTO.setRegId(REG_ID_QC_COMMAND);
 			
 			// 6. 입출고-LOT 관계 테이블 인서트
@@ -166,6 +166,7 @@ public class QcTransferCommand implements TransferCommand {
 			lots.setQuantity(String.valueOf(result.getAvgFailQty())); // 아무리 생각해도 값이 애매해서 평균값으로 함
 			lots.setUnit(wtInfo.getUnit());
 			lots.setMemo("QC_fail_LOT");
+			lots.setIsDeleted(IS_DELETE_N);
 			lots.setRegId(REG_ID_QC_COMMAND);
 			
 			lotsMapper.registerLots(lots);
@@ -178,6 +179,7 @@ public class QcTransferCommand implements TransferCommand {
 				logDTO.setQcResult(item.getQcResult());
 				logDTO.setQuantity(result.getAvgFailQty()); // 아무리 생각해도 값이 애매해서 평균값으로 함2
 				logDTO.setUnit(wtInfo.getUnit());
+				logDTO.setIsDeleted(IS_DELETE_N);
 				logDTO.setRegId(REG_ID_QC_COMMAND);
 				
 				qcLogMapper.insertQcLog(logDTO);
@@ -193,7 +195,7 @@ public class QcTransferCommand implements TransferCommand {
 			wtDTO.setSourceLocation(QC_DESINATION_LOCATION_1);
 			wtDTO.setDestinationLocation(IN_DESINATION_LOCATION_2);
 			wtDTO.setMemo("QC 어쨋든 완료 → 창고");
-			wtDTO.setIsDeleted("N");
+			wtDTO.setIsDeleted(IS_DELETE_N);
 			wtDTO.setRegId(REG_ID_QC_COMMAND);
 
 			warehouseTransactionMapper.insertWarehouseTransaction(wtDTO);
@@ -204,6 +206,7 @@ public class QcTransferCommand implements TransferCommand {
 			wtlots.setLotIdx(lots.getIdx());// QC_Fail_lot의 idx를 넣음
 			wtlots.setQuantity(result.getAvgFailQty()); // 아무리 생각해도 값이 애매해서 평균값으로 함4
 			wtlots.setUnit(wtInfo.getUnit());
+			wtlots.setIsDeleted(IS_DELETE_N);
 			wtlots.setRegId(REG_ID_QC_COMMAND);
 			
 			warehouseTransactionLotsMapper.insertWarehouseTransactionLots(wtlots);
@@ -234,14 +237,17 @@ public class QcTransferCommand implements TransferCommand {
 			if (standard == null) {
 				// 해당 인덱스의 표준이 없으면 실패로 처리
 				LogUtil.warn(log, "Standard Not found QClog is {}", item);
+				item.setQcResult(QC_RESULT_FAIL);
 				result.addFail(item);
 				continue;
 			}
 
 			String value = item.getValue();
 			if (standard.isPassed(value)) {
+				item.setQcResult(QC_RESULT_SUCCESS);
 				result.addSuccess(item);
 			} else {
+				item.setQcResult(QC_RESULT_FAIL);
 				result.addFail(item);
 			}
 		}

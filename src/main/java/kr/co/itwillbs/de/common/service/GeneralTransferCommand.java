@@ -67,7 +67,7 @@ public class GeneralTransferCommand implements TransferCommand {
 		wtDTO.setSourceLocation(IN_DESINATION_LOCATION_2);
 		wtDTO.setDestinationLocation(""); // 이건 작업지시서 생산라인에 따라 바뀌는 정보
 		wtDTO.setMemo("생산공장1인지 2인지 메모에 남겨야할까?");
-		wtDTO.setIsDeleted("N");
+		wtDTO.setIsDeleted(IS_DELETE_N);
 		wtDTO.setRegId(REG_ID_TRANSFER);
 
 		warehouseTransactionMapper.insertWarehouseTransaction(wtDTO);
