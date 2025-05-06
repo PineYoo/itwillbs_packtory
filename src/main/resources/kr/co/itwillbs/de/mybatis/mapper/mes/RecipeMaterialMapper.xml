@@ -25,7 +25,7 @@
 		<set></set><!--  set 엘리먼트는 동적으로 SET 키워드를 붙히고 필요없는 콤마를 제거한다. -->
 		<trim prefix="SET" suffixOverrides=","></trim><!-- 위의<set>의 <trim>버전 -->
 		
-		<foreach item="item" index="index" collection="list" open="(" separator="," close=")" nullable="true">
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
 			#{item}
 		</foreach>
 		
@@ -122,6 +122,7 @@
 
 	<select id="getRecipeMaterialBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.RecipeMaterialSearchDTO"
 									resultType="kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
 			<include refid="t_recipe_columns_forSelect"></include> 
 		FROM t_recipe_material
@@ -132,7 +133,7 @@
 			<if test='mixSeq !=null and !("".equals(mixSeq.trim()))'>AND mix_seq LIKE CONCAT('%',#{mixSeq},'%')</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
 		</where>
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<select id="getRecipeMaterialByIdx" parameterType="string"

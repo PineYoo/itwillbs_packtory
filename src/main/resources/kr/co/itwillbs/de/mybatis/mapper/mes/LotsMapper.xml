@@ -25,7 +25,7 @@
 		<set></set><!--  set 엘리먼트는 동적으로 SET 키워드를 붙히고 필요없는 콤마를 제거한다. -->
 		<trim prefix="SET" suffixOverrides=","></trim><!-- 위의<set>의 <trim>버전 -->
 		
-		<foreach item="item" index="index" collection="list" open="(" separator="," close=")" nullable="true">
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")"> <!-- nullable="true"이 계속 오류표시 나서 빼놓음 -->
 			#{item}
 		</foreach>
 		
@@ -153,6 +153,7 @@
 
 	<select id="getLotsBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.LotsSearchDTO"
 									resultType="kr.co.itwillbs.de.mes.dto.LotsDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
 			<include refid="t_lot_columns_forSelect"></include> 
 		FROM t_lots
@@ -187,7 +188,7 @@
 				</when>
 			</choose>
 		</where>
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<select id="getLotsByIdx" parameterType="string"

@@ -25,7 +25,7 @@
 		<set></set><!--  set 엘리먼트는 동적으로 SET 키워드를 붙히고 필요없는 콤마를 제거한다. -->
 		<trim prefix="SET" suffixOverrides=","></trim><!-- 위의<set>의 <trim>버전 -->
 		
-		<foreach item="item" index="index" collection="list" open="(" separator="," close=")" nullable="true">
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")" > <!-- nullable="true"이 계속 오류표시 나서 빼놓음 -->
 			#{item}
 		</foreach>
 		
@@ -155,8 +155,9 @@
 
 	<select id="getBomsBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.BomSearchDTO"
 									resultType="kr.co.itwillbs.de.mes.dto.BomDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
-			<include refid="t_bom_columns_forSelect"></include> 
+			<include refid="t_bom_columns_forSelect"></include>
 		FROM t_bom
 		<where>
 			<if test='type !=null and !("".equals(type.trim()))'>AND type = #{type}</if>
@@ -166,7 +167,7 @@
 			<if test='description !=null and !("".equals(description.trim()))'>AND description LIKE CONCAT('%',#{description},'%')</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
 		</where>
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<select id="getBomByIdx" parameterType="string"
@@ -176,8 +177,6 @@
 		FROM t_bom
 		where idx = #{idx}
 	</select>
-	
-	
 	
 	<!-- <set>이 분명 마지막 , 를 제거해준다고 알고 있다? 맞나? -->
 	<update id="modifyBom" parameterType="kr.co.itwillbs.de.mes.dto.BomDTO">
@@ -198,14 +197,6 @@
 				<if test='modId !=null and !("".equals(modId.trim()))'>mod_date = now(),</if>
 			</set>
 		WHERE idx = #{idx}
-	</update>
-	
-	<update id="removeSample" parameterType="kr.co.itwillbs.de.sample.dto.SampleSearchDTO">
-		update t_demo
-			<set>
-				<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
-			</set>
-		where idx = #{idx}
 	</update>
 	
 	<!-- 원자재에서 씀 -->

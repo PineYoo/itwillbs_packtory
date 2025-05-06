@@ -76,6 +76,7 @@
 	<!-- 수주/발주 정보 조건 검색 가져오기(SELECT) -->
 	<select id="getOrderList" parameterType="kr.co.itwillbs.de.orders.dto.OrderSearchDTO"
 									resultType="kr.co.itwillbs.de.orders.dto.OrderDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
 			<include refid="order_list_columns_forSelect"></include>
 		  FROM t_order o
@@ -127,7 +128,7 @@
 			</choose>
 		</where>
 		ORDER BY o.reg_date DESC
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<!-- ============================================================= -->

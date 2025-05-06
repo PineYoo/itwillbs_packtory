@@ -17,10 +17,11 @@
 	    , ed.email		               			-- 이메일
 	</sql>
 	
+	<!-- 공통 페이징 처리 포함시킬려고 했으나 Unknown column 'idx' in 'window order by' 오류가 뜸 -->
 	<!-- 검색조건에 따른 사원 리스트 조회 -->
 	<select id="getEmployeeList" parameterType="kr.co.itwillbs.de.human.dto.EmployeeSearchDTO"
 								 resultType="kr.co.itwillbs.de.human.dto.EmployeeDTO">
-		SELECT 
+		SELECT
 			<include refid="employee_list_columns_forSelect"></include>
 		  FROM t_employee e
 		  JOIN t_employee_detail ed
@@ -155,6 +156,7 @@
 	<!-- 검색조건에 따른 거래처 리스트 조회 -->
 	<select id="getClientList" parameterType="kr.co.itwillbs.de.orders.dto.ClientSearchDTO"
 								 resultType="kr.co.itwillbs.de.orders.dto.ClientDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
 			<include refid="client_list_columns_forSelect"></include>
 		  FROM t_client c
@@ -171,7 +173,7 @@
 	        </if>
 	    </where>
 		 ORDER BY c.company_number
-		 LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		 <include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 
 	<!-- 검색조건에 따른 거래처 리스트 조회(페이징처리용) -->
@@ -205,6 +207,7 @@
 	<!-- 검색조건에 따른 상품 리스트 조회 -->
 	<select id="getProductList" parameterType="kr.co.itwillbs.de.mes.dto.ProductSearchDTO"
 								resultType="kr.co.itwillbs.de.mes.dto.ProductDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
 			<include refid="product_list_columns_forSelect"></include>
 		  FROM t_product p
@@ -218,7 +221,7 @@
 	        </if>
 	    </where>
 		 ORDER BY p.reg_date desc						-- 최근 등록 순
-		 LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		 <include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<!-- 검색조건에 따른 상품 리스트 조회(페이징처리용) -->
@@ -259,6 +262,7 @@
 	<!-- 검색조건에 따른 레시피 리스트 조회 -->
 	<select id="getRecipeList" parameterType="kr.co.itwillbs.de.mes.dto.RecipeSearchDTO"
 								resultType="kr.co.itwillbs.de.mes.dto.RecipeDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
 			<include refid="recipe_list_columns_forSelect"></include>
 		  FROM t_recipe_master rm
@@ -277,7 +281,7 @@
 	        </if>
 	    </where>
 		 ORDER BY rm.reg_date desc						-- 최근 등록 순
-		 LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		 <include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<!-- 검색조건에 따른 레시피 리스트 조회(페이징처리용) -->
@@ -365,6 +369,7 @@
 		</where>
 	</select>
 	
+	<!-- PublicSql에서 numberedWorkers를 가져오는 With절이 주석처리 되어있음 -->
 	<select id="getWorkerMetricList" parameterType="kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO"
 										resultType="kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO">
 		<include refid="PublicSql.withWorkerInfo" />
@@ -401,6 +406,7 @@
 	<!-- 검색조건에 따른 자재 리스트 조회 -->
 	<select id="getMaterialList" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO"
 								    resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
 		      rm.idx
 		    , rm.parents_idx
@@ -445,7 +451,7 @@
 			</if>
 		</where>
 		ORDER BY rm.idx
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 
 	<!-- 검색조건에 따른 자재 리스트 조회(페이징처리용) -->
@@ -478,6 +484,7 @@
 	<!-- 검색조건에 따른 자재 리스트 조회 -->
 	<select id="getMaterialOrderList" parameterType="kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO"
 								      resultType="kr.co.itwillbs.de.mes.dto.RawMaterialDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
 		      rm.idx
 		    , rm.parents_idx
@@ -522,7 +529,7 @@
 			</if>
 		</where>
 		ORDER BY rm.idx
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 
 	<!-- 검색조건에 따른 자재 리스트 조회(페이징처리용) -->
@@ -715,6 +722,7 @@
 	<!-- 검색조건에 따른 공정 리스트 조회 -->
 	<select id="getRecipeProcessList" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO"
 								      resultType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT
 			  idx
 			, master_idx
@@ -735,7 +743,8 @@
 			</if>
 		</where>
 		ORDER BY idx	-- code_seq로 가져오려 했으나 varchar라서 1, 10, 11, 12, ..., 2 이렇게 가져와짐
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
+<!--		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}-->
 	</select>
 	
 	<!-- 검색조건에 따른 공정 리스트 조회(페이징처리용) -->
