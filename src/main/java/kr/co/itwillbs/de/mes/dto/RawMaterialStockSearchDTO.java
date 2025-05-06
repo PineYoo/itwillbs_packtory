@@ -12,6 +12,9 @@ import lombok.ToString;
 @ToString
 public class RawMaterialStockSearchDTO {
 
+	private Long idx;
+	private int quantity;
+	
 	private String name; 
 	private String type; 
 	private String locationName; 

@@ -12,6 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class ProductSearchDTO {
 
+	private Long idx;
 	private String name; // 이름
 	private Integer minPrice; // 최소 가격
 	private Integer maxPrice; // 최대 가격

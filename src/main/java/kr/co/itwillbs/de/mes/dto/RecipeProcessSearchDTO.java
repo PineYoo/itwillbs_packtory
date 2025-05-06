@@ -31,6 +31,10 @@ public class RecipeProcessSearchDTO {
 	
 	private String searchKeyword;
 	
+	
+	private String productIdx;
+	private int quantity;
+	
 	private List<CodeItemDTO> typeList;
 	
 	// 페이징용 DTO composition

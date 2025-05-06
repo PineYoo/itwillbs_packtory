@@ -23,6 +23,8 @@ import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialStockDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialStockSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeMaterialSearchDTO;
@@ -320,6 +322,39 @@ public class SearchController {
 		model.addAttribute("materialSearchDTO", materialSearchDTO);
 		
 		return searchService.getMaterialOrderList(materialSearchDTO);
+	}
+	
+	// ==================================================================================
+	// 자재 재고 조회 팝업창으로 이동
+	@GetMapping(value = { "/material/stock/search-popup", "/material/stock/search-popup/" })
+	public String getMaterialStockList(Model model, @ModelAttribute RawMaterialStockSearchDTO materialStockSearchDTO) {
+		LogUtil.logStart(log);
+		// 자재 리스트 조회 요청(SELECT)
+		List<RawMaterialStockDTO> materialStockList = searchService.getMaterialStockList(materialStockSearchDTO);
+		model.addAttribute("materialStockList", materialStockList);
+		
+		// 검색창에 띄울 상품 리스트 조회
+		List<ProductSearchDTO> productList = searchService.getProductList2();
+		model.addAttribute("productList", productList);
+		
+//		//페이징용 totalCount
+		materialStockSearchDTO.getPageDTO().setTotalCount(searchService.getMaterialStockCountForPaging(materialStockSearchDTO));
+		model.addAttribute("materialStockSearchDTO", materialStockSearchDTO);
+		
+		return "/common/material_stock_search_form";
+	}
+	
+	// 검색조건에 따른 자재 재고 목록
+	@PostMapping("/material/stock/search-popup")
+	@ResponseBody
+	public List<RawMaterialStockDTO> searchMateriaStockList(Model model, @ModelAttribute RawMaterialStockSearchDTO materialStockSearchDTO) {
+		LogUtil.logStart(log);
+		
+		//페이징용 totalCount
+		materialStockSearchDTO.getPageDTO().setTotalCount(searchService.getMaterialStockCountForPaging(materialStockSearchDTO));
+		model.addAttribute("materialStockSearchDTO", materialStockSearchDTO);
+		
+		return searchService.getMaterialStockList(materialStockSearchDTO);
 	}
 	
 	// ==================================================================================

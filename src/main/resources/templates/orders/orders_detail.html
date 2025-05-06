@@ -271,39 +271,6 @@
 												</tfoot>
 											</table>
 										</div>
-										<!-- ---------- 재고파악 영역 ---------- -->
-										<div class="mt-3">
-											<h5>필요 자재 현황</h5>
-										</div>
-										<div class="table-responsive">
-											<table class="table table-bordered text-center materialStock" id="dataTables">
-												<thead class="table-light">
-													<tr>
-														<th>자재명</th>
-														<th>단위</th>
-														<th>필요수량</th>
-														<th>현재재고</th>
-														<th>부족수량</th>
-														<th>상태</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr th:each="item, status : ${materialStock}" th:data-id="${item.idx}">
-														<td class="name" th:text="${item.name}"></td>
-														<td class="unit-name" th:text="${item.unitName}"></td>
-														<td class="required-quantity" th:text="${#numbers.formatInteger(item.requiredQuantity, 1, 'COMMA')}"></td> <!-- 세자리마다 콤마 -->
-														<td class="stock" th:text="${#numbers.formatInteger(item.stock, 1, 'COMMA')}"></td> <!-- 세자리마다 콤마 -->
-														<td class="stock-gap" th:text="${#numbers.formatInteger(item.stockGap, 1, 'COMMA')}"></td> <!-- 세자리마다 콤마 -->
-														<td class="stock-status" 
-														    th:text="${item.stockStatus}" 
-														    th:classappend="${item.stockGap > 0} ? ' text-danger' : ''">
-														</td>													</tr>
-													<tr th:if="${#lists.isEmpty(materialStock)}" class="clickable-row menu2depth_items">
-														<td colspan="6"><span>상품을 담아주세요.</span></td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
 										
 									</th:block>
 										
@@ -355,6 +322,7 @@
 									<th:block th:case="3">
 										<div class="mb-2 d-flex align-items-center">
 											<button type="button" class="btn btn-primary mr-2" onclick="openMaterialSearch()">자재 조회</button>
+											<button type="button" class="btn btn-success mr-2" onclick="openMaterialStockSearch()">필요 자재 파악</button>
 											<div id="orderItemsError" class="text-danger"></div>
 										</div>
 										<!-- ---------- 자재 리스트 출력 영역 ---------- -->
@@ -590,6 +558,12 @@
 				        `;
 				        $tbody.append(emptyRow);
 				    }
+				}
+				
+				// ---------------------------------------------------------------
+				// 자재 재고 조회 팝업창 열기
+				function openMaterialStockSearch() {
+					window.open('/material/stock/search-popup', 'materialStockSearch', 'width=800,height=600,location=no,scrollbars=yes');
 				}
 				
 				// ---------------------------------------------------------------

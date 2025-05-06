@@ -13,6 +13,8 @@ import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialStockDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialStockSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO;
@@ -154,6 +156,19 @@ public interface SearchMapper {
 	
 	// ====================================================================
 	/**
+	 * 검색조건에 따른 구매할 자재 리스트 조회
+	 * @param materialSearchDTO
+	 * @return List<RawMaterialStockDTO>
+	 */
+	List<RawMaterialStockDTO> getMaterialStockList(RawMaterialStockSearchDTO materialStockSearchDTO);
+	
+	/**
+	 * 페이징용 카운트
+	 */
+	int getMaterialStockCountForPaging(RawMaterialStockSearchDTO materialStockSearchDTO);
+	
+	// ====================================================================
+	/**
 	 * 검색조건에 따른 공정 리스트 조회
 	 * @param recipeProcessSearchDTO
 	 * @return List<RecipeProcessDTO>
@@ -164,6 +179,10 @@ public interface SearchMapper {
 	 * 페이징용 카운트
 	 */
 	int getRecipeProcessCountForPaging(RecipeProcessSearchDTO recipeProcessSearchDTO);
+
+	List<ProductSearchDTO> getProductList2();
+
+
 	
 
 }

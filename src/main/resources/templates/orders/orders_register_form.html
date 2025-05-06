@@ -59,30 +59,27 @@
 	}
 	
 	/* colgroup 대신 이렇게 각 열에 너비 지정 */
-	#dataTables td:nth-child(1), #dataTables th:nth-child(1) {width: 10%;}
-	#dataTables td:nth-child(2), #dataTables th:nth-child(2) {width: 30%;}
-	#dataTables td:nth-child(3), #dataTables th:nth-child(3) {width: 15%;}
-	#dataTables td:nth-child(4), #dataTables th:nth-child(4) {width: 15%;}
-	#dataTables td:nth-child(5), #dataTables th:nth-child(5) {width: 20%;}
-	#dataTables td:nth-child(6), #dataTables th:nth-child(6) {width: 10%;}
-	
-	/*
 	.productTables td:nth-child(1), .productTables th:nth-child(1) {width: 10%;}
 	.productTables td:nth-child(2), .productTables th:nth-child(2) {width: 30%;}
 	.productTables td:nth-child(3), .productTables th:nth-child(3) {width: 15%;}
 	.productTables td:nth-child(4), .productTables th:nth-child(4) {width: 15%;}
 	.productTables td:nth-child(5), .productTables th:nth-child(5) {width: 20%;}
 	.productTables td:nth-child(6), .productTables th:nth-child(6) {width: 10%;}
-	
+
 	.materialTables td:nth-child(1), .materialTables th:nth-child(1) {width: 10%;}
-	.materialTables td:nth-child(2), .materialTables th:nth-child(2) {width: 22%;}
-	.materialTables td:nth-child(3), .materialTables th:nth-child(3) {width: 13%;}
+	.materialTables td:nth-child(2), .materialTables th:nth-child(2) {width: 30%;}
+	.materialTables td:nth-child(3), .materialTables th:nth-child(3) {width: 15%;}
 	.materialTables td:nth-child(4), .materialTables th:nth-child(4) {width: 15%;}
-	.materialTables td:nth-child(5), .materialTables th:nth-child(5) {width: 15%;}
-	.materialTables td:nth-child(6), .materialTables th:nth-child(6) {width: 15%;}
-	.materialTables td:nth-child(7), .materialTables th:nth-child(7) {width: 10%;}
-	*/
-	
+	.materialTables td:nth-child(5), .materialTables th:nth-child(5) {width: 20%;}
+	.materialTables td:nth-child(6), .materialTables th:nth-child(6) {width: 10%;}
+
+	.materialStock td:nth-child(1), .materialStock th:nth-child(1) {width: 30%;}
+	.materialStock td:nth-child(2), .materialStock th:nth-child(2) {width: 10%;}
+	.materialStock td:nth-child(3), .materialStock th:nth-child(3) {width: 15%;}
+	.materialStock td:nth-child(4), .materialStock th:nth-child(4) {width: 15%;}
+	.materialStock td:nth-child(5), .materialStock th:nth-child(5) {width: 15%;}
+	.materialStock td:nth-child(6), .materialStock th:nth-child(6) {width: 15%;}
+
 	/* 수량 입력 필드 스타일링 */
 	#dataTables .quantity {
         border: 1px solid #ccc;
@@ -309,6 +306,7 @@
 									<th:block th:case="3">
 										<div class="mb-2 d-flex align-items-center">
 											<button type="button" class="btn btn-primary mr-2" onclick="openMaterialSearch()">자재 조회</button>
+											<button type="button" class="btn btn-success mr-2" onclick="openMaterialStockSearch()">필요 자재 파악</button>
 											<div id="orderItemsError" class="text-danger"></div>
 										</div>
 										<!-- ---------- 자재 리스트 출력 영역 ---------- -->
@@ -536,6 +534,12 @@
 				        `;
 				        $tbody.append(emptyRow);
 				    }
+				}
+
+				// ---------------------------------------------------------------
+				// 자재 재고 조회 팝업창 열기
+				function openMaterialStockSearch() {
+					window.open('/material/stock/search-popup', 'materialStockSearch', 'width=800,height=600,location=no,scrollbars=yes');
 				}
 				
 				// --------------------------------------------------------------------------------------------------------

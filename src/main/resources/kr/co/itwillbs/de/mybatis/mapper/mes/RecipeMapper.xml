@@ -80,7 +80,7 @@
 			),
 			-- 3. 공정별 자재 목록
 			recipe_materials AS (
-			    SELECT idx AS material_idx, name AS material_name, quantity, process_idx, unit
+			    SELECT idx, name, material_idx, quantity, process_idx, unit
 			    FROM t_recipe_material
 			    WHERE process_idx IN (SELECT idx FROM recipe_process)
 			),
@@ -100,14 +100,14 @@
 			    WHERE wt.reg_date >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 6 MONTH), '%Y-%m-01')
 			      AND rm.parents_idx IS NULL
 			      AND rm.client_idx IS NULL
-			      AND rm.type = 1
+			      AND rm.type IN (1, 3)
 			    GROUP BY rm.idx
 			)
 			
 			-- 최종 결과
 			SELECT
 			    rm.material_idx AS idx,             -- 자재_idx
-			    rm.material_name AS name,           -- 자재명
+			    rm.name,         					-- 자재명
 			    rm.unit,                            -- 단위
 			    unit_item.minor_name AS unit_name,  -- 단위명
 			    rm.process_idx,                     -- 공정_idx

@@ -16,6 +16,8 @@ import kr.co.itwillbs.de.mes.dto.ProductDTO;
 import kr.co.itwillbs.de.mes.dto.ProductSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialStockDTO;
+import kr.co.itwillbs.de.mes.dto.RawMaterialStockSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO;
@@ -231,6 +233,27 @@ public class SearchService {
 	
 	// ======================================================================================
 	/**
+	 *  자재 재고 정보 리스트 조회
+	 * @param materialStockSearchDTO
+	 * @return List<RawMaterialStockDTO>
+	 */
+	public List<RawMaterialStockDTO> getMaterialStockList(RawMaterialStockSearchDTO materialStockSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getMaterialStockList(materialStockSearchDTO);
+	}
+	
+	/**
+	 * 검색조건에 따른 자재 재고 count 가져오기 페이징용
+	 * @param materialStockSearchDTO
+	 * @return
+	 */
+	public int getMaterialStockCountForPaging(RawMaterialStockSearchDTO materialStockSearchDTO) {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getMaterialStockCountForPaging(materialStockSearchDTO);
+	}
+	
+	// ======================================================================================
+	/**
 	 *  공정 정보 리스트 조회
 	 * @param recipeProcessSearchDTO
 	 * @return List<RecipeProcessDTO>
@@ -249,5 +272,12 @@ public class SearchService {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 		return searchMapper.getRecipeProcessCountForPaging(recipeProcessSearchDTO);
 	}
+
+	
+	public List<ProductSearchDTO> getProductList2() {
+		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		return searchMapper.getProductList2();
+	}
+
 
 }

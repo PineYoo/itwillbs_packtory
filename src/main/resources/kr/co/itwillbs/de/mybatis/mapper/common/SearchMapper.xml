@@ -552,6 +552,166 @@
 		</where>
 	</select>
 	
+	<!-- 검색조건에 따른 자재 재고 리스트 조회(페이징처리용) -->
+	<select id="getMaterialStockCountForPaging" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO"
+											    resultType="int">
+		WITH
+			-- 1. 유효한 레시피 마스터
+			recipe_master AS (
+			    SELECT idx, batch_size
+			    FROM t_recipe_master
+			    WHERE product_idx = #{idx}
+			      AND status = 1
+				  AND approval_status=1
+				  AND now() between valid_from AND valid_to
+			    LIMIT 1
+			),
+			-- 2. 해당 레시피의 공정 목록
+			recipe_process AS (
+			    SELECT idx
+			    FROM t_recipe_process_code
+			    WHERE master_idx = (SELECT idx FROM recipe_master)
+			),
+			-- 3. 공정별 자재 목록
+			recipe_materials AS (
+			    SELECT idx, name, material_idx, quantity, process_idx, unit
+			    FROM t_recipe_material
+			    WHERE process_idx IN (SELECT idx FROM recipe_process)
+			),
+			-- 4. 최근 6개월간 재고 요약
+			stock_summary AS (
+			    SELECT
+			        rm.idx AS material_idx,
+			        COALESCE(SUM(
+			            CASE
+			                WHEN wt.status = 3 AND wt.trans_type = 1 THEN wt.quantity
+			                WHEN wt.status IN (3, 4) AND wt.trans_type = 2 THEN -wt.quantity
+			                ELSE 0
+			            END
+			        ), 0) AS stock
+			    FROM t_raw_material rm
+			    JOIN t_warehouse_transaction wt ON rm.idx = wt.material_idx
+			    WHERE wt.reg_date >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 6 MONTH), '%Y-%m-01')
+			      AND rm.parents_idx IS NULL
+			      AND rm.client_idx IS NULL
+			      AND rm.type IN (1, 3)
+			    GROUP BY rm.idx
+			)
+			
+			-- 최종 결과
+			SELECT
+			    COUNT(*)
+			FROM
+			    recipe_materials rm
+			JOIN recipe_master rmst ON 1=1
+			LEFT JOIN stock_summary ss ON rm.material_idx = ss.material_idx
+			LEFT JOIN t_raw_material raw ON rm.material_idx = raw.idx
+			LEFT JOIN t_commoncode_item unit_item
+			    ON rm.unit = unit_item.minor_code AND unit_item.major_code = 'ITEM_UNIT'
+			WHERE raw.type IN (1, 3)
+			ORDER BY
+			    rm.process_idx,
+			    rm.material_idx
+	</select>	
+	
+	<!-- 검색조건에 따른 자재 재고 리스트 조회 -->
+	<select id="getMaterialStockList" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO"
+									  resultType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
+		WITH
+			-- 1. 유효한 레시피 마스터
+			recipe_master AS (
+			    SELECT idx, batch_size
+			    FROM t_recipe_master
+			    WHERE product_idx = #{idx}
+			      AND status = 1
+				  AND approval_status=1
+				  AND now() between valid_from AND valid_to
+			    LIMIT 1
+			),
+			-- 2. 해당 레시피의 공정 목록
+			recipe_process AS (
+			    SELECT idx
+			    FROM t_recipe_process_code
+			    WHERE master_idx = (SELECT idx FROM recipe_master)
+			),
+			-- 3. 공정별 자재 목록
+			recipe_materials AS (
+			    SELECT idx, name, material_idx, quantity, process_idx, unit
+			    FROM t_recipe_material
+			    WHERE process_idx IN (SELECT idx FROM recipe_process)
+			),
+			-- 4. 최근 6개월간 재고 요약
+			stock_summary AS (
+			    SELECT
+			        rm.idx AS material_idx,
+			        COALESCE(SUM(
+			            CASE
+			                WHEN wt.status = 3 AND wt.trans_type = 1 THEN wt.quantity
+			                WHEN wt.status IN (3, 4) AND wt.trans_type = 2 THEN -wt.quantity
+			                ELSE 0
+			            END
+			        ), 0) AS stock
+			    FROM t_raw_material rm
+			    JOIN t_warehouse_transaction wt ON rm.idx = wt.material_idx
+			    WHERE wt.reg_date >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 6 MONTH), '%Y-%m-01')
+			      AND rm.parents_idx IS NULL
+			      AND rm.client_idx IS NULL
+			      AND rm.type IN (1, 3)
+			    GROUP BY rm.idx
+			)
+			
+			-- 최종 결과
+			SELECT
+			    rm.material_idx AS idx,             -- 자재_idx
+			    rm.name,         					-- 자재명
+			    rm.unit,                            -- 단위
+			    unit_item.minor_name AS unit_name,  -- 단위명
+			    rm.process_idx,                     -- 공정_idx
+			    rm.quantity,                        -- 단위 수량
+			    (
+			        CASE 
+			            WHEN MOD(#{quantity}, rmst.batch_size) = 0
+			                THEN (#{quantity} / rmst.batch_size + 1)
+			            ELSE CEIL(#{quantity} / rmst.batch_size)
+			        END
+			    ) * rm.quantity AS required_quantity,   -- 필요한 자재 수량
+			    COALESCE(ss.stock, 0) AS stock, 		-- 현재 재고
+			    -- 필요 수량 - 재고량 = 부족 수량 (양수면 부족)
+			    (
+			        (
+			            CASE 
+			                WHEN MOD(#{quantity}, rmst.batch_size) = 0
+			                    THEN (#{quantity} / rmst.batch_size + 1)
+			                ELSE CEIL(#{quantity} / rmst.batch_size)
+			            END
+			        ) * rm.quantity
+			    ) - COALESCE(ss.stock, 0) AS stock_gap,
+			    
+			    -- 재고가 부족한 경우 '구매 필요' 표시
+			    CASE
+			        WHEN COALESCE(ss.stock, 0) &lt; (
+			            CASE 
+			                WHEN MOD(#{quantity}, rmst.batch_size) = 0
+			                    THEN (#{quantity} / rmst.batch_size + 1)
+			                ELSE CEIL(#{quantity} / rmst.batch_size)
+			            END
+			        ) * rm.quantity
+			        THEN '구매 필요'
+			        ELSE '충분'
+			    END AS stock_status
+			FROM
+			    recipe_materials rm
+			JOIN recipe_master rmst ON 1=1
+			LEFT JOIN stock_summary ss ON rm.material_idx = ss.material_idx
+			LEFT JOIN t_raw_material raw ON rm.material_idx = raw.idx
+			LEFT JOIN t_commoncode_item unit_item
+			    ON rm.unit = unit_item.minor_code AND unit_item.major_code = 'ITEM_UNIT'
+			WHERE raw.type IN (1, 3)
+			ORDER BY
+			    rm.process_idx,
+			    rm.material_idx
+	</select>	
+	
 	<!-- 검색조건에 따른 공정 리스트 조회 -->
 	<select id="getRecipeProcessList" parameterType="kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO"
 								      resultType="kr.co.itwillbs.de.mes.dto.RecipeProcessDTO">
@@ -588,6 +748,11 @@
 				name LIKE CONCAT('%', #{searchKeyword}, '%')
 			</if>
 		</where>
+	</select>
+	
+	<select id="getProductList2" resultType="kr.co.itwillbs.de.mes.dto.ProductSearchDTO" >
+		SELECT idx, name
+		  FROM t_product
 	</select>
 	
 </mapper>
