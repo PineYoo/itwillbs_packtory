@@ -21,8 +21,10 @@ public class BomDTO {
 	private String idx;
 	@NotBlank(message = "타입은 필수 입력 값입니다.")
 	private String type;
+	private String typeName;
 	//@NotBlank(message = "상품은 필수 입력 값입니다.")
 	private String productIdx;
+	private String productName;
 	private String materialIdx;
 	private String parentsIdx;
 	private String code;
@@ -33,6 +35,7 @@ public class BomDTO {
 	private String spec;
 	@NotBlank(message = "단위는 필수 입력 값입니다.")
 	private String unit;
+	private String unitName;
 	@PositiveOrZero(message = "수량은 0개 이상만 입력 가능합니다.")
 	private BigDecimal quantity;
 	@Pattern(regexp = "^[YN]$", message = "사용 유무는 필수 입력 값입니다.")

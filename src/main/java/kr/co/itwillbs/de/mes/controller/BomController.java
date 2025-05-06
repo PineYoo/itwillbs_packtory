@@ -127,6 +127,8 @@ public class BomController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		bomSearchDTO.getPageDTO().setTotalCount(bomService.getBomsCountBySearchDTO(bomSearchDTO));
+		
+		// 검색영역에 쓰일 공통코드 가져오기(part, assembly)
 		setcodeItems(bomSearchDTO);
 		model.addAttribute("bomSearchDTO", bomSearchDTO);
 		
@@ -146,6 +148,8 @@ public class BomController {
 		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
 
 		bomSearchDTO.getPageDTO().setTotalCount(bomService.getBomsCountBySearchDTO(bomSearchDTO));
+		
+		// 검색영역에 쓰일 공통코드 가져오기(part, assembly)
 		setcodeItems(bomSearchDTO);
 		model.addAttribute("bomSearchDTO", bomSearchDTO);
 		

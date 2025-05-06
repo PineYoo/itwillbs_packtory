@@ -157,15 +157,44 @@
 									resultType="kr.co.itwillbs.de.mes.dto.BomDTO">
 		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
-			<include refid="t_bom_columns_forSelect"></include>
-		FROM t_bom
+			   b.idx
+			 , b.type
+			 , ci2.minor_name AS typeName
+			 , b.product_idx
+			 , p.name AS productName	-- 상품이름
+			 , b.material_idx
+			 , b.parents_idx
+			 , b.code
+			 , b.name
+			 , b.description
+			 , b.spec
+			 , b.unit
+			 , ci.minor_name AS unitName -- 단위이름 
+			 , b.quantity
+			 , b.is_deleted
+			 , b.reg_id
+			 , b.reg_date
+			 , b.mod_id
+			 , b.mod_date
+		  FROM t_bom b
+		  
+		  LEFT
+		  JOIN t_product p
+		    ON b.product_idx = p.idx
+		    
+		  LEFT
+		  JOIN t_commoncode_item ci
+		    ON b.unit = ci.minor_code AND ci.major_code = 'ITEM_UNIT'
+		    
+		  LEFT
+		  JOIN t_commoncode_item ci2
+		    ON b.type = ci2.minor_code AND ci2.major_code = 'BOM_TYPE'
 		<where>
-			<if test='type !=null and !("".equals(type.trim()))'>AND type = #{type}</if>
-			<if test='code !=null and !("".equals(code.trim()))'>AND code LIKE CONCAT('%',#{code},'%')</if>
-			<if test='name !=null and !("".equals(name.trim()))'>AND name LIKE CONCAT('%',#{name},'%')</if>
-			<if test='spec !=null and !("".equals(spec.trim()))'>AND spec LIKE CONCAT('%',#{spec},'%')</if>
-			<if test='description !=null and !("".equals(description.trim()))'>AND description LIKE CONCAT('%',#{description},'%')</if>
-			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
+			<if test='type !=null and !("".equals(type.trim()))'>AND b.type = #{type}</if>
+			<if test='code !=null and !("".equals(code.trim()))'>AND b.code LIKE CONCAT('%',#{code},'%')</if>
+			<if test='name !=null and !("".equals(name.trim()))'>AND b.name LIKE CONCAT('%',#{name},'%')</if>
+			<if test='spec !=null and !("".equals(spec.trim()))'>AND b.spec LIKE CONCAT('%',#{spec},'%')</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND b.is_deleted = #{isDeleted}</if>
 		</where>
 		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>

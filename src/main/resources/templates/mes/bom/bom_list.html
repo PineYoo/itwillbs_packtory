@@ -127,25 +127,21 @@
 									<th>코드</th>
 									<th>이름</th>
 									<th>스펙</th>
-									<th>단위</th>
 									<th>개수</th>
+									<th>단위</th>
 									<th>삭제유무</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="item, status : ${bomDTOList}" th:data-id="${item.idx}" class="clickable-row">
-								<!-- <th:block th:object="${item}"> -->
-									<!-- <td th:text="${item.idx}"></td> -->
-									<!-- <td th:text="${status.count}"></td> -->
-									<td>-</td>
-									<td th:text="${item.type}"></td>
+									<td th:text="${item.productName != null and item.productName != '' ? item.productName : '-'}"></td>
+									<td th:text="${item.typeName}"></td>
 									<td th:text="${item.code}"></td>
 									<td th:text="${item.name}"></td>
 									<td th:text="${item.spec}"></td>
-									<td th:text="${item.unit}"></td>
 									<td th:text="${item.quantity}"></td>
-									<!-- <td th:text="${item.description}"></td> -->
-									<td th:text="${item.isDeleted}"></td>
+									<td th:text="${item.unitName}"></td>
+									<td th:text="${item.isDeleted == 'N' ? '사용중' : '삭제'}"></td>
 								</tr>
 								<tr th:if="${#lists.isEmpty(bomDTOList)}" class="clickable-row menu2depth_items">
 									<td colspan="8"><span>조회 된 데이터가 없습니다.</span></td>
