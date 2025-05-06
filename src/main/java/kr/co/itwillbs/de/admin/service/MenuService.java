@@ -13,7 +13,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -34,7 +33,6 @@ public class MenuService {
 	private final MenuMapper menuMapper;
 	private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 	
-	//@Autowired
 	public MenuService(MenuMapper menuMapper, @Qualifier("requestMappingHandlerMapping")RequestMappingHandlerMapping requestMappingHandlerMapping) {
 		this.menuMapper = menuMapper;
 		this.requestMappingHandlerMapping = requestMappingHandlerMapping;
@@ -47,6 +45,7 @@ public class MenuService {
 	 */
 	@CacheEvict(value = {"menus", "menuByUri"}, allEntries = true)
 	@LogExecution
+	@Transactional(readOnly = true)
 	public int registerMenu(MenuDTO menuDTO) {
 		LogUtil.logStart(log);
 		
@@ -58,6 +57,7 @@ public class MenuService {
 	 * @param menuSearchDTO
 	 * @return
 	 */
+	@Transactional(readOnly = true)
 	public int getMenuCount(MenuSearchDTO menuSearchDTO) {
 		LogUtil.logStart(log);
 		
@@ -69,6 +69,7 @@ public class MenuService {
 	 * @param menuSearchDTO
 	 * @return
 	 */
+	@Transactional(readOnly = true)
 	public List<MenuDTO> getMenuList(MenuSearchDTO menuSearchDTO) {
 		LogUtil.logStart(log);
 		
@@ -82,10 +83,11 @@ public class MenuService {
 	 * @return
 	 * @throws Exception 
 	 */
+	@Transactional(readOnly = true)
 	public MenuDTO getMenuTypeByIdx(MenuSearchDTO menuSearchDTO) throws Exception {
 		LogUtil.logStart(log);
 		List<MenuDTO> menuDTOlist = getMenuList(menuSearchDTO);
-		log.info("menuDTOlist size{}, {}", menuDTOlist.size(), menuDTOlist);
+		LogUtil.logDetail(log, "menuDTOlist size: {}, data: {}", menuDTOlist.size(), menuDTOlist);
 		
 		MenuDTO menuDTO = null;
 		
@@ -94,7 +96,7 @@ public class MenuService {
 			// 가져온 menuDTOList에서 menuType을 searchDTO 에 넣는다
 			menuDTO = menuDTOlist.get(0);
 		} else {
-			throw new Exception("메뉴 정보를 찾을 수 없습니다.");
+			throw new RuntimeException("메뉴 정보를 찾을 수 없습니다.");
 		}
 		
 		return menuDTO;
@@ -105,6 +107,7 @@ public class MenuService {
 	 * @param menuSearchDTO
 	 * @return
 	 */
+	@Transactional(readOnly = true)
 	public List<MenuDTO> getMenuItemListByParentsIdx(MenuSearchDTO menuSearchDTO) {
 		LogUtil.logStart(log);
 		
@@ -121,6 +124,7 @@ public class MenuService {
 		@CacheEvict(value = "menuByUri", allEntries = true)
 		})
 	@LogExecution
+	@Transactional
 	public int modifyMenuIsDeleted(MenuDTO menuDTO) {
 		LogUtil.logStart(log);
 		
@@ -134,12 +138,13 @@ public class MenuService {
 	 */
 	@CacheEvict(value = {"menus", "menuByUri"}, allEntries = true)
 	@LogExecution
+	@Transactional
 	public void modifyMenu(MenuDTO menuDTO) throws Exception {
 		LogUtil.logStart(log);
 		
 		int affectedRow = menuMapper.modifyMenu(menuDTO);
 		if(affectedRow < 1) {
-			throw new Exception("데이터 수정에 실패 했습니다.");
+			throw new RuntimeException("데이터 수정에 실패 했습니다.");
 		}
 	}
 	
@@ -161,11 +166,12 @@ public class MenuService {
 		log.info("itemList.size is {}, // affectedRow is {}", menuList.size(), affectedRow);
 		
 		if(affectedRow < 1 || menuList.size() != affectedRow) {
-			throw new Exception("데이터 등록에 실패 했습니다.");
+			throw new RuntimeException("데이터 등록에 실패 했습니다.");
 		}
 	}
 
 	@Cacheable(value = "menus")
+	@Transactional(readOnly = true)
 	public List<MenuDTO> getAllMenus() {
 		LogUtil.logStart(log);
 		
@@ -173,6 +179,7 @@ public class MenuService {
 	}
 	
 	@Cacheable(value = "menuByUri", key = "#p0")
+	@Transactional(readOnly = true)
 	public MenuDTO findByUri(String uri) {
 		LogUtil.logStart(log);
 		
@@ -188,7 +195,7 @@ public class MenuService {
 	 * @return List<RequestMappingDTO>
 	 */
 	public List<RequestMappingDTO> MappingConvertor() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		List<RequestMappingDTO> mappingList = new ArrayList<>();
 		

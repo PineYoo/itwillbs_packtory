@@ -21,7 +21,7 @@
 				tpi.is_manager,
 				te.hire_date,
 				te.work_experience,
-				te.is_deleted,
+				-- te.is_deleted,
 				ted.phone_number,
 				ted.email,
 				ted.file_idxs,
@@ -54,16 +54,16 @@
 					FROM t_position_info
 					WHERE is_deleted = 'N'
 					) AS tpi ON te.position_code = tpi.position_code
-		),
+		)
+	</sql>
+	<!-- ,
 		numberedEmps AS (
 			SELECT
 				*,
 				COUNT(*) OVER () AS total_count,
 				ROW_NUMBER() OVER (ORDER BY id) AS row_asc
 			FROM empBases
-		)
-	</sql>
-	
+		) -->
 	<!-- 임시 뷰 방식은 페이징이 간결해진다. OVER 가 참 예쁘다-->
 	<sql id="withWorkerInfo">
 		WITH workerBase AS (
@@ -81,7 +81,7 @@
 				tpi.is_manager,
 				te.hire_date,
 				te.work_experience,
-				te.is_deleted,
+				-- te.is_deleted,
 				ted.phone_number,
 				ted.email,
 				ted.file_idxs,
@@ -133,16 +133,16 @@
 					FROM t_worker_metrics
 					WHERE is_deleted = 'N'
 					) AS twm ON te.id = twm.employee_id
-		),
+		)
+	</sql>
+	<!-- ,
 		numberedWorkers AS (
 			SELECT
 				*,
 				COUNT(*) OVER () AS total_count,
 				ROW_NUMBER() OVER (ORDER BY id) AS row_asc
 			FROM workerBase
-		)
-	</sql>
-	
+		) -->
 	<!-- <trim suffixOverrides=","></trim> 으로 감싸진 것이어야 한다 -->
 	<sql id="InsertDefineColumns">
 		<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>

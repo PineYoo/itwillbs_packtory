@@ -106,24 +106,20 @@
 	
 	<select id="getMenuList" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"
 								resultType="kr.co.itwillbs.de.admin.dto.MenuDTO">
-		SELECT *
-		FROM (
-			SELECT 
-				ROW_NUMBER() OVER (ORDER BY reg_date DESC) AS rownum,
-				<include refid="t_menu_columns_forSelect" />
-			FROM t_menu
-			<where>
-				AND parents_idx is null
-				<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
-				<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name LIKE CONCAT('%',#{menuName},'%') </if>
-				<if test='parentsIdx != null and !("".equals(parentsIdx.trim()))'>AND parents_idx = #{parentsIdx} </if>
-				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
-				<if test='url != null and !("".equals(url.trim()))'>AND url LIKE CONCAT('%',#{url},'%') </if>
-				<if test='regId != null and !("".equals(regId.trim()))'>AND reg_id = #{regId} </if>
-			</where>
-			) AS a
-		WHERE a.rownum <![CDATA[>]]> #{pageDTO.offset}
-		LIMIT #{pageDTO.size} 
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
+		SELECT 
+			<include refid="t_menu_columns_forSelect" />
+		FROM t_menu
+		<where>
+			AND parents_idx is null
+			<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
+			<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name LIKE CONCAT('%',#{menuName},'%') </if>
+			<if test='parentsIdx != null and !("".equals(parentsIdx.trim()))'>AND parents_idx = #{parentsIdx} </if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
+			<if test='url != null and !("".equals(url.trim()))'>AND url LIKE CONCAT('%',#{url},'%') </if>
+			<if test='regId != null and !("".equals(regId.trim()))'>AND reg_id = #{regId} </if>
+		</where>
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<select id="getMenuItemListByParentsIdx" parameterType="kr.co.itwillbs.de.admin.dto.MenuSearchDTO"

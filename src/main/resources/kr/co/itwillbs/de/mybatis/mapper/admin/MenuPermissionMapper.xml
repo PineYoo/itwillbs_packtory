@@ -92,7 +92,7 @@
 			description,
 			</if>
 			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>
-			is_deleted
+			is_deleted,
 			</if>
 			<if test='regId !=null and !("".equals(regId.trim()))'>
 			reg_id,
@@ -129,33 +129,54 @@
 										resultType="int">
 		SELECT 
 			count(*)
-		FROM t_menu_permission
+		FROM t_menu_permission mp
+		LEFT JOIN t_menu m ON m.idx = mp.menu_idx
+		LEFT JOIN t_employee e ON e.id = mp.owner_member_id
+		LEFT JOIN t_commoncode_item ci ON ci.major_code = 'DEPARTMENT_CODE' and ci.minor_code = mp.group_id
 		<where>
-			<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
-			<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name LIKE CONCAT('%',#{menuName},'%') </if>
-			<if test='ownerMemberName != null and !("".equals(ownerMemberName.trim()))'>AND owner_member_name LIKE CONCAT('%',#{ownerMemberName},'%') </if>
-			<if test='groupName != null and !("".equals(groupName.trim()))'>AND group_name = #{groupName} </if>
-			<if test='permissionCode != null and !("".equals(permissionCode.trim()))'>AND permission_code = #{permissionCode} </if>
-			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
+			<if test='idx != null and !("".equals(idx.trim()))'>AND mp.idx = #{idx} </if>
+			<if test='menuName != null and !("".equals(menuName.trim()))'>AND m.menu_name LIKE CONCAT('%',#{menuName},'%') </if>
+			<if test='ownerMemberName != null and !("".equals(ownerMemberName.trim()))'>AND e.name LIKE CONCAT('%',#{ownerMemberName},'%') </if>
+			<if test='groupName != null and !("".equals(groupName.trim()))'>AND ci.minor_name = #{groupName} </if>
+			<if test='permissionCode != null and !("".equals(permissionCode.trim()))'>AND mp.permission_code = #{permissionCode} </if>
+			<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND mp.is_deleted = #{isDeleted} </if>
 		</where>
 	</select>
 	
 	<select id="getMenuPermissionsBySearchDTO" parameterType="kr.co.itwillbs.de.admin.dto.MenuPermissionSearchDTO"
 								resultType="kr.co.itwillbs.de.admin.dto.MenuPermissionDTO">
-		<include refid="PublicSql.OrderAscPagingTop" />
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 			SELECT 
-				ROW_NUMBER() OVER (ORDER BY reg_date DESC) AS rownum,
-				<include refid="t_menu_permission_columns_forSelect" />
-			FROM t_menu_permission
+				mp.idx,
+				mp.menu_idx,
+				m.menu_name,
+				m.parents_idx as menu_parents_idx,
+				m.rank_number,
+				m.url,
+				mp.owner_member_id,
+				e.name as owner_member_name,
+				mp.group_id,
+				ci.minor_name as group_name,
+				mp.permission_code,
+				mp.description,
+				mp.is_deleted,
+				mp.reg_id,
+				mp.reg_date,
+				mp.mod_id,
+				mp.mod_date
+			FROM t_menu_permission mp
+			LEFT JOIN t_menu m ON m.idx = mp.menu_idx
+			LEFT JOIN t_employee e ON e.id = mp.owner_member_id
+			LEFT JOIN t_commoncode_item ci ON ci.major_code = 'DEPARTMENT_CODE' and ci.minor_code = mp.group_id
 			<where>
-				<if test='idx != null and !("".equals(idx.trim()))'>AND idx = #{idx} </if>
-				<if test='menuName != null and !("".equals(menuName.trim()))'>AND menu_name LIKE CONCAT('%',#{menuName},'%') </if>
-				<if test='ownerMemberName != null and !("".equals(ownerMemberName.trim()))'>AND owner_member_name LIKE CONCAT('%',#{ownerMemberName},'%') </if>
-				<if test='groupName != null and !("".equals(groupName.trim()))'>AND group_name = #{groupName} </if>
-				<if test='permissionCode != null and !("".equals(permissionCode.trim()))'>AND permission_code = #{permissionCode} </if>
-				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted} </if>
+				<if test='idx != null and !("".equals(idx.trim()))'>AND mp.idx = #{idx} </if>
+				<if test='menuName != null and !("".equals(menuName.trim()))'>AND m.menu_name LIKE CONCAT('%',#{menuName},'%') </if>
+				<if test='ownerMemberName != null and !("".equals(ownerMemberName.trim()))'>AND e.name LIKE CONCAT('%',#{ownerMemberName},'%') </if>
+				<if test='groupName != null and !("".equals(groupName.trim()))'>AND ci.minor_name = #{groupName} </if>
+				<if test='permissionCode != null and !("".equals(permissionCode.trim()))'>AND mp.permission_code = #{permissionCode} </if>
+				<if test='isDeleted != null and !("".equals(isDeleted.trim()))'>AND mp.is_deleted = #{isDeleted} </if>
 			</where>
-		<include refid="PublicSql.OrderAscPagingBottom" />
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<select id="getMenuPermissionsByIdx" parameterType="string"

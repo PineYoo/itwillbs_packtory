@@ -152,49 +152,50 @@
 	<select id="getBeforeMembersByEmployeeSearch" parameterType="kr.co.itwillbs.de.admin.dto.EmployeeSearchDTO"
 									resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
 		<include refid="PublicSql.withEmpInfo" />
-		SELECT
-			emp.*,
-			tm.password,
-			tm.role,
-			tci1.minor_name AS role_name,
-			tci1.description AS role_description,
-			IFNULL(tm.status,'NOT_YET') AS status,
-			tci2.minor_name AS status_name,
-			tci2.description AS status_description,
-			tm.is_deleted
-		FROM empBase AS emp
-		LEFT JOIN t_member as tm
-			ON emp.id = tm.member_id
-		LEFT JOIN t_commoncode_item as tci1
-			ON tci1.major_code = 'MEMBER_ROLE'
-			AND tm.role = tci1.minor_code
-		LEFT JOIN t_commoncode_item as tci2
-			ON tci2.major_code = 'MEMBER_STATUS'
-			AND tm.status = tci2.minor_code
-		<where>
-			AND tm.status IS NULL
-			<if test="id != null and id.trim() != ''">AND emp.id LIKE CONCAT('%',#{id},'%') </if>
-			<if test="name != null and name.trim() != ''">AND emp.name LIKE CONCAT('%',#{name},'%') </if>
-			<if test="departmentCode != null and departmentCode.trim() != ''">AND emp.department_code = #{departmentCode} </if>
-			<if test="subDepartmentCode != null and subDepartmentCode.trim() != ''">AND emp.sub_department_code = #{subDepartmentCode} </if>
-			<if test="positionCode != null and positionCode.trim() != ''">AND emp.position_code = #{positionCode} </if>
-			<choose>
-				<when test="(hireStartDate != null and hireStartDate.trim() != '')
-							and (hireEndDate != null and hireEndDate.trim() != '')">
-					AND emp.hire_date BETWEEN STR_TO_DATE(CONCAT(#{hireStartDate}, '000000'),'%Y-%m-%d%H%i%S') 
-										AND STR_TO_DATE(CONCAT(#{hireEndDate}, '235959'),'%Y-%m-%d%H%i%S')
-				</when>
-				<when test="(hireStartDate != null and hireStartDate.trim() != '')
-							and (hireEndDate == null or hireEndDate.trim() == '')">
-					AND emp.hire_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{hireStartDate}, '000000'),'%Y-%m-%d%H%i%S')
-				</when>
-				<when test="(hireStartDate == null or hireStartDate.trim() == '')
-							and (hireEndDate != null and hireEndDate.trim() != '')">
-					AND emp.hire_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{hireEndDate}, '235959'),'%Y-%m-%d%H%i%S')
-				</when>
-			</choose>
-		</where> 
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		, pattern AS (
+			SELECT
+				emp.*,
+				tm.password,
+				tm.role,
+				tci1.minor_name AS role_name,
+				tci1.description AS role_description,
+				IFNULL(tm.status,'NOT_YET') AS status,
+				tci2.minor_name AS status_name,
+				tci2.description AS status_description,
+				tm.is_deleted
+			FROM empBase AS emp
+			LEFT JOIN t_member as tm
+				ON emp.id = tm.member_id
+			LEFT JOIN t_commoncode_item as tci1
+				ON tci1.major_code = 'MEMBER_ROLE'
+				AND tm.role = tci1.minor_code
+			LEFT JOIN t_commoncode_item as tci2
+				ON tci2.major_code = 'MEMBER_STATUS'
+				AND tm.status = tci2.minor_code
+			<where>
+				AND tm.status IS NULL
+				<if test="id != null and id.trim() != ''">AND emp.id LIKE CONCAT('%',#{id},'%') </if>
+				<if test="name != null and name.trim() != ''">AND emp.name LIKE CONCAT('%',#{name},'%') </if>
+				<if test="departmentCode != null and departmentCode.trim() != ''">AND emp.department_code = #{departmentCode} </if>
+				<if test="subDepartmentCode != null and subDepartmentCode.trim() != ''">AND emp.sub_department_code = #{subDepartmentCode} </if>
+				<if test="positionCode != null and positionCode.trim() != ''">AND emp.position_code = #{positionCode} </if>
+				<choose>
+					<when test="(hireStartDate != null and hireStartDate.trim() != '')
+								and (hireEndDate != null and hireEndDate.trim() != '')">
+						AND emp.hire_date BETWEEN STR_TO_DATE(CONCAT(#{hireStartDate}, '000000'),'%Y-%m-%d%H%i%S') 
+											AND STR_TO_DATE(CONCAT(#{hireEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+					</when>
+					<when test="(hireStartDate != null and hireStartDate.trim() != '')
+								and (hireEndDate == null or hireEndDate.trim() == '')">
+						AND emp.hire_date <![CDATA[>=]]> STR_TO_DATE(CONCAT(#{hireStartDate}, '000000'),'%Y-%m-%d%H%i%S')
+					</when>
+					<when test="(hireStartDate == null or hireStartDate.trim() == '')
+								and (hireEndDate != null and hireEndDate.trim() != '')">
+						AND emp.hire_date <![CDATA[<=]]> STR_TO_DATE(CONCAT(#{hireEndDate}, '235959'),'%Y-%m-%d%H%i%S')
+					</when>
+				</choose>
+			</where> 
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<select id="getBeforeMembersByIds" parameterType="kr.co.itwillbs.de.admin.dto.MemberDTO"
@@ -294,34 +295,35 @@
 	<select id="getMembersBySearchDTO" parameterType="kr.co.itwillbs.de.admin.dto.MemberSearchDTO"
 										resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">
 		<include refid="PublicSql.withEmpInfo" />
-		SELECT
-			emp.*,
-			tm.password,
-			tm.role,
-			tci1.minor_name AS role_name,
-			tci1.description AS role_description,
-			IFNULL(tm.status,'NOT_YET') AS status,
-			tci2.minor_name AS status_name,
-			tci2.description AS status_description,
-			tm.is_deleted
-		FROM empBase AS emp
-		LEFT JOIN t_member as tm
-			ON emp.id = tm.member_id
-		LEFT JOIN t_commoncode_item as tci1
-			ON tci1.major_code = 'MEMBER_ROLE'
-			AND tm.role = tci1.minor_code
-		LEFT JOIN t_commoncode_item as tci2
-			ON tci2.major_code = 'MEMBER_STATUS'
-			AND tm.status = tci2.minor_code
-		<where>
-			AND tm.status IS NOT NULL
-			<if test="memberId != null and memberId.trim() != ''">AND emp.id LIKE CONCAT('%',#{memberId},'%') </if>
-			<if test="memberName != null and memberName.trim() != ''">AND emp.name LIKE CONCAT('%',#{memberName},'%') </if>
-			<if test="role != null and role.trim() != ''">AND tm.role = #{role} </if>
-			<if test="status != null and status.trim() != ''">AND tm.status = #{status} </if>
-			<if test="isDeleted != null and isDeleted.trim() != ''">AND tm.is_deleted = #{isDeleted} </if>
-		</where>
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		, pattern AS (
+			SELECT
+				emp.*,
+				tm.password,
+				tm.role,
+				tci1.minor_name AS role_name,
+				tci1.description AS role_description,
+				IFNULL(tm.status,'NOT_YET') AS status,
+				tci2.minor_name AS status_name,
+				tci2.description AS status_description,
+				tm.is_deleted
+			FROM empBase AS emp
+			LEFT JOIN t_member as tm
+				ON emp.id = tm.member_id
+			LEFT JOIN t_commoncode_item as tci1
+				ON tci1.major_code = 'MEMBER_ROLE'
+				AND tm.role = tci1.minor_code
+			LEFT JOIN t_commoncode_item as tci2
+				ON tci2.major_code = 'MEMBER_STATUS'
+				AND tm.status = tci2.minor_code
+			<where>
+				AND tm.status IS NOT NULL
+				<if test="memberId != null and memberId.trim() != ''">AND emp.id LIKE CONCAT('%',#{memberId},'%') </if>
+				<if test="memberName != null and memberName.trim() != ''">AND emp.name LIKE CONCAT('%',#{memberName},'%') </if>
+				<if test="role != null and role.trim() != ''">AND tm.role = #{role} </if>
+				<if test="status != null and status.trim() != ''">AND tm.status = #{status} </if>
+				<if test="isDeleted != null and isDeleted.trim() != ''">AND tm.is_deleted = #{isDeleted} </if>
+			</where>
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 
 	<select id="getMember" resultType="kr.co.itwillbs.de.admin.dto.MemberDTO">

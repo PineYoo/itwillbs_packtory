@@ -19,7 +19,6 @@ public class MenuDTO {
 
 	// 테이블 PK
 	private String idx;
-	private int rownum;
 	// 메뉴 이름
 	@NotBlank(message = "메뉴 이름은 필수 입력 값입니다.")
 	private String menuName;
@@ -45,4 +44,9 @@ public class MenuDTO {
 	private String level;
 	private String path;
 	private String treeCode;
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 }

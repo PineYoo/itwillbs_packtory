@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import kr.co.itwillbs.de.admin.dto.MenuDTO;
 import kr.co.itwillbs.de.admin.dto.MenuSearchDTO;
 import kr.co.itwillbs.de.admin.service.MenuService;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +46,7 @@ public class MenuController {
 	 */
 	@GetMapping(value="/new", name = "메뉴 등록")
 	public String menuRegisterForm(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		// Form th:object를 위한 DTO 뷰에 전달
 		model.addAttribute("menuDTO", new MenuDTO());
@@ -62,9 +63,8 @@ public class MenuController {
 	 */
 	@PostMapping(value={"","/"})
 	public String menuRegister(@ModelAttribute("menuDTO") MenuDTO menuDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		log.info("requestData : {}", StringUtil.objToString(menuDTO));
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(menuDTO));
 		
 		if(menuService.registerMenu(menuDTO) < 1) {
 			return MENU_PATH+"/log_register_form";
@@ -79,8 +79,8 @@ public class MenuController {
 	 */
 	@GetMapping(value= {"","/"}, name = "메뉴 리스트")
 	public String getMenuTypeList(@ModelAttribute MenuSearchDTO menuSearchDTO, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("menuSearchDTO is {}", menuSearchDTO);
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(menuSearchDTO));
 		
 		// 리스트 검색 DTO 빈 값 뷰에 전달
 		menuSearchDTO.getPageDTO().setTotalCount(menuService.getMenuCount(menuSearchDTO));
@@ -102,8 +102,8 @@ public class MenuController {
 	 */
 	@GetMapping(value="/search", name = "메뉴 리스트")
 	public String sampleGetList(@ModelAttribute MenuSearchDTO menuSearchDTO, Model model) throws Exception {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("request menuSearchDTO : {}", StringUtil.objToString(menuSearchDTO));
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(menuSearchDTO));
 		
 		// 리스트 검색 DTO 뷰에 전달
 		menuSearchDTO.getPageDTO().setTotalCount(menuService.getMenuCount(menuSearchDTO));
@@ -127,8 +127,8 @@ public class MenuController {
 	@GetMapping(value="/{id}", name="메뉴 상세")
 	public String getMenuIdList(@PathVariable("id") String id,
 								@ModelAttribute MenuSearchDTO menuSearchDTO, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("request param : {}, requestDTO", id, menuSearchDTO);
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "request param : {}, requestDTO", id, menuSearchDTO);
 		
 		// idx 값이 숫자가 아닐 때 리스트로 리다이렉트
 		if(!StringUtil.isLongValue(id)) {
@@ -165,9 +165,8 @@ public class MenuController {
 	@PutMapping("/modifyMenu")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> modifyMenu(@RequestBody MenuDTO menuDTO,  Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		log.info("requestBody : {}", menuDTO);
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(menuDTO));
 		
 		//리턴 객체
 		Map<String, Object> response = new HashMap<>();
@@ -195,9 +194,8 @@ public class MenuController {
 	@PostMapping("/registerChildMenu")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> registerChildMenu(@RequestBody List<MenuDTO> menuList,  Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		log.info("requestBody : {}", menuList);
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(menuList));
 		
 		//리턴 객체
 		Map<String, Object> response = new HashMap<>();
@@ -224,6 +222,7 @@ public class MenuController {
 	 * @param bindingResult
 	 * @return
 	 */
+	@Deprecated
 	@PutMapping("/{idx}")
 	public String putItem(@PathVariable("idx") String idx, @ModelAttribute("menuDTO") MenuDTO menuDTO,
 							@RequestParam String returnUrl) {

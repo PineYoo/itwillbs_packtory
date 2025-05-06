@@ -19,11 +19,14 @@ public class MenuPermissionDTO {
 
 	// 테이블Seq, PK
 	private String idx;
-	private int rownum;
 	// 메뉴 이름
 	@NotBlank(message = "메뉴는 필수 입력값입니다.")
 	private String menuIdx;
 	private String menuName;
+	
+	private String menuParentsIdx;
+	private String rankNumber;
+	private String url;
 	
 	private String ownerMemberId;
 	private String ownerMemberName;
@@ -45,5 +48,10 @@ public class MenuPermissionDTO {
 	
 	private String modId;
 	private LocalDateTime modDate;
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 	
 }

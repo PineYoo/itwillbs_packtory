@@ -1,9 +1,5 @@
 package kr.co.itwillbs.de.admin.dto;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-
 import kr.co.itwillbs.de.common.aop.annotation.RequiredSessionIds;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,29 +48,8 @@ public class MemberDTO {
 	private String fileIdxs;
 	private String employeeStatusCode;
 	
-	/**
-	 * Object 안에 null이 아닌 필드 값 출력
-	 * @param obj
-	 * @return StringBuffer.toString()
-	 */
-	public String toStr(Object obj) {
-		Class<?> cls = this.getClass();
-		Method[] arrMethod = cls.getMethods();
-		StringBuffer sb = new StringBuffer(/*this.getClass().toString() 유틸에서는 여기 클래스가 찍히니 패스!*/);
-		sb.append("\n");
-		try {
-			for (Method m : arrMethod) {
-				if(m.getName().startsWith("get") && !m.getName().equals("getClass") && m.invoke(this) != null) {
-					sb.append(m.getName());
-					sb.append(" : ");
-					sb.append(m.invoke(this));
-					sb.append("\n ");
-				}
-			}
-		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		
-		return sb.toString();
-	}
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 }

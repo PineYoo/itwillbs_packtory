@@ -138,7 +138,7 @@ public class MenuPermissionController {
 			return "redirect:"+VIEW_PATH;
 		}
 		
-		return VIEW_PATH+"/menu_child_list";
+		return VIEW_PATH+"/permission_detail";
 	}
 
 	/**

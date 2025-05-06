@@ -24,7 +24,7 @@ import kr.co.itwillbs.de.admin.dto.CodeDTO;
 import kr.co.itwillbs.de.admin.dto.CodeItemDTO;
 import kr.co.itwillbs.de.admin.dto.CodeSearchDTO;
 import kr.co.itwillbs.de.admin.service.CodeService;
-import kr.co.itwillbs.de.common.util.CommonCodeUtil;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import kr.co.itwillbs.de.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,15 +34,13 @@ import lombok.extern.slf4j.Slf4j;
 public class CodeController {
 
 	private final CodeService codeService;
-	private final CommonCodeUtil commonCodeUtil;
 	//@Autowired
-	public CodeController(CodeService codeService, CommonCodeUtil commonCodeUtil) {
+	public CodeController(CodeService codeService) {
 		this.codeService = codeService;
-		this.commonCodeUtil = commonCodeUtil;
 	}
 
 	// 계속 사용하게 될 클래스 RequestMapping 문자열 값
-	private final String CODE_PATH="/admin/code";
+	private final String VIEW_PATH="/admin/code";
 	
 	/**
 	 * 어드민 > 코드 관리 > 공통코드 등록
@@ -52,11 +50,11 @@ public class CodeController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping(value="/new")
 	public String codeRegisterForm(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		model.addAttribute("codeDTO", new CodeDTO());
 		
-		return CODE_PATH+"/code_register_form";
+		return VIEW_PATH+"/code_register_form";
 	}
 	
 	/**
@@ -67,13 +65,13 @@ public class CodeController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping(value={"","/"}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE) // 이녀석 만고 필요 없...던데? 
 	public String registerCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("requestDTO : {}", StringUtil.objToString(codeDTO));
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(codeDTO));
 		
 		if(codeService.registerCode(codeDTO) < 1) {
-			return CODE_PATH+"/log_register_form";
+			return VIEW_PATH+"/log_register_form";
 		}
-		return "redirect:"+CODE_PATH;
+		return "redirect:"+VIEW_PATH;
 	}
 	
 	/**
@@ -83,17 +81,19 @@ public class CodeController {
 	 */
 	@GetMapping(value={"","/"})
 	public String getCodes(@ModelAttribute CodeSearchDTO codeSearchDTO, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
-		// 리스트 검색 DTO 뷰에 전달
-		codeSearchDTO.getPageDTO().setTotalCount(codeService.getCodesCountBySearchDTO(codeSearchDTO));
+		int totalCount = codeService.getCodesCountBySearchDTO(codeSearchDTO);
+		codeSearchDTO.getPageDTO().setTotalCount(totalCount);
+		
+		List<CodeDTO> codeDTOList = totalCount > 0 ? codeService.getCodesBySearchDTO(codeSearchDTO) : List.of();
+		
 		// 검색폼 공통코드 리스트 셋
 		model.addAttribute("codeSearchDTO", this.setSearchDTOcodeList(codeSearchDTO));
-		
-		List<CodeDTO> codeDTOList = codeService.getCodesBySearchDTO(codeSearchDTO);
+		// 리스트 검색 DTO 뷰에 전달
 		model.addAttribute("codeDTOList", codeDTOList);
 		
-		return CODE_PATH+"/code_list";
+		return VIEW_PATH+"/code_list";
 	}
 	
 	/**
@@ -105,17 +105,20 @@ public class CodeController {
 	 */
 	@GetMapping("/search")
 	public String getCodesBySearchDTO(@ModelAttribute CodeSearchDTO codeSearchDTO, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(codeSearchDTO));
 		
-		log.info("request codeSearchDTO : {}", StringUtil.objToString(codeSearchDTO));
-		// 리스트 검색 DTO 뷰에 전달
-		codeSearchDTO.getPageDTO().setTotalCount(codeService.getCodesCountBySearchDTO(codeSearchDTO));
+		int totalCount = codeService.getCodesCountBySearchDTO(codeSearchDTO);
+		codeSearchDTO.getPageDTO().setTotalCount(totalCount);
+		
+		List<CodeDTO> codeDTOList = totalCount > 0 ? codeService.getCodesBySearchDTO(codeSearchDTO) : List.of();
+		
 		// 검색폼 공통코드 리스트 셋
 		model.addAttribute("codeSearchDTO", this.setSearchDTOcodeList(codeSearchDTO));
 		// 리스트 결과 DTOlist 뷰에 전달
-		model.addAttribute("codeDTOList", codeService.getCodesBySearchDTO(codeSearchDTO));
+		model.addAttribute("codeDTOList", codeDTOList);
 		
-		return CODE_PATH+"/code_list";
+		return VIEW_PATH+"/code_list";
 	}
 	
 	/**
@@ -128,13 +131,13 @@ public class CodeController {
 	@GetMapping("/{idx}")
 	public String getCode(@PathVariable("idx") String idx,
 							@ModelAttribute CodeSearchDTO codeSearchDTO, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		log.info("request id : {}, codeSearchDTO : {}", idx, codeSearchDTO);
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "request id : {}, codeSearchDTO : {}", idx, codeSearchDTO);
 		
 		// idx 값이 숫자가 아닐 때 리스트로 리다이렉트
 		if(!StringUtil.isLongValue(idx)) {
 			model.addAttribute("codeSearchDTO", codeSearchDTO);
-			return "redirect:"+CODE_PATH;
+			return "redirect:"+VIEW_PATH;
 		}
 		
 		try {
@@ -144,21 +147,18 @@ public class CodeController {
 			if(codeDTO != null) {
 				// 공통코드 셋
 				model.addAttribute("codeDTO", codeDTO);
-				// 공통 코드 가져오기(TEST) codeDTO.getMajorCode()
-//				model.addAttribute("codeItems", commonCodeUtil.getCodeItems(codeDTO.getMajorCode()));
 				// 조회된 결과 값에서 하위 공통코드 조회를 위해 majorCode 셋
 				codeSearchDTO.setMajorCode(codeDTO.getMajorCode());
-				log.info("codeDTO.getMajorCode() {}", codeDTO.getMajorCode());
 				// 하위코드 조회하기 근데 내가 왜 SearchDTO 에 담아서 보냈는지 이해가 되질 않네?
 				model.addAttribute("codeItemDTOList", codeService.getCodeItemsByMajorCode(codeSearchDTO));
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			model.addAttribute("codeSearchDTO", codeSearchDTO);
-			return "redirect:"+CODE_PATH;
+			return "redirect:"+VIEW_PATH;
 		}
 		
-		return CODE_PATH+"/code_detail";
+		return VIEW_PATH+"/code_detail";
 	}
 	
 	/**
@@ -171,9 +171,8 @@ public class CodeController {
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> modifyCode(@RequestBody @Valid CodeDTO codeDTO,
 															BindingResult bindingResult, Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		log.info("requestBody : {}", codeDTO);
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(codeDTO));
 		
 		//리턴 객체 생성
 		Map<String, Object> response = new HashMap<>();
@@ -187,7 +186,6 @@ public class CodeController {
 			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
 		}
 		
-		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아니었나? 하는 기억에 리턴 객체 만듦
 		return ResponseEntity.ok(response);
 	}
 	
@@ -201,9 +199,8 @@ public class CodeController {
 	@PostMapping("/registerCodeItems")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> registerCodeItems(@RequestBody List<CodeItemDTO> itemList,  Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		log.info("requestBody : {}", itemList);
+		LogUtil.logStart(log);
+		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(itemList));
 		
 		//리턴 객체
 		Map<String, Object> response = new HashMap<>();
@@ -217,12 +214,11 @@ public class CodeController {
 			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
 		}
 
-		// 비동기 통신 success에 들어가는 것은 HTTP 200||201 이 아닐까 하는 생각에 이렇게 리턴 객체 만듦
 		return ResponseEntity.ok(response);
 	}
 	
 	private CodeSearchDTO setSearchDTOcodeList(CodeSearchDTO codeSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		codeSearchDTO.setCodeList(codeService.getCodes());
 		return codeSearchDTO;
 	}

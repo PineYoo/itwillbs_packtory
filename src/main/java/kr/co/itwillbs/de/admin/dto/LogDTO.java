@@ -38,6 +38,11 @@ public class LogDTO {
 	// 실행 시간 측정을 위한 변수 추가
 	private LocalDateTime executionTime;
 	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
+	
 	@Builder
 	public LogDTO(String accessId, String accessType, String accessDevice, String ip, String parameters, String url,
 			LocalDateTime accessDate) {

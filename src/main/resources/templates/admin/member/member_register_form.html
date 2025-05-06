@@ -151,8 +151,11 @@
 								</thead>
 								<tbody>
 									<tr th:each="item, status : ${memberDTOList}" th:data-id="${item.idx}" class="clickable-row">
-										<!-- <th:block th:object="${item}"> -->
-										<td><input type="checkbox" name="memberChecker" id="memberChecker" th:data-id="${item.id}"/></td>
+										<td>
+											<label th:for="'memberChecker_' + ${item.idx}" style="display: block; width: 100%; height: 100%; cursor: pointer;">
+												<input type="checkbox" name="memberChecker" th:id="'memberChecker_' + ${item.idx}" th:data-id="${item.id}"/>
+											</label>
+										</td>
 										<td th:text="${item.id}"></td>
 										<td th:text="${item.name}"></td>
 										<td th:text="${item.departmentName}"></td>
@@ -160,9 +163,6 @@
 										<td th:text="${item.positionName}"></td>
 										<td th:text="${item.phoneNumber}"></td>
 										<td th:text="${item.status}"></td>
-									</tr>
-									<tr th:if="${#lists.isEmpty(memberDTOList)}" class="clickable-row menu2depth_items">
-										<td colspan="8"><span>조회 된 데이터가 없습니다.</span></td>
 									</tr>
 								</tbody>
 							</table>
@@ -179,7 +179,10 @@
 						searching : false,
 						paging : false,
 						info : false,
-						order: [0, "desc"],
+						language: {
+							emptyTable: "조회 된 데이터가 없습니다."
+						},
+						order: [0, "asc"],
 						responsive: true
 					}); // end of $('#dataTables').DataTable({
 						
@@ -188,6 +191,22 @@
 				}); // end of $(document).ready(function() {
 					
 				$(function() {
+					
+					$('.clickable-row').on("click", function(e) {
+// 						console.log(e);
+						// 라벨 작동이 되지 않아서 라벨이거나 체크박스 일 때는 제외!
+						if (e.target.matches('label') || e.target.matches('input[type="checkbox"]')) {
+							return;
+						}
+						// !클릭한 이벤트의 타겟이 체크박스가 라면
+						if (!e.target.matches('input[type="checkbox"]')) {
+							const row = e.target.closest('tr.clickable-row');
+							if (row) {
+								const chk = row.querySelector('input[type="checkbox"]');
+								chk.checked = !chk.checked;
+							}
+						}
+					});
 					
 					$('#goListBtn').on("click", function() {
 						location.href="/admin/member";

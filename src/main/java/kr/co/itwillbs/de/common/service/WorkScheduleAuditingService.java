@@ -64,6 +64,7 @@ public class WorkScheduleAuditingService {
 	}
 
 	// 근무 일정 생성
+	
 	@Transactional
 	public void generateWorkerScheduleList() {
 	    // 작업 아이템 목록 조회 (진행 상태인 아이템만)
@@ -126,7 +127,7 @@ public class WorkScheduleAuditingService {
 	public void updateWorkOrdersItems(List<WorkOrdersItemsDTO> workItems) {
 		// 각 작업 아이템에 대해 비지니스 데이 리스트를 가져옴
 	    for (WorkOrdersItemsDTO item : workItems) {
-	        item.setStatus("2.5"); // 상태 변경
+	        item.setStatus("5"); // 5: REQUESTED 배치작업_요청됨 -> 상태 변경
 	        workScheduleAuditingMapper.updateWorkOrdersItems(item);
 	    }
 	}

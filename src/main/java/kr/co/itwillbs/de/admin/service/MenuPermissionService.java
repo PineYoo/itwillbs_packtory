@@ -28,6 +28,7 @@ public class MenuPermissionService {
 	 * @return
 	 */
 	@LogExecution
+	@Transactional
 	public int registerMenuPermission(MenuPermissionDTO dto) {
 		LogUtil.logStart(log);
 		
@@ -39,6 +40,7 @@ public class MenuPermissionService {
 	 * @param menuSearchDTO
 	 * @return
 	 */
+	@Transactional(readOnly = true)
 	public int getMenuPermissionCountBySearchDTO(MenuPermissionSearchDTO searchDTO) {
 		LogUtil.logStart(log);
 		
@@ -50,6 +52,7 @@ public class MenuPermissionService {
 	 * @param menuSearchDTO
 	 * @return
 	 */
+	@Transactional(readOnly = true)
 	public List<MenuPermissionDTO> getMenuPermissionsBySearchDTO(MenuPermissionSearchDTO searchDTO) {
 		LogUtil.logStart(log);
 		
@@ -63,6 +66,7 @@ public class MenuPermissionService {
 	 * @return
 	 * @throws Exception 
 	 */
+	@Transactional(readOnly = true)
 	public MenuPermissionDTO getMenuPermissionsByIdx(String idx) throws Exception {
 		LogUtil.logStart(log);
 		
@@ -74,6 +78,7 @@ public class MenuPermissionService {
 	 * @param MenuPermissionSearchDTO
 	 * @return
 	 */
+	@Transactional(readOnly = true)
 	public List<MenuPermissionDTO> getMenuPermissionsByParentsIdx(MenuPermissionSearchDTO searchDTO) {
 		LogUtil.logStart(log);
 		
@@ -94,6 +99,7 @@ public class MenuPermissionService {
 	 * @return
 	 */
 	@LogExecution
+	@Transactional
 	public int modifyMenuPermissionIsDeleted(MenuPermissionDTO dto) {
 		LogUtil.logStart(log);
 		
@@ -106,12 +112,13 @@ public class MenuPermissionService {
 	 * @throws Exception 
 	 */
 	@LogExecution
+	@Transactional
 	public void modifyMenuPermission(MenuPermissionDTO dto) throws Exception {
 		LogUtil.logStart(log);
 		
 		int affectedRow = menuPermissionMapper.modifyMenuPermission(dto);
 		if(affectedRow < 1) {
-			throw new Exception("데이터 수정에 실패 했습니다.");
+			throw new RuntimeException("데이터 수정에 실패 했습니다.");
 		}
 	}
 	
@@ -132,7 +139,7 @@ public class MenuPermissionService {
 		log.info("itemList.size is {}, // affectedRow is {}", list.size(), affectedRow);
 		
 		if(affectedRow < 1 || list.size() != affectedRow) {
-			throw new Exception("데이터 등록에 실패 했습니다.");
+			throw new RuntimeException("데이터 등록에 실패 했습니다.");
 		}
 	}
 }

@@ -105,16 +105,13 @@
 							</thead>
 							<tbody>
 								<tr th:each="item, status : ${menuDTOList}" th:data-id="${item.idx}" class="clickable-row">
-									<td th:text="${item.rownum}"></td>
+									<td th:text="${item.rowNum}"></td>
 									<td th:text="${item.menuName}"></td>
 									<td th:text="${item.rankNumber}"></td>
 									<td th:text="${item.url}"></td>
 									<td th:text="${item.isDeleted}"></td>
 									<td th:text="${item.regId}"></td>
 									<td th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
-								</tr>
-								<tr th:if="${#lists.isEmpty(menuDTOList)}" class="clickable-row menu2depth_items">
-									<td colspan="7"><span>조회 된 데이터가 없습니다.</span></td>
 								</tr>
 							</tbody>
 						</table>
@@ -131,7 +128,10 @@
 						searching : false,
 						paging : false,
 						info : false,
-						order: [0, "asc"],
+						language: {
+							emptyTable: "조회 된 데이터가 없습니다."
+						},
+						order: [0, "desc"],
 						responsive: true
 					}); // end of $('#dataTables').DataTable({
 					

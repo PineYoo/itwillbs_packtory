@@ -141,8 +141,7 @@
 							</thead>
 							<tbody>
 								<tr th:each="item, status : ${memberDTOList}" th:data-id="${item.id}" class="clickable-row">
-									<!-- <th:block th:object="${item}"> -->
-									<td th:text="${status.count}"></td>
+									<td th:text="${item.rowNum}"></td>
 									<td><input type="text" class="form-control" name="id" id="id" th:value="${item.id}" readonly /></td>
 									<td><input type="text" class="form-control" name="name" id="name" th:value="${item.name}" readonly /></td>
 									<!-- <td><input type="text" class="form-control" name="departmentName" id="departmentName" th:value="${item.departmentName}" readonly /></td> -->
@@ -179,6 +178,9 @@
 						searching : false,
 						paging : false,
 						info : false,
+						language: {
+							emptyTable: "조회 된 데이터가 없습니다."
+						},
 						order: [0, "desc"],
 						responsive: true
 					}); // end of $('#dataTables').DataTable({

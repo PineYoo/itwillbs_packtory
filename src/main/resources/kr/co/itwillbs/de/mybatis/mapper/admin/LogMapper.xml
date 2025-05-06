@@ -110,6 +110,7 @@
 	
 	<select id="getLogSearchList" parameterType="kr.co.itwillbs.de.admin.dto.LogSearchDTO"
 									resultType="kr.co.itwillbs.de.admin.dto.LogDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
 			<include refid="t_log_columns_forSelect" />
 			, get_item_name('LOG_ACCESS_TYPE', access_type) as access_type_name
@@ -137,8 +138,7 @@
 				</when>
 			</choose>
 		</where>
-		ORDER BY access_date DESC
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	

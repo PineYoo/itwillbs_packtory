@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import kr.co.itwillbs.de.admin.dto.LogDTO;
 import kr.co.itwillbs.de.admin.dto.LogSearchDTO;
 import kr.co.itwillbs.de.admin.mapper.LogMapper;
+import kr.co.itwillbs.de.common.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -24,7 +25,7 @@ public class LogService {
 	 * @return int : affectedRow 반환 1 정상 입력, 0 입력되지 않음
 	 */
 	public int registerLog(LogDTO logDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		// insert 쿼리라 affectedRow에는 idx값이 리턴된다.
 		int affectedRow = logMapper.registerLog(logDTO);
@@ -37,7 +38,7 @@ public class LogService {
 	 * @return List<LogDTO>
 	 */
 	public List<LogDTO> getLogList() {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		return logMapper.getLogList();
 	}
@@ -48,7 +49,8 @@ public class LogService {
 	 * @return
 	 */
 	public int getLogSearchCountForPaging(LogSearchDTO logSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
+		
 		return logMapper.getLogSearchCountForPaging(logSearchDTO);
 	}
 	
@@ -58,7 +60,7 @@ public class LogService {
 	 * @return List<LogDTO>
 	 */
 	public List<LogDTO> getLogSearchList(LogSearchDTO logSearchDTO) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		return logMapper.getLogSearchList(logSearchDTO);
 	}
@@ -69,7 +71,7 @@ public class LogService {
 	 * @return
 	 */
 	public LogDTO getLog(Long idx) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
+		LogUtil.logStart(log);
 		
 		return logMapper.getLog(idx);
 	}

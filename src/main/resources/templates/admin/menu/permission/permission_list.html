@@ -94,20 +94,24 @@
 									<th>메뉴타입</th>
 									<th>메뉴순서</th>
 									<th>메뉴 URL</th>
+									<th>부서이름</th>
+									<th>권한코드</th>
 									<th>삭제유무</th>
-									<th>작성자</th>
-									<th>작성일자</th>
+									<th>최종작성자</th>
+									<th>최종작성일자</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="item, status : ${permissionDTOList}" th:data-id="${item.idx}" class="clickable-row">
-									<td th:text="${item.rownum}"></td>
+									<td th:text="${item.rowNum}"></td>
 									<td th:text="${item.menuName}"></td>
 									<td th:text="${item.rankNumber}"></td>
 									<td th:text="${item.url}"></td>
+									<td th:text="${item.groupName}"></td>
+									<td th:text="${item.permissionCode}"></td>
 									<td th:text="${item.isDeleted}"></td>
-									<td th:text="${item.regId}"></td>
-									<td th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
+									<td th:text="${#strings.isEmpty(item.regId) ? '-' : (item.regDate < item.modDate ? item.modId : item.regId)}"></td>
+									<td th:text="${#strings.isEmpty(item.regDate) ? '-' : (item.regDate < item.modDate ? item.modDate : item.regDate)}"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -124,11 +128,11 @@
 						searching : false,
 						paging : false,
 						info : false,
-						order: [0, "asc"],
-						responsive: true,
 						language: {
 							emptyTable: "조회 된 데이터가 없습니다."
-						}
+						},
+						order: [0, "desc"],
+						responsive: true
 					}); // end of $('#dataTables').DataTable({
 					
 				}); // end of $(document).ready(function() {

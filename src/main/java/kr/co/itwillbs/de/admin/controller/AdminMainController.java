@@ -12,11 +12,11 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.co.itwillbs.de.common.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,6 +34,8 @@ public class AdminMainController {
 	@GetMapping("/caches")
 	@ResponseBody
 	public Map<String, Object> getCacheInfo() {
+		LogUtil.logStart(log);
+		
 		Map<String, Object> result = new LinkedHashMap<>();
 
 		for (String name : cacheManager.getCacheNames()) {
@@ -55,26 +57,5 @@ public class AdminMainController {
 		}
 		return result;
 	}
-	
-	
-	/**
-	 * 
-	 * @return
-	 */
-	@GetMapping(value={"","/"})
-	public String mainView(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		return "admin/view";
-	}
-	
-	@GetMapping(value={"/dashboard","/dashboard/"})
-	public String dashBoardView(Model model) {
-		log.info("{}---start", Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		return "admin/dashBoard";
-	}
-	
-	
 	
 }
