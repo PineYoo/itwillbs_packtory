@@ -40,6 +40,7 @@
 		, name
 		, code
 		, code_seq
+		, qc_type
 		, standard_time
 		, max_time
 		, is_deleted
@@ -64,6 +65,9 @@
 			</if>
 			<if test='codeSeq !=null and !("".equals(codeSeq.trim()))'>
 			code_seq,
+			</if>
+			<if test='qcType !=null and !("".equals(qcType.trim()))'>
+			qc_type,
 			</if>
 			<if test='standardTime !=null and !("".equals(standardTime.trim()))'>
 			standard_time,
@@ -90,6 +94,9 @@
 			</if>
 			<if test='codeSeq !=null and !("".equals(codeSeq.trim()))'>
 			#{codeSeq},
+			</if>
+			<if test='qcType !=null and !("".equals(qcType.trim()))'>
+			#{qcType},
 			</if>
 			<if test='standardTime !=null and !("".equals(standardTime.trim()))'>
 			#{standardTime},
@@ -157,6 +164,7 @@
 				<if test='name !=null and !("".equals(name.trim()))'>name = #{name},</if>
 				<if test='code !=null and !("".equals(code.trim()))'>code = #{code},</if>
 				<if test='codeSeq !=null and !("".equals(codeSeq.trim()))'>code_seq = #{codeSeq},</if>
+				qc_type = #{qcType},
 				<if test='standardTime !=null and !("".equals(standardTime.trim()))'>standard_time = #{standardTime},</if>
 				<if test='maxTime !=null and !("".equals(maxTime.trim()))'>max_time = #{maxTime},</if>
 				<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>is_deleted = #{isDeleted},</if>

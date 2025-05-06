@@ -23,6 +23,7 @@ public class RecipeProcessDTO {
 	private String code;
 	@NotBlank(message = "작업순서는 필수 입력 값입니다.")
 	private String codeSeq;
+	private String qcType;
 	@NotBlank(message = "표준 소요시간은 필수 입력 값입니다.")
 	private String standardTime;
 	@NotBlank(message = "최대 소요시간은 필수 입력 값입니다.")
