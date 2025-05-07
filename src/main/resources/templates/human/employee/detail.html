@@ -82,9 +82,9 @@ input, select {
 
 										<div class="form-group col-md-6">
 											<label>성별</label> <select name="gender" class="form-select" disabled>
-												<option value="" disabled th:selected="${employeeDTO.detail.gender == null}">성별 선택</option>
-												<option value="M" th:selected="${employeeDTO.detail.gender == 'M'}">남성</option>
-												<option value="F" th:selected="${employeeDTO.detail.gender == 'F'}">여성</option>
+												<option value="" disabled th:selected="${employeeDTO?.detail?.gender == null}">성별 선택</option>
+												<option value="M" th:selected="${employeeDTO?.detail?.gender == 'M'}">남성</option>
+												<option value="F" th:selected="${employeeDTO?.detail?.gender == 'F'}">여성</option>
 											</select>
 										</div>
 
@@ -99,7 +99,7 @@ input, select {
 
 										<div class="col-md-6 d-flex flex-column gap-1">
 											<div class="form-group">
-												<label>전화번호</label> <input type="text" name="phoneNumber" th:value="${employeeDTO.detail.phoneNumber}" class="form-control" readonly>
+												<label>전화번호</label> <input type="text" name="phoneNumber" th:value="${employeeDTO?.detail?.phoneNumber}" class="form-control" readonly>
 											</div>
 
 											<div class="form-group">
@@ -134,7 +134,7 @@ input, select {
 											<label>주소</label>
 											<div class="d-flex flex-column gap-2">
 												<button type="button" id="searchAddressBtn_2" class="btn btn-outline-primary" disabled>주소찾기</button>
-												<input type="text" name="address1" th:value="${employeeDTO.detail.address1}" class="form-control address1" readonly tabindex="-1" onfocus="this.blur()" placeholder="주소"> <input type="text" name="address2" th:value="${employeeDTO.detail.address2}" class="form-control address2" readonly placeholder="상세 주소">
+												<input type="text" name="address1" th:value="${employeeDTO?.detail?.address1}" class="form-control address1" readonly tabindex="-1" onfocus="this.blur()" placeholder="주소"> <input type="text" name="address2" th:value="${employeeDTO?.detail?.address2}" class="form-control address2" readonly placeholder="상세 주소">
 											</div>
 										</div>
 
@@ -205,19 +205,19 @@ input, select {
 									<div class="card-body row">
 
 										<div class="form-group col-md-6">
-											<label>급여은행 코드</label> <input type="text" name="salaryBankCode" th:value="${employeeDTO.detail.salaryBankCode}" class="form-control" readonly>
+											<label>급여은행 코드</label> <input type="text" name="salaryBankCode" th:value="${employeeDTO?.detail?.salaryBankCode}" class="form-control" readonly>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>급여은행 이름</label> <input type="text" name="salaryBankName" th:value="${employeeDTO.detail.salaryBankName}" class="form-control" readonly>
+											<label>급여은행 이름</label> <input type="text" name="salaryBankName" th:value="${employeeDTO?.detail?.salaryBankName}" class="form-control" readonly>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>급여계좌번호</label> <input type="text" name="salaryAccountNumber" th:value="${employeeDTO.detail.salaryAccountNumber}" class="form-control" readonly>
+											<label>급여계좌번호</label> <input type="text" name="salaryAccountNumber" th:value="${employeeDTO?.detail?.salaryAccountNumber}" class="form-control" readonly>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>급여계좌 예금주</label> <input type="text" name="salaryAccountHolder" th:value="${employeeDTO.detail.salaryAccountHolder}" class="form-control" readonly>
+											<label>급여계좌 예금주</label> <input type="text" name="salaryAccountHolder" th:value="${employeeDTO?.detail?.salaryAccountHolder}" class="form-control" readonly>
 										</div>
 
 									</div>
@@ -232,22 +232,22 @@ input, select {
 
 										<div class="form-group col-md-6">
 											<label>직원 차량 여부</label> <select name="hasVehicle" class="form-select" disabled>
-												<option value="" disabled th:selected="${employeeDTO.detail.gender == null}">차량 유무</option>
-												<option value="Y" th:selected="${employeeDTO.detail.hasVehicle == 'Y'}">보유</option>
-												<option value="N" th:selected="${employeeDTO.detail.hasVehicle == 'N'}">미보유</option>
+												<option value="" disabled th:selected="${employeeDTO?.detail?.hasVehicle == null}">차량 유무</option>
+												<option value="Y" th:selected="${employeeDTO?.detail?.hasVehicle == 'Y'}">보유</option>
+												<option value="N" th:selected="${employeeDTO?.detail?.hasVehicle == 'N'}">미보유</option>
 											</select>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>직원 상태 코드</label> <input type="text" name="employeeStatusCode" th:value="${employeeDTO.detail.employeeStatusCode}" class="form-control" readonly>
+											<label>직원 상태 코드</label> <input type="text" name="employeeStatusCode" th:value="${employeeDTO?.detail?.employeeStatusCode}" class="form-control" readonly>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>상태 시작일</label> <input type="date" name="statusStartDate" th:value="${employeeDTO.detail.statusStartDate}" class="form-control" readonly>
+											<label>상태 시작일</label> <input type="date" name="statusStartDate" th:value="${employeeDTO?.detail?.statusStartDate}" class="form-control" readonly>
 										</div>
 
 										<div class="form-group col-md-6">
-											<label>상태 종료일</label> <input type="date" name="statusEndDate" th:value="${employeeDTO.detail.statusEndDate}" class="form-control" readonly>
+											<label>상태 종료일</label> <input type="date" name="statusEndDate" th:value="${employeeDTO?.detail?.statusEndDate}" class="form-control" readonly>
 										</div>
 
 									</div>
