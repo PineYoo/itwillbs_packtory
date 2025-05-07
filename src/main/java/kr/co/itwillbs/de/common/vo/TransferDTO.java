@@ -2,7 +2,7 @@ package kr.co.itwillbs.de.common.vo;
 
 import java.util.List;
 
-import kr.co.itwillbs.de.common.constant.MoveType;
+import kr.co.itwillbs.de.common.constant.CommandOption;
 import kr.co.itwillbs.de.common.constant.TransStatus;
 import kr.co.itwillbs.de.common.constant.TransType;
 import kr.co.itwillbs.de.mes.dto.QcLogDTO;
@@ -21,7 +21,7 @@ public class TransferDTO {
 	
 	private TransType transType;
 	private TransStatus status;
-	private MoveType moveType;
+	private CommandOption commandOption;
 	
 	// 입고시 사용되는 변수
 	// 아마도 tradeCode

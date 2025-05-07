@@ -373,8 +373,9 @@
 	<select id="getWorkerMetricList" parameterType="kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO"
 										resultType="kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO">
 		<include refid="PublicSql.withWorkerInfo" />
+		,pattern AS (
 		select
-			(total_count - row_asc + 1) AS rownum,
+			idx,
 			id AS employee_id,
 			name AS employee_name,
 			department_name,
@@ -384,7 +385,7 @@
 			is_lines_manager,
 			is_forklift_operator,
 			is_driver
-		from numberedWorkers
+		from workerBase
 		<where>
 			<if test="searchKeyword != null and searchKeyword != ''">
 				AND (
@@ -399,8 +400,7 @@
 			AND is_lines_manager = #{isLinesManager}
 			</if>
 		</where>
-		ORDER BY id
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<!-- 검색조건에 따른 자재 리스트 조회 -->

@@ -32,7 +32,7 @@ public class GeneralTransferCommand implements TransferCommand {
 	public void execute(TransferDTO dto) throws Exception {
 		LogUtil.logStart(log);
 		
-		switch (dto.getMoveType()) {
+		switch (dto.getCommandOption()) {
 			case TO_PRODUCTION -> moveToProduction(dto);
 			case TO_FINISHED_GOODS -> moveToFinishedGoods(dto);
 			default -> throw new UnsupportedOperationException("Unknown move type");

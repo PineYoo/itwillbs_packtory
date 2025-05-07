@@ -26,8 +26,6 @@ import kr.co.itwillbs.de.mes.dto.RawMaterialSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialStockDTO;
 import kr.co.itwillbs.de.mes.dto.RawMaterialStockSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMaterialDTO;
-import kr.co.itwillbs.de.mes.dto.RecipeMaterialSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeProcessDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeProcessSearchDTO;
 import kr.co.itwillbs.de.mes.dto.RecipeSearchDTO;
@@ -75,7 +73,7 @@ public class SearchController {
 		employeeSearchDTO.getPageDTO().setTotalCount(searchService.getEmployeeCountForPaging(employeeSearchDTO));
 		model.addAttribute("employeeSearchDTO", employeeSearchDTO);
 		
-	    return searchService.getEmployeeList(employeeSearchDTO);
+		return searchService.getEmployeeList(employeeSearchDTO);
 	}
 	
 	// ----------------------------------------------------------------------------------
@@ -92,7 +90,7 @@ public class SearchController {
 	@ResponseBody
 	public List<EmployeeCodeDTO> getSubDepartmentList(@RequestParam("departmentCode") String departmentCode) {
 		LogUtil.logStart(log);
-	    return searchService.getSubDepartmentList(departmentCode); // 하위 minor_code
+		return searchService.getSubDepartmentList(departmentCode); // 하위 minor_code
 	}
 
 	// 직급 리스트 조회
