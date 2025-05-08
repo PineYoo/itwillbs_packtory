@@ -45,4 +45,10 @@ public class BomDTO {
 	private String regDate;
 	private String modId;
 	private String modDate;
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
+	
 }
