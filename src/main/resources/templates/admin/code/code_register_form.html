@@ -47,35 +47,22 @@
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<form th:action="@{/admin/code}" method="post" th:object="${codeDTO}" class="form row g-3">
-							<input type="hidden" id="menuId" name="menuId" value="0">
+						<form th:action="@{/admin/code}" method="post" th:object="${codeDTO}" class="form row g-3" id="registerForm">
 							<div class="col-md-6">
-								<label class="mb-1" for="majorCode">그룹 코드</label>
-								<input type="text" class="form-control" th:field="*{majorCode}" placeholder="그룹 코드" data-required="true" data-name="그룹 코드" data-type="string">
-								<div th:if="${#fields.hasErrors('majorCode')}" th:errors="*{majorCode}" class="text-danger"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('majorCode','그룹코드',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<label class="mb-1" for="name">코드 이름</label>
-								<input type="text" class="form-control" th:field="*{name}" placeholder="코드 이름">
-								<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('name','코드 이름',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6">
-								<label class="mb-1" for="description">코드 설명</label>
-								<input type="text" class="form-control" th:field="*{description}" placeholder="코드 설명">
-								<div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
+								<div th:replace="~{common/fragments/de_form :: inputText('description','코드 설명',true,false,false)}"></div>
 							</div>
 							<div class="col-md-6 mb-4">
-								<label for="isDeleted" class="form-label">삭제유무</label>
-								<select class="form-select" th:field="*{isDeleted}">
-									<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
-									<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
-<!-- 									<option value="" th:selected="*{isDeleted} eq '' ">선택</option> -->
-								</select>
-								<div th:if="${#fields.hasErrors('isDeleted')}" th:errors="*{isDeleted}" class="text-danger"></div>
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,false,false)}"></div>
 							</div>
 							
 							<div class="col-md-12 row align-items-center justify-content-center">
-								<button type="submit" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
 								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">취소</button>
 							</div>
 						</form>
@@ -85,10 +72,62 @@
 		</div>
 		<script type="text/javascript">
 			$(function() {
+				
+				$('#btnSubmitForm').on("click", function() {
+					console.group('click! #btnSubmitForm!');
+					// error 내용 삭제
+					$("div[id$='Error']").text("")
+					// 만세 폼이다!
+					const _serializedData = $('#registerForm').serialize();
+					// 문자열을 '&' 기준z으로 분리하여 배열로 변환
+					const _pairs = _serializedData.split('&');
+					// 빈 객체를 생성하여 데이터를 담을 준비
+					const _jsonObj = {};
+					// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
+					_pairs.forEach(pair => {
+						const [key, value] = pair.split('=');
+						_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
+					});
+					// 데이터 확인
+					console.log(_jsonObj);
+					// JSON 데이터를 서버로 전송
+					fetch("/admin/code", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(_jsonObj)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.status === "success") {
+							alert(data.message);
+							location.href="/admin/code";
+						} else if(data.status === "validFail") {
+							console.log("hello validFail!");
+							//alert(data.message);
+							let _errors = data.errors;
+							console.log(_errors);
+							for (let field in _errors) {
+								$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
+							} // end of for (let field in errors) {
+						}
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						alert("요청 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해 주시기 바랍니다.");
+					});
+					
+					console.groupEnd();
+				}); // end of $('#btnSubmitForm').on("click", function() {
+				
 				$('#btnList').on("click", function() {
 					location.href="/admin/code";
 				});
 			}); // end of $(function() {
+				
+			
 		</script>
 	</th:block>
 </body>

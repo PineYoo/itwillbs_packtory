@@ -51,24 +51,16 @@
 							<input type="hidden" name="_method" value="put" disabled />
 							<input type="hidden" th:field="*{idx}" id="idx" disabled />
 							<div class="col-md-6">
-								<label class="mb-1" for="majorCode">그룹코드</label>
-								<input type="text" class="form-control" th:field="*{majorCode}" placeholder="그룹코드" disabled>
+								<div th:replace="~{common/fragments/de_form :: inputText('majorCode','그룹코드',true,false,true)}"></div>
 							</div>
 							<div class="col-md-6">
-								<label class="mb-1" for="name">그룹코드 이름</label>
-								<input type="text" class="form-control" th:field="*{name}" placeholder="그룹코드 이름" disabled>
+								<div th:replace="~{common/fragments/de_form :: inputText('name','그룹코드 이름',true,false,true)}"></div>
 							</div>
 							<div class="col-md-6">
-								<label class="mb-1" for="description">코드 설명</label>
-								<input type="text" class="form-control" th:field="*{description}" placeholder="코드 설명" disabled>
+								<div th:replace="~{common/fragments/de_form :: inputText('description','코드 설명',true,false,true)}"></div>
 							</div>
 							<div class="col-md-6 mb-4">
-								<label for="isDeleted" class="form-label">삭제유무</label>
-								<select id="isDeleted" name="isDeleted" class="form-select" th:field="*{isDeleted}" disabled>
-									<option value="" th:selected="*{isDeleted} eq '' ">전체</option>
-									<option value="Y" th:selected="*{isDeleted} eq 'Y' ">삭제</option>
-									<option value="N" th:selected="*{isDeleted} eq 'N' ">사용중</option>
-								</select>
+								<div th:replace="~{common/fragments/de_form :: isDeleted('isDeleted','삭제유무',true,false,true)}"></div>
 							</div>
 							
 							<div class="col-md-12 row align-items-center justify-content-center">
@@ -328,8 +320,6 @@
 						if(data.status === "success") {
 							alert(data.message);
 							location.reload(); // 현재 페이지 새로 고침
-						} else {
-							
 						}
 						
 					})

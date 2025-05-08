@@ -45,7 +45,7 @@ public class MenuService {
 	 */
 	@CacheEvict(value = {"menus", "menuByUri"}, allEntries = true)
 	@LogExecution
-	@Transactional(readOnly = true)
+	@Transactional
 	public int registerMenu(MenuDTO menuDTO) {
 		LogUtil.logStart(log);
 		

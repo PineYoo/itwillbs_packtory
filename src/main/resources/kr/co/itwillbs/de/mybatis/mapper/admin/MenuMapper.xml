@@ -58,30 +58,46 @@
 		insert into t_menu (
 			<trim suffixOverrides=",">
 			menu_name,
+			<if test='parentsIdx !=null and !("".equals(parentsIdx.trim()))'>
 			parents_idx,
+			</if>
+			<if test='rankNumber !=null and !("".equals(rankNumber.trim()))'>
 			rank_number,
+			</if>
+			<if test='url !=null and !("".equals(url.trim()))'>
 			url,
+			</if>
+			<if test='description !=null and !("".equals(description.trim()))'>
 			description,
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
 			is_deleted,
+			</if>
+			<if test='regId !=null and !("".equals(regId.trim()))'>
 			reg_id,
 			reg_date,
-			<if test='modId !=null and !("".equals(modId.trim()))'>
-			mod_id,
-			mod_date,
 			</if>
 			</trim>
 		) values (
 			<trim suffixOverrides=",">
 			#{menuName},
+			<if test='parentsIdx !=null and !("".equals(parentsIdx.trim()))'>
 			#{parentsIdx},
+			</if>
+			<if test='rankNumber !=null and !("".equals(rankNumber.trim()))'>
 			#{rankNumber},
+			</if>
+			<if test='url !=null and !("".equals(url.trim()))'>
 			#{url},
+			</if>
+			<if test='description !=null and !("".equals(description.trim()))'>
 			#{description},
+			</if>
+			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>
 			#{isDeleted},
+			</if>
+			<if test='regId !=null and !("".equals(regId.trim()))'>
 			#{regId},
-			now(),
-			<if test='modId !=null and !("".equals(modId.trim()))'>
-			#{modId},
 			now(),
 			</if>
 			</trim>

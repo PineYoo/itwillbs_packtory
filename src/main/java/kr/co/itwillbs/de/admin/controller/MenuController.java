@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.validation.Valid;
 import kr.co.itwillbs.de.admin.dto.MenuDTO;
 import kr.co.itwillbs.de.admin.dto.MenuSearchDTO;
 import kr.co.itwillbs.de.admin.service.MenuService;
@@ -61,16 +64,37 @@ public class MenuController {
 	 * @param logDTO
 	 * @return
 	 */
-	@PostMapping(value={"","/"})
-	public String menuRegister(@ModelAttribute("menuDTO") MenuDTO menuDTO) {
+	@PreAuthorize("hasAuthority('ADMIN')")
+	@PostMapping(value={"","/"}, consumes = MediaType.APPLICATION_JSON_VALUE) // 이녀석 만고 필요 없...던데? 
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> registerMenu(@RequestBody @Valid MenuDTO menuDTO, Model model) {
 		LogUtil.logStart(log);
 		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(menuDTO));
 		
-		if(menuService.registerMenu(menuDTO) < 1) {
-			return MENU_PATH+"/log_register_form";
+		//리턴 객체 생성
+		Map<String, Object> response = new HashMap<>();
+		try {
+			menuService.registerMenu(menuDTO);
+			response.put("status", "success");
+			response.put("message", "정상적으로 수행 되었습니다.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("status", "fail");
+			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
+			return ResponseEntity.badRequest().body(response);
 		}
-		return "redirect:"+MENU_PATH;
+		
+		return ResponseEntity.ok(response);
 	}
+//	public String menuRegister(@ModelAttribute("menuDTO") MenuDTO menuDTO) {
+//		LogUtil.logStart(log);
+//		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(menuDTO));
+//		
+//		if(menuService.registerMenu(menuDTO) < 1) {
+//			return MENU_PATH+"/log_register_form";
+//		}
+//		return "redirect:"+MENU_PATH;
+//	}
 	
 	/**
 	 * 어드민 > 메뉴 관리 > 메뉴 리스트 (1depth)
