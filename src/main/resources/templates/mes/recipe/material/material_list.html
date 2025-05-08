@@ -142,11 +142,17 @@
 						searching : false,
 						paging : false,
 						info : false,
+						responsive: true,
 						language: {
 							emptyTable: "조회 된 데이터가 없습니다."
 						},
 						order: [0, "asc"],
-						responsive: true
+						columnDefs: [
+					        {
+					            targets: [5, 6], // 정렬 막을 컬럼 인덱스
+					            orderable: false
+					        }
+					    ]
 					}); // end of $('#dataTables').DataTable({
 					
 				}); // end of $(document).ready(function() {
