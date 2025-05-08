@@ -226,16 +226,22 @@
 
 	<select id="getWorkOrdersBySearchDTO" parameterType="kr.co.itwillbs.de.mes.dto.WorkOrdersSearchDTO"
 									resultType="kr.co.itwillbs.de.mes.dto.WorkOrdersMasterDTO">
+		<include refid="PublicSql.NumberedPatternByIdForMySql8Top" />
 		SELECT 
 		<include refid="t_orders_master_join_columns_forSelect"></include>
 			 , p.name AS productName
 			 , r.name AS recipeMasterName
 			 , e.name AS supervisorName
 		  FROM t_work_orders_master wo
+		  
+		  LEFT
 		  JOIN t_product p
 			ON wo.product_idx = p.idx
+			
+		  LEFT
 		  JOIN t_recipe_master r
 			ON wo.recipe_master_idx = r.idx
+			
 		  LEFT
 		  JOIN t_employee e
 			ON wo.supervisor_id = e.id
@@ -274,7 +280,9 @@
 			</choose>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
 		</where>
-		LIMIT #{pageDTO.size} OFFSET #{pageDTO.offset}
+		 ORDER
+		    BY wo.idx DESC
+		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
 	</select>
 	
 	<!-- ====================================================================================== -->
