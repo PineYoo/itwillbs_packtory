@@ -144,7 +144,9 @@
 			<if test='maxTime !=null and !("".equals(maxTime.trim()))'>AND max_time LIKE CONCAT('%',#{maxTime},'%')</if>
 			<if test='isDeleted !=null and !("".equals(isDeleted.trim()))'>AND is_deleted = #{isDeleted}</if>
 		</where>
+		ORDER BY code_seq
 		<include refid="PublicSql.OriginalNumberedPatternByIdForMySql8Bottom" />
+		<!-- code_seq 순서로 조회하고 싶었으나 varchar이기 때문에 1 10 11 2 21 순서로 조회됨.. -->
 	</select>
 	
 	<select id="getRecipeProcessByIdx" parameterType="string"

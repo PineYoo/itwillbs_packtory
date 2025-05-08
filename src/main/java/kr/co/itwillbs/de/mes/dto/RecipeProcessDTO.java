@@ -36,4 +36,12 @@ public class RecipeProcessDTO {
 	private String regDate;	// 작성일시
 	private String modId;			// 최종작성자
 	private String modDate;	// 최종작성일시
+	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
+	
+	
+	
 }
