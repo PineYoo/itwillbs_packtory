@@ -98,6 +98,7 @@
 						<table class="table table-bordered table-hover text-center" id="dataTables" width="100%" cellspacing="0">
 							<thead class="table-light">
 								<tr>
+									<th>번호</th>
 									<th>타입</th>
 									<th>상품번호</th>
 									<th>자재번호</th>
@@ -110,6 +111,7 @@
 							</thead>
 							<tbody>
 								<tr th:each="item, status : ${lotsDTOList}" th:data-id="${item.idx}" class="clickable-row">
+									<td th:text="${item.rowNum}"></td>
 									<td th:text="${item.lotNumber}"></td>
 									<td th:text="${item.productIdx}"></td>
 									<td th:text="${item.materialIdx}"></td>
@@ -137,7 +139,7 @@
 						language: {
 							emptyTable: "조회 된 데이터가 없습니다."
 						},
-						order: [0, "asc"],
+						order: [0, "desc"],
 						responsive: true
 					}); // end of $('#dataTables').DataTable({
 					
