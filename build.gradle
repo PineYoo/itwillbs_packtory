@@ -81,3 +81,7 @@ Validation
 tasks.named('test') {
 	useJUnitPlatform()
 }
+//	서버 배포 시 자바 소스코드 확인 가능하도록 추가
+war {
+    from sourceSets.main.allSource
+}
