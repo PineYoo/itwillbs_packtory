@@ -51,6 +51,10 @@ public class RecipeMasterDTO {
 	//product_idx로 테이블을 걸었을 때 가져올 상품 이름
 	private String productName;
 	
+	// 페이징 변수들
+	private int totalCount;
+	private int rowAsc;
+	private int rowNum;
 	
 
 }
