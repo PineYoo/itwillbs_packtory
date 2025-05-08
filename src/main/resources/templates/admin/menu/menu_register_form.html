@@ -48,7 +48,7 @@
 			<div class="card shadow mb-4">
 				<div class="card-body">
 					<div class="table-responsive">
-						<form th:action="@{/admin/menu}" method="post" th:object="${menuDTO}" class="form row g-3">
+						<form th:action="@{/admin/menu}" method="post" th:object="${menuDTO}" class="form row g-3" id="registerForm">
 							<div class="col-md-6">
 								<div th:replace="~{common/fragments/de_form :: inputText('menuName','메뉴 이름',true,false,false)}"></div>
 							</div>
@@ -68,7 +68,7 @@
 							</div>
 							
 							<div class="col-md-12 row align-items-center justify-content-center">
-								<button type="submit" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
+								<button type="button" id="btnSubmitForm" class="btn btn-primary btn-lg d-block col-3 ml-2 mb-3">등록</button>
 								<button type="button" id="btnList" class="btn btn-secondary btn-lg d-block col-3 ml-2 mb-3">취소</button>
 							</div>
 						</form>
@@ -130,6 +130,55 @@
 		
 		
 			$(function() {
+				
+				$('#btnSubmitForm').on("click", function() {
+					console.group('click! #btnSubmitForm!');
+					// error 내용 삭제
+					$("div[id$='Error']").text("")
+					// 만세 폼이다!
+					const _serializedData = $('#registerForm').serialize();
+					// 문자열을 '&' 기준z으로 분리하여 배열로 변환
+					const _pairs = _serializedData.split('&');
+					// 빈 객체를 생성하여 데이터를 담을 준비
+					const _jsonObj = {};
+					// 각 쌍을 '=' 기준으로 분리하여 JSON 객체로 추가
+					_pairs.forEach(pair => {
+						const [key, value] = pair.split('=');
+						_jsonObj[decodeURIComponent(key)] = decodeURIComponent(value); // URL 디코딩을 적용
+					});
+					// 데이터 확인
+					console.log(_jsonObj);
+					// JSON 데이터를 서버로 전송
+					fetch("/admin/menu", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(_jsonObj)
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log("서버 응답:", data);
+						if(data.status === "success") {
+							alert(data.message);
+							location.href="/admin/menu";
+						} else if(data.status === "validFail") {
+							console.log("hello validFail!");
+							//alert(data.message);
+							let _errors = data.errors;
+							console.log(_errors);
+							for (let field in _errors) {
+								$("#" + field + "Error").text(_errors[field]); // ex: majorCodeError div에 메시지 출력
+							} // end of for (let field in errors) {
+						}
+					})
+					.catch(error => {
+						console.error("서버 응답 오류:", error);
+						alert("요청 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해 주시기 바랍니다.");
+					});
+					
+					console.groupEnd();
+				}); // end of $('#btnSubmitForm').on("click", function() {
 				
 				$('#btnList').on("click", function() {
 					location.href="/admin/menu";

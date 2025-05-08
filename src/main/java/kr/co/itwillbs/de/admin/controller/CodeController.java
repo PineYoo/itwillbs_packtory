@@ -63,16 +63,38 @@ public class CodeController {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('ADMIN')")
-	@PostMapping(value={"","/"}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE) // 이녀석 만고 필요 없...던데? 
-	public String registerCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, Model model) {
+	@PostMapping(value={"","/"}, consumes = MediaType.APPLICATION_JSON_VALUE) // 이녀석 만고 필요 없...던데? 
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> registerCode(@RequestBody @Valid CodeDTO codeDTO, Model model) {
 		LogUtil.logStart(log);
 		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(codeDTO));
 		
-		if(codeService.registerCode(codeDTO) < 1) {
-			return VIEW_PATH+"/log_register_form";
+		//리턴 객체 생성
+		Map<String, Object> response = new HashMap<>();
+		try {
+			codeService.registerCode(codeDTO);
+			response.put("status", "success");
+			response.put("message", "정상적으로 수행 되었습니다.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("status", "fail");
+			response.put("message", "정상적으로 수행되지 않았습니다.\n 잠시 후 다시 시도해주시기 바랍니다.");
+			return ResponseEntity.badRequest().body(response);
 		}
-		return "redirect:"+VIEW_PATH;
+		
+		return ResponseEntity.ok(response);
 	}
+	
+//	@PostMapping(value={"","/"}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE) // 이녀석 만고 필요 없...던데? 
+//	public String registerCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, Model model) {
+//		LogUtil.logStart(log);
+//		LogUtil.logDetail(log, "requestDTO : {}", StringUtil.objToString(codeDTO));
+//		
+//		if(codeService.registerCode(codeDTO) < 1) {
+//			return VIEW_PATH+"/log_register_form";
+//		}
+//		return "redirect:"+VIEW_PATH;
+//	}
 	
 	/**
 	 * 어드민 > 코드 관리 > 코드리스트

@@ -32,7 +32,7 @@ public class CodeService {
 	@LogExecution
 	@CacheEvict(value = "majorCodes", allEntries = true) // 캐시 삭제! true: 메서드 호출 전 실행, false: 메서드 호출 후 실행
 	@Transactional
-	public int registerCode(CodeDTO codeDTO) {
+	public int registerCode(CodeDTO codeDTO) throws Exception {
 		LogUtil.logStart(log);
 		
 		int affectedRow = codeMapper.registerCode(codeDTO);
@@ -136,7 +136,7 @@ public class CodeService {
 	 * @throws Exception 
 	 */
 	@LogExecution // 로그 남길 서비스
-	@CacheEvict(value = "codeItems", key = "#itemList.get(0).majorCode")
+	@CacheEvict(value = "codeItems", key = "#itemList.get(0).majorCode", condition = "#itemList != null and !#itemList.isEmpty()")
 	@Transactional
 	public void registerCodeItems(List<CodeItemDTO> itemList) throws Exception {
 		LogUtil.logStart(log);

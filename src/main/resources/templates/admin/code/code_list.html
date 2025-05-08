@@ -75,6 +75,9 @@
 										<!-- 검색바 버튼 -->
 										<div class="row justify-content-end">
 											<div class="col-12 col-sm-auto mb-2">
+												<button type="button" class="btn btn-success btn-block" id="goNewFormBtn">등록</button>
+											</div>
+											<div class="col-12 col-sm-auto mb-2">
 												<button type="button" class="btn btn-warning btn-block" onclick="formReset('searchForm');">초기화</button>
 											</div>
 											<div class="col-12 col-sm-auto mb-2">
@@ -110,9 +113,7 @@
 							</thead>
 							<tbody>
 								<tr th:each="item, status : ${codeDTOList}" th:data-id="${item.idx}" class="clickable-row">
-									<!-- <th:block th:object="${item}"> -->
 									<td th:text="${item.rowNum}"></td>
-									<!-- <td th:text="${status.count}"></td> -->
 									<td th:text="${item.majorCode}"></td>
 									<td th:text="${item.name}"></td>
 									<td th:text="${item.description}"></td>
@@ -140,6 +141,9 @@
 						searching : false,
 						paging : false,
 						info : false,
+						language: {
+							emptyTable: "조회 된 데이터가 없습니다."
+						},
 						order: [0, "desc"],
 						responsive: true
 					}); // end of $('#dataTables').DataTable({
