@@ -60,6 +60,8 @@ public class QcTransferCommand implements TransferCommand {
 	 * 
 	 * 0. 품질 검사 검증 -> validateQcLogs
 	 * 1. 입출고 테이블에서 검사장 이동 테이블 인서트
+	 * 1-2. 이동 후 자재 LotNumberUtil.generateLotNumber() 생성
+	 * 
 	 * 2. LOT 번호 생성 -> LotNumberUtil.generateLotNumber()
 	 * 3. LOT 테이블 인서트 -> 
 	 * 4. QC 로그 테이블 인서트
@@ -98,14 +100,30 @@ public class QcTransferCommand implements TransferCommand {
 		wtDTO.setIsDeleted(IS_DELETE_N);
 		wtDTO.setRegId(REG_ID_TRANSFER);
 		
+		// 2. LOT 번호 생성
+		String lotNumber = LotNumberUtil.generateLotNumber();
+		
+		// 3. LOT 테이블 인서트 입고 자재 부모값 LotNumber 생성
+		LotsDTO lotsOriginal = new LotsDTO();
+		lotsOriginal.setLotNumber(lotNumber);
+		lotsOriginal.setProductIdx(wtInfo.getProductIdx());
+		lotsOriginal.setMaterialIdx(wtInfo.getMaterialIdx());
+		lotsOriginal.setQuantity(String.valueOf(wtInfo.getQuantity()));
+		lotsOriginal.setUnit(wtInfo.getUnit());
+		lotsOriginal.setMemo("QC_Pass_Lot");
+		lotsOriginal.setRegId(REG_ID_QC_COMMAND);
+		
+		lotsMapper.registerLots(lotsOriginal);
+		
 		// 디게 복잡하게 느껴질 수 있는데 실제로도 복잡하니까 걱정하지말자
 		// Qc 적합 결과가 있을 경우
 		if(!result.getSuccessList().isEmpty()) {
 			// 2. LOT 번호 생성
-			String lotNumber = LotNumberUtil.generateLotNumber();
+			lotNumber = LotNumberUtil.generateLotNumber();
 			
 			// 3. LOT 테이블 인서트
 			LotsDTO lots = new LotsDTO();
+			lots.setParentsIdx(lotsOriginal.getIdx());
 			lots.setLotNumber(lotNumber);
 			lots.setProductIdx(wtInfo.getProductIdx());
 			lots.setMaterialIdx(wtInfo.getMaterialIdx());
@@ -156,10 +174,11 @@ public class QcTransferCommand implements TransferCommand {
 		// Qc 부적합 결과가 있을 경우
 		if(!result.getFailList().isEmpty()) {
 			// 2. LOT 번호 생성
-			String lotNumber = LotNumberUtil.generateLotNumber();
+			lotNumber = LotNumberUtil.generateLotNumber();
 			
 			// 3. LOT 테이블 인서트
 			LotsDTO lots = new LotsDTO();
+			lots.setParentsIdx(lotsOriginal.getIdx());
 			lots.setLotNumber(lotNumber);
 			lots.setProductIdx(wtInfo.getProductIdx());
 			lots.setMaterialIdx(wtInfo.getMaterialIdx());

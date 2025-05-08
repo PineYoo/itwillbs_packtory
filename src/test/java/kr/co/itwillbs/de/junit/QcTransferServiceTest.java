@@ -38,7 +38,7 @@ public class QcTransferServiceTest {
 		QcLogDTO pass1 = new QcLogDTO();
 		pass1.setQcIdx("1");
 		pass1.setValue("9.9");
-		pass1.setQcResult("PASS");
+//		pass1.setQcResult("PASS");
 		pass1.setQuantity(90);
 		inputQcList.add(pass1);
 
@@ -46,7 +46,7 @@ public class QcTransferServiceTest {
 		QcLogDTO fail1 = new QcLogDTO();
 		fail1.setQcIdx("2");
 		fail1.setValue("13.5");
-		fail1.setQcResult("FAIL");
+//		fail1.setQcResult("FAIL");
 		fail1.setQuantity(10);
 		inputQcList.add(fail1);
 
