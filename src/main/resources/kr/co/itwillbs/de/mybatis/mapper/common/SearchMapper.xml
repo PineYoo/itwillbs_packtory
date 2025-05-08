@@ -369,7 +369,6 @@
 		</where>
 	</select>
 	
-	<!-- PublicSql에서 numberedWorkers를 가져오는 With절이 주석처리 되어있음 -->
 	<select id="getWorkerMetricList" parameterType="kr.co.itwillbs.de.mes.dto.WorkerMetricsSearchDTO"
 										resultType="kr.co.itwillbs.de.mes.dto.WorkerMetricsDTO">
 		<include refid="PublicSql.withWorkerInfo" />
@@ -387,6 +386,8 @@
 			is_driver
 		from workerBase
 		<where>
+			is_supervisor IS NOT NULL
+			AND is_lines_manager IS NOT NULL
 			<if test="searchKeyword != null and searchKeyword != ''">
 				AND (
 					id LIKE CONCAT('%', #{searchKeyword}, '%')
