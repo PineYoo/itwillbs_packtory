@@ -25,8 +25,6 @@ public class SchedulerRunner implements CommandLineRunner {
 	
 //	private final ApprovalService approvalService;
 
-	
-
 	public SchedulerRunner(ThreadPoolTaskScheduler scheduler, HealthCheckService healthCheckService,
 			StatisticsService statisticsService, TaskReportRegistryService taskReportRegistryService,
 			WorkScheduleAuditingService workScheduleAuditingService) {

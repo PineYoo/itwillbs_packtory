@@ -40,3 +40,5 @@ out/
 /data/
 /logs/
 /data/*.db
+/env/*
+env.properties

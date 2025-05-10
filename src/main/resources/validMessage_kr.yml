@@ -1,0 +1,6 @@
+# @Valid에 잡혔을 때 보내줄 메시지정의
+codedto:
+  majorCode: 그룹코드는 필수 입력 값입니다.
+  name: 그룹코드 이름은 필수 입력 값입니다.
+  description: 그룹코드 설명은 50자 이내로 입력해주시기 바랍니다.
+  isDeleted: 삭제 유무는 Y 또는 N 을 입력해주세요.
