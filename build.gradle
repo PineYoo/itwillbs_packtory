@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.4.3'
+	id 'org.springframework.boot' version '3.4.3' // Newer patch version of Spring Boot available: 3.4.5 [BOOT_VERSION_VALIDATION_CODE]
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'war'
 }
@@ -12,6 +12,9 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
 	}
+}
+war {
+	from sourceSets.main.allSource //	서버 배포 시 자바 소스코드 확인 가능하도록 추가
 }
 bootWar {
 	archiveFileName = 'ROOT.war' // 원하는 파일명
@@ -28,60 +31,60 @@ repositories {
 
 dependencies {
 /*
-spring web
-spring boot devTools
-spring data jpa
-spring data jdbc
-lombok
-MySQL driver
-Mybatis Framework
-Thymeleaf
-Validation
+	https://docs.spring.io/spring-boot/appendix/dependency-versions/coordinates.html (이 페이지도 아카이브 해둬야할것같다)
+	프로젝트 시작(25.03) 시 3.4.3 으로 시작 했지만 끝날(25.05) 때는 스프링부트 Stable 버전이 3.4.5으로 바뀌었다.
+	우리가 개발하는 속도보다 겨우겨우 사용하는 중요 라이브러리 개선하는 속도가 더 빠르다.
+	위의 plugin boot 3.4.3 버전에 버전을 명시하지 않으면 매칭되는 버전들이 있고
+	그것보다 최신의 라이브러리를 참조하고 싶을 때 버전을 명시한다. 고 봐도 되겠지?
+	thymeleaf: 3.1.3
+	thymeleaf-extras-springsecurity6: 3.1.3
+	thymeleaf-layout-dialect: 3.3.0
+	mybatis-spring: 3.0.4
 */
+	// Spring-boot
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+	implementation 'org.springframework.boot:spring-boot-starter-aop' // 서비스 로그를 위한 AOP 추가
+	implementation 'org.springframework.boot:spring-boot-starter-security' // 시큐리티 추가
+	implementation 'org.springframework.boot:spring-boot-starter-actuator' // 캐시 모니터링 구성
+	
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	implementation 'mysql:mysql-connector-java:8.0.29'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
+	// Mybatis-spring 3.0.4
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+	// jdbc? 맞지?
+	implementation 'mysql:mysql-connector-java:8.0.29' // mysql-connector-j 는 되지 않은 정확한 이유를 찾지 못했다.(우리가 사용하는 MySQL 버전이 8.4 라서 라는 추측을 함)
+	
+	// Spring-boot 테스트(TDD 개발인가?)
+	testImplementation 'org.springframework.boot:spring-boot-starter-test' // (HREF: https://catsbi.oopy.io/e2fa9884-eb59-4f79-8732-6e3e14e456fd )
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	//QueryDSL 의존성 추가
+	
+	// 이건 파일 저장시 부트-tomcat 자동 재시작
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	
+	// QueryDSL 의존성 추가
 	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
 	annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'	// Q클래스 자동 생성 지원
 	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'	//@Generated 등 jakarta 어노테이션 지원
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'	//@Entity, @Table 등 어노테이션 지원
 	
-	// 타임리프 페이지 레이아웃 의존성 라이브러리 추가!
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	// Thymeleaf
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect' // 타임리프 페이지 레이아웃 의존성 라이브러리 추가!
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' // 타임리프 스프링 시큐리티 추가
 	
-	// Encryption support for property sources
-	// https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot
-	implementation("com.github.ulisesbocchio:jasypt-spring-boot:3.0.5")
-	
-	// 시큐리티 추가
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-	
-	// 서비스 로그를 위한 AOP 추가
-	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	// Encryption support for property sources(https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot)
+	implementation("com.github.ulisesbocchio:jasypt-spring-boot:3.0.5") // application.yml 암호화를 위해 Jasypt 추가
 	
 	// Tomcat을 외부에서 제공받을 것이므로 provided로 설정
 	providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
-	
-	// 캐시 모니터링 구성
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
-}
-//	서버 배포 시 자바 소스코드 확인 가능하도록 추가
-war {
-    from sourceSets.main.allSource
 }
