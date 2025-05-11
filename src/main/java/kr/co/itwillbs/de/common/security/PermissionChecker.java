@@ -76,13 +76,13 @@ public class PermissionChecker {
 	 */
 	private PermissionScope determineScope(CustomUserDetails user, List<MenuPermissionVO> permissions) {
 		for (MenuPermissionVO permission : permissions) {
-			if (permission.getOwnerMemberId() != null && user.getUsername().equals(permission.getOwnerMemberId())) {
+			if (permission.getOwnerMemberId() != null && user.getUsername().equals(String.valueOf(permission.getOwnerMemberId()))) {
 				return new PermissionScope(permission.getPermissionCode(), ScopeType.OWNER);
 			}
 		}
 
 		for (MenuPermissionVO permission : permissions) {
-			if (permission.getGroupId() != null && user.getGroupId().equals(permission.getGroupId())) {
+			if (permission.getGroupId() != null && user.getGroupId().equals(String.valueOf(permission.getGroupId()))) {
 				return new PermissionScope(permission.getPermissionCode(), ScopeType.GROUP);
 			}
 		}

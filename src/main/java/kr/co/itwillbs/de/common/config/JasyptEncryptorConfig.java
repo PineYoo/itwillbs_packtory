@@ -22,7 +22,7 @@ public class JasyptEncryptorConfig {
 	//private final String PROPERTY_SLAT = "encryptor.password";
 	
 	@Bean(name = "jasyptStringEncryptor")
-	public StringEncryptor stringEncryptor() {
+	StringEncryptor stringEncryptor() {
 		Properties secrets = EnvPropertyConfig.load(); // 이렇게 가져와서 쓰는거면.. 그냥 이 클래스 밑에 메서드가 낫지 않나? 고민이다.
 
 		SimpleStringPBEConfig config = new SimpleStringPBEConfig();

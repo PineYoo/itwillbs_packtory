@@ -26,7 +26,7 @@ public class SchedulerConfig{
 	private static final boolean WAIT_TASK_COMPLETE = true;
 	private static final String THREAD_NAME_PREFIX = "DaemonTask-";
 	@Bean
-	public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
+	ThreadPoolTaskScheduler threadPoolTaskScheduler() {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 		scheduler.setPoolSize(POOL_SIZE); // 동시에 (n)개의 스케줄 작업 처리 가능
 		scheduler.setThreadNamePrefix(THREAD_NAME_PREFIX); // 스레드 이름 prefix
@@ -36,5 +36,4 @@ public class SchedulerConfig{
 		//scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy()); // ExecutorService에 사용할 RejectedExecutionHandler를 설정, 기본값은 ExecutorService의 기본 중단 정책
 		return scheduler;
 	}
-
 }

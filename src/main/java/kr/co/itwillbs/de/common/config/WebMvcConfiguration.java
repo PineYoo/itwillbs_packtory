@@ -79,7 +79,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer{
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
-	public FilterRegistrationBean hiddenHttpMethodFilter() {
+	FilterRegistrationBean hiddenHttpMethodFilter() {
 		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new HiddenHttpMethodFilter());
 		filterRegistrationBean.setUrlPatterns(Arrays.asList("/*"));
 		return filterRegistrationBean;

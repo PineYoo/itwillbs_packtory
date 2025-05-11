@@ -34,7 +34,7 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(csrf -> csrf.disable())
 			.cors(cors -> cors.disable())
@@ -98,12 +98,12 @@ public class SecurityConfig {
 	 * @return
 	 */
 	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer() {
+	WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring().requestMatchers("/js/**", "/css/**", "/img/**", "/favicon.ico");
 	}
 	
 	@Bean
-	public PasswordEncoder passwordEncoder() {
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	

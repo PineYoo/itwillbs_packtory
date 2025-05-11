@@ -33,7 +33,7 @@ public class SimpleCacheConfig {
 	 * 그냥 명시적으로 우리는 어떤캐시를 쓰고 있다? 정도로 해두자!
 	 */
 	@Bean
-	public CacheManager cacheManager() {
+	CacheManager cacheManager() {
 		return new ConcurrentMapCacheManager(
 				"majorCodes",
 				"codeItems",

@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.4.3' // Newer patch version of Spring Boot available: 3.4.5 [BOOT_VERSION_VALIDATION_CODE]
+	id 'org.springframework.boot' version '3.4.5' // Newer patch version of Spring Boot available: 3.4.5 [BOOT_VERSION_VALIDATION_CODE] 오우 지워졌다 대박!?
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'war'
 }
@@ -40,6 +40,8 @@ dependencies {
 	thymeleaf-extras-springsecurity6: 3.1.3
 	thymeleaf-layout-dialect: 3.3.0
 	mybatis-spring: 3.0.4
+	
+	250511 3.4.5 로 spring-boot 버전 올림
 */
 	// Spring-boot
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
