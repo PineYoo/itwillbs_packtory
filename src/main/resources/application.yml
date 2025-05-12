@@ -26,8 +26,8 @@ spring:
   datasource:
     hikari:
       driver-class-name: ENC(+fppC6nxEyOwnWgptbN0jOM9ecbXuJBdI6dFHjZZhojriGbASrof9w7GvoZ7YnuRmtWm787tu1/TNHOHaFbAVA==)
-      #jdbc-url: ENC(0xKylZjamyV1a4XW8K8X03xemZ3eJDOXCS8G0bBC8AESQXwcv4OgSbpgqmvXCB5ytYXrVx1LuOt2jOlYrVK83nwN94xPYfcq5Asqdjz6Zz+zuOHbNxDMa6F9+PQCx3vmjWeSI00gUFsKgzgtjbIV2HAjvBuLUH4kG2uCaOCf58M=)
-      jdbc-url: ENC(TbdPTXsAmksM6d0kOMpcmJOjq6kTAJhHK2rC4ohwKHzrKUTeeczN3TmAcwClNo50GvMLUn4OLsd78/TCz9dmmd6guru64jE+CzSuTIJ92k6nO/GrPtOKPVJfzrrj90NdxEYyWtVZNyJpsR54AzxbvA1dZhayfvZZREsSt8PxJZQ=)
+      jdbc-url: ENC(0xKylZjamyV1a4XW8K8X03xemZ3eJDOXCS8G0bBC8AESQXwcv4OgSbpgqmvXCB5ytYXrVx1LuOt2jOlYrVK83nwN94xPYfcq5Asqdjz6Zz+zuOHbNxDMa6F9+PQCx3vmjWeSI00gUFsKgzgtjbIV2HAjvBuLUH4kG2uCaOCf58M=)
+      #jdbc-url: ENC(TbdPTXsAmksM6d0kOMpcmJOjq6kTAJhHK2rC4ohwKHzrKUTeeczN3TmAcwClNo50GvMLUn4OLsd78/TCz9dmmd6guru64jE+CzSuTIJ92k6nO/GrPtOKPVJfzrrj90NdxEYyWtVZNyJpsR54AzxbvA1dZhayfvZZREsSt8PxJZQ=)
       username: ENC(VCL5G7bqOxkj2KLddRPqPftdxrRUb2/01/+igfG5fASx6xa0sO6vlGDzOBJS7zcl)
       password: ENC(C77lbFalrra3yTIM45vXLvbzTtHYpj9U9EaCp5AfC6oZY7tr15MiNZvqXnt9N6HtXM91fmmN0jCItP/og7kkQg==)
 
